@@ -1,0 +1,1941 @@
+Generalised Linear Models Incorporating Population
+Level Information: An Empirical Likelihood Based
+Approach1
+Sanjay Chaudhuri
+University of Washington, Seattle
+Mark S. Handcock
+University of Washington, Seattle
+Michael S. Rendall
+Rand Corporation, Santa Monica
+
+Working Paper no. 48
+Center for Statistics and the Social Sciences
+University of Washington
+May 5, 2005
+
+1
+
+Sanjay Chaudhuri is a graduate student, Department of Statistics, University of Washington, Box
+354322, Seattle, WA 98195-4322 E-mail:sanjay@stat.washington.edu; Web: www.stat.
+washington.edu/sanjay; Mark S. Handcock is Professor of Statistics and Sociology, Department of Statistics, University of Washington, Box 354322, Seattle WA 98195-4322. E-mail:
+handcock@stat.washington.edu; Web: www.stat.washington.edu/handcock; Michael
+S. Rendall is with the Rand Corporation, Labor and Population Programme and Pennsylvania State University, Population Research Institute. E-mail: mrendall@rand.org.
+This work was funded by the National Institute of Child Health and Human Development grant R01HD043472-01. The authors would like to thank Thomas S. Richardson, Antar Bandyopadhyay and Ryan
+Admiral for their extremely useful comments and suggestions.
+
+Abstract
+In many situations information from a sample of individuals can be supplemented by population
+level information on the relationship between a dependent and explanatory variables. Inclusion
+of the population level information can reduce bias and increase the efficiency of the parameter
+estimates.
+Population level information can be incorporated via constraints on the model parameters. In
+general the constraints are nonlinear making the task of maximum likelihood estimation harder. In
+this paper we develop an alternative approach exploiting the notion of an empirical likelihood. It
+is shown that within the framework of generalised linear models, the population level information
+corresponds to linear constraints, which are comparatively easy to handle. We provide a two-step
+algorithm that produces parameter estimates using only unconstrained estimation. We also provide
+computable expressions for the standard errors. We give an application to demographic hazard
+modeling by combining panel survey data from the British Household Panel Survey (BHPS) with
+birth registration data.
+Key Words: Empirical Likelihood, Constrained Optimisation, Generalised Linear Models.
+
+1
+
+Introduction
+
+In many statistical demographic applications, some information on the relationship of explanatory
+variable with the dependent variables is known from the population level data. Sources of population level data include a census, registration systems, and governmental filing. Population level
+data are comparatively free of sampling error and are typically less biased due to the effects of non
+response. However standard regression modelling techniques cannot be appropriately used with
+these data sets, as there are too few variables to estimate the model of dependence between the dependent variable and the explanatory variables. On the other hand the data obtained from sample
+surveys are subject to sampling errors and bias due to non-response. However they usually contain
+information about more variables and thus is essential to infer scientifically interesting specifications of the model. With the increasing popularity of likelihood based methods, more emphasis
+has been placed on estimation from sample data alone, with the information from complete enumeration procedures ignored in practice. It is not surprising that the population level information
+contains valuable information for statistical analysis whose inclusion can lead to statistically more
+accurate estimates and better inference.
+The traditional method for combining the population level information in statistical analysis
+is through post stratification. The literature goes back to Deming and Stephan (1942) and Ireland
+and Kullback (1968), but the statistical literature on the statistical properties of post-stratified estimates has been relatively sparse (Holt and Smith, 1979). The post stratification approach is usually
+applied in the design-based inference and becomes inappropriate in the presence of non-response,
+unless strong restrictions on the nature of non-response is assumed. In the alternative model based
+approach, one can view non-response and attrition as further sample selection. Here the the combination of survey and population data is operationalised via a model and the composite sampling
+scheme is inferred from a selection model and the observed data. In this case post-stratification has
+been used to make the non-response ignorable for inference (Little and Rubin, 1987). Little (1993)
+develops a Bayesian model-based approach and Little and Wu (1991) compare the design-based
+and model based approaches when the sampled population differs from the population data due to
+non-response or coverage errors.
+The use of both sample and population information within the framework of likelihood principles and more specifically for generalised linear models has been proposed by Handcock, Huovilainen, and Rendall (2000). This method does not provide post-stratification weights but directly
+constraints the likelihood. Imbens and Lancaster (1994) use a similar method for combining macro
+data in microeconomic models. In Handcock, Rendall, and Cheadle (2003) the methodology has
+been further developed. They express the population level data as (usually non-linear) functions
+of the model parameters and use them as restrictions to the likelihood. The constrained maxi-
+
+1
+
+mum likelihood estimates can then be obtained by maximising the likelihood function under these
+population level constraints.
+This method can be implemented using any of the widely available procedures for numerical
+optimisation with equality constraints. It is also known that the estimates are asymptotically normal and unbiased. An explicit form of the standard error of the parameter estimates can also be
+obtained. Further one can show analytically that the standard error of the parameter estimates are
+guaranteed to be smaller compared to those with no population restriction.
+Even though the method uses intuitively straight-forward procedures it has its own limitations.
+Non-linear equality constraints are in general numerically difficult to handle and time-consuming
+to code in applications involving multiple population level restrictions and even moderate numbers
+of regressors. Also knowledge about the distribution of the explanatory variables is required.
+Data combination is a active research area in econometrics. Imbens and colleagues(Imbens
+and Lancaster, 1994; Hellerstein and Imbens, 1999) explore the benefits of combining population
+with survey data, using economic data in a generalised method of moment (GMM) regression
+framework. Imbens and Lancaster (1994) consider the estimation of parameters in the regression
+model under moment restrictions on the data contributed by population data, and report large
+gains in efficiency by incorporating marginal moments from census data with sample-survey joint
+distributions. They restrict on the conditional moment information if distributional knowledge on
+the explanatory variables is not available. For a review of recent developments see Moffitt and
+Ridder (2005).
+The article is structured as follows. In Section 2 we introduce the notation and formulate the
+problem. It also contains a brief discussion of the empirical likelihood and translates the problem
+to a constrained empirical likelihood problem. Section 3 describes the methods for estimating
+the model parameter through a nested maximisation problem. We show that in many cases a
+two-step maximisation problem can be devised to estimate the parameters. The latter method
+generalises the weighted least squared estimation described in Hellerstein and Imbens (1999). We
+also provide the details of solving the linearly constrained optimisation problem associated with
+this estimation scheme. In Section 4 some asymptotic properties of the parameter estimates are
+derived. We show that if the sample is representative of the population then our parameter estimates
+are asymptotically consistent and unbiased. Under usual regularity conditions we further show that
+the estimates are asymptotically normal and give an explicit expression for their standard errors.
+We show that the use of population information reduces the standard errors. We indicate that these
+standard errors can be calculated using either the asymptotic weights or more accurately using
+the calculated weights through a sandwich estimator. In Section 5 we apply the methodology to
+combine panel survey data from the British Household Panel Survey (BHPS) with birth registration
+data to estimate annual birth probabilities by parity.
+
+2
+
+2
+
+Notation and Formulation
+
+2.1
+
+Notation and problem description
+
+Suppose Y denote the response variable dependent on the explanatory variables X = X (1) , X (2) ,
+
+
+. . ., X ( p) . Suppose g j Y, X (1) , X (2) , . . . , X ( p) , j = 1, 2, . . . , m be functions of the response
+and p explanatory variables such that the average value of each g j over the population represented
+by Y, X (1) , X (2) , . . . , X ( p) is known to be γ j , for all j = 1, 2, . . . , m. Moreover assume that each
+γ j is known without any sampling error.
+Let us have a sample of size n. The ith sample point is denoted by
+
+ 
+( p)
+(1) (2)
+yi , x i ≡ yi , xi , xi , . . . , xi
+i = 1, 2, . . . , n
+
+(1)
+
+We assume that n > p + m. We assume that there are no missing values.
+Suppose we fit a generalised linear model M to the data and incorporate the population level
+information in the known population mean of g j , for all j = 1, 2, . . . , m. The model is specified
+as
+!
+p
+
+
+
+
+X
+E Y |X = x i , β = ηM xi β T ≡ ηM
+βk xi(k)
+(2)
+k=1
+
+where ηM (·) is the inverse link function corresponding to the family M and β = β1 , β2 , . . . , β p
+
+
+
+is the vector of regression coefficients. We assume that the marginal distribution of X does not
+depend on β.
+Since γ j is the known value of g j in the population, we can assume that for j = 1, 2 . . . , m,
+
+
+E Y,X g j Y, X = γ j .
+(3)
+Note that in (3) the L.H.S. is in general a nonlinear function of β. Thus using these expression directly as constraints on the population parameters (as in Handcock et al. (2003)) imposes nonlinear
+constraints on the problem. Thus in order to find the parameter estimates we need to maximise the
+likelihood corresponding to M under those constraints.
+In the alternative approach we estimate the joint distribution of Y and X explicitly by its empirical distribution from the sample, incorporating the conditional moment information from (2)
+and the population level information from (3). We show that this distribution can be estimated by
+solving a maximisation problem constrained only by linear constraints. The parameter estimates
+can then be obtained from this estimated distribution.
+
+2.2
+
+Empirical distribution and likelihood
+
+We only introduce the concepts of empirical likelihood and empirical distribution for univariate
+random variables in this section. Extensions for multivariate random variables are natural.
+3
+
+Suppose Z 1 , Z 2 , . . ., Z n are i.i.d. univariate random variable with a common distribution F0 .
+Let F be the set of all univariate distribution functions. In particular F0 ∈ F.
+Definition 1 (Owen (2001)). Suppose F ∈ F, then the non-parametric likelihood of F is defined
+as
+
+n
+Y
+
+L (F) =
+
+(F (Z i ) − F (Z i −)) ,
+
+(4)
+
+i=1
+
+where F (Z i −) = limδ↓0 F (Z i − δ).
+In Definition 1. we use the word “likelihood” to mean that L (F) in (4) is the probability of
+the sample Z 1 , Z 2 , . . ., Z n from the distribution F. Also we note that, if F is continuous
+limδ↓0 F (Z i − δ) = F (Z i ), for all i. So if F is continuous L (F) = 0. Thus for L (F) to be
+positive F has to put positive mass on every sample point Z 1 , Z 2 , . . ., Z n and be discrete.
+The empirical distribution function of the sample Z 1 , Z 2 , . . ., Z n is defined as
+n
+
+1X
+1{Z i ≤z} ,
+Fˆn (z) =
+n
+
+−∞ < z < ∞.
+
+(5)
+
+i=1
+
+Owen (2001) shows that the non-parametric likelihood in (4) is maximised over F for F (z) =
+Fˆn (z) for all −∞ < z < ∞. Therefore Fn is the non-parametric maximum likelihood estimator
+(NPMLE) of F. Thus in a completely non-parametric setting the best estimator of the underlying
+distribution assigns equal weight of 1/n to each of its sample points.
+The non-parametric likelihood in (4) can be used for parametric distribution also. Suppose it is
+known that the distribution depends on a parameter θ ∈ 2 and let
+F2 = {Fθ s.t. Fθ is an univariate distribution function and θ ∈ 2.}
+
+(6)
+
+Clearly F2 ⊆ F.
+The NPMLE, Fˆn,θ ∈ F2 in this case can be obtained
+by maximising Lo (F) in (4) over F ∈
+n
+F2 . This means finding n sample weights wˆ i = Fˆn,θ (Z i ) − Fˆn,θ (Z i −) s.t. wˆ i ≥ 0, for all
+Pn
+i = 1, 2, . . . , n, i=1
+wˆ i = 1 and
+
+
+L Fn,θ =
+
+n
+Y
+
+
+n
+	 Y
+Fn,θ (Z i ) − Fn,θ (Z i −) =
+wˆ i
+
+i=1
+
+(7)
+
+i=1
+
+is the maximum value of L (F) for F ∈ F2 .
+From the asymptotic point of view, a scaled version of the non-parametric likelihood is more
+interesting to consider. One can use the non-parametric likelihood ratio of F ∈ F2 to F ∈ F.
+
+4
+
+This is given by
+max F∈F2 L (F) max F∈F2
+=
+R (F2 ) =
+max F∈F L (F)
+= max
+
+F∈F2
+
+n
+Y
+
+Qn
+
+i=1 {F (Z i ) −
+Qn 1
+i=1 n
+
+F (Z i −)}
+
+n {F (Z i ) − F (Z i −)} .
+
+(8)
+(9)
+
+i=1
+
+From (7) it follows that
+n
+n
+n
+o Y
+Y
+ˆ
+ˆ
+R (F2 ) =
+n Fn,θ (Z i ) − Fn,θ (Z i −) =
+n wˆ i .
+i=1
+
+(10)
+
+i=1
+
+In a sample n is a constant, so considering R (Fθ ) is actually same as considering L (Fθ ).
+
+From the maximising weights wˆ = wˆ 1 , wˆ 2 , . . . , wˆ n the constrained estimate of the distribution function is determined by
+Fˆn,θ (z) = Fˆw (z) =
+
+n
+X
+
+wˆ i 1{Z i ≤z} ,
+
+for −∞ < z < ∞.
+
+(11)
+
+i=1
+
+So in order to estimate Fˆn,θ it is enough to determine the maximising weights wˆ i for the emQn
+pirical likelihood i=1
+nwi under the constraint that the resulting distribution Fˆw ∈ F2 . In other
+words the NPMLE Fˆn,θ is determined by
+)
+( n
+n
+Y
+X
+(12)
+wˆ = arg max
+nwi : wi ≥ 0, ∀i,
+wi = 1, Fw ∈ F2 .
+w
+
+i=1
+
+i=1
+
+All the concepts described above can be extended to multivariate random variables. The extension is natural and we refrain from repeating it. Details can be found in Owen (2001, Chapter
+3).
+
+2.3
+
+Formulation of the empirical likelihood with population level information
+
+In the problem under consideration we not only have parameters describing the relationship of Y
+and X in (2), moreover there are m population level information in (3) imposing more constraints
+on the set of allowable joint distribution of Y and X . Thus in order to estimate this joint distribution
+one needs to maximise the corresponding non-parametric likelihood in (4) over the set of all joint
+distributions satisfying both sets of constraints imposed by the parametric model and the population
+information.
+From the discussion above the estimator is given by the weights wˆ i such that
+wˆ i ≥ 0 for all i = 1, 2, . . . , n and
+
+n
+X
+i=1
+
+5
+
+wˆ i = 1,
+
+(13)
+
+maximising the empirical likelihood
+log
+
+Qn
+
+i=1 nwi ,
+
+n
+Y
+
+or equivalently
+
+!
+nwi
+
+=
+
+i=1
+
+n
+X
+
+log(nwi )
+
+(14)
+
+i=1
+
+over w, under some more constraints imposed by the model M and population level information.
+The constraints imposed by the model are based on the score functions of the likelihood.
+It is well known (McCullagh and Nelder, 1989) that for any generalised linear model for k =
+1, 2, . . . , p
+
+"
+
+E X (k) Y − ηM
+
+p
+X
+
+βk X (k)
+
+!!#
+= 0.
+
+(15)
+
+k=1
+
+This expectation is over the joint distribution of the sample. In our formulation we replace the joint
+distribution by its empirical estimate. Thus the score constraints imposed by the model M on (14)
+through its score functions are given by
+(
+!)
+p
+n
+X
+X
+wi xi(k) yi − ηM
+βk xi(k)
+=0
+i=1
+
+k = 1, 2, . . . , p.
+
+(16)
+
+k=1
+
+The population constraints on (14) can be expressed similarly from (3) as
+n
+X
+
+n
+
+wi g j
+
+
+
+( p)
+yi , xi(1) , xi(2) , . . . , xi
+
+
+
+o
+
+− γj = 0
+
+j = 1, 2, . . . , m.
+
+(17)
+
+i=1
+
+Unlike the direct constraints method (Handcock et al., 2003), in (17) the population level constraints do not explicitly depend on the model parameters β. However as the score constraints
+involve all the weights and the model parameters, eventually same constraints are imposed on the
+parameter estimation in both the procedures.
+
+3
+
+Estimation of model parameters
+
+The empirical joint distribution is determined by the vector of maximising weights wˆ = wˆ 1 , wˆ 2 , . . . , wˆ n
+satisfying (13) and other m+ p constraints in (16) and (17). In this section we discuss the numerical
+methods for maximising the empirical likelihood ratio and estimating the model parameters.
+
+6
+
+
+
+3.1
+
+Estimation of the model parameters
+
+The main goal of this discussion is to estimate the model parameters incorporating the population
+constraints. Under the assumption of (14), (16) and (17) the parameter estimates are given by
+"
+( n
+n
+X
+X
+ˆ
+log(nwi ), wi ≥ 0, ∀i = 1, 2, . . . , n,
+wi = 1,
+(18)
+β = arg max max
+w
+
+β
+
+i=1
+
+n
+X
+
+i=1
+
+wi xi(k) yi − ηM x i β
+
+i=1
+n
+X
+
+n
+
+
+
+o
+
+= 0, k = 1, 2, . . . , p,
+)#
+
+wi g j yi , x i − γ j = 0, j = 1, 2, . . . , m
+
+
+
+
+	
+
+.
+
+i=1
+
+Thus the parameter estimates are obtained from a nested maximisation procedure and the model
+parameters only influence the estimation of weights through the score constraints.
+Note that in (18), the outer maximisation over β is unconstrained. The inner one over w is
+constrained by linear constraints. So the use of empirical likelihood requires maximising over
+linear constraints only, which is numerically much easier to handle, than non-linear constraints.
+However this nested maximisation may be slow, but in most cases an alternative and faster
+two-step estimation procedure can be devised to obtain the parameter estimates instantly.
+
+3.2
+
+A two-step procedure for estimating the model parameters
+
+The two step estimator for β takes the advantage of the fact that the population constraints do
+not depend on the model parameters. This method is a generalisation of the weighted estimator
+described in Hellerstein and Imbens (1999). In the first step we get the weights wˆ maximising (14)
+under (13) and the population constraints (17). That is we compute
+" n
+n
+X
+X
+wˆ = arg max
+log(nwi ), wi ≥ 0, i = 1, 2, . . . , n,
+wi = 1,
+w
+
+i=1
+
+(19)
+
+i=1
+
+n
+X
+
+#
+wi g j yi , x i − γ j = 0, j = 1, 2, . . . , m .
+
+
+
+
+	
+
+i=1
+
+In the second step we solve the score constraints with wˆ i as the sample weights for the parameter
+estimates. That is we solve
+n
+X
+
+n
+
+o
+wˆ i xi(k) yi − ηM x i β = 0, k = 1, 2, . . . , p,
+
+i=1
+
+
+
+for the parameter estimates βˆ = βˆ1 , βˆ2 , . . . , βˆk .
+7
+
+(20)
+
+The second step consists of the usual estimation of the model parameters for the model M
+with wˆ as the vector of sample weights. So we can use standard methods for estimating model
+parameters for a generalised linear model to perform this step (McCullagh and Nelder, 1989).
+A rationale validating the two-step estimation procedure can be outlined as follows. Suppose
+we define
+(
+n
+X
+A = w : wi ≥ 0, i = 1, 2, . . . , n,
+wi = 1,
+(21)
+i=1
+n
+X
+
+)
+wi g j yi , x i − γ j = 0, j = 1, 2, . . . , m .
+
+
+
+
+	
+
+i=1
+
+and
+(
+B = w : wi ≥ 0, i = 1, 2, . . . , n,
+
+n
+X
+
+wi = 1,
+
+(22)
+
+i=1
+n
+X
+i=1
+n
+X
+
+
+	
+
+wi g j yi , x i − γ j = 0, j = 1, 2, . . . , m,
+wi xi(k)
+
+n
+
+
+
+yi − ηM x i β
+
+o
+
+)
+= 0, k = 1, 2, . . . , p
+
+i=1
+
+Pn
+Clearly both A and B are convex and B ⊆ A. However i=1
+log(nwi ) is concave on A. Thus
+there is an unique maximising wˆ in A. If wˆ ∈ B, i.e. there is β satisfying the score constraints wˆ
+is the intended maximising weights.
+However it is possible that there is no β satisfying the score constraints for the weights w,
+ˆ i.e.
+wˆ 6∈ B. In that situation the two-step procedure described above fails and the nested maximisation
+in (18) has to be done. The parameter estimates from the two step procedure are still useful as initial
+values for the nested maximisation. Hellerstein and Imbens (1999) estimate the model parameters
+by a similar two-step estimation procedure even if wˆ 6 ∈ B.
+
+3.3
+
+Computing the maximising weights in the first step
+
+In the two-step estimation procedure discussed above, only the first step requires constrained maximisation.
+We follow a similar discussion in Owen (2001) and instead of solving the primal problem for
+the maximising weights, solve its dual problem, which is more convenient to deal with.
+Without loss of generality we can assume that wˆ i > 0, ∀i = 1, 2, . . . , n. The situation when
+some weights are 0 can be tackled fairly easily (Owen, 2001).
+
+8
+
+The primal objective function is given by
+
+
+
+
+L w, β =
+
+n
+X
+
+log(nwi ) − α
+
+i=1
+
+n
+X
+
+!
+wi − 1 +
+
+i=1
+
+m
+X
+
+nλ j
+
+j=1
+
+n
+X
+
+
+
+	
+wi g j yi , x i − γ j .
+
+(23)
+
+i=1
+
+Here α, λ j , j = 1, 2, . . . , m are the Lagrangian multipliers.
+By differentiating with respect to wi for each i and equating the resulting expression to 0 we
+get, for all i = 1, 2, . . . , n
+m
+
+X
+
+
+	
+∂L
+1
+=
+−α+
+nλ j g j yi , x i − γ j = 0.
+∂wi
+wi
+
+(24)
+
+j=1
+
+Note that
+
+∂L
+i=1 wi ∂wi
+
+Pn
+
+= 0. Thus using the facts that the weights sum to 1 and the weighted sum
+
+of the restrictions equals 0 for all j = 1, 2, . . . , m we get
+α = n.
+
+(25)
+
+By substituting the value of α in (24) and solving for the weights, we get
+wi =
+
+1
+1
+
+
+	.
+×
+Pm
+n 1 + j=1 λ j g j yi , x i − γ j
+
+(26)
+
+Since 0 < wi < 1 for all i = 1, 2, . . . , n, it follows that
+1+
+
+m
+X
+j=1
+
+
+
+	 1
+λ j g j yi , x i − γ j ≥
+n
+
+i = 1, 2, . . . , n.
+
+(27)
+
+By substituting the weights in (23) (or equivalently in (14)) we get
+n
+X
+i=1
+
+log(nwi ) = −
+
+n
+X
+
+log(1 +
+
+i=1
+
+m
+X
+
+
+
+	
+λ j g j yi , x i − γ j ).
+
+(28)
+
+j=1
+
+Under the assumption that there is no duality gap, maximising (14) under constraints for weights
+is equivalent to minimising (28) under the constraints in (27) for the optimal values of λ j , j =
+1, 2, . . . , m.
+Note that the dimension of the dual problem is m which is much less than the dimension of
+the primal problem by assumption. Also the dual problem is constrained by linear inequality
+constraints and thus numerically far easier to solve.
+Owen (2001, Chapter 3) defines a continuous and twice differentiable pseudo-logarithmic function over the whole real line such that the above minimisation can be performed without any constraint using a simple Newton-Raphson Algorithm.
+The procedure for the inner constrained maximisation in (18) which includes the score constraints, when necessary, is similar. We note that in that case the dimension of the corresponding
+dual problem is m + p, which is still less than the dimension of the primal problem.
+9
+
+4
+
+Asymptotic properties of the estimator
+
+In this section we investigate the asymptotic properties of the constrained estimator of the model
+parameters. The main emphasis will be given on the two-step estimator in section 3. We shall
+show that this estimator is consistent and asymptotically normal. Also we shall find the form of
+the asymptotic Variance-Covariance matrix and show that the standard errors of the constrained
+estimator is less than that of the unconstrained one.
+
+4.1
+
+Consistency and asymptotic normality of the parameter estimators
+
+
+For brevity of notation let us denote for all i = 1, 2, . . . , n, h j (yi , x i , γ j ) = g j yi , x i − γ j ,
+Pp
+µi = k=1 βk xi(k) .
+Define function f over the observations and model parameters as
+
+(1)
+
+
+
+f y, x, β, λ
+
+( p+m)×1
+
+
+
+
+
+
+
+=
+
+
+
+
+
+
+
+
+
+x (y−ηM (µ))
+P
+1+ mj=1 λ j h j (yi ,x i ,γ j ) 
+
+..
+.
+
+
+
+
+(
+p)
+
+x (y−ηM (µ))
+P
+1+ mj=1 λ j h j (yi ,x i ,γ j ) 
+
+h (y,x,γ j )
+
+Pm 1
+1+ j=1 λ j h j (yi ,x i ,γ j ) 
+
+
+..
+
+.
+
+h (y,x,γ )
+1+
+
+Pm
+
+m
+
+(29)
+
+j
+
+j=1 λ j h j (yi ,x i ,γ j )
+
+and
+
+
+h y, x, γ
+
+
+m×1
+
+
+
+t
+= h 1 y, x, γ1 , h 2 y, x, γ2 , . . . , h m y, x, γm .
+
+(30)
+
+We start by showing the strong consistency of the estimator of the model parameters. In Lemma 1
+we show that asymptotically as n → ∞, each Lagrangian multipliers minimising the dual problem
+in (19) tend to 0 almost surely. The second step involves a weighted maximum likelihood estimation, the consistency of the parameter estimates follow. We outline a proof of consistency and the
+asymptotic normality of the estimator in Theorem 1.
+h 
+i
+
+
+
+p+1
+Lemma 1. Suppose Y1 , X 1 , Y2 , X 2 , . . ., Yn , X n are i.i.d. random vectors in R , E h Y, X , γ =
+h 
+i
+0 and V ar h Y1 , X 1 , γ has rank larger than 0 . Let λˆ be the vector of Lagrangian multipliers
+minimising the dual in (28). Then with probability 1 as n → ∞, λˆ → 0.
+Proof. Note that from the population level restrictions the vector of Lagrange multipliers solving
+the dual problem (28) satisfy
+
+
+n
+h yi , x i , γ
+1X
+
+ = 0.
+(31)
+t
+n
+1 + λˆ h y , x , γ
+i
+
+i=1
+
+10
+
+i
+
+The rest of the proof follows from Owen (1990)(Theorem 1) mutatis mutandis.
+We now prove the consistency and get an explicit expression for the asymptotic Variance Covariance matrix of the parameter estimates.
+Theorem 1. Suppose that the assumptions of Lemma 1 hold. Also assume that
+1. The Jacobian matrix
+
+2. f y, x, β, λ ,
+
+
+
+
+∂ f y,x,β,λ
+∂(β,λ)
+
+
+
+∂ f y,x,β,λ
+
+and the Hessian
+
+
+
+∂ 2 f y,x,β,λ
+∂ 2 β∂ 2 λ
+
+exists for all β and λ.
+
+
+
+∂ 2 f y,x,β,λ
+
+and ∂ 2 β∂ 2 λ are elementwise bounded by integrable function
+
+
+
+
+in a neighbourhood nbd β, λ of the true value β ? , 0 .
+∂(β,λ)
+
+h 
+ 
+i
+3. E f y, x, β ? f t y, x, β ? is positive definite,
+"
+4. E
+
+
+#
+∂ f y,x,β ?
+∂β
+
+Suppose that µi? =
+
+has full rank.
+? (k)
+k=1 βk X i ,
+
+Pp
+
+0 (µ ) =
+ηM
+i
+
+∂ηM (µi )
+∂µi ,
+
+for all i = 1, 2, . . . , n and denote
+
+t
+Xn× p = X t1 , . . . , X tn
+ 
+
+
+t
+hn×m = h Y1 , X 1 , γ , . . . , h Yn , X n , γ
+
+(32)
+
+ 0
+
+0
+G p× p = E X ,β ? [Xt diag ηM
+(µ?1 ), . . . , ηM
+(µ?n ) X],
+h
+h
+2 i i
+2
+G ?p× p = E X ,β ? Xt diag Y1 − ηM (µ?1 ) , . . . , Yn − ηM (µ?n ) X ,
+
+
+
+ 
+T p×m = E X ,β ? Xt diag Y1 − ηM (µ?1 ) , . . . , Yn − ηM (µ?n ) h ,
+
+(34)
+
+(36)
+
+Hm×m = E X ,β ? [ht h].
+
+(37)
+
+(33)
+
+Assume that
+
+(35)
+
+where diag[·] is the diagonal matrix with the arguments as its diagonal elements. Also assume
+that H is non-singular. Then as n → ∞
+1. βˆ −→ β ? almost everywhere,
+
+
+n
+o
+
+√ 
+?
+−1
+?
+−1 t
+−1
+ˆ
+2. n β − β =⇒ N 0, G
+G −TH T G
+,
+√
+3. n λˆ =⇒ N (0, H ) ,
+
+(38)
+
+4. βˆ and λˆ are asymptotically independent.
+
+(41)
+
+11
+
+(39)
+(40)
+
+Proof. From the discussion in the previous section we note that ∀k = 1, 2, . . . , p and ∀ j =
+1, 2, . . . , m
+n
+X
+
+wi xi(k) (yi
+
+− ηM (µi )) =
+
+i=1
+
+n
+X
+i=1
+
+n
+X
+
+wi h j (yi , x i , γ j ) =
+
+n
+X
+i=1
+
+i=1
+
+xi(k) (yi − ηM (µi ))
+P
+= 0.
+1 + mj=1 λ j h j (yi , x i , γ j )
+
+(42)
+
+h j (yi , x i , γ j )
+Pm
+= 0.
+1 + j=1 λ j h j (yi , x i , γ j )
+
+(43)
+
+Suppose βˆ and λˆ are the vector of estimates of the model parameters and the Lagrangian multipliers. then by assumption
+1
+n
+
+A Taylor series expansion of
+
+Pn
+
+i=1
+
+
+
+f yi , x i , β, λ around (β ? , 0) gives
+
+n
+n
+ 1X
+1X 
+f yi , x i , β, λ −
+f (yi , x i , β ? , 0)
+(44)
+n
+n
+i=1
+i=1
+"
+#
+
+
+
+n
+n
+iX
+1 X ∂ f (yi , x i , β, 0)
+ζ h
+β − β?
+β − β?
+? t
+t
+=
++
+(β − β ) , λ
+H(yi , x i )
+,
+λ
+λ
+n
+∂(β, λ)
+2n
+i=1
+
+i=1
+
+where |ζ | ≤ 1 and H(Y, X ) is integrable and is a bound to the Hessian matrix in nbd(β ? , 0).
+The Jacobian matrix
+
+∂ f (yi ,x i ,β,λ)
+∂(β,λ)
+
+is given by
+
+
+∂ f (yi , x i , β ? , 0)
+∂(β, λ)
+
+
+
+=
+
+
+
+x t x η0 (µ )
+− i t i M i 
+1+λ h yi ,x i ,γ
+
+0
+
+
+
+
+h yi x i γ x i {yi −ηM (µi )}
+n
+
+o2 
+
+1+λt h yi ,x i ,γ
+
+ 
+ 
+t
+h yi ,x i ,γ h yi ,x i ,γ 
+
+n
+
+o2
+t
+1+λ h yi ,x i ,γ
+
+(45)
+
+
+
+The expression of the Jacobian matrix at β ? , 0 is given by
+∂ f (yi , x i , β ? , 0)
+∂(β, λ)
+
+
+
+
+0 (µ ) h y , x , γ x t {y − η (µ )}
+−x it x i ηM
+i
+i
+i
+M
+i
+ i
+i 
+ 
+=
+0
+h yi , x i , γ i h t yi , x i , γ
+
+
+Clearly by assumption of the problem
+h 
+i
+E f Y1 , X 1 , β ? , 0 = 0.
+
+(46)
+
+(47)
+
+
+
+E H(Y1 , X 1 ) is finite and
+
+
+
+
+∂ f Y1 , X 1 , β, 0
+−G
+T
+=
+E
+.
+0 H
+∂(β, λ)
+
+
+12
+
+(48)
+
+So by the S.L.L.N. with probability 1
+n
+
+1X
+f (yi , x i , β ? , 0) −→ 0
+n
+i=1
+
+
+
+
+n ∂ f yi , x , β, 0
+X
+i
+1
+−G T
+−→
+,
+0 H
+n
+∂(β, λ)
+
+(49)
+
+(50)
+
+i=1
+
+and
+
+1
+n
+
+Pn
+
+i=1 H
+
+
+
+
+yi , x i → E H(Y1 , X 1 ) . Also by the C.L.T. it follows that
+!
+n
+
+
+√
+1X 
+n
+f yi , x i , β ? , 0
+−→ N 0, V .
+n
+
+(51)
+
+i=1
+
+where
+
+h 
+i G ? T 
+?
+V = V ar f Y1 , X 1 , β , 0 =
+Tt H
+
+(52)
+
+From this by following the steps in Serfling (1980, Chapter 4.2) the strong consistency of βˆ follows.
+To show the asymptotic normality we note that
+n
+X
+
+
+
+
+ˆ
+ˆ
+f yi , x i , β, λ = 0.
+
+(53)
+
+i=1
+
+
+
+Thus for large n with probability 1, (44) holds in a neighbourhood of β ? , 0 . So it follows that
+#"
+"
+#
+n
+n
+?
+X
+ˆ
+0)
+∂
+f
+(y
+,
+x
+,
+β,
+1X
+1
+i
+−
+β
+β
+i
+0=
+f (yi , x i , β ? , 0) +
+n
+n
+∂(β, λ)
+λˆ
+i=1
+i=1
+"
+#
+i n
+ˆ − β?
+ζ h
+t X
+β
+?
+t
+(βˆ − β ) , λˆ
+H(yi , x i )
+.
++
+2n
+λˆ
+
+(54)
+
+i=1
+
+Rearranging the terms it follows that for large n, with probability 1
+"
+
+√
+n
+
+# " n "
+#
+#−1
+n
+iX
+1 X ∂ f (yi , x i , β, 0)
+ζ h
+t
+βˆ − β ?
++
++
+H(yi , x i )
+(βˆ − β ? )t , λˆ
+n
+∂(β, λ)
+2n
+λˆ
+i=1
+i=1
+"
+!#
+n
+√
+1X
+×
+n
+f (yi , x i , β ? , 0)
+→ 0.
+(55)
+n
+i=1
+
+ˆ λ,
+ˆ (48), (51), (52) and Slutsky’s theorem it is evident that
+Now from this, the consistency of β,
+√
+n
+
+βˆ − β ?
+λˆ
+
+!
+
+
+−→ N 0, V ? ,
+
+13
+
+(56)
+
+where
+
+−1  ?
+
+−1
+−G T
+G T
+−G 0
+V =
+0 H
+Tt H
+Tt H
+
+−1  ?
+
+−1
+−G −1 G −1 T H −1
+G T
+−G −1
+0
+=
+Tt H
+0
+H −1
+H −1 T t G −1 H −1
+
+ −1  ?
+
+G − T H −1 T t G −1 0
+G
+.
+=
+0
+H
+?
+
+(57)
+
+(58)
+
+From (58) the rest of the assertions of the theorem follow.
+
+4.2
+
+Reduction of standard errors of the model parameters
+
+It is well
+knownthat without any population constraints the asymptotic variance covariance matrix
+√ 
+of n βˆ − β ? is given by G −1 G ? G −1 . Also G −1 T H −1 T t G −1 is positive definite. Thus inclusion of the population constraints reduces the standard error of the model parameters. However we
+should note that this result is asymptotic and for finite samples the reduction of standard error for
+some coefficients may be trivial. We shall illustrate this fact in Section 5 below.
+
+4.3
+
+Estimating the asymptotic Variance-Covariance matrix
+
+The asymptotic Variance-Covariance matrix can be easily estimated form the sample. If βˆ is the
+estimate of the model parameters then we estimate
+n
+ 
+
+1X 
+ˆ 0 f t yi , x i , β,
+ˆ 0
+Vˆasym =
+f yi , x i , β,
+n
+i=1
+
+
+n ∂ f yi , x , β,
+ˆ
+0
+X
+i
+1
+
+
+Jˆasym =
+.
+n
+∂ β, 0
+
+(59)
+
+(60)
+
+i=1
+
+Then the estimated asymptotic Variance-Covariance matrix is given by the p × p leading principle
+submatrix
+ 
+ˆ
+V ar βˆ
+
+asym
+
+
+=
+
+1 ˆ−1 ˆ
+−1
+Jasym Vasym Jˆasym
+n
+
+
+(1,2,..., p)×(1,2,..., p)
+
+.
+
+(61)
+
+Instead of using the asymptotic weights n1 , one can use the estimated weights w.
+ˆ
+
+4.4
+
+A Sandwich estimator of the Variance-Covariance matrix
+
+For samples of finite size a sandwich estimator of the Variance-Covariance matrix is more accurate.
+The theoretical expression closely follows the expression of the asymptotic Variance-Covariance
+matrix in (58), however the sample estimate of the vector of the Lagrangian multipliers is used in
+14
+
+(45) and (52) instead of 0. Suppose βˆ is the estimate of the model parameters and w
+ˆ is the estimate
+of the maximising weights. Suppose x is the n × p matrix of the sample. Let us denote
+µˆ i =
+
+p
+X
+
+βˆk xi(k)
+
+(62)
+
+k=1
+
+
+
+0
+0
+1 = diag wˆ 1 ηM
+(µˆ 1 ), . . . , wˆ n ηM
+(µˆ n )
+h
+i
+1?(y−η) = diag (wˆ 1 )2 {y1 − ηM (µˆ 1 )}2 , . . . , (wˆ n )2 {y − ηM (µˆ n )}2
+
+
+1(y−η) = diag wˆ 1 {y1 − ηM (µˆ 1 )}, . . . , wˆ n {y − ηM (µˆ n )} ,
+η0
+
+(63)
+(64)
+(65)
+
+where as before diag[·] is a diagonal matrix with the arguments as the diagonal entries. Also let
+h
+
+
+
+i
+ht = wˆ 1 h y1 , x 1 , γ . . . , wˆ n h yn , x n , γ .
+(66)
+We estimate the necessary matrices by
+
+Gˆ sand = xt 1η0 x
+
+(67)
+
+Gˆ ?sand = xt 1?(y−η) x
+
+(68)
+
+Tˆsand = xt 1(y−η) h
+
+(69)
+
+Hˆ sand = ht h.
+
+(70)
+
+Then the sandwich estimate of the asymptotic Variance-Covariance matrix of βˆ is given by
+ 
+h
+i
+−1
+t
+ˆ ?sand − Tˆsand Hˆ −1 Tˆsand
+V ˆar sand βˆ = Gˆ −1
+G
+Gˆ sand
+.
+sand
+sand
+
+(71)
+
+This estimate equals the value of the inverse of the Hessian matrix calculated at the parameter
+estimates.
+
+5
+
+Application to demographic hazard modeling
+
+In the section we apply the methodology to combine survey data from the British Household Panel
+Survey (BHPS)(Taylor et al., 1995) with population level information from the birth registration
+system on the General Fertility Rate (GFR) to estimate annual birth probabilities by parity. This
+situation was considered by Handcock, Huovilainen, and Rendall (2000) using a constrained maximum likelihood framework.
+The birth registration system in England and Wales collect birth data by parity only within
+marriage (hence we do not know the parity information for unmarried women). However we will
+show the system can be used to improve the efficiency of estimation, from the BHPS, of annual
+15
+
+birth probabilities of all women by parity. From the registry we can determine the general fertility
+rate (GFR) for the years 1992 to 1996, of England and Wales(Office of National Statistics, 1998).
+The population level value of the GFR was found to be 0.06179(Handcock et al., 2000).
+Our survey data are from the BHPS between the years 1991 to 1996 and we have excluded the
+women living in Scotland for consistency with the registration system. Births were not directly
+recorded in this dataset. Instead we code births for women aged 15 to 44 when the women’s
+coresident family unit experiences an increase in the number of dependent-aged children from one
+year (t −1) to the next (t). The details of the construction may be found in Handcock, Huovilainen,
+and Rendall (2000). The BHPS data uses an approximately equal-probability sample design so that
+we will assume that the weights of the samples are all equal. This simplifies the estimation and
+improves the standard error of the parameter estimates.
+In the dataset the dependent variable Y represents the indicator of birth for a woman between
+times (t − 1) and t and the explanatory variable X is the indicator of existence of at least one child
+of that woman at time (t − 1).
+We fit a logistic regression model to the data and constrain on the population information given
+by the GFR. The model is represented as
+
+
+Pr (Y = 1|X = x)
+= β0 + β1 x.
+(72)
+log
+1 − Pr (Y = 1|X = x)
+We also assume that the marginal distribution of X does not involve β0 or β1 .
+The two score constraints corresponding to two model parameters are given by
+n
+X
+
+wi
+
+
+
+i=1
+n
+X
+i=1
+
+wi xi
+
+
+
+e(β0 +β1 xi )
+yi −
+1 + e(β0 +β1 xi )
+
+
+
+e(β0 +β1 xi )
+yi −
+1 + e(β0 +β1 xi )
+
+
+
+=
+
+=
+
+n
+X
+i=1
+n
+X
+
+yi (1 + e(β0 +β1 xi ) ) − e(β0 +β1 xi )
+wi
+=0
+1 + e(β0 +β1 xi )
+wi xi
+
+i=1
+
+yi (1 + e(β0 +β1 xi ) ) − e(β0 +β1 xi )
+= 0.
+1 + e(β0 +β1 xi )
+
+(73)
+
+(74)
+
+In the population we know that
+G F R = E [Y ] = 0.06179.
+This implies the the population restriction (assuming the restriction that
+n
+X
+
+wi (yi − 0.06179) = 0.
+
+(75)
+Pn
+
+i=1 wi
+
+= 1) is given by
+(76)
+
+i=1
+
+Thus from the discussion in Section 2, in order to determine the weights wi , i = 1, 2, . . . , n
+Pn
+Pn
+we maximise i=1
+log(nwi ) subject to wi ≥ 0, for all i = 1, 2, . . . , n, i=1
+wi = 1 and the
+restrictions in (73), (74), (76).
+16
+
+Slope
+
+0.584
+value
+
+0.534
+0.484
+
+−3.177
+
+0.384
+
+−3.377
+
+0.434
+
+−3.277
+
+value
+
+−3.077
+
+0.634
+
+−2.977
+
+0.684
+
+0.734
+
+Intercept
+
+Constrained
+
+Unconstrained
+
+Constrained
+
+(a) Comparing βˆ0 .
+
+Unconstrained
+
+(b) Comparing βˆ1 .
+
+Figure 1: Comparison of the estimate and the standard errors of the estimator of the model parameters for constrained and unconstrained cases.
+The estimation and standard errors of the parameter estimates was computed using an R package named glmc developed by Chaudhuri and Handcock (Chaudhuri et al., 2005). This package
+will be made available on CRAN. This package performs the two-step maximisation procedure
+(19) and (20) and if it fails the nested maximisation (18) as described in Section 3. The standard
+error of the parameter estimates are calculated using Theorem 1 from (71).
+The estimated value and the standard errors of the estimator of the models parameters are
+shown in Figure 1. The figure also compares the estimates with and without population level
+constraints. We note that the estimate of the slope (i.e. β1 ) is same in both constrained and
+unconstrained cases. The estimated value of the parameter is 0.55496 with a standard error of
+0.08700. However the estimate of intercept (i.e. β0 ) improves with the imposition of the population
+level constraints. Without the constraints the estimated value of β0 is −3.24514 with a standard
+error of 0.06721. However with the constraints the estimated value changes to −3.01731 and the
+standard error reduces to 0.05199.
+We note that our estimates differ from the corresponding estimates in Handcock, Huovilainen,
+and Rendall (2000). This can be ascribed to the fact that our estimates of the standard errors
+are asymptotically true, which may need a larger sample. However the constrained estimates
+reported here exactly matches the estimates obtained from putting constraints directly on the model
+parameters as described in Handcock, Rendall, and Cheadle (2003). In fact as expected in most of
+17
+
+the cases these estimator gives the same results.
+
+Discussion
+In this paper we introduce a method to combine population level information with the sampled
+individual level information based using empirical likelihood. On one hand our approach can be
+seen as an extension of the post-stratification using a special case of empirical likelihood (Qin and
+Lawless, 1994; Imbens et al., 1998). On the other hand our method extends the weighted least
+squares estimator of the model parameters studied in Hellerstein and Imbens (1999). The method
+solves a two nested maximisation problem where in the outer step we maximise for the parameter
+estimates and in the inner step sample weights are computed such that the population expectation
+of the dependent variable given a subset of the explanatory variables and the restrictions imposed
+on the conditional expectation by the model are reproduced in the re-weighted sample. We further
+show that it is possible to simplify the procedure to a two-step estimator similar to Hellerstein and
+Imbens (1999). In the first step we find the weights satisfying only the population constraints. In
+the second, unconstrained estimation of the model parameters is conducted using the re-weighted
+sample from the first step. The asymptotic standard errors of the parameter estimates can be
+computed explicitly. The parameter estimates obtained from our method shares the asymptotic
+properties of the constrained maximum likelihood estimator.
+In our method we do not place constraints on the parameters and can avoid non-linear constraints. This ensures improvement in terms of computational and implementational complexity.
+More importantly as the sample weights can be interpreted as an estimate of the joint probability of
+observing a particular sample, we don’t need to specify a distribution of the explanatory variables.
+Other than a more complete description using the empirical likelihood our method improves
+upon Hellerstein and Imbens (1999) in several ways. First we can specify several models of association between the dependent and explanatory variables. Our formulation allows for Bayesian
+extensions in several ways. We can allow for errors in the constraint values. Thus one can include
+expert opinions, information from a larger sample or some prior information about the constraints.
+On the other hand available prior information can be easily used in estimating the model parameters.
+
+References
+Chaudhuri, S., M. S. Handcock, and M. Rendall (2005). An empirical likelihood based approach
+to incorporate population information in sample based inference. Working paper, Center for
+Statistics in Social Sciences, University of Washington.
+
+18
+
+Deming, W. E. and F. F. Stephan (1942). On the least squares adjustment of a sampled frequency
+table when the expected marginal tables are known. The Annals of mathematical Statistics 11,
+427–444.
+Handcock, M. S., S. M. Huovilainen, and M. S. Rendall (2000). Combining registration-system
+and survey data to estimate birth probabilities. Demography 37(2), 187–192.
+Handcock, M. S., M. S. Rendall, and J. E. Cheadle (2003). Improved regression estimation of a
+multivariate relationshipwith population data on the bivariate relationship. Working paper 36,
+Center for Statistics in Social Sciences, University of Washington.
+Hellerstein, J. and G. W. Imbens (1999). Imposing moment restrictions from auxiliary data by
+weighting. The Review of Economics and Statistics LXXXI(1), 1–14.
+Holt, D. and T. F. M. Smith (1979). Post-stratification. Journal of the Royal Statistical Society,
+Series A. 142, 33–46.
+Imbens, G. W. and T. Lancaster (1994). Combining micro and macro data in microeconomic
+models. Review of Economic Studies 61, 655–380.
+Imbens, G. W., R. H. Spady, and P. Johnson (March, 1998). Information theoretic approches to
+inference in moment condition models. Econometrica 66(2), 333–357.
+Ireland, C. T. and S. Kullback (1968). Contingency tables with given marginals. Biometrika 55,
+179–188.
+Little, R. J. A. (1993). Post-startification: Amodeler’s perspective. Journal of the American Statistical Association 88(423), 1001–1012.
+Little, R. J. A. and D. B. Rubin (1987). Statistical Analysis of Missing Data. New York, John
+Wiley.
+Little, R. J. A. and M. M. Wu (1991). Models for contingency tables with known margins when
+target and sampled population differ. Journal of the American Statistical Association 86(413),
+87–95.
+McCullagh, P. and J. Nelder (1989). Generalised Linear Models. Chapman& Hall/CRC.
+Moffitt, R. and G. E. Ridder (2005). The econometrics of data combination. In J. J. Heckman and
+E. E. Leamer (Eds.), Handbook of Econometrics, Volume 6. North-Holland, Amsterdam.
+Office of National Statistics (1998). 1997 Birth Statistics. London: Her Majesty’s Stationery
+Office.
+19
+
+Owen, A. (2001). Empirical Likelihood. Chapman& Hall/CRC.
+Qin, J. and J. Lawless (1994). Empirical likelihood and general estimating equations. The Annals
+of Statistics 22, 300–325.
+Serfling, R. J. (1980). Approximation Theorems of Mathematical Statistics. John Willey & Sons.
+Taylor, M. F., J. Bryce, N. Buck, and E. Prentice (1995). British Household Panel Survey User
+Manual. Colchester: University of Essex.
+
+20
+
+

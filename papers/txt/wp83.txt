@@ -1,0 +1,2660 @@
+The Generalized Shuttle Algorithm
+
+1
+
+Adrian Dobra
+University of Washington, Seattle
+Stephen E. Fienberg
+Carnegie Mellon University, Pittsburgh
+
+Working Paper no. 83
+Center for Statistics and the Social Sciences
+University of Washington
+February 29, 2008
+
+1 Adrian
+
+Dobra is Assistant Professor of Statistics and Nursing, Department of Statistics and
+Biobehavioral Nursing and Health Systems, University of Washington, Box 354322, Seattle WA
+98195-4322. E-mail: adobra@stat.washington.edu; Web: www.stat.washington.edu/adobra.
+Stephen E. Fienberg is Maurice Falk University Professor of Statistics and Social Science, Department of Statistics, the Machine Learning Department and Cylab, Carnegie Mellon University, Pittsburgh PA 15213-3890. E-mail: fienberg@stat.cmu.edu; Web: www.stat.cmu.edu/∼fienberg/.
+
+Abstract
+Bounds for the cell counts in multi-way contingency tables given a set of marginal totals arise
+in a variety of different statistical contexts including disclosure limitation. We describe the
+Generalized Shuttle Algorithm for computing integer bounds of multi-way contingency tables
+induced by arbitrary linear constraints on cell counts. We study the convergence properties
+of our method by exploiting the theory of discrete graphical models and demonstrate the
+sharpness of the bounds for some specific settings. We give a procedure for adjusting these
+bounds to the sharp bounds that can also be employed to enumerate all tables consistent with
+the given constraints. Our algorithm for computing sharp bounds and enumerating multiway contingency tables is the first approach that relies exclusively on the unique structure of
+the categorical data and does not employ any other optimization techniques such as linear
+or integer programming. We illustrate how our algorithm can be used to compute exact
+p-values of goodness-of-fit tests in exact conditional inference.
+KEY WORDS: Bounds; Contingency tables; Exact testing; Log-linear models.
+
+1
+
+Introduction
+
+Many statistical research problems involve working with sets of multi-way contingency tables
+defined by a set of constraints (e.g., marginal totals or structural zeroes). Four inter-related
+aspects involve: (1) the computation of sharp integer bounds, (2) counting, (3) exhaustive
+enumeration, and (4) sampling. Each of these areas or some combination of them play important roles in solving complex data analysis questions arising in seemingly unrelated fields.
+The computation of bounds is central to the task of assessing the disclosure risk of small cell
+counts (e.g., cells with entires of 1 or 2) when releasing marginals from a high-dimensional
+sparse contingency table — see, for example, Fienberg (1999) Dobra and Fienberg (2000);
+Dobra (2001). Another aspect of disclosure risk assessment involves counting feasible tables consistent with the release (see Fienberg and Slavkovic (2004, 2005)) or by estimating
+probability distributions on multi-way tables as in Dobra et al. (2003a).
+Guo and Thompson (1992) employ sampling from a set of contingency tables to perform
+exact tests for Hardy-Weinberg proportions. Markov chain Monte Carlo (MCMC) sampling
+methods depend on the existence of a Markov basis that connects any two feasible tables
+through a series of Markov moves. Diaconis and Sturmfels (1998) were the first to show
+how to produce such moves through algebraic geometry techniques. Dobra (2003) gave
+formulas for Markov bases in the case of decomposable graphical models, while Dobra and
+Sullivant (2004) extend this work to reducible graphical models. Markov bases are local
+moves that change only a relatively small number of cell counts and can be contrasted with
+global moves that potentially alter all the counts. Dobra et al. (2006) describe how to
+produce global moves in a set of contingency tables by sequentially adjusting upper and
+lower bounds as more cells are fixed at certain values. Chen et al. (2006) present a similar
+method for finding feasible tables. Their sequential importance sampling approach seems to
+be more efficient than other MCMC techniques and builds on computational commutative
+algebra techniques to find bounds and to make random draws from the implied marginal cell
+distributions. Other work on algebraic geometry related to the theory of discrete graphical
+models includes Geiger et al. (2006)) and Hosten and Sturmfels (2007).
+A special class of bounds we are interested in is attributed to Fr´echet (1940), whose original presentation was in terms of cumulative distribution functions (c.d.f.) for a random vector
+(D1 , D2 , . . . , Dm ) in Rm :
+F1,2,...,m (x1 , x2 , . . . , xm ) = Pr(D1 ≤ x1 , D2 ≤ x2 , . . . , Dm ≤ xm ),
+
+(1)
+
+which are essentially equivalent to contingency tables when the underlying variables are
+1
+
+categorical. For example, suppose we have a two-dimensional table of counts, {nij } adding
+up to the total n++ = n. If we normalize each entry by dividing by n and then create a
+table of partial sums, by cumulating the proportions from the first row and first column
+to the present ones, we have a set of values of the form (1). Thus, Fr´echet bound results
+for distribution functions correspond to bounds for the cell counts where the values {xi }
+in (1) represent“cut-points” between categories for the ith categorical variable. Bonferroni
+(1936) and Hoeffding (1940) independently developed related results on bounds. Dobra
+and Fienberg (2000) proved that, when the fixed set of marginals defines a decomposable
+independence graph, the upper Fr´echet bounds are the minimum of relevant margins, while
+the lower Fr´echet bounds are the maximum of zero, or sum of the relevant margins minus
+the separators.
+In this paper we propose an algorithm that we call the Generalized Shuttle Algorithm
+(GSA) which we can use to compute sharp integer bounds and exhaustively enumerate
+all feasible tables consistent with a set of constraints. Dobra et al. (2003b) provided a
+brief account of this work, while Dobra et al. (2006) showed its application to sampling
+contingency tables. Our procedure is deterministic and exploits the special structure of
+contingency tables, building on the work of Buzzigoli and Giusti (1999) who proposed the
+first version of the shuttle algorithm. Their innovative iterative approach simultaneously
+calculates bounds for all the cells in the table by sequentially alternating between upper
+and lower bounds; however, their version of the shuttle algorithm fails to converge to the
+sharp bounds for most configurations of fixed marginal totals, e.g., see Cox (1999). The
+explanation for this failure lies in the incomplete description of the dependencies among the
+cells of a contingency table used by Buzzigoli and Giusti. Chen et al. (2006) give an excellent
+discussion about the relationship between linear programming (LP), integer programming
+(IP) and the computation of bounds for contingency tables.
+This paper is organized as follows. In Section 3 we give the basic definitions and notations.
+We present the full description of GSA in Section 4. In Sections 5 and 6, we describe two
+particular cases when the shuttle procedure converges to the sharp bounds. In Section 7 we
+present an approach for adjusting the shuttle bounds to the sharp bounds and also shows
+how to transform this procedure to enumerate multi-way tables. In Section 8 we show that
+GSA is able to efficiently compute bounds for a sixteen-way sparse contingency table. In
+Section 9 we give six examples that illustrate how GSA can be used for computing bounds
+as well as exact p-values based on the hypergeometric distribution. Complete proofs of our
+theoretical results are given in the Appendix. Source code implementing GSA is available
+for download from
+http://www.stat.washington.edu/adobra/software/gsa/
+
+2
+
+2
+
+Terminology and Notation
+
+Let X = (X1 , X2 , . . . , Xk ) be a vector of k discrete random variables cross-classified in a
+frequency count table n = {n(i)}i∈I , where I = I1 × I2 × . . . × Ik and Xr takes the values
+Ir := {1, 2, . . . , Ir }. Denote K = {1, 2, . . . , k}. For r ∈ K, we denote by P(Ir ) the set of all
+partitions of Ir = Ir1 ∪ Ir2 ∪ . . . ∪ Irlr , i.e.,
+
+P(Ir ) :=
+
+n
+
+	
+1
+2
+Ir1 , Ir2 , . . . , Irlr : 1 ≤ lr ≤ Ir ; Irl ∩ Irl = ∅,
+o
+1
+2
+l1
+1
+if 1 ≤ l 6= l ≤ lr , Ir ⊂ Ir , for 1 ≤ l ≤ lr .
+
+Let RD be the set of marginal tables obtainable by aggregating n not only across variables,
+but also across categories within variables. We can uniquely determine a table n0 ∈ RD
+from n by choosing I10 ∈ P(I1 ), I20 ∈ P(I2 ), . . ., Ik0 ∈ P(Ik ). We write
+
+n0 = {n0 (J1 , J2 , . . . , Jk ) : (J1 , J2 , . . . , Jk ) ∈ I10 × I20 × . . . × Ik0 } ,
+
+(2)
+
+where the entries of n0 are sums of appropriate entries of n:
+
+n0 (J1 , J2 , . . . , Jk ) :=
+
+X X
+
+...
+
+i1 ∈J1 i2 ∈J2
+
+X
+
+nK (i1 , i2 , . . . , ik ).
+
+ik ∈Jk
+
+We associate the table n with Ir0 = {{1}, {2}, . . . , {Ir }}, for r = 1, . . . , k. Choosing Ir0 = {Ir }
+is equivalent to collapsing across the r-th variable. The dimension of n0 ∈ RD is the number
+of variables cross-classified in n0 that have more than one category. We obtain the C-marginal
+nC of n, C ⊂ K, by taking
+
+Ir0
+
+
+=
+
+{{1}, {2}, . . . , {Ir }} ,
+Ir ,
+
+if r ∈ C,
+otherwise,
+
+for r = 1, 2, . . . , k. The dimension of nC is equal to the number of elements in C. The grand
+total of n has dimension zero, while n has dimension k.
+We introduce the set of tables RD(n0 ) containing the tables n00 ∈ RD obtainable from
+n0 by table redesign such that n00 and n0 have the same dimension. We have n0 ∈ RD(n0 )
+and RD(n∅ ) = {n∅ }, where n∅ is the grand total of n. The set RD itself results from
+aggregating every marginal nC of n across categories, such that every variable having at
+least two categories in nC also has at least two categories in the new redesigned table:
+3
+
+RD =
+
+[
+
+{RD (nC ) : C ⊆ K} .
+
+(3)
+
+We formally define T as
+T := {tJ1 J2 ...Jk : ∅ =
+6 J1 × J2 × . . . × Jk ⊆ I1 × I2 × . . . × Ik },
+
+(4)
+
+where
+tJ1 J2 ...Jk =
+
+X X
+i1 ∈J1 i2 ∈J2
+
+...
+
+X
+
+nK (i1 , i2 , . . . , ik ).
+
+(5)
+
+ik ∈Jk
+
+The elements in T are blocks or “super-cells” formed by joining table entries in n. These
+blocks can be viewed as entries in a k-dimensional table that cross-classifies the variables
+
+	
+(Yj : j = 1, 2, . . . , k), where Yj takes values yj ∈ Ij0 : ∅ =
+6 Ij0 ⊆ Ij . The number of elements
+k
+
+Q
+in T is #(T) =
+2Ir − 1 .
+r=1
+
+If the set of cell entries in n that define a “super-cell” t2 = tJ12 ...Jk2 ∈ T includes the set of
+cells defining another “super-cell” t1 = tJ11 ...Jk1 ∈ T, we write t1 = tJ11 ...Jk1 ≺ t2 = tJ12 ...Jk2 . We
+formally define the partial ordering “≺” on the cells in T by
+tJ11 J21 ...Jk1 ≺ tJ12 J22 ...Jk2 ⇔ J11 ⊆ J12 , J21 ⊆ J22 , . . . , Jk1 ⊆ Jk2 .
+This partial ordering, (T, ≺), has a maximal element, namely the grand total n∅ = tI1 I2 ...Ik
+of the table and several minimal elements — the actual cell counts n(i) = n(i1 , i2 , . . . , ik ) =
+t{i1 }{i2 }...{ik } . Thus, we can represent he lattice, (T, ≺), as a hierarchy with the grand total at
+the top level and the cells counts n(i) at the bottom level. If t1 = tJ11 J21 ...Jk1 and t2 = tJ12 J22 ...Jk2
+are such that t1 ≺ t2 with Jr1 = Jr2 , for r = 1, . . . , r0 − 1, r0 + 1, . . . , k and Jr10 6= Jr20 , we
+define the complement of the cell t1 with respect to t2 to be the cell t3 = tJ13 J23 ...Jk3 , where
+
+Jr1 ,
+if r 6= r0 ,
+3
+Jr =
+,
+Jr2 \ Jr1 , if r = r0 ,
+for r = 1, 2, . . . , k. We write t1 ⊕ t3 = t2 . The elements in T are blocks formed by joining
+table entries in n. The operator “⊕” is equivalent to joining two blocks of cells in T to form
+a third block where the blocks to be joined have the same categories in (k − 1) dimensions
+and they cannot to share any categories in the remaining dimension.
+
+3
+
+The Generalized Shuttle Algorithm
+
+The fundamental idea behind the Generalized Shuttle Algorithm (GSA) is that the upper
+and lower bounds for the cells in T are interlinked, i.e., bounds for some cells in T induce
+4
+
+bounds for some other cells in T. We can improve (tighten) the bounds for all the cells in
+which we are interested until we can make no further adjustment. Although Buzzigoli and
+Giusti (1999) sketched this innovative idea, they did not accurately identify or exploit the
+special hierarchical structure of T.
+Let L0 (T) := {L0 (t) : t ∈ T} and U0 (T) := {U0 (t) : t ∈ T} be initial upper and lower
+bounds. By default we set L0 (t) = 0 and U0 (t) = n∅ , but we can express almost any type of
+information about the counts in cells T using these bounds. For example, a known count c
+in a cell t with a fixed marginal implies that L0 (t) = U0 (t) = c. A cell t that can take only
+two values 0 or 1 has L0 (t) = 0 and U0 (t) = 1.
+We denote by S[L0 (T), U0 (T)] the set of integer feasible arrays V (T) := {V (t) : t ∈ T}
+consistent with L0 (T) and U0 (T): (i) L0 (t) ≤ V (t) ≤ U0 (t), for all t ∈ T, and (ii) V (t1 ) +
+V (t3 ) = V (t2 ), for all (t1 , t2 , t3 ) ∈ Q(T), where
+Q(T) := {(t1 , t2 , t3 ) ∈ T × T × T : t1 ⊕ t3 = t2 } .
+
+(6)
+
+We let N ⊂ T be the set of cells in table n. A feasible table consistent with the constraints
+imposed (e.g., fixed marginals) is {V (t) : t ∈ N } where V (T) ∈ S[L0 (T), U0 (T)].
+The sharp integer bounds [L(t), U (t)], t ∈ T, are the solution of the integer optimization
+problems:
+min {±V (t) : V (T) ∈ S[L0 (T), U0 (T)]} .
+
+(7)
+
+We initially set L(T) = L0 (T) and U (T) = U0 (T), and sequentially improve these loose
+bounds by GSA until we get convergence. Consider T0 := {t ∈ T : L(t) = U (t)} to be the
+cells with the current lower and upper bounds equal. We say that the remaining cells in
+T \ T0 are free. As the algorithm progresses, we improve the bounds for the cells in T and
+add more and more cells to T0 . For each t in T0 , we assign a value V (t) := L(t) = U (t).
+We sequentially go through the dependencies Q(T) and update the upper and lower
+bounds in the following fashion. Consider a triplet (t1 , t2 , t3 ) ∈ Q(T). We have t1 ≺ t2 and
+t3 ≺ t2 . We update the upper and lower bounds of t1 , t2 and t3 so that the new bounds
+satisfy the dependency t1 ⊕ t3 = t2 .
+If all three cells have fixed values, i.e., t1 , t2 , t3 ∈ T0 , we check whether V (t1 ) + V (t3 ) =
+V (t2 ). If this equality does not hold, we stop GSA because S[L0 (T), U0 (T)] is empty – there
+is no integer table consistent with the constraints imposed.
+Now assume that t1 , t3 ∈ T0 , and t2 ∈
+/ T0 . Then t2 can take only one value, namely
+V (t1 ) + V (t3 ). If V (t1 ) + V (t3 ) ∈
+/ [L(t2 ), U (t2 )], we encounter an inconsistency and stop.
+Otherwise we set V (t2 ) = L(t2 ) = U (t2 ) := V (t1 ) + V (t3 ) and include t2 in T0 . Similarly, if
+t1 , t2 ∈ T0 and t3 ∈
+/ T0 , t3 can only be equal to V (t2 )−V (t1 ). If V (t2 )−V (t1 ) ∈
+/ [L(t3 ), U (t3 )],
+5
+
+we again discover an inconsistency. If this is not true, we set V (t3 ) = L(t3 ) = U (t3 ) :=
+V (t2 ) − V (t1 ) and T0 := T0 ∪ {t3 }. In the case when t2 , t3 ∈ T0 and t1 ∈
+/ T0 , we proceed in
+an analogous manner.
+Next we examine the situation when at least two of the cells t1 , t2 , t3 do not have a fixed
+value. Suppose t1 ∈
+/ T0 . The new bounds for t1 are
+U (t1 ) := min{U (t1 ), U (t2 ) − L(t3 )},
+L(t1 ) := max{L(t1 ), L(t2 ) − U (t3 )}.
+If t3 ∈
+/ T0 , we update L(t3 ) and U (t3 ) in the same way. Finally, if t2 ∈
+/ T0 , we set
+U (t2 ) := min{U (t2 ), U (t1 ) + U (t3 )},
+L(t2 ) := max{L(t2 ), L(t1 ) + L(t3 )}.
+After updating the bounds of some cell t ∈ T, we check whether the new upper bound equals
+the new lower bound. If this is true we set V (t) := L(t) = U (t) and include t in T0 .
+We continue iterating through all the dependencies in Q(T) until the upper bounds no
+longer decrease, the lower bounds no longer increase, and no new cells are added to T0 .
+Therefore the procedure comes to an end if and only if we detect an inconsistency or if we
+cannot improve the bounds. One of these two events eventually occurs; hence the algorithm
+stops after a finite number of steps.
+If we do not encounter any inconsistencies, the algorithm converges to bounds Ls (T)
+and Us (T) that are not necessarily sharp: Ls (t) ≤ L0 (t) ≤ U0 (t) ≤ Us (t). These arrays
+define the same feasible set of tables as the arrays L0 (T) and U0 (T) we started with, i.e.,
+S[Ls (T), Us (T)] = S[L0 (T), U0 (T)], since the dependencies Q(T) need to be satisfied.
+There exist two particular cases when we can easily prove that GSA converges to sharp
+integer bounds: (i) the case of a dichotomous k-dimensional table with all (k−1)-dimensional
+marginals fixed, and (ii) the case when the marginals we fix are the minimal sufficient
+statistics of a decomposable log-linear model. In both instances explicit formulas for the
+bounds exist. Employing GSA turns out to be equivalent to calculating the bounds directly
+as we prove in the next two sections.
+
+4
+
+Computing Bounds for Dichotomous k-way Crossclassifications Given All (k−1)-dimensional Marginals
+
+Consider a k-way table n := {n(i)}i∈I with I1 = I2 = . . . = Ik = {1, 2}. The set T
+associated with n is the set of cells of every marginal of n, while the set T0 of cells having a
+6
+
+fixed value is T0 = {nC (iC ) : iC ∈ IC for some C ⊂ K, C 6= K}. The only cells in T that
+are not fixed are the cells in n: T \ T0 = {n(i) : i ∈ I}.
+The (k − 1)-dimensional marginals of n are the minimal sufficient statistics of the loglinear model of no (k − 1)-order interaction. Fienberg (1999) pointed that this log-linear
+model has only one degree of freedom because n is dichotomous, hence we can uniquely
+express the count in any cell n(i), i ∈ I, as a function of one single fixed cell alone.
+Let n∗ be the unknown count in the (1, 1, . . . , 1) cell. In Proposition 4.1 we give an
+explicit formula for computing the count in an arbitrary cell n(i0 ), i0 ∈ I, based on n∗ and
+on the set of fixed marginals.
+Proposition 4.1 Let n∗ be the count in the (1, 1, . . . , 1) cell. Consider an index i0 =
+(i01 , i02 , . . . , i0k ) ∈ I. Let {q1 , q2 , . . . , ql } ⊂ K such that, for r ∈ K, we have
+
+1, if r ∈ K \ {q1 , q2 , . . . , ql },
+0
+ir =
+(8)
+2, if
+r ∈ {q1 , q2 , . . . , ql }.
+For s = 1, 2, . . . , l, denote Cs := K \ {qs }. Then
+0
+
+l
+
+∗
+
+n(i ) = (−1) · n −
+
+l−1
+X
+
+(−1)l+s · nC(l−s) (1, . . . , 1, i0q(l−s) +1 , . . . , i0k ).
+
+(9)
+
+s=0
+
+We obtain the upper and lower bounds induced on the (1, 1, . . . , 1) cell count in table
+n by fixing the set of cells T0 by imposing the non-negativity constraints in equation (9).
+More explicitly, n(i0 ) ≥ 0 implies that the sharp lower bound for the count n∗ is
+( l−1
+)
+X
+L(n∗ ) = max
+(−1)s · nC(l−s) (1, . . . , 1, i0q(l−s) +1 , . . . , i0k ) : l even ,
+(10)
+s=0
+
+whereas the sharp upper bound for the count n∗ satisfies
+( l−1
+)
+X
+U (n∗ ) = min
+(−1)s · nC(l−s) (1, . . . , 1, i0q(l−s) +1 , . . . , i0k ) : l odd .
+
+(11)
+
+s=0
+
+We are now ready to give the main result of this section:
+Proposition 4.2 The generalized shuttle algorithm converges to the bounds in equations
+(10) and (11).
+
+7
+
+F
+neg
+
+E
+<3
+
+D
+< 140
+≥ 140
+
+≥3
+
+< 140
+≥ 140
+
+pos
+
+<3
+
+< 140
+≥ 140
+
+≥3
+
+< 140
+≥ 140
+
+C
+no
+yes
+no
+yes
+no
+yes
+no
+yes
+no
+yes
+no
+yes
+no
+yes
+no
+yes
+
+B
+A
+
+no
+no
+44
+129
+35
+109
+23
+50
+24
+51
+5
+9
+4
+14
+7
+9
+4
+5
+
+yes
+yes no yes
+40 112 67
+145 12 23
+12 80 33
+67
+7
+9
+32 70 66
+80
+7
+13
+25 73 57
+63
+7
+16
+7
+21
+9
+17
+1
+4
+3
+11
+8
+17
+5
+2
+3
+14 14
+16
+2
+3
+0
+13 11
+14
+4
+4
+
+Table 1: Prognostic factors for coronary heart disease as measured on Czech autoworkers
+from Edwards and Havranek (1985).
+
+4.1
+
+Example: Bounds for the Czech Autoworkers data
+
+Table 1 contains a 26 table, originally analyzed by Edwards and Havranek (1985) that crossclassifies binary risk factors denoted by A, B, C, D, E, F for coronary trombosis from a
+prospective epidemiological study of 1841 workers in a Czechoslovakian car factory. Here A
+indicates whether or not the worker “smokes”, B corresponds to “strenuous mental work”,
+C corresponds to “strenuous physical work”, D corresponds to “systolic blood pressure”,
+E corresponds to “ratio of β and α lipoproteins” and F represents “family anamnesis of
+coronary heart disease”. We use GSA to calculate the bounds induced by fixing the five-way
+marginals – see Table 2. There are only two tables having this set of marginals. The second
+feasible table is obtained by adding or substracting one unit from the corresponding entries
+in Table 1.
+
+5
+
+Calculating Bounds in the Decomposable Case
+
+Suppose we have p possibly overlapping marginal tables nC1 , nC2 , . . . , nCp such that C1 ∪C2 ∪
+. . . ∪ Cp = K. The index sets C(G) := {C1 , C2 , . . . , Cp } define a decomposable independence
+graph G. Denote by S(G) := {S2 , . . . , Sp } the set of separators of the graph G = (K, E).
+
+8
+
+F
+neg
+
+E
+<3
+
+D
+< 140
+≥ 140
+
+≥3
+
+< 140
+≥ 140
+
+pos
+
+<3
+
+< 140
+≥ 140
+
+≥3
+
+< 140
+≥ 140
+
+C
+no
+yes
+no
+yes
+no
+yes
+no
+yes
+no
+yes
+no
+yes
+no
+yes
+no
+yes
+
+B
+A
+
+no
+no
+[44,45]
+[128,129]
+[34,35]
+[109,110]
+[22,23]
+[50,51]
+[24,25]
+[50,51]
+[4,5]
+[9,10]
+[4,5]
+[13,14]
+[7,8]
+[8,9]
+[3,4]
+[5,6]
+
+yes
+
+yes
+no
+yes
+[39,40] [111,112] [67,68]
+[145,146] [12,13] [22,23]
+[12,13]
+[80,81] [32,33]
+[66,67]
+[6,7]
+[9,10]
+[32,33]
+[70,71] [65,66]
+[79,80]
+[6,7]
+[13,14]
+[24,25]
+[72,73] [57,58]
+[63,64]
+[7,8]
+[15,16]
+[7,8]
+[21,22]
+[8,9]
+[16,17]
+[0,1]
+[4,5]
+[2,3]
+[10,11]
+[8,9]
+[17,18]
+[5,6]
+[1,2]
+[2,3]
+[13,14] [14,15]
+[16,17]
+[2,3]
+[2,3]
+[0,1]
+[13,14] [10,11]
+[13,14]
+[3,4]
+[4,5]
+
+Table 2: Bounds for entries in Table 1 induced by fixing the five-way marginals.
+
+Every Sj is included in some clique Ci , hence the marginals nS2 , . . . , nSp will also be fixed.
+The Fr´echet bounds induced by this set of marginals are given by the following result due
+to Dobra and Fienberg (2000) and Dobra (2001):
+Theorem 5.1
+	
+
+min nC1 (iC1 ) , . . . , nCp iCp
+( p
+)
+p
+X
+ X
+
+≥ n(i) ≥ max
+n C j iC j −
+n S j iS j , 0
+j=1
+
+(12)
+
+j=2
+
+are sharp bounds given the marginals nC1 , . . ., nCp .
+We can derive analogous Fr´echet bounds for each cell in the set of cells T = T(n) associated
+with table n. First we attempt to develop inequalities for the cells contained in the marginals
+of n:
+{nD (iD ) : iD ∈ ID for some D ⊂ K} .
+Proposition 5.1 For a subset D0 ⊂ K and an index i0D0 ∈ ID0 , the following inequalities
+
+9
+
+hold:
+
+
+	
+min nC∩D0 i0C∩D0 |C ∈ C(G)
+≥ nD0 (i0D0 )
+
+
+ X
+X
+
+
+≥ max 0,
+nC∩D0 i0C∩D0 −
+nS∩D0 i0S∩D0
+.
+
+
+C∈C(G)
+
+(13)
+
+S∈S(G)
+
+The upper and lower bounds in equation (13) are defined to be the Fr´echet bounds for the
+cell entry nD0 (i0D0 ) given nC1 , nC2 , . . . , nCp .
+For D0 = K, equation (13) becomes equation (12). At this point we know how to write
+Fr´echet bounds for cell entries in an arbitrary table n0 ∈ RD. If n0 is not a proper marginal
+of n, i.e., n0 ∈
+/ {nD : D ⊂ K}, from equation (3) we deduce that there exists D0 ⊂ K such
+that n0 ∈ RD(nD0 ). Since the set of fixed marginals nC1 ∩D0 , nC2 ∩D0 , . . ., nCp ∩D0 of nD0
+induce a decomposable independence graph G(D0 ), we obtain n0 from nD0 by sequentially
+joining categories associated with the variables cross-classified in nD0 . If we apply exactly
+the same sequence of “join” operations to every marginal nCr ∩D0 , r = 1, 2, . . . , p, we end up
+with p fixed marginals n0C1 ∩D0 , n0C2 ∩D0 , . . ., n0Cp ∩D0 of n0 . The independence graph induced
+by those marginals coincides with G(D0 ). Therefore the Fr´echet bounds for a cell entry in
+n0 are given either by Proposition 5.1 or by Theorem 5.1 if n0 ∈ RD(n).
+The following lemma tells us that the Fr´echet bounds for a cell nD0 (i0D0 ), D0 ⊂ K, are
+sharp if n has two fixed non-overlapping marginals.
+Lemma 5.1 Let G = (K, E) be a decomposable independence graph induced by the marginals
+nC1 ,nC2 ,. . .,nCp . Consider a subset D0 ⊂ K and let v ∈ K \ D0 be a simplicial vertex of G.
+It is known that a simplicial vertex belongs to precisely one clique, say v ∈ C1 . Then finding
+bounds for a cell nD0 (i0D0 ), i0D0 ∈ ID0 , given nC1 , nC2 , . . . , nCp is equivalent to finding bounds
+for nD0 (i0D0 ) given nC1 \{v} , nC2 , . . . , nCp .
+The Fr´echet bounds for cells in a marginal nD0 of n might not be the best bounds possible.
+Lemma 5.2 Assume there are two fixed marginals nC1 and nC2 such that C1 ∪ C2 = K, but
+C1 ∩ C2 = ∅. Consider D0 ⊂ K. The Fr´echet bounds for nD0 (i0D0 ) given nC1 and nC2
+
+	
+min nC1 ∩D0 (i0C1 ∩D0 ), nC2 ∩D0 (i0C2 ∩D0 )
+≥ nD0 (i0D0 )
+	
+
+≥ max 0, nC1 ∩D0 (i0C1 ∩D0 ) + nC2 ∩D0 (i0C2 ∩D0 ) − n∅
+are sharp given nC1 and nC2 .
+10
+
+(14)
+
+If the two marginals are overlapping, Proposition 5.1 says that the Fr´echet bounds for
+nD0 (i0D0 ) are given by
+
+	
+
+min nC1 ∩D0 (i0C1 ∩D0 ), nC2 ∩D0 (i0C2 ∩D0 ) ,
+
+(15)
+
+	
+
+max 0, nC1 ∩D0 (i0C1 ∩D0 ) + nC2 ∩D0 (i0C2 ∩D0 ) − nC1 ∩C2 ∩D0 (i0C1 ∩C2 ∩D0 ) .
+
+(16)
+
+and
+
+It turns out that the bounds in equations (15) and (16) are not necessarily sharp bounds for
+nD0 (i0D0 ) given nC1 and nC2 .
+Lemma 5.3 Let the two fixed marginals nC1 and nC2 be such that C1 ∪ C2 = K. Consider
+D0 ⊂ K and denote D1 := (C1 \ C2 ) ∩ D0 , D2 := (C2 \ C1 ) ∩ D0 and D12 := (C1 ∩ C2 ) ∩ D0 .
+In addition, we let C12 := (C1 ∩ C2 ) \ D0 . Then an upper bound for nD0 (i0D0 ) given nC1 and
+nC2 is:
+X
+i1C
+
+12
+
+
+
+	
+min n(C1 ∩D0 )∪C12 i0C1 ∩D0 , i1C12 , n(C2 ∩D0 )∪C12 i0C2 ∩D0 , i1C12 ,
+
+(17)
+
+∈IC12
+
+while a lower bound is
+X
+i1C
+
+12
+
+
+
+max 0, n(C1 ∩D0 )∪C12 i0C1 ∩D0 , i1C12
+
+∈IC12
+
+
+	
++ n(C2 ∩D0 )∪C12 i0C2 ∩D0 , i1C12 − nD12 i0D12 .
+
+(18)
+
+The following result characterizes the behavior of GSA in the decomposable case.
+Proposition 5.2 Let n be a k-dimensional table and consider the set of cells T = T(n)
+associated with n as it was defined in equation (4). The marginals nC1 , nC2 , . . . , nCp induce
+a decomposable independence graph G = (K, E) with C(G) = {C1 , C2 , . . . , Cp } and S(G) =
+{S2 , . . . , Sp }. The set of fixed cells T0 ⊂ T(n) is given by the cell entries contained in the
+tables
+p
+[
+
+[
+
+RD(nC ).
+
+r=1 {C:C⊆Cr }
+
+11
+
+(t)
+
+(t)
+
+(t)
+
+For every cell t ∈ T, we let n1 , n2 , . . ., nkt be the tables in RD such that t is a cell entry
+(t)
+
+in nr , r = 1, 2, . . . , kt . Under these conditions, GSA converges to an upper bound Us (t) and
+to a lower bound Ls (t) such that
+max{Lr (t) : r = 1, 2, . . . , kt } ≤ Ls (t),
+Us (t) ≤ min{U r (t) : r = 1, 2, . . . , kt },
+
+(19)
+(t)
+
+where U r (t) and Lr (t) are the Fr´echet bounds of the cell t in table nr .
+Any cell t0 ∈ T can be found in one, two or possibly more tables in RD. It is sufficient to
+prove that GSA converges to the Fr´echet bounds for t0 in every table n0 such that t0 is a cell
+of n0 . The shuttle procedure updates the bounds for t0 once a better upper or lower bound
+is identified, so equation (19) is true if and only if the algorithm reaches the Fr´echet bounds
+in every cell of every table in RD. A cell n(i0 ), i0 ∈ I, might appear in several tables in
+RD, but Proposition 5.2 implies that GSA converges to the Fr´echet bounds in equation (12)
+of n(i0 ), and since from Theorem 5.1 we learn that these bounds are sharp, we deduce that
+the shuttle procedure reaches the sharp bounds for n(i0 ).
+
+5.1
+
+Example: Bounds for the Czech Autoworkers data (revisited)
+
+We come back to the 26 contigency table given in Table 1. Whittaker (1990) suggests on
+page 263 that an appropriate model for this data is given by the marginals [BF], [ABCE]
+and [ADE]. This represents a decomposable log-linear model whose independence graph has
+separators [B] and [AE]. The corresponding Fr´echet bounds from equation (12) become:
+min {nBF (iBF ) , nABCE (iABCE ) , nADE (iADE )} ≥ n(i) ≥
+max {nBF (iBF ) + nABCE (iABCE ) + nADE (iADE )
+−nB (iB ) − nAE (iAE ) , 0} .
+The bounds computed by GSA are shown in Table 3.
+
+6
+
+Computing sharp bounds
+
+When the fixed set of marginals defines a decomposable independence graph, GSA converges
+to the corresponding Fr´echet bounds for all the cell entries in the table n. When n is
+dichotomous and all the lower-dimensional marginals are fixed, we were also able to explicitly
+determine the tightest bounds for the cells entries n and prove that GSA reaches these
+bounds. Even in these two particular instances GSA is guaranteed to find sharp bounds
+12
+
+B
+no
+yes
+F E
+D
+C A no
+yes
+no
+yes
+neg < 3 < 140 no
+[0,88] [0,62] [0,224] [0,117]
+[0,261] [0,246] [0,25] [0,38]
+yes
+≥ 140 no
+[0,88] [0,62] [0,224] [0,117]
+[0,261] [0,151] [0,25] [0,38]
+yes
+≥ 3 < 140 no
+[0,58] [0,60] [0,170] [0,148]
+[0,115] [0,173] [0,20] [0,36]
+yes
+≥ 140 no
+[0,58] [0,60] [0,170] [0,148]
+[0,115] [0,173] [0,20] [0,36]
+yes
+pos < 3 < 140 no
+[0,88] [0,62] [0,126] [0,117]
+yes
+[0,134] [0,134] [0,25] [0,38]
+[0,88] [0,62] [0,126] [0,117]
+≥ 140 no
+yes
+[0,134] [0,134] [0,25] [0,38]
+[0,58] [0,60] [0,126] [0,126]
+≥ 3 < 140 no
+yes
+[0,115] [0,134] [0,20] [0,36]
+≥ 140 no
+[0,58] [0,60] [0,126] [0,126]
+[0,115] [0,134] [0,20] [0,36]
+yes
+
+Table 3: Bounds for entries in Table 1 induced by fixing the marginals [BF], [ABCE] and
+[ADE].
+
+only for the cells N in table n. In this section we present a method that sequentially adjusts
+the bounds Ls (T) and Us (T) obtained from GSA until they become sharp.
+The integer value U (t1 ) is a sharp upper bound for a cell t1 ∈ T if and only if there exists
+an integer array V (T) ∈ S[Ls (T), Us (T)] with a count of U (t1 ) in cell t1 (i.e., V (t1 ) = U (t1 ))
+and if there does not exist another integer array V 0 (T) ∈ S[Ls (T), Us (T)] having a count in
+cell t1 strictly bigger than U (t1 ) (i.e., V 0 (t1 ) > U (t1 )). The sharp lower bound L(t1 ) can be
+defined in a similar way.
+We know that Ls (t1 ) ≤ L(t1 ) ≤ U (t1 ) ≤ Us (t1 ). This means that the first candidate value
+for U (t1 ) is Us (t1 ). If there is no integer array V (T) ∈ S[Ls (T), Us (T)] with V (t1 ) = Us (t1 ),
+we sequentially try Us (t1 ) − 1, Us (t1 ) − 2, . . . , Ls (t1 ) and stop when a feasible array with
+the corresponding count in cell t1 is determined. The candidate values for the sharp lower
+bound L(t1 ) are Ls (t1 ) + 1, Ls (t1 ) + 2, . . . , Us (t1 ) in this particular order. After fixing the
+count V (t1 ) to an integer value between Ls (t1 ) and Us (t1 ), we employ GSA to update the
+upper and lower bounds for all the cells in T. Denote by L1s (T) and Us1 (T) the new bounds
+identified by GSA. These bounds are tighter than Ls (T) and Us (T), thus the set of integer
+arrays S 1 = S[L1s (T), Us1 (T)] is included in S[Ls (T), Us (T)]. We reduced the problem of
+determining sharp bounds for the cell t1 to the problem of checking whether S 1 is empty.
+We need to repeat these steps for every cell t1 for which we want to obtain sharp bounds.
+For notational simplicity we describe an algorithm for exhaustively enumerating all the
+13
+
+integer arrays in S[L(T), U (T)]. Here L(T) and U (T) are arrays of lower and upper bounds
+for the cells T. We associate with every cell t = tJ1 J2 ...Jk ∈ T an index (see Knuth (1973))
+IN D(t) :=
+
+k
+X
+l=1
+
+k
+P
+
+2s=l+1
+
+Is
+
+!
+X
+
+2jl −1 − 1
+
++ 1 ∈ {1, 2, . . . , N } ,
+
+jl ∈Jl
+
+and order the cells in T as a linear list t1 , t2 , . . . , tN , where N = 2I1 +I2 +...+Ik . With this
+ordering, we sequentially attempt to fix every cell at integer values between its current
+upper and lower bounds and use GSA to update the bounds for the remaining cells. We
+successfully determined a feasible array when we assigned a value to every cell and GSA did
+not identify any inconsistencies among these values.
+PROCEDURE SharpBounds(k,Lk (T),U k (T))
+(1) IF k = N + 1 THEN save the newly identified array V (T) ∈ S[L(T), U (T)].
+(2) FOR every integer c ∈ [Lk (tk ), Lk (tk ) + 1, . . . , U k (tk )] DO
+(2A) SET V (tk ) to value c.
+(2B) SET Lk+1 (tk ) = U k+1 (tk ) = c, Lk+1 (ti ) = Lk (ti ), U k+1 (ti ) = U k (ti ) for
+i = 1, . . . , k − 1, k + 1, . . . , N .
+(2C) Run GSA to update the bounds Lk+1 (T) and U k+1 (T).
+(2D) IF GSA did not identify any inconsistencies THEN
+CALL SharpBounds(k+1,Lk+1 (T),U k+1 (T)).
+PROCEDURE ENDS
+The initial call is SharpBounds(1,L(T),U (T)). Note that the updated bounds from
+step (2C) satisfy
+Lk (ti ) ≤ Lk+1 (ti ) ≤ U k+1 (ti ) ≤ U k (ti ),
+provided that GSA did not report inconsistencies. This sequential improvement of the
+bounds avoids an exhaustive enumeration of all the combinations of possible values of the
+cells T that would lead to a very low computational efficiency of the algorithm.
+When computing sharp bounds for a cell t1 , we can stop the SharpBounds procedure
+after we identified the first table in S 1 or learn that no such table exists.
+
+14
+
+7
+
+Large Contingency Tables
+
+We demonstrate the scalability of the generalized shuttle algorithm by computing sharp
+bounds for the non-zero entries of a a 216 contingency table extracted from the “analytic”
+data file for National Long-Term Care Survey created by the Center of Demographic Studies
+at Duke University. Each dimension corresponds to a measure of disability defined by an
+activity of daily leaving, and the table contains information cross-classifying individuals aged
+65 and above. The 16 dimensions of this contingency table correspond to six activities of
+daily living (ADLs) and ten instrumental activities of daily living (IADLs). Specifically, the
+ADLs are (1) eating, (2) getting in/out of bed, (3) getting around inside, (4) dressing, (5)
+bathing, (6) getting to the bathroom or using a toilet. The IADLs are (7) doing heavy house
+work, (8) doing light house work, (9) doing laundry, (10) cooking, (11) grocery shopping,
+(12) getting about outside, (13) travelling, (14) managing money, (15) taking medicine, (16)
+telephoning. For each ADL/IADL measure, subjects were classified as being either disabled
+(level 1) or healthy (level 0) on that measure. For a detailed description of this extract see
+Manton et al. (1993).
+We applied GSA to compute sharp upper and lower bounds for the entries in this table
+corresponding to a number of different sets of fixed marginals. Here we describe one complex calculation for the set involving three fixed 15-way marginals obtained by collapsing
+the 16-way table across the variables (14) managing money, (15) taking medicine and (16)
+telephoning. Of the 216 = 65, 536 cells, 62, 384 contain zero entries. Since the target table is
+so sparse, fixing three marginals of dimension fifteen leads to the exact determination (i.e.,
+equal upper and lower bounds) of most of the cell entries. To be more exact, only 128 cells
+have the upper bounds strictly bigger than the lower bounds! The difference between the
+upper and lower bounds is equal to 1 for 96 cells, 2 for 16 cells, 6 for 8 cells, and 10 for 8
+cells.
+We take a closer look at the bounds associated with “small” counts of “1” or “2”. There
+are 1, 729 cells containing a count of “1”. Of these, 1, 698 cells have the upper bounds equal
+to the lower bounds. The difference between the bounds is 1 for 28 of the remaining counts
+of “1”, is 2 for two other cells and is equal to 6 for only one entry. As for the 499 cells with
+a count of “2”, the difference between the bounds is zero for 485 cells, is 1 for 10 cells and
+is 2 for 4 other cells.
+GSA converged in approximately twenty iterations to the sharp bounds and it took less
+than six hours to complete on a single-processor machine at the Department of Statistics,
+Carnegie Mellon University. We re-checked these bounds by determining the feasible integer
+tables for which they are attained on the Terascale Computing System at the Pittsburgh
+
+15
+
+Supercomputing Center. We used a parallel implementation of GSA that independently
+adjust the bounds for various cells and the computations took almost one hour to complete
+on fifty-six processors.
+
+8
+
+Other examples
+
+In the examples that follow we employ GSA not only to produce sharp bounds, but also to
+compute exact p-values for conditional inference with the hypergeometric distribution (see
+Dobra et al. (2006)):
+#−1
+
+"
+p(n) =
+
+Y
+i∈I
+
+n(i)!
+
+/
+
+"
+X Y
+n0 ∈T
+
+#−1
+n0 (i)!
+
+.
+
+(20)
+
+i∈I
+
+where T represents the set of contigency tables consistent with a given set of constraints
+(e.g., upper and lower bounds for cell entries). The corresponding p-value of the exact test
+is (see Guo and Thompson (1992)):
+X
+p(n0 ),
+(21)
+{n0 ∈T :p(n0 )≤p(n)}
+
+where n is the observed table. Sundberg (1975) shows that the normalizing constant in
+equation (20) can be directly evaluated if T is determined by a decomposable set of marginals,
+but otherwise it can be computed only if T can be exhaustively enumerated. GSA can
+accomplish this task for almost any type of constraints and evaluate p(n) as well as the
+p-value in equation (21) exactly.
+We compare our inferences with the results obtained by Chen et al. (2006) who proposed
+a sequential importance sampling method (SIS, henceforth) for approximating exact p-values
+by randomly sampling from T and p(n).
+Example 1. Vlach (1986) considers the following three matrices:
+
+
+
+0 1
+1 0 1
+
+
+
+
+
+1 1 1
+ 1 0
+ 1 0 1 
+ 1 1 1 
+ 0 1 1 
+ 1 0
+
+
+
+
+A=
+ 1 1 1 , B =  0 1 1 , C =  0 1
+
+
+
+ 1 1 0 
+ 1 1
+1 1 1
+1 1 0
+0 0
+
+0
+1
+0
+1
+0
+1
+
+1
+0
+1
+0
+0
+1
+
+
+
+
+
+.
+
+
+
+
+Matrices A, B and C appear to be the 2-way marginals of a 6 × 4 × 3 contingency table
+and their one-way marginals coincide; however, there does not exist a 6 × 4 × 3 integer table
+having this set of two-way margins and GSA stopped without producing any bounds due to
+the inconsistencies it identified.
+16
+
+Example 2. Sullivant (2005) presented a 2×2×2×2 table with a grand total of 5, reproduced
+here as Table 4. This is the only integer table consistent with the six 2-way marginals and
+GSA correctly identifies it. Fitting the no 2nd-order interaction model implied by fixing
+the 2-way margins in R using loglin yields the MLEs in the right panel of Table 4, but
+the program reports d.f. = 5. The correct number of degrees of freedom is zero since there
+is only one integer table with these constraints. Testing the significance of the no secondorder interaction model with reference to a χ2 distribution on 5 degrees of freedom would be
+errorneous. The lower integer bounds equal the upper integer bounds for all 16 cells. Note
+the large gaps (up to 1.67) between the integer bounds and the real bounds (see Table 5)
+calculated with the simplex algorithm.
+C No
+A B D No Yes
+No No
+0 1
+Yes
+1 0
+1 0
+Yes No
+Yes
+0 0
+
+Yes
+No Yes
+1 0
+0 0
+0 0
+0 1
+
+No
+No Yes
+1.06 0.36
+0.36 0.21
+0.36 0.21
+0.21 0.21
+
+Yes
+No Yes
+0.36 0.21
+0.21 0.21
+0.21 0.21
+0.21 0.36
+
+Table 4: A sparse four-way dichotomous table (left panel) from Sullivant (2005). The right
+panel gives the MLEs induced by the six 2-way marginals.
+
+C
+No
+Yes
+A B D No
+Yes
+No
+Yes
+No No
+[0, 1.67] [0, 1]
+[0, 1] [0, 0.67]
+Yes
+[0, 1] [0, 0.67] [0, 0.67] [0, 0.67]
+Yes No
+[0, 1] [0, 0.67] [0, 0.67] [0, 0.67]
+Yes
+[0, 0.67] [0, 0.67] [0, 0.67] [0, 1]
+Table 5: LP bounds fixing the six 2-way marginals of Table 4.
+
+Example 3. Dobra et al. (2006) used GSA to determine that there are 810 tables consistent
+with the set of fixed marginals [ACDEF], [ABDEF], [ABCDE], [BCDF], [ABCF], [BCEF] of
+Table 1. GSA calculates the p-value for the exact goodness-of-fit test in equation (21) to be
+0.235. The estimated p-value computed using SIS in Chen et al. (2006) is 0.27, while the
+estimated number of tables is 840. By way of comparison, the loglin function in R gives a
+p-value of 0.21 on 4 degrees of freedom.
+Dobra et al. (2006) also considered the model determined by fixing the 15 4-way margins.
+GSA reported a number of 705, 884 feasible tables with a correspinding exact p-value defined
+
+17
+
+by equation (21) equal to 0.432. Fitting the same model with loglin yields an approximate
+p-value of 0.438 by reference to a χ2 distribution of 7.95 on 8 degrees of freedom.
+Age
+Sex Opinion 18 − 25 26 − 35 36 − 45 46 − 55 56 − 65
+66+
+Male
+Yes
+96
+138
+117
+75
+72
+83
+No
+44
+64
+56
+48
+49
+60
+Und
+1
+2
+6
+5
+6
+8
+140
+171
+152
+101
+102
+111
+Female Yes
+No
+43
+65
+58
+51
+58
+67
+1
+4
+9
+9
+10
+16
+Und
+24
+18
+16
+12
+6
+4
+Nonwhite Male
+Yes
+No
+5
+7
+7
+6
+8
+10
+2
+1
+3
+4
+3
+4
+Und
+Female Yes
+21
+25
+20
+17
+14
+13
+4
+6
+5
+5
+5
+5
+No
+Und
+1
+2
+1
+1
+1
+1
+White Male
+Yes
+[90, 101] [130, 146] [107, 123] [65, 81] [61, 78] [70, 87]
+No
+[40, 49] [58, 71] [51, 63] [43, 54] [44, 57] [55, 70]
+[0, 2]
+[0, 3]
+[5, 9]
+[4, 9]
+[5, 9]
+[7, 12]
+Und
+Female Yes [135, 146] [163, 179] [146, 162] [95, 111] [96, 113] [107, 124]
+No
+[38, 47] [58, 71] [51, 63] [45, 56] [50, 63] [57, 72]
+Und
+[0, 2]
+[3, 6]
+[6, 10]
+[5, 10] [7, 11] [12, 17]
+[19, 30] [10, 26] [10, 26] [6, 22] [0, 17]
+[0, 17]
+Nonwhite Male
+Yes
+No
+[0, 9]
+[0, 13]
+[0, 12]
+[0, 11] [0, 13]
+[0, 15]
+[1, 3]
+[0, 3]
+[0, 4]
+[0, 5]
+[0, 4]
+[0, 5]
+Und
+Female Yes
+[15, 26] [17, 33] [10, 26] [7, 23] [3, 10]
+[0, 17]
+No
+[0, 9]
+[0, 13]
+[0, 12]
+[0, 11] [0, 13]
+[0, 15]
+Und
+[0, 2]
+[0, 3]
+[0, 4]
+[0, 5]
+[0, 4]
+[0, 5]
+Race
+White
+
+Table 6: The upper panel gives the 4-way abortion option data from Haberman (1978). The
+lower panel gives the sharp integer bounds induced by the four 3-way marginals of this table.
+
+Example 4. Table 6 contains a 2 × 2 × 3 × 6 table from an NORC survey from the 1970s
+(see Haberman (1978), page 291) that cross-classifies race (white, nonwhite), sex (male,
+female), attitude towards abortion (yes, no, undecided) and age (18 − 25, 26 − 35, 36 − 45,
+46 − 55, 56 − 65, 66+ years). Christensen (1997) page 111 considered the log-linear model
+corresponding to the four 3-way marginals. The loglin function in R yields an approximate
+p-value of 0.807 based on a χ2 distribution on 6.09 on 10 degrees of freedom. GSA identified
+83, 087, 976 tables consistent with the 3-way marginals and returned an exact p-value for
+the goodness-of-fit test in equation (21) equal to 0.815. Chen et al. (2006) report that SIS
+estimated that the number of feasible tables is 9.1 × 107 and that the exact p-value based
+on the hypergeometric distribution is approximately 0.85. In the bottom panel of Table 6
+18
+
+C
+1
+1
+1
+1
+2
+2
+2
+2
+
+S
+1
+1
+2
+2
+1
+1
+2
+2
+
+R 1 2 3
+T
+1 3 20 5
+2 11 14 8
+1 3 14 12
+2 6 13 5
+1 12 12 0
+2 11 10 0
+1 3 9 4
+2 6 9 3
+
+Table 7: Results of clinical trial for the effectiveness of an analgesic drug from Koch et al.
+(1983)
+
+we give the upper and lower bounds computed by GSA. Note that the release of the four
+three-way marginals might be problematic from a disclosure limitation perspective due to
+the tight bounds for some of the small counts of 1 and 2.
+Example 5. Table 7 from Koch et al. (1983) summarizes the results of a clinical trial on
+the effectiveness (R—poor, moderate or excellent) of an analgesic drug (T—1,2) for patients
+in two statuses (S) and two centers (C), center; S, status; T, treatment; R, response) with
+a grand total of 193. While most of the counts are relatively large, the table contains two
+counts of zero that lead to a zero entry in the [CSR] marginal.
+Fienberg and Slavkovic (2004, 2005) discuss several log-linear models associated with this
+contingency table to illustrate disclosure limitation techniques. The upper and lower bounds
+presented in their 2004 paper are the same bounds identified by GSA, so we chose not to
+reproduce them again here. The zero entry in the [CSR] marginal leads to the non-existence
+of MLEs in any log-linear model with a generator [CSR]. This implies that the degrees of
+freedom for any log-linear model that includes [CSR] as a minimal sufficient statistic needs
+to be reduced by one — this corresponds to fitting a log-linear model to the incomplete
+table that does not include the two counts of zero adding up to the zero entry in the [CSR]
+marginal. For additional details and theoretical considerations, see Fienberg (1980) and
+Fienberg and Rinaldo (2007).
+How does the exact goodness-of-fit test in equation (21) perform in this special situation?
+For the model [CST][CSR], GSA identifies 79, 320, 780 feasible tables and gives an exact pvalue of 0.073. By comparison, the loglin function in R yields an approximate p-value of
+0.06 based on 7 degrees of freedom. For the model [CST][CSR][TR], GSA finds 155, 745
+feasible tables with a corresponding p-value of 0.0499, while the loglin function gives a
+p-value of 0.039 based on 5 degrees of freedom. For the model [CST][CSR][CTR], GSA finds
+19
+
+1, 274 feasible tables with a p-value of 0.152, while the loglin function reports a p-value
+of 0.127 based on 3 degrees of freedom. The last model we consider is [CST][CSR][SRT]
+with an exact p-value of 0.093 based on 1, 022 feasible tables. In this case loglin finds an
+approximate p-value of 0.073 based on 3 degrees of freedom. Remark that the discrepancy
+between the exact and approximate p-values tends to become more significant in degenerate
+cases when the MLEs do not exist. The model [CST][CSR][TR] seems to fit the data well
+indicating that there is evidence of a direct relationship between the treatment and response
+in this clinical trial.
+Example 6. Dobra et al. (2008) analyze a sparse dichotomous 6-way table from Edwards
+(1992) which cross-classifies the parental alleles of six loci along a chromosome strand of a
+barley powder mildew fungus. The variables are labeled A, B, C, D, E and F, and have
+categories 1 or 2 – see Table 8. GSA finds a relatively small number 36, 453 of tables
+consistent with the two-way marginals with an exact p-value of the goodness-of-fit test based
+on the hypergeometric distribution equal to 0.652. The MLEs for this log-linear model do
+not exist because of a zero entry in the [AB] marginal; however, the MLEs for the log-linear
+model [ABCD][CDE][ABCEF] do exist. In this instance, GSA finds 30 tables consistent with
+the marginals [ABCD], [CDE] and [ABCEF] with an exact p-value of 1.
+
+A B
+1 1
+2
+2 1
+2
+1 1
+2
+2 1
+2
+
+D
+E
+C F
+1
+2
+1
+2
+1
+2
+1
+2
+1
+2
+1
+2
+1
+2
+1
+2
+
+1
+
+2
+
+1
+1
+0
+0
+1
+0
+16
+1
+0
+0
+[0, 1]
+[0, 1]
+[0, 3]
+[0, 1]
+[9, 22]
+[0, 2]
+[0, 0]
+[0, 0]
+
+2
+2
+0
+1
+0
+0
+1
+4
+0
+0
+[0, 1]
+[0, 1]
+[0, 2]
+[0, 3]
+[0, 2]
+[0, 10]
+[0, 0]
+[0, 0]
+
+1
+0
+0
+1
+0
+4
+1
+0
+0
+[0, 1]
+[0, 1]
+[0, 3]
+[0, 2]
+[0, 9]
+[0, 3]
+[0, 0]
+[0, 0]
+
+2
+0
+0
+0
+2
+0
+4
+0
+0
+[0, 1]
+[0, 1]
+[0, 2]
+[0, 4]
+[0, 2]
+[0, 10]
+[0, 0]
+[0, 0]
+
+1
+1
+3
+0
+7
+1
+1
+0
+0
+0
+[0, 4]
+[0, 2]
+[0, 13]
+[0, 2]
+[0, 2]
+[0, 1]
+[0, 0]
+[0, 0]
+
+2
+2
+0
+1
+1
+3
+0
+0
+0
+0
+[0, 2]
+[0, 2]
+[0, 2]
+[0, 9]
+[0, 1]
+[0, 2]
+[0, 0]
+[0, 0]
+
+1
+1
+0
+4
+0
+0
+0
+0
+0
+[0, 1]
+[0, 1]
+[0, 10]
+[0, 2]
+[0, 2]
+[0, 1]
+[0, 0]
+[0, 0]
+
+2
+0
+0
+0
+11
+0
+1
+0
+0
+[0, 1]
+[0, 1]
+[0, 2]
+[2, 16]
+[0, 1]
+[0, 2]
+[0, 0]
+[0, 0]
+
+Table 8: A sparse genetics 26 table from Edwards (1992). The upper panel gives the cell
+counts, while the lower panel shows to sharp bounds induced by fixing the two-way marginals.
+
+20
+
+9
+
+Conclusions
+
+We have described the Generalized Shuttle Algorithm (GSA) that exploits the hierarchical
+structure of categorical data to compute sharp bounds and enumerate sets of multi-way
+tables. The constraints defining these sets can come in the form of fixed marginals, upper
+and lower bounds on blocks of cells or structural zeros. In the most general setting one
+can restrict the search scope to tables having certain combinations of counts in various
+cell configurations. GSA produces sharp bounds not only for cells in the multi-way table
+analyzed, but also for any cells that belong to tables obtained through collapsing categories
+or variables. We showed through several examples that GSA performs very well and leads
+to valuable results.
+We also illustrated that GSA can compute bounds for high-dimensional contingency
+tables. We are not aware how such computations can be performed through LP or IP
+methods. No matter how efficient LP/IP might be in solving one optimization problem,
+calculating bounds for a 16-dimensional table would involve solving 2 × 216 = 131, 072
+separate optimzation problems and this represents a huge computational undertake. Instead,
+GSA computes bounds very close to the sharp bounds in one quick step, then adjusts these
+bounds to the sharp bounds only for the cells whose value is not uniquely determined by the
+marginal constraints.
+While it is possible to increase the computational efficiency of GSA by adjusting the
+bounds in parallel or by choosing candidate values for the cell counts starting from the
+middle of the current feasibility intervals (see Dobra (2001)), we do not make any particular
+claims about its computational efficiency. The current implementation of the algorithm can
+be slow for a larger number of dimensions and categories and might need a lot of computer
+memory. On the other hand, GSA can easily be used as an off-the-shelf method for analyzing
+contingency tables since it is extremely flexible and does not require any additional input
+(e.g., Markov bases, LP bounds, etc) or intricate calibration heuristics. GSA is an excellent
+benchmark for judging the validity and performance of other related methods (e.g., SIS of
+Chen et al. (2006)) that have the potential to properly scale to high-dimensional data.
+
+Acknowledgments
+We thank Alessandro Rinaldo for his valuable comments. The preparation of this paper was
+supported in part by NSF grants EIA9876619 and IIS0131884 to the National Institute of
+Statistical Sciences, and NSF Grant DMS-0631589 and Army contract DAAD19-02-1-3-0389
+to Carnegie Mellon University.
+
+21
+
+Appendix
+Proof of Proposition 4.1
+We start from the (1, 1, . . . , 1) cell and go through a sequence of cells n(i) until we reach
+n(i0 ). We can write
+n∗ = nCl (1, . . . , 1, i0ql +1 , . . . , i0k ) − n(1, . . . , 1, i0ql , . . . , i0k ),
+n(1, . . . , 1, i0ql , . . . , i0k ) = nC(l−1) (1, . . . , 1, i0q(l−1) +1 , . . . , i0k ) − n(1, . . . , 1, i0q(l−1) , . . . , i0k ),
+..
+.
+n(1, . . . , 1, i0q2 , . . . , i0k ) = nC1 (1, . . . , 1, i0q1 +1 , . . . , i0k ) − n(i0 ).
+We add the above equalities to obtain equation (9).
+
+Proof of Proposition 4.2
+We write the equalities in the proof of Proposition 4.1 as
+t{1}...{1} ⊕ t{1}...{1}{i0q }...{i0k } = t{1}...{i0q −1 }{1,2}{i0q +1 }...{1} ,
+l
+
+l
+
+l
+
+and
+t{1}...{1}{i0q
+
+(s+1)
+
+}...{i0k }
+
+⊕ t{1}...{1}{i0qs }...{i0k } = t{1}...{1}{i0q
+
+s −1
+
+}{1,2}{i0qs +1 }...{i0k } ,
+
+for s = 1, 2, . . . , l − 1. Hence
+
+
+
+
+t{1}...{1} , t{1}...{i0q −1 }{1,2}{i0q +1 }...{1} , t{1}...{1}{i0q }...{i0k } ∈ Q(T),
+l
+
+l
+
+l
+
+and
+
+
+t{1}...{1}{i0q
+
+(s+1)
+
+}...{i0k } , t{1}...{1}{i0qs −1 }{1,2}{i0qs +1 }...{i0k } , t{1}...{1}{i0qs }...{i0k }
+
+for s = 1, 2, . . . , l − 1. Since
+n
+0
+T0 := t{1}...{1}{i0q
+
+∈ Q(T),
+
+o
+
+s −1
+
+the cells in T00 have a fixed value
+
+V t{1}...{1}{i0q −1 }{1,2}{i0q
+s
+
+
+
+}{1,2}{i0qs +1 }...{i0k }
+
+}...{i0k }
+s +1
+
+
+
+: s = 1, 2, . . . , l ⊂ T0 ,
+
+nCs (1, . . . , 1, i0qs −1 , i0qs +1 , . . . , i0k ),
+
+for s = 1, 2, . . . , l. GSA sequentially updates the bounds for the cells in T00 in the following
+way:
+n
+
+o
+
+L t{1}...{1} = max 0, nCl (1, . . . , 1) − U t{1}...{1}{i0q }...{i0k } ,
+l
+
+
+n
+
+o
+0
+U t...{1}{i0q }... = min n∅ , nC(l−1) (. . . , 1, iq(l−1) +1 , . . .) − L t...{1}{i0q
+,
+}...
+l
+
+(l−1)
+
+..
+.
+22
+
+We set the non-negativity constraints
+
+
+L t{1}...{1}{i0qs }...{i0k } ≥ 0, for s = 1, 2, . . . , l,
+
+(22)
+
+then combine the above equalities to obtain equation (10). In an analogous manner we
+obtain the upper bounds in equation (11) from the identities:
+n
+
+o
+
+U t{1}{1}...{1} = min n∅ , nCl (1, . . . , 1) − L t{1}...{1}{i0q }...{i0k } ,
+l
+
+
+n
+
+L t...{1}{i0q }... = max 0, nC(l−1) (. . . , 1, i0q(l−1) +1 , . . .) − U t...{1}{i0q
+l
+
+(l−1)
+
+o
+}...
+
+,
+
+..
+.
+Once GSA reaches the bounds in equations (10) and (11), no further changes are possible.
+
+Proof of Proposition 5.1
+The subgraph G(D) is decomposable since G is decomposable — see Lauritzen (1996). Equation (13) follows directly from Theorem 5.1 applied for table nD which has a fixed set of
+marginals nC1 ∩D , nC2 ∩D , . . ., nCp ∩D . We clearly have C(G(D)) = {C1 ∩D, C2 ∩D, . . . , Cp ∩D}
+and S(G(D)) = {S2 ∩ D, . . . , Sp ∩ D}.
+
+Proof of Lemma 5.1
+If G is complete, i.e. p = 1, we have D0 ⊂ K = C1 , hence every entry nD0 (i0D0 ) will be fixed.
+Otherwise, it is known that ({v}, bd(v), V \ cl(v)) is a proper decomposition of G (Lauritzen,
+1996). Since bd(v) is a separator of G, Xv is independent of XV \cl(v) given Xbd(v) . Therefore
+no information is lost if we think about nD0 as being the marginal of nV \{v} . The table
+nV \{v} has fixed marginals nC1 \{v} , nC2 , . . . , nCp .
+
+Proof of Lemma 5.2
+The induced independence graph is obviously decomposable, and its cliques C1 and C2 are
+separated by the empty set. Every vertex v ∈ (C1 \ D0 ) ∪ (C2 \ D0 ) is simplicial in G, hence
+we could think about nD0 as being a table with two fixed non-overlapping marginals nC1 ∩D0
+and nC2 ∩D0 . Lemma 5.1 implies that we do not loose any information about the cell entry
+nD0 (i0D0 ) when collapsing across the variables {Xv : v ∈ (C1 \ D0 ) ∪ (C2 \ D0 )}. Thus the
+bounds in equation (14) are indeed sharp.
+
+23
+
+Proof of Lemma 5.3
+If C12 = ∅, the bounds in equations (17) and (18) reduce to the Fr´echet bounds in equations
+(15) and (16). We assume that C12 6= ∅. The vertices in C1 \ (C2 ∪ D0 ) and C2 \ (C1 ∪ D0 )
+are simplicial in the independence graph G = (K, E) induced by nC1 and nC2 . From Lemma
+5.1, we deduce that we can restrict our attention to the marginal nD0 ∪C12 that has two
+fixed marginals nD1 ∪(C1 ∩C2 ) = n(C1 ∩D0 )∪C12 and nD2 ∪(C1 ∩C2 ) = n(C2 ∩D0 )∪C12 . We choose an
+i1
+
+arbitrary index i1C12 ∈ IC12 . Consider the hyperplane nDC012 of nD1 ∪(C1 ∩C2 ) with entries
+i1
+
+nDC012 (iD0 ) := nD0 ∪C12 (iD0 , i1C12 ), for iD0 ∈ ID0 .
+This hyperplane has two fixed marginals
+
+
+	
+i1
+nCC112∩D0 = n(C1 ∩D0 )∪C12 iC1 ∩D0 , i1C12 : iC1 ∩D0 ∈ IC1 ∩D0 ,
+and
+
+
+	
+i1
+nCC212∩D0 = n(C2 ∩D0 )∪C12 iC2 ∩D0 , i1C12 : iC2 ∩D0 ∈ IC2 ∩D0 .
+We have D0 = D1 ∪ D12 ∪ D2 , hence it is possible to make use of Theorem 5.1 to obtain the
+i1
+Fr´echet bounds for the cell entry nDC012 (i0D0 ) = nD0 ∪C12 (i0D0 , i1C12 ), i.e.
+
+	
+
+min n(C1 ∩D0 )∪C12 i0C1 ∩D0 , i1C12 , n(C2 ∩D0 )∪C12 i0C2 ∩D0 , i1C12 ,
+and
+
+
+max 0, n(C1 ∩D0 )∪C12 i0C1 ∩D0 , i1C12 +
+
+	
+n(C2 ∩D0 )∪C12 i0C2 ∩D0 , i1C12 −nD12 i0D0 ∩D12 .
+
+(23)
+
+Since
+X
+
+nD0 (i0D0 ) =
+i1C
+
+12
+
+nD0 ∪C12 (i0D0 , i1C12 ),
+
+∈IC12
+
+Equations (17) and (18) follow from equation (23) by adding over all the indices i1C12 ∈ IC12 .
+i1
+
+Although the bounds in every hyperplane nDC12 are sharp, the bounds in equations (17) and
+(18) are guaranteed to be sharp only if C12 = ∅. If C12 6= ∅, there is no reason to believe that
+equations (17) and (18) give sharp bounds for nD0 (i0D0 ). Nevertheless, it is not hard to see
+that the upper bound in equation (15) is greater or equal to the upper bound in equation
+(17), while the lower bound in equation (16) is less or equal to the lower bound in equation
+(18). We conclude that the Fr´echet upper and lower bounds for nD0 (i0D0 ) are not necessarily
+the best bounds possible if C12 6= ∅.
+24
+
+Proof of Proposition 5.2
+We prove Proposition 5.2 by sequentially considering several particular cases. First we show
+that the shuttle procedure obtains the Fr´echet bounds for a 2 × 2 table. Since any twoway table can be reduced to a number of 2 × 2 tables, it follows that the Fr´echet bounds
+are also attained for a two-dimensional cross-classification with fixed one-dimensional totals.
+By induction on the number of fixed marginals of an arbitrary k-dimensional table n and
+by exploiting the fact that, if n has two marginals fixed, n can be split in several twoway tables with fixed one-way marginals, we are able to prove in the last subsection that the
+Fr´echet bounds are attained for decomposable log-linear models with any number of minimal
+sufficient statistics.
+The 2 × 2 case
+Consider a 2 × 2 table n = {nij : 1 ≤ i, j ≤ 2} with fixed row totals {n1+ , n2+ } and column
+totals {n+1 , n+2 }. The grand total of the table is n++ . The set T associated with n is given
+by
+T = {n11 , n12 , n21 , n22 , n1+ , n2+ , n+1 , n+2 , n++ },
+
+(24)
+
+while the set of cells having a fixed value is T0 = {n1+ , n2+ , n+1 , n+2 , n++ }. There are only
+six dependencies
+Q(T){(n1+ , n++ , n2+ ), (n+1 , n++ , n+2 ), (n11 , n1+ , n12 ),
+(n12 , n+2 , n22 ), (n21 , n2+ , n22 ), (n11 , n21 , n+1 )}.
+
+(25)
+
+The first two dependencies are redundant because they involve only the cells in T0 . We show
+that GSA converges to the Fr´echet bounds:
+min{ni+ , n+j } ≥ nij ≥ max{0, ni+ + n+j − n++ }, for 1 ≤ i, j ≤ 2.
+
+(26)
+
+We initialize the upper and lower bounds of the four cells in T \ T0 :
+L(n11 ) = L(n12 ) = L(n21 ) = L(n22 ) := 0, and
+U (n11 ) = U (n12 ) = U (n21 ) = U (n22 ) := n++ .
+
+(27)
+
+We sequentially go through the dependencies in Q(T). When we obtain a Fr´echet bound,
+we mark it with “3”. Since the Fr´echet bounds are sharp, once GSA reaches such a bound,
+it stays at that bound.
+
+25
+
+First iteration, dependency: n11 ⊕ n12 = n1+ .
+L(n11 ) = max{L(n11 ), n1+ − U (n12 )} = max{0, n1+ − n++ } = 0,
+U (n11 ) = min{U (n11 ), n1+ − L(n12 )} = min{n++ , n1+ } = n1+ ,
+L(n12 ) = max{L(n12 ), n1+ − U (n11 )} = max{0, n1+ − n1+ } = 0.
+U (n12 ) = min{U (n12 ), n1+ − L(n11 )} = min{n++ , n1+ } = n1+ .
+First iteration, dependency: n12 ⊕ n22 = n+2 .
+L(n22 ) = max{L(n22 ), n+2 − U (n12 )},
+= max{0, n+2 − n1+ } = max{0, n+2 + n2+ − n++ }.3
+U (n22 ) = min{U (n22 ), n+2 − L(n12 )},
+= min{n++ , n+2 } = n+2 .
+L(n12 ) = max{L(n12 ), n+2 − U (n22 )} = 0.
+U (n12 ) = min{U (n12 ), n+2 − L(n22 )},
+= min{n1+ , n+2 + min{0, n1+ − n+2 }} = min{n+2 , n1+ }.3
+First iteration, dependency: n21 ⊕ n22 = n2+ .
+L(n21 ) = max{L(n21 ), n2+ − U (n22 )},
+= max{0, n2+ − n+2 } = max{0, n2+ + n+1 − n++ }.3
+U (n21 ) = min{U (n21 ), n2+ − L(n22 )},
+= min{0, n2+ + min{0, n1+ − n+2 }},
+= min{n2+ , n++ − n+2 } = min{n2+ , n+1 }.3
+U (n22 ) = min{U (n22 ), n2+ − L(n21 )},
+= min{n+2 , n2+ + min{0, n+2 − n2+ }} = min{n+2 , n2+ }.3
+First iteration, dependency: n11 ⊕ n21 = n+1 .
+L(n11 ) = max{L(n11 ), n+1 − U (n21 )},
+= max{0, n+1 + max{−n2+ , −n+1 }},
+= max{0, n+1 − n2+ } = max{0, n+1 + n1+ − n++ }.3
+U (n11 ) = min{U (n11 ), n+1 − L(n21 )},
+= min{n1+ , n+1 + max{−n2+ , −n+1 }},
+= min{n+1 , n++ − n2+ } = min{n+1 , n1+ }.3
+
+26
+
+Second iteration, dependency: n11 ⊕ n12 = n1+ .
+L(n12 ) = max{L(n12 ), n1+ − U (n11 )},
+= max{0, n1+ + max{−n+1 , −n1+ }},
+= max{0, n1+ − n+1 } = max{0, n1+ + n+2 − n++ }.3
+We see that the Fr´echet bounds in equation (26) for all four cells in table n are obtained
+before completing the second iteration. Therefore Proposition 5.2 holds for any 2 × 2 table.
+The two-way case
+The next step is to examine a two-dimensional table n = {nij : 1 ≤ i ≤ I1 , 1 ≤ j ≤ I2 } for
+some I1 , I2 ≥ 2. This table has fixed row sums and column sums:
+{ni+ : 1 ≤ i ≤ I1 } ∪ {n+j : 1 ≤ j ≤ I2 } ∪ {n++ } ⊂ T0 .
+
+(28)
+
+More precisely, the set of fixed cells T0 ⊂ T = T(n) is
+
+	
+T0 = tJ1 {1,2,...,I2 } : ∅ =
+6 J1 ⊆ {1, 2, . . . , I1 } ∪
+	
+
+t{1,2,...,I1 }J2 : ∅ =
+6 J2 ⊆ {1, 2, . . . , I2 } .
+We remark that t ∈ T \ T0 if and only if t is a cell in a table n0 ∈ RD(n). In other words, t
+does not have a fixed value if and only if t is a cell in a table of dimension 2 that could be
+obtained from n by table redesign. We show that the Fr´echet bounds from Theorem 5.1 are
+attained when running GSA for every cell nij . It is sufficient to prove it for the (1, 1) cell.
+The Fr´echet inequality for n11 is
+min{n1+ , n+1 } ≥ n11 ≥ max{0, n1+ + n+1 − n++ }.
+
+(29)
+
+We notice the similarity of equation (29) with equation (26). We define the 2 × 2 table
+n0 = {n0ij : 1 ≤ i, j ≤ 2}, where
+n011 := n11 , n012 :=
+
+X
+
+n1j , n021 :=
+
+j>1
+
+i>1
+
+
+This table has fixed row totals
+
+X
+
+ni1 , n022 :=
+
+XX
+
+nij .
+
+i>1 j>1
+
+(
+
+
+n1+ ,
+
+P
+
+ni+
+
+(30)
+
+as well as fixed column totals
+
+i>1
+
+n+1 ,
+
+)
+P
+
+n+j .
+
+j>1
+
+The Fr´echet bounds for the (1, 1) count in table n0 coincide with the Fr´echet bounds for the
+(1, 1) count in table n. Since the four cells in table n0 are also cells in the set T associated
+with n, the generalized shuttle algorithm employed for the table n is equivalent to the
+shuttle procedure employed for the table n0 from the perspective of finding sharp bounds for
+27
+
+{n011 , n012 , n021 , n022 }. We proved before that the generalized shuttle algorithm will converge to
+the Fr´echet bounds for any 2 × 2 table, hence GSA finds the Fr´echet bounds for the (1, 1)
+cell in table n.
+Now take an arbitrary cell t = t{i1 ,i2 ,...,il }{j1 ,j2 ,...,js } ∈ T \ T0 . Consider the 2 × 2 table n(t)
+with entries
+
+
+t{i1 ,i2 ,...,il }{j1 ,j2 ,...,js } , t{i1 ,i2 ,...,il }(I2 \{j1 ,j2 ,...,js }) ,
+	
+t(I1 \{i1 ,i2 ,...,il }){j1 ,j2 ,...,js } , t(I1 \{i1 ,i2 ,...,il })(I2 \{j1 ,j2 ,...,js }) .
+The Fr´echet bounds for the value V (t) of cell t in the above table are
+	
+
+min V (t{i1 ,i2 ,...,il }{1,2,...,I2 } ), V (t{1,2,...,I1 }{j1 ,j2 ,...,js } )
+and
+
+max 0, V (t{i1 ,...,il }{1,...,I2 } ) + V (t{1,...,I1 }{j1 ,...,js } )
+	
+−V (t{1,...,I1 }{1,...,I2 } ) .
+
+(31)
+
+The table n(t) has fixed one-dimensional totals, hence we know the cell values
+V (t{i1 ,i2 ,...,il }{1,2,...,I2 } ) =
+
+l
+X
+
+nir + ,
+
+r=1
+
+V (t{1,2,...,I1 }{j1 ,j2 ,...,js } ) =
+
+s
+X
+
+n+jr ,
+
+r=1
+
+V (t{1,2,...,I1 }{1,2,...,I2 } ) = n∅ .
+The Fr´echet bounds in equation (31) are the Fr´echet bounds associated with cell t in every
+table n0 ∈ RD such that t is a cell in n0 . Again, for every such table n0 , it is true that
+0
+0
+T(n ) ⊂ T(n) and Q(T(n ) ) ⊂ Q(T(n) ). When employing the shuttle procedure for n we also
+run the shuttle procedure in n0 , thus the bounds in equation (31) are attained by GSA and
+hence Proposition 5.2 holds for an arbitrary two-dimensional table.
+Bounds induced by two fixed marginals
+Let n = {n(i)}i∈I be a k-dimensional frequency count table having fixed marginals nC1 and
+nC2 such that C1 ∪ C2 = K. The Fr´echet bounds for a cell entry n(i0 ) are
+
+
+n(i0 ) ≥ min nC1
+
+
+
+	
+min nC1 i0C1 , nC2 i0C2 ≥ n(i0 ),
+
+
+	
+i0C1 + nC2 i0C2 − nC1 ∩C2 i0C1 ∩C2 .
+
+28
+
+First we study the case when the fixed marginals are non-overlapping. i.e. C1 ∩ C2 = ∅.
+We attempt to reduce this case to the case of two-dimensional tables we studied before for
+which we know that Proposition 5.2 is true. The above inequalities become
+
+
+	
+min nC1 i0C1 , nK\C1 i0K\C1 ≥ n(i0 ),
+
+
+
+	
+n(i0 ) ≥ min nC1 i0C1 + nK\C1 i0K\C1 − n∅ .
+
+(32)
+
+Without restricting the generality, we can assume that C1 = {1, . . . , l} and C2 = {l +
+1, . . . , k}. To every index iC1 = (i1 , . . . , il ) ∈ IC1 we define (see Knuth (1973)):
+" l
+#
+l
+X
+Y
+IN DC1 (iC1 ) :=
+Is · (ir − 1) + 1 ∈ {1, . . . , I1 · I2 · . . . · Il }.
+r=1
+
+s=r+1
+
+IN DC1 induces a one-to-one correspondence between the sets IC1 and {1, . . . , I1 · . . . · Il }.
+Similarly, to every iC2 = (il+1 , . . . , ik ) ∈ IC2 , we assign
+" k
+#
+k
+X
+Y
+IN DC2 (iC2 ) :=
+Is · (ir − 1) + 1 ∈ {1, . . . , Il+1 · . . . · Ik }.
+r=l+1
+
+s=r+1
+
+Introduce two new compound variables Y1 and Y2 that take values in the sets {1, . . . , I1 · I2 ·
+. . . · Il } and {1, . . . , Il+1 · . . . · Ik }, respectively. Consider a two-way table
+n0 = {n0j1 j2 : 1 ≤ j1 ≤ I1 · I2 · . . . · Il , 1 ≤ j2 ≤ Il+1 · . . . · Ik }
+with entries given by
+
+n0j1 j2 = nK IN DC−11 (j1 ), IN DC−12 (j2 ) .
+The table n0 has fixed row totals
+{nj1 + : 1 ≤ j1 ≤ I1 · I2 · . . . · Il } ,
+
+where nj1 + nC1 IN DC−11 (j1 ) , and column totals
+{n+j2 : 1 ≤ j2 ≤ Il+1 · . . . · Ik } ,
+
+where n+j2 nC2 IN DC−12 (j2 ) . Therefore there is a one-to-one correspondence between the
+cells in the original k-dimensional table n and the cells in the two-way table n0 . Moreover,
+there is a one-to-one correspondence between the fixed cells in n and the set of fixed cells
+in n0 . Running GSA for n assuming fixed marginals nC1 and nC2 is the same as running
+the shuttle procedure for n0 assuming fixed one-dimensional totals. This implies that the
+Fr´echet bounds in equation (32) are attained.
+29
+
+Consider a cell t ∈ T \ N and let n0 ∈ RD as it was defined in equation (2) such that
+t = n0 (i0 ), for some i0 ∈ I10 × I20 × . . . × Ik0 . If n0 ∈ RD(n), then the Fr´echet bounds for
+t = n0 (i0 ) in table n0 are
+
+
+	
+min n0C1 i0C1 , n0K\C1 i0K\C1 ≥ n0 (i0 ),
+
+
+
+	
+n0 (i0 ) ≥ min n0C1 i0C1 + n0K\C1 i0K\C1 − n∅ .
+(33)
+n0C1 and n0K\C1 are fixed marginals of n0 obtained from nC1 and nK\C1 by the same sequence
+of “category-join” operations that was necessary to transform the initial table n in n0 . Again,
+0
+0
+we have T(n ) ⊂ T(n) and Q(T(n ) ) ⊂ Q(T(n) ), thus the Fr´echet bounds in equation (33) are
+obtained by employing the shuttle procedure for the same reasons the bounds in equation
+(32) were reached.
+Now assume that n0 = nD0 , D0 ⊂ K, with t = nD0 (i0D0 ) for some i0D0 ∈ ID0 . The
+Fr´echet bounds in nD0 are given in Lemma 5.2. The table nD0 has two fixed non-overlapping
+marginals nC1 ∩D0 and nC2 ∩D0 , hence GSA reaches the Fr´echet bounds in equation (14) because
+T(nD0 ) ⊂ T(n) and Q(T(nD0 ) ) ⊂ Q(T(n) ). If n0 ∈ RD(nD0 ) n0 has two fixed marginals
+n0C1 ∩D0 and n0C2 ∩D0 obtained from nC1 ∩D0 and nC2 ∩D0 by joining categories associated with
+the variables cross-classified in n. It is sufficient to replace nD0 with n0 in equation (14) to
+calculate the Fr´echet bounds for t in table n0 .
+If the two fixed marginals are overlapping, we can assume that there exist q and l with
+1 ≤ q ≤ l ≤ k, such that C1 = {1, 2, . . . , l} and C2 = {q, q + 1, . . . , k}. Then C1 ∩ C2 =
+{q, . . . , l}. We reduce the case of two fixed overlapping marginals to the case of two fixed nonoverlapping marginals by decomposing the tables n, nC1 and nC2 in a number of hyperplanes.
+Each hyperplane of n has two non-overlapping marginals that are hyperplanes of nC1 and
+nC2 . Denote
+D1 := C1 \ C2 = {1, 2, . . . , q − 1}, and D2 := C2 \ C1 = {l + 1, l + 2, . . . , k}.
+Take the set of contingency tables
+o
+n 0 0 n 0 0
+o
+iq ,...,il
+0
+0
+iq ,...,il
+(iD1 ∪D2 ) : iD1 ∪D2 ∈ ID1 ∪D2 : iq ∈ Iq , . . . , il ∈ Il ,
+n
+= n
+where
+0
+
+0
+
+0
+
+0
+
+niq ,...,il (iD1 ∪D2 ) = niq ,...,il (i1 , . . . , iq−1 , il+1 , . . . , ik )
+= n(i1 , . . . , iq−1 , i0q , . . . , i0l , il+1 , . . . , ik ).
+0
+
+0
+
+Every table niq ,...,il has two fixed non-overlapping marginals
+n 0 0
+o
+i0 ,...,i0
+nDq 1 l = niq ,...,il (iD1 ) : iD1 ∈ ID1 ,
+30
+
+with entries given by
+0
+
+0
+
+0
+
+0
+
+niq ,...,il (iD1 ) = niq ,...,il (i1 , . . . , iq−1 )
+
+and
+
+i0 ,...,i0
+nDq 2 l
+
+n
+0
+0
+= niq ,...,il (iD2 ) : iD2
+
+
+= nC1 i1 , . . . , iq−1 , i0q , . . . , i0l ,
+o
+∈ ID2 , with entries given by
+
+
+0
+0
+0
+0
+niq ,...,il (iD2 ) niq ,...,il (il+1 , . . . , ik ) = nC2 i0q , . . . , i0l , il+1 , . . . , ik .
+0
+
+i0 ,...,i0l
+
+0
+
+Notice that the table niq ,...,il is a hyperplane of the original table n, whereas nDq 1
+hyperplane of nC1 , and
+
+i0 ,...,i0
+nDq 2 l
+
+is a
+
+is a hyperplane of nC2 . Employing the generalized shuttle
+
+algorithm for n is equivalent to employing distinct versions of the shuttle procedure for every
+
+hyperplane determined by an index i0q , . . . , i0l ∈ IC1 ∩C2 . We already showed that GSA for
+
+0
+0
+0
+0
+niq ,...,il converges to the Fr´echet bounds of the cell entry niq ,...,il i0D1 , i0D2 (compare with
+equation (32)):
+n 0 0
+ i0 ,...,i0
+o
+i ,...,i
+min nDq 1 l i0D1 , nDq 2 l i0D2 ≥
+n 0 0
+o
+
+
+
+iq ,...,il
+i0q ,...,i0l
+i0q ,...,i0l
+i0q ,...,i0l
+0
+0
+0
+0
+n
+iD1 , iD2 ≥ max nD1
+iD1 + nD2
+iD2 − n∅
+,
+(34)
+
+i0 ,...,i0
+0
+0
+where n∅q l = nC1 ∩C2 i0q , . . . , i0l is the grand total of the hyperplane niq ,...,il . Equation
+(34) can equivalently be written as
+
+
+	
+
+min nC1 i0D1 , i0q , . . . , i0l , nC2 i0q , . . . , i0l , iD2 ≥ n i0D1 , i0q , . . . , i0l , i0D2
+
+
+	
+
+≥ max 0, nC1 i0D1 , i0C1 ∩C2 + nC2 i0C1 ∩C2 , i0D2 − nC1 ∩C2 i0C1 ∩C2 .
+These inequalities represent the Fr´echet bounds for the cell count
+
+
+n i0 = n i0D1 , i0q , . . . , i0l , i0D2 .
+Now we show that any table n0 ∈ RD \
+
+2
+S
+
+S
+
+RD(nC ) can be separated in a number
+
+r=1 {C:C⊆Cr }
+
+of hyperplanes such that the two fixed marginals of every hyperplane are non-overlapping.
+Let n0 as it was defined in equation (2) and consider an arbitrary cell in n0 specified by the
+0
+0
+index (J10 , . . . , Jk0 ) ∈ I10 × . . . × Ik0 . The hyperplane n0 (Jq ,...,Jl ) of table n0 has entries
+	
+ 0
+n (J1 , . . . , Jq−1 , Jq0 , . . . , Jl0 , Jl+1 , . . . , Jk ) : Jr ∈ Ir0 ,
+for r = 1, . . . , q−1, l+1, . . . , k. The fixed overlapping marginals nC1 and nC2 induce two fixed
+0
+0
+overlapping marginals n0C1 and n0C2 of n0 . The index set of n0Cr , r = 1, 2, is I1;C
+× . . . × Ik;C
+,
+r
+r
+where
+
+Is0 ,
+if s ∈ Cr ,
+0
+Is;Cr =
+{Is }, if s ∈
+/ Cr .
+31
+
+(J 0 ,...,J 0 )
+
+(J 0 ,...,J 0 )
+
+We define the hyperplanes n0 C1q l of n0C1 and n0 C2q l of n0C2 in the same way we
+0
+0
+0
+0
+defined the hyperplane n0 (Jq ,...,Jl ) of n0 . Therefore n0 (Jq ,...,Jl ) is a table having two fixed
+(J 0 ,...,J 0 )
+(J 0 ,...,J 0 )
+non-overlapping marginals n0 C1q l and n0 C2q l . The Fr´echet bounds for n0 (J10 , . . . , Jk0 )
+coincide with the Fr´echet bounds for the cell entry
+n0
+0
+
+(Jq0 ,...,Jl0 )
+
+0
+0
+(J10 , . . . , Jq−1
+, Jl+1
+, . . . , Jk0 )
+
+0
+
+in table n0 (Jq ,...,Jl ) . Therefore Proposition 5.2 holds for any table of counts with two fixed
+marginals.
+Calculating bounds in the general decomposable case
+The set of fixed cliques defines a decomposable independence graph G = (K, E) with cliques
+C(G) and separators S(G). We prove Proposition 5.2 by induction on the number of fixed
+marginals. Because the notation tends to be quite cumbersome, we will show that the Fr´echet
+bounds for the cells in only the initial table n are attained. A similar argument can be made
+about every table in
+RD \
+
+p
+[
+
+[
+
+RD(nC ).
+
+r=1 {C:C⊆Cr }
+
+If G decomposes in p = 2 cliques, we already proved that GSA converges to the Fr´echet
+bounds in equation (12). We assume that Proposition 5.2 is true if n has at most (p−1) fixed
+marginals that induce a decomposable independence graph. We want to prove Proposition
+5.2 for an independence graph with p cliques. We take an arbitrary index i0 ∈ I that will
+remain fixed for the rest of this proof.
+The cliques of G can be numbered so that they form a perfect sequence of vertex sets
+– see Lauritzen (1996). Let Hp−1 := C1 ∪ C2 ∪ . . . ∪ Cp−1 . The subgraph G (Hp−1 ) is
+decomposable and its cliques are {C1 , . . . , Cp−1 }, while its separators are {S2 , . . . , Sp−1 }. As
+before, T = T(n) is the set of cells associated with n defined in equation (4). In an analogous
+manner we define the set of cells T(nHp−1 ) associated with the marginal table nHp−1 . The
+(n)
+set of fixed cells T0 = T0 ⊂ T induced by fixing the cell counts in the marginals nC1 , nC2 ,
+(nH )
+. . ., n of the table n includes the set of fixed cells T p−1 ⊂ T(nHp−1 ) obtained by fixing
+Cp
+
+0
+
+the marginals nC1 , nC2 , . . . , nCp−1 of the table 
+nHp−1 .
+
+nHp−1 )
+nHp−1 )
+(
+(
+(n)
+We have T
+⊂ T and Q T
+⊂ Q T(n) . This implies that, when we run
+(nH )
+(n)
+GSA for T(n) and T0 , it is as if we would run an instance ofGSA for T(nHp−1 ) and T0 p−1 .
+Every vertex in Cp \Sp = Cp \Hp−1 is simplicial in the graph G, hence Lemma 5.1 tells us that
+finding bounds for a cell in t ∈ T(nHp−1 ) given nC1 , nC2 , . . . , nCp−1 is equivalent to finding
+32
+
+bounds for t given nC1 , nC2 , . . . , nCp . We do not lose any information by not considering the
+
+marginal nCp when computing bounds for t ∈ T nHp−1 .
+From the induction hypothesis we know that GSA employed for table nHp−1 with the set
+
+
+(nH )
+of fixed cells T0 p−1 converges to the Fr´echet bounds for the cell nHp−1 i0Hp−1 :
+
+o
+
+
+n
+
+, and
+nUHp−1 i0Hp−1
+= min nC1 i0C1 , . . . , nCp−1 i0Cp−1
+( p−1
+)
+p−1
+
+
+X
+X
+
+
+nLHp−1 i0Hp−1
+= max 0,
+nCr i0Cr −
+nSr i0Sr
+.
+r=1
+
+(35)
+
+r=2
+
+
+The shuttle procedure generates feasibility intervals [Ls (t), Us (t)] for every t ∈ T nHp−1 .
+These are the tightest feasibility intervals GSA can find given the values of the cells in
+(nH )
+T0 p−1 . Because the information about the cells in the marginal nCp is not relevant for
+computing bounds for the cells in T(nHp−1 ) , GSA employed for table n converges to the same
+feasibility intervals [Ls (t), Us (t)] for every t ∈ T(nHp−1 ) .
+Since the sequence C1 , C2 , . . . , Cp is perfect in G, (Hp−1 \ Sp , Sp , Cp \ Sp ) is a proper decomposition of G – see Leimer (1993). Consider the graph G 0 = (K, E 0 ), where
+E 0 := {(u, v) : {u, v} ⊂ Hp−1 or {u, v} ⊂ Cp } .
+G 0 is a decomposable graph with two cliques Hp−1 , Cp and one separator Hp−1 ∩ Cp = Sp .
+(n)
+Running GSA for table n andnthe set of fixed cells T0 isoequivalent to running GSA for n
+given the feasibility intervals [Ls (t), Us (t)] : t ∈ T(nHp−1 ) and the set of fixed cells in T(n)
+obtained by fixing the cells in the marginal nCp .
+As a consequence, by employing the shuttle procedure for table n, we end up with the
+following Fr´echet bounds for the count n(i0 ):
+n
+
+
+ o
+U
+0
+min nHp−1 iHp−1 , nCp i0Cp
+≥ n(i0 ), and
+n
+
+
+ 
+ o
+n(i0 ) ≥ max 0, nLHp−1 i0Hp−1 + nCp i0Cp − nSp i0Sp
+.
+(36)
+It is straightforward to notice that equation (12) is obtained by combining equations (35)
+and (36). We can conclude that Proposition 5.2 is true when the set of fixed marginals are
+the minimal sufficient statistics of a decomposable log-linear model.
+
+References
+Bonferroni, C.E. (1936). “Teoria statistica delle classi e calcolo delle probabilit´a.” In
+Publicazioni del R. Instituto Superiore di Scienze Economiche e Commerciali di Firenze,
+Vol. 8, 1-62.
+33
+
+Buzzigoli, L. and Giusti, A. (1999).
+
+“An Algorithm to Calculate the Lower and Upper
+
+Bounds of the Elements of an Array Given its Marginals.” In Statistical Data Protection
+(SDP’98) Proceedings, 131–147. Eurostat, Luxembourg.
+Chen, Y., Dinwoodie, I. H., and Sullivant, S. (2006). “Sequential Importance Sampling for
+Multiway Tables.” The Annals of Statistics, 34, 523-545.
+Christensen, R. (1997).
+
+Log-linear Models and Logistic Regression.
+
+Springer Series in
+
+Statistics, Second ed. Springer-Verlag, New York.
+Cox, L. H. (1999). “Some Remarks on Research Directions in Statistical Data Protection.”
+In Statistical Data Protection (SDP’98) Proceedings, 163–176. Eurostat, Luxembourg.
+Diaconis, P. and Sturmfels, B. (1998). “Algebraic algorithms for sampling from conditional
+distributions.” Annals of Statistics, 26, 363–397.
+Dobra, A. (2001). “Statistical Tools for Disclosure Limitation in Multi-way Contingency
+Tables.” Ph.D. thesis, Department of Statistics, Carnegie Mellon University.
+— (2003). “Markov bases for decomposable graphical models.” Bernoulli , 9, 6, 1–16.
+Dobra, A. and Fienberg, S. E. (2000). “Bounds for Cell Entries in Contingency Tables
+Given Marginal Totals and Decomposable Graphs.” Proceedings of the National Academy
+of Sciences, 97, 11885–11892.
+Dobra, A., Fienberg, S. E., Rinaldo, A., Slavkovic, A. B., and Zhou, Y. (2008). “Algebraic
+Statistics and Contingency Table Problems: Estimations and Disclosure Limitation.” In
+Emerging Applications of Algebraic Geometry, eds. M. Putinar and S. Sullivant, IMA Series
+in Applied Mathematics. New York: Springer-Verlag.
+Dobra, A., Fienberg, S. E., and Trottini, M. (2003a). “Assessing the Risk of Disclosure of
+Confidential Categorical Data.” In Bayesian Statistics 7 , eds. J. Bernardo, M. Bayarri,
+J. O. Berger, A. P. Dawid, D. Heckerman, A. F. M. Smith, and M. West, 125–144. Oxford
+University Press.
+Dobra, A., Karr, A., and Sanil, A. (2003b). “Preserving Confidentiality of High-dimensional
+Tabulated Data: Statistical and Computational Issues.” Statistics and Computing, 13,
+363–370.
+Dobra, A. and Sullivant, S. (2004). “A Divide-and-conquer Algorithm for Generating Markov
+Bases of Multi-way Tables.” Computational Statistics, 19, 347–366.
+Dobra, A., Tebaldi, C., and West, M. (2006). “Data Augmentation in Multi-way Contingency Tables With Fixed Marginal Totals.” Journal of Statistical Planning and Inference,
+136, 355-372.
+34
+
+Edwards, D. E. (1992).
+
+“Linkage Analysis Using Log-linear Models.”
+
+Computational
+
+Statistics and Data Analysis, 10, 281–290.
+Edwards, D. E. and Havranek, T. (1985). “A fast procedure for model search in multidimensional contingency Tables.” Biometrika, 72, 339–351.
+Fienberg, S. E. (1999). “Fr´echet and Bonferroni Bounds for Multi-way Tables of Counts with
+Applications to Disclosure Limitation.” In Statistical Data Protection (SDP’98) Proceedings,
+115–129. Eurostat, Luxembourg.
+Fienberg, S. E. (1980). The Analysis of Cross-classified Categorical Data, Second Edition.
+MIT Press, Cambridge MA. Reprinted (2007) by Springer-Verlag, New York.
+Fienberg, S. E. and Rinaldo, A. (2007). “Three Centuries of Categorical Data Analysis:
+Log-linear Models and Maximum Likelihood Estimation.” Journal of Statistical Planning
+and Inference, 137, 3430–3445.
+Fienberg, S. E. and Slavkovic, A. B. (2004). “Making the Release of Confidential Data from
+Multi-way Tables Count.” Chance, 17, 5–10.
+Fienberg, S. E. and Slavkovic, A. B. (2005). “Preserving the Confidentiality of Categorical
+Statistical Data Bases When Releasing Information for Association Rules.” Datamining and
+Knowledge Discovery, 11, 155–180.
+´ enments Compatibles
+Fr´echet, M. (1940). “Les Probabiliti´es, Associ´ees a un Syst`eme d’Ev´
+et D´ependants.” Hermann & Cie, Paris, Vol. Premiere Partie.
+Geiger, D., Meek, C., and Sturmfels, B. (2006). “On the Toric Algebra of Graphical Models.”
+The Annals of Statistics, 34, 1463–1492.
+Guo, S. W. and Thompson, E. A. (1992). “Performing the Exact Test of Hardy-Weinberg
+Proportion for Multiple Alleles.” Biometrics, 48, 361-372.
+Haberman, S. J. (1978). Analysis of Qualitative Data. Academic Press, New York.
+Hoeffding, W. (1940). “Scale-invariant Correlation Theory.” In Schriften des Mathematischen Instituts und des Instituts f¨
+ur Angewandte Mathematik der Universit¨at Berlin, Vol.
+5(3), 181-233.
+Hosten, S. and Sturmfels, B. (2007). “Computing the Integer Programming Gap.” Combinatorica, 367–382.
+Knuth, D. (1973). The Art of Computer Programming, vol. 3. Addison–Wesley.
+Koch, G., Amara, J., Atkinson, S., and Stanish, W. (1983).
+Analysis Methods.” SAS-SUGI , 8, 785–795.
+
+35
+
+“Overview of Categorical
+
+Lauritzen, S. L. (1996). Graphical Models. Clarendon Press, Oxford.
+Leimer, H. G. (1993). “Optimal Decomposition by Clique Separators.” Discrete Mathematics, 113, 99–123.
+Manton, K. G., Corder, L., and Stallard, E. (1993). “Estimates of change in chronic disability
+and institutional incidence and prevalence rate in the U.S. elderly populations from 1982 to
+1989.” Journal of Gerontology: Social Sciences, 48, 153–166.
+Sullivant, S. (2005). “Small Contingency Tables With Large Gaps.”
+Discrete Mathematics, 18, 787–793.
+Sundberg, R. (1975).
+
+SIAM Journal of
+
+“Some results about decomposable (or Markov-type) models for
+
+multidimensional contingency tables: distribution of marginals and partitioning of tests.”
+Scandinavian Journal of Statistics, 2, 71–79.
+Vlach, M. (1986). “Conditions for the Existence of Solutions of the Three-dimensional
+Planar Transportation Problem.” Discrete Applied Mathematics, 13, 61–78.
+Whittaker, J.. (1990). Graphical Models. John Wiley & Sons.
+
+36
+
+

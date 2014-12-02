@@ -1,0 +1,1410 @@
+Binomial Autoregressive Moving Average Models with
+an Application to U.S. Recessions
+Richard Startz
+Department of Economics
+University of Washington
+Working Paper No. 56
+Center for Statistics in the Social Sciences
+University of Washington
+February 20, 2006
+
+Acknowledgements: Advice from Peter Ho¤, Chang-Jin Kim, Adrian Raftery, and Shelly
+Lundberg is gratefully acknowledged, as is research support from the Cecil and Jane Castor
+Professorship at the University of Washington. Author address: Department of Economics,
+University of Washington, Seattle, WA 98195, USA, email:startz@u.washington.edu.
+
+1
+
+Abstract
+Binary Autoregressive Moving Average (BARMA) models provide a modeling technology
+for binary time series analogous to the classic Gaussian ARMA models used for continuous data. BARMA models mitigate the curse of dimensionality found in long lag Markov
+models and allow for non-Markovian persistence. The autopersistence function (APF) and
+autopersistence graph (APG) provide analogs to the autocorrelation function and correlogram. Parameters of the BARMA model may be estimated by either maximum likelihood
+or MCMC methods. Application of the BARMA model to U.S. recession data suggests that
+a BARMA(2,2) model is superior to traditional Markov models.
+JEL Codes: C220,C250, C110.
+
+Page: 2
+
+1
+
+Introduction
+
+Binary time series are typically modeled in economics as Markov processes, most often as
+…rst-order Markov processes. In contrast, for continuous-valued time series the Gaussian
+autoregressive-moving average model is widely used. This situation persists despite the
+introduction in the statistics literature of several ARMA models for discrete variables. (An
+early paper is Jacobs and Lewis (1978). See Benjamin et. al. (2003) for the introduction
+of GARMA models, as well as a review of the literature.) In this paper I suggest a new
+practical tool for analysis of binary series: the autopersistence function and autopersistence
+graph, analogous to the standard autocorrelation function and correlogram. I then turn to
+remarks on Li’s (1994) elegant, but too little used, binary autoregressive moving average
+model. Parameters of the BARMA model may be estimated by either maximum likelihood
+or, as I show below, by MCMC methods. These tools are used to analyze quarterly data on
+U.S. recessions, which are seen to be non-Markovian.
+While an obviously valuable tool for the study of binary time series, Markov models
+su¤er from two practical shortcomings. First, they do not …t well when data have strong
+moving average components. Second, when there are long lags, Markov models face the
+curse of dimensionality. While the models discussed below can include Markov models as
+special cases, they would typically be more general in that they add in a moving average
+component. These models also provide a convenient way to place restrictions on the pure
+Markov models so as to eliminate the curse of dimensionality.
+The study of Gaussian ARMA models traditionally starts with an identi…cation step
+in which the correlogram is examined to suggest a model whose ARMA representation is
+estimated in the next step. Correlation is a natural metric for a Gaussian series, but much
+less so for a binary series. Obversely, looking at a conditional probability is more natural for
+a binary than for a continuous series, since a binary series has only two discrete values on
+which it is necessary to condition. After de…ning tools for the identi…cation step for binary
+data, I apply them to U.S. recessions. The BAR model is discussed as a way to connect
+Page: 3
+
+BARMA models with Markov models. After discussing several practical di¢ culties, the full
+BARMA model is then applied to the recession data.
+
+2
+
+The Autopersistence Function
+
+The autocorrelation function and correlogram provide useful information about the behavior
+of theoretical and empirical continuous time series. Analogously, the autopersistence function
+and autopersistence graph provide useful information about the behavior of theoretical and
+empirical binary time series.
+
+2.1
+
+ACF; Correlogram, AP F; and AP G
+
+For a stationary, ergodic, Gaussian ARM A(p; q) process, the joint distribution of T observations is completely described by the …rst n
+
+1 terms of the autocorrelation function,
+
+ACF; (together with the unconditional mean and variance). Similarly, an observed series
+is described by its correlogram. The ACF and correlogram are useful for continuous data
+even when the time series is not Gaussian. The shape of the correlogram sometimes provides a hint as to the order of the underlying ARMA process, while ACF (k) is informative
+about how quickly information in the current observation fades in a given theoretical process.
+The ACF or correlogram provides the information necessary for making a k ahead linear
+forecast from the current observation on the series. For a …rst-order autoregressive series
+the AR(1) parameter is estimated by ACF (1) and the shape of the ACF follows a familiar
+geometric decline asymptoting to zero.
+Looking at correlations is less useful as a summary statistic for a binary series than it is
+for continuous series. However, looking at k ahead conditional probabilities is useful and is
+feasible since one need only condition on two values rather than on a continuum.
+For an ergodic, binary time series y, where w.o.l.g. y takes the values 0 and 1, the appropriate analog to the ACF is the pair of autopersistence functions, AP F 0 (k)
+
+Pr (yt+k = 1 jyt = 0 )
+Page: 4
+
+and AP F 1 (k)
+
+Pr (yt+k = 1 jyt = 1). The autopersistence graphs AP G0 and AP G1 are, by
+
+analogy to the correlogram, the empirical counterparts to the AP F and may be estimated
+by the appropriate sample conditional means. While the AP F does not completely describe
+the joint distribution of an ergodic series (nor does the ACF for a continuous series except
+in the Gaussian case), the shape of the AP G may provide a hint about the order of an
+appropriate BARMA process. AP F (k) is informative about how quickly information in the
+current observation fades. The AP F or AP G provides the information necessary for making
+a k ahead forecast from the current observation on the series. For a …rst-order Markov
+process the two transition probabilities are estimated by ACF 0 (1) and ACF 1 (1); and the
+shape of the ACF follows a familiar geometric decline asymptoting to the unconditional
+mean.
+
+2.2
+
+U.S. Recession Data
+
+Figure 1 shows the AP G for U.S. recessions. The oscillating nature of the AP G; being
+very unlike a geometric decline, suggests that a …rst-order Markov is not a good model for
+this data. With this as a motivating example, we begin with theory and then return to an
+empirical examination of recession data in Section 8.
+
+3
+
+Binary Autoregressive Models
+
+For what follows, it is useful to recast the pth -order Markov model in an autoregressive framework. The Binary Autoregressive with Cross-terms model of order p, BARX(p), suggested
+
+Page: 5
+
+Figure 1:
+by Zeger and Qaqish (1988) can be written
+
+t
+
+=
+
+0
+
++ Ip
+
+1
+p
+
++Ip
+
+3
+
+p
+X
+i=1
+p
+
+i yt i
+
++ Ip
+
+2
+
+p
+p
+X
+X
+
+ij
+
+(yt
+
+i
+
+yt j )
+
+i=1 j=i+1
+
+p
+
+X X X
+
+ijk
+
+(yt
+
+i
+
+yt
+
+j
+
+yt j ) + : : :
+
+i=1 j=i+1 k=j+1
+
+e
+1+e
+t
+
+Pr (yt j t ; yt 1 ; yt 2 ; : : : yt
+where Ip
+
+i
+
+t
+
+=
+
+p)
+
+=
+
+t
+
+t
+
+is the indicator function. In other words, the model includes all the unique lags
+
+and lagged cross-terms through lag p. The log-likelihood equals
+
+$=
+
+T
+X
+
+(yt log
+
+t
+
++ (1
+
+yt ) log (1
+
+t ))
+
+t=1
+
+The BARX(p) model is an alternative representation of the pth -order Markov model
+and one can map back and forth between the parameters of the BARX and the Markov
+representations. The BARX approach has two minor disadvantages relative to the familiar
+
+Page: 6
+
+M arkov(p) representation: transition probabilities on the edge of the parameter space, 0 or
+!
+1, require in…nite values for the BARX parameters, and the interpretation of 0 and is less
+familiar than direct statement of the transition probabilities. The advantage of the BARX
+representation is that it provides a natural starting point for moving away from unrestricted
+Markov models.
+The di¢ culty with application of the pth -order Markov model is that it requires 2p parameters to capture p lags of behavior, which is impractical for even modest sizes of p. As
+a remedy, Raftery (1985) suggested the MTD model to impose linear restrictions on the
+Markov transition probabilities to reduce the size of the parameter space from 2p to p. Similarly, the Binary Autoregressive model of order p, BAR(p), imposes linear restrictions on
+the BARX(p) model in the form of zero restrictions on cross-terms, substituting
+
+t
+
+=
+
+0
+
++
+
+1 yt 1
+
++
+
+2 yt 2
+
++
+
++
+
+p yt p
+
+In the BAR model, restrictions are linear in logits of the transition probabilities rather
+than in the transition probabilities themselves. Models intermediate between BAR(p) and
+BARX(p) may be speci…ed in a natural way, for example by including cross-pairs but not
+cross-triples or higher.
+Use of the logit link function,
+
+t
+
+=
+
+e t
+1+e
+
+t
+
+; is convenient but a di¤erent link function could
+
+also be used. For example, a standard normal CDF would lead to a probit-based model.
+Eichengreen et. al. (1985) present a dynamic probit model. de Jong and Woutersen (2005)
+examine the asymptotic properties of estimates of related models.
+
+4
+
+Binary Autoregressive-Moving Average Models
+
+Markov models do not give an adequate representation of the persistence of recessions. The
+APG in Figure 1 crosses the unconditional mean approximately one year out, and then
+shows damped, but considerable, oscillation. While a second-order Markov model could in
+Page: 7
+
+principle produce oscillations in the AP F , that does not happen at our estimated parameters
+(see below). This suggests considering non-Markovian models.
+Li (1994) suggested formulating the BARM A (p; q) model as
+
+t
+
+=
+
+0+
+
+p
+X
+
+i yt
+
+i+
+
+i
+
+t i
+
+i
+
+yt
+
+i
+
+t i
+
+i=1
+
+i=1
+
+where yt
+
+p
+X
+
+plays a role analogous to the innovation in a continuous ARMA model.
+
+The BARMA model can be extended by adding cross-terms as in the BARX model above
+and/or by Li’s suggestion of replacing
+
+0
+
+with a covariates term Xt . The moving average
+
+component is in the class described by Cox (1981) as observation-driven.
+The BARM A (p; q) model can be estimated by quasi-maximum likelihood. Li suggests
+setting the initial q values of
+values of
+
+t
+
+t
+
+to zero or to the sample mean of y. One could also set initial
+
+to 0.5 or initial values of yt
+
+sample mean of y for initial values of
+
+5
+
+t
+
+to zero. (The estimates in this paper use the
+
+t .)
+
+Practical Considerations
+
+We turn now to some practical considerations in use of the BARMA model, as illustrated
+with our recession data.
+
+5.1
+
+Three practical considerations for the BAR model
+
+Parameterization of the BAR in terms of logits on transition probabilities raises three practical considerations, each of which arises with our sample data. The …rst issue is what happens
+when the estimated parameters are on the edge of the permissible space. For our recession
+2 data, the transition
+3 probabilities for a second-order Markov are pr (yt = 1 jyt 2 ; yt 1 ) =
+0
+60:090141
+7
+4
+5, so two of the four parameters take limiting values. The BARX(2)
+1
+0:824176
+representation is 0 = 2:49268; 1 = 1; 2 = 1; 12 = 4:03758. Estimation of the
+Page: 8
+
+BARX(2) represents no di¢ culty, as large values of
+user remembers that
+
+= 25 and
+
+are e¤ectively in…nite, so long as the
+
+= 2500 mean the same thing. Likelihood values are
+
+computed correctly.
+The second practical issue that can arise is dealing with empty cell counts. For example, despite having 600 observations for our recession data, the eight sample transition
+probabilities for a third-order Markov process produce two empty cells (plus, as it happens,
+four cells with 0 or 1 probabilities and two interior values.) Therefore, some parameters in
+the M arkov(3)=BARX(3) representation are unidenti…ed. Although this does not prevent
+calculation of the likelihood function, use of a likelihood value based on unidenti…ed parameters for testing may be unwise. Further, having unidenti…ed parameters is problematic in
+analysis and simulation of the estimated process, since these require values for the cells that
+were unobserved in the sample. The linear restrictions implicit in the BAR model reduce the
+information required for parameter identi…cation so that the BAR model is generally unaffected by the presence of empty cells. As it happens, our data has a BAR(3) representation
+with an identical likelihood value as the third-order Markov.
+5.1.1
+
+BAR 2nd partials
+
+The third practical consideration regards both calculation of Wald statistics and the behavior
+of search algorithms when parameters are on the edge of the permissible space. Both issues
+require looking at the second partials of the log-likelihood function, computation of which
+can be problematic. For the BAR (p) model, the observation-by-observation contributions
+to the second partials for
+
+0;
+
+and
+
+1;
+
+t
+
+(1
+
+Consider what happens when
+
+1
+
+2
+
+are
+2
+61 yt
+6
+6 y2
+t) 6
+t
+4
+
+1
+1
+
+yt
+
+3
+
+7
+7
+yt 1 yt 2 7
+7
+5
+yt2 2
+
+is large. When yt
+
+1
+
+2
+
+= 1; then
+
+t
+
+1 and (1
+
+t)
+
+0
+
+Page: 9
+
+(except possibly in special cases where o¤setting values of
+Since (1
+
+t)
+
+i;
+
+j
+
+lead to interior values of
+
+t ).
+
+0, the contribution to the second diagonal element in the second-partials
+
+matrix equals zero. When yt
+
+1
+
+= 0; the second diagonal element equals zero as well. As a
+
+result, the estimated information matrix is singular. It follows that the traditional estimates
+of the variance-covariance matrix of the parameters is unavailable, as are the associated Wald
+tests.
+Having a singular information matrix when the maximum likelihood estimate of
+
+1
+
+is
+
+large may be regarded as a desirable feature. Since the mle parameter estimates do not
+follow the standard distributions at the edge of the permissible parameter space, variance
+estimates and Wald tests may well be misleading. However, the estimated log-likelihood is
+also ‡at for extreme values of
+
+examined in the search process even though these values are
+
+very far from the mle. As a result, standard search algorithms which rely on second partials
+can become “stuck”in areas of the parameter space far from the optimum. Modi…cation of
+such algorithms or manual intervention in the search process may be needed.
+
+5.2
+
+Practical analysis of the BARMA and BMA models
+
+Unlike the Gaussian ARMA model, the BARMA model is inherently nonlinear, and does
+not directly translate between AR and MA representations. Because of the logit link, there
+are no pleasant analytic solutions for the AP F , autocorrelations, or even the unconditional
+mean.
+While a BAR (p) model always has a pth order Markov representation, for which there
+are a variety of tools available, a model with a BMA component does not. Fortunately,
+given the recursive nature of the BARMA speci…cation the AP F , etc., can be drawn by
+straightforward numerical simulation, starting at arbitrary initial values, discarding the …rst
+few draws, and then using simulation sample averages for the desired statistic.1
+1
+
+Such a simulation assumes that the process does not have an absorbing state. In economics this is not
+an issue as the usual assumption is that we are sampling from a time series process with a very long history,
+implying that if the process has an absorbing state our entire sample will be in the absorbing state. In other
+
+Page: 10
+
+Interpretation of magnitudes for BARMA coe¢ cients is less neat than for Gaussian
+ARMA models, but some examples provide intuition. A BARMA coe¢ cient gives the change
+in the log odds ratio when the corresponding data lag equals 1 rather than 0. For a BAR (1)
+with
+
+0
+
+implies
+
+= 0; for example, observing yt
+= :73 for
+
+= 1:0 and
+
+= 0 implies
+
+= :9 for
+
+= :99 for
+
+1
+
+= 4:60:) For
+
+mean from 0:1 to 0:9. For
+
+0
+
+= 2:2;
+
+1
+
+= 2:95 and
+
+1
+
+1
+
+1
+
+1
+0
+
+= 0:5, while observing yt
+
+= 2:2: (As additional examples,
+=
+
+2:2;
+
+1
+
+1
+
+= 1
+
+= :95 for
+
+= 4:4 switches the conditional
+
+= 4:4 switches the conditional mean from 0:9 to
+
+0:999. This suggests as a rule of thumb that BARMA coe¢ cients above 1 are “large” and
+coe¢ cients in the high single digits are very large.
+The AP F for a BM A (q) model returns to the unconditional mean (and the autocorrelation function goes to zero after q lags)–almost. Because of the curvature of the logit function,
+the AP F (k) for k > q can di¤er very slightly from the unconditional mean. Consider Li’s
+simulation of a BM A (1) with parameters
+
+0
+
+= 1 and
+
+1
+
+= 0:8, for which he states “insignif-
+
+icant autocorrelations after lag one...are typical.”The left hand panel of Figure 2 shows the
+AP F and autocorrelation function (for 2,000 simulations) for Li’s parameters, con…rming his
+claims. As a contrast, the right hand panel shows the APF and autocorrelation function for
+0
+
+=
+
+2:2 and
+
+1
+
+= 4:4. The unconditional expectation of y is 0.136. The …rst two values of
+
+AP F 1 are 0.539 and 0.160; so AP F 1 (2) is measurably above the unconditional expectation.
+Similarly ACF (2) = 0:028; which is not quite zero. Thus, while pure BMA models do not
+formally have the same …nite autocorrelation function property found for Gaussian models,
+the deviation is so small as to be unlikely to have much practical consequence.
+
+6
+
+Goodness of Fit Measures
+
+Comparison of a model’s AP F with the empirical AP G is one way to evaluate model adequacy. Scalar goodness of …t measures are also useful. One obvious measure is McFadden’s
+2
+(1974) RM
+
+1
+
+b
+$
+,
+$0
+
+b is the maximized model log-likelihood and $0 is the restricted
+where $
+
+areas the issue of an absorbing state may be more problematic.
+
+Page: 11
+
+Figure 2:
+
+log-likelihood from maximizing
+
+t
+
+=
+
+Another measure is the predictive Rp2
+
+0,
+
+in other words from simply using the sample mean.
+1
+
+P
+(y
+P t
+(yt
+
+2
+t)
+2
+
+)
+
+, where
+
+is the sample mean, due to
+
+Efron (1978). If one’s interest is forecasting and one has a mean square error loss function,
+then Rp2 is the appropriate in-sample goodness of …t measure.
+
+7
+
+Gibbs Sampling
+
+Estimation of the BARMA model by Gibbs sampling makes available the set of tools associated with MCMC methods. Additionally Gibbs sampling avoids the computational issues
+described above. The approach here is similar to Gibbs sampling for probits. (See Albert and
+Chib (1993) or the expository presentation in Koop (2003).) The model is augmented with
+a latent variable
+
+, and sampling proceeds in two blocks. In the …rst block,
+
+is e¤ectively
+
+regressed on the right-hand side of the BARMA model to draw the BARMA parameters.
+Here, a di¤use prior is assumed. Any prior applicable to a regression could be used. In the
+second block, the latent
+
+are drawn from truncated logits.
+Page: 12
+
+To motivate the latent variable model, assume that nature draws zt
+yt = 1 i¤
+
+t
+
+latent variable
+
+1
+
+> zt : This is equivalent to g
+t
+
+=g
+
+1
+
+( t)
+
+1
+
+g
+
+( t) > g
+
+1
+
+(zt ) ; where g =
+
+(zt ) ; so that yt = 1 i¤
+
+t
+
+uniform (0; 1) and
+e t
+1+e
+
+t
+
+. De…ne the
+
+> 0: We can then rewrite, the
+
+BARMA equation as a linear regression
+
+t
+
+=
+
+0
+
++
+
+p
+X
+
+i yt i
+
++
+
+q
+X
+
+i
+
+yt
+
+i
+
+t i
+
+g
+
+1
+
+(zt )
+
+(1)
+
+i=1
+
+i=1
+
+The Gibbs sampler consists of an initialization block followed by iteration between drawing regression coe¢ cients and drawing
+
+7.1
+
+.
+
+Initialization
+
+t
+
+= yt ; for t > max (p; q)
+
+= mean (y) ; for t
+
+t
+
+mean (p; q)
+
+uniform (0; 1) ; for t > max (p; q)
+
+t
+t
+t
+
+= mean (y) ; for t
+
+=
+
+log
+
+1
+
+t
+
+; for t
+
+max (p; q)
+max (p; q)
+
+t
+
+7.2
+
+Draw BARMA parameters
+
+Discarding the …rst max (p; q) observations, create X where the …rst column equals 1.0,
+followed by p columns of lags of y; followed by q columns of y
+
+:
+
+Page: 13
+
+~b
+
+N
+
+0
+
+= ~b0
+
+(X 0 X)
+
+1
+
+2
+
+X0 ;
+
+3
+
+(X 0 X)
+
+1
+
+(2)
+
+= ~b1:::p
+= ~bp+1:::q
+
+Note that the variance of the logistic distribution is
+
+2
+
+3
+
+:
+
+Two approximations are used in this block. First, we assume the regression parameters
+to be multivariate normal, even though the errors are logistic rather than normal, which
+is not a problem for reasonably sized samples. Second, calculation of
+
+requires using the
+
+previous draw of the BARMA parameters. As a practical matter, this does not appear to
+be of any consequence.
+
+7.3
+
+Draw latent
+
+Let F R ( ) be the logistic distribution with mean
+
+right-truncated at zero and let F L () be
+
+the corresponding left-truncated distribution. Compute
+
+t
+
+parameters and observed states and then draw the latent
+
+t
+
+F R ( t ) ; if St = 0
+
+t
+
+F L ( t ) ; if St = 1
+
+based on the estimated BARMA
+t
+
+according to
+
+(3)
+
+The regression draw and latent draw blocks are repeated until a su¢ cient size sample is
+collected.
+
+Page: 14
+
+8
+
+Application to U.S. Recessions
+
+Recessions in the United States are identi…ed by the Business Cycle Dating Committee of
+the National Bureau of Economic Research (NBER). “A recession is a signi…cant decline
+in economic activity spread across the economy, lasting more than a few months, normally
+visible in real GDP, real income, employment, industrial production, and wholesale-retail
+sales.”2 The NBER identi…es 32 recessions since 1854, the shortest being 6 months in length
+and the longest being 65 months.
+
+Figure 3:
+
+Figure 3 shows the 602 quarterly observations given in the NBER recession chronology,
+with recession periods shown by shaded areas. In addition, horizontal lines are drawn showing the mean probability of the United States being in recession through 1945, and then,
+separately, in the post-War period. While the NBER dates recessions on a monthly basis,
+quarterly data is used here. (By convention, a quarter is coded with a 1 for recession is any
+month in the quarter is identi…ed by the NBER as being in a recession.) This is done for
+2
+
+Business Cycle Dating Committee, NBER, October 21, 2003 statement
+
+Page: 15
+
+two reasons. First, as most national income accounting data is quarterly, particularly GDP,
+much statistical modeling of recessions is quarterly. Second, the notion that recessions last
+“more than a few months” is typically interpreted as a six month minimum, so a monthly
+series is necessarily di¢ cult to …t well with a low order Markov model.
+Starting from a standard 1st -order Markov model as a benchmark, we see what extra
+light can be shed by turning to BAR and BARMA models of recessions.
+
+8.1
+
+Autoregressive Recession Models
+
+The natural starting point for analysis of the time series of U.S. recessions is with a Markov
+model. Table 1 shows the estimates for Markov models of order 0 through 3.
+
+P (yt j(yt
+
+1 ; yt 2 ; yt 3 ) )
+
+3 rd -order Markov
+2 nd -order Markov
+1 st -order Markov
+
+mean
+
+2
+RM
+
+Rp2
+
+181:99
+
+:53
+
+:61
+
+192:05
+
+:51
+
+:60
+
+200:60
+
+:49
+
+:59
+
+390:89
+
+0
+
+0
+
+(0; 0; 0)
+
+(0; 0; 1)
+
+(0; 1; 0)
+
+(0; 1; 1)
+
+(1; 0; 0)
+
+(1; 0; 1)
+
+(1; 1; 0)
+
+(1; 1; 1)
+
+logL
+
+0:0994
+
+0
+
+NA
+
+0
+
+1:0
+
+NA
+
+1:0
+
+0:7867
+
+0:0901
+
+0
+
+1:0
+
+0:0829
+
+0:8242
+
+0:8505
+
+0:3567
+
+Markov Models of U.S. Recessions - Table 1
+The 1st -order Markov order model is clearly preferred to a constant mean. The 2nd order Markov model has a much higher log-likelihood than does the 1st -order Markov. Note
+that two of the parameters in the 2nd -order model are on the edge of the parameter space.
+The 3rd -order Markov model has a yet higher log-likelihood. Note that four of the eight
+parameters are 0 or 1 and, more problematically, two of the parameters are not identi…ed.
+Moving from low-order to higher-order Markov models improves the log-likelihood function. However, neither of the R2 goodness of …t measures is very much improved. What’s
+more, the APF for the 1st and 2nd -order models are quite similar to one another (Figure 4)
+
+Page: 16
+
+and not at all like the empirical APG shown in Figure 1.3
+
+Figure 4:
+
+The results for the Markov models hint that longer lags matter, but that 600 observations
+is insu¢ cient to estimate a high-order Markov model. Figure 5 shows the APFs for BAR(1),
+BAR(2), and BAR(3) models. BAR(1) and 1st -order Markov models are necessarily the
+same. Coincidentally, the four parameter 2nd -order Markov can be represented exactly by a
+three parameter BAR(2) (
+
+0
+
+=
+
+2:31;
+
+1
+
+= ;
+
+2
+
+=
+
++ 3:86; for any very large value of
+
+:), so for this data the two are equivalent. Serendipitously (all its parameters are identi…ed),
+the four parameter BAR(3) (
+
+0
+
+=
+
+2:20;
+
+1
+
+= ;
+
+2
+
+= 0;
+
+3
+
+=
+
++ 3:51; for large :) has
+
+the same log likelihood value as the eight parameter 3rd -order Markov model. The BAR(3)
+APF returns to the unconditional mean somewhat faster than does the lower-order models
+and shows a shade of the APF crossing property that is prominent in the empirical APG.
+3
+
+The AP F for the 3rd -order Markov model cannot be calculated since some of the parameters are unknown.
+
+Page: 17
+
+Figure 5:
+
+8.2
+
+BARMA Recession Models
+
+Can we …nd a parsimonious BARMA model for understanding recessions which improves on
+the Markov models? Since it is clear from the APG that some autoregressive component
+exists, pure BMA models are not useful candidates. We present three low-order BARMA
+models here, as shown in Table 2. The log-likelihood of the BARM A(1; 1) model is noticeably larger than the log-likelihood of the nested BARM A(1; 0) model, i.e. the 1st -order
+Markov order model shown in Table 1. The same is true in comparing BARM A(2; 1) to
+BARM A(2; 0): Figure 6 displays two APFs. The BARM A(1; 1) APF looks pretty much
+2
+like the BARM A(1; 0) APF. However, while RM
+shows little di¤erence between the BAR
+
+and BARMA models, Rp2 is notably lower for the BARMA models.
+
+Page: 18
+
+0
+
+1
+
+2
+
+1
+
+BARM A(2; 2)
+
+2:62
+
+42:54
+
+37:58
+
+9:53
+
+BARM A(2; 1)
+
+2:67
+
+18:84
+
+13:95
+
+4:51
+
+BARM A(1; 1)
+
+2:183
+
+3:53
+
+2:13
+
+2
+
+5:20
+
+2
+RM
+
+Rp2
+
+180:78
+
+:54
+
+:61
+
+187:53
+
+:52
+
+:27
+
+195:94
+
+:50
+
+:24
+
+logL
+
+BARMA Models of U.S. Recessions - Table 2
+
+Figure 6:
+
+2
+The BARM A(2; 2) model has essentially the same likelihood value, RM
+, and Rp2 as the
+
+3rd -order Markov/BAR(3) model. Figure 7 shows the BARM A(2; 2) AP F next to the
+empirical AP G. The match is closer than for earlier models. Based on the slightly higher
+likelihood value for the BARM A(2; 2) model and the better match of the AP F to AP G;
+the BARMA model is clearly preferred to an unrestricted Markov model, and arguably to
+the restricted BAR(3) as well.
+
+Page: 19
+
+It is unknown whether methods of lag length determination employed for other ARMA
+models work well for BARMA models. For the record, the likelihood ratio statistic for a
+BARM A(2; 2) versus BARM A(2; 4) equals 4.97, which corresponds to a p-value of 0.08.
+
+Figure 7:
+
+8.3
+
+Gibbs Sampling
+
+A BARM A (2; 2) model was estimated by Gibbs sampling, discarding 1,000 draws and retaining 10,000. Note that the maximum likelihood estimates in Table 2 show e¤ectively
+in…nite values for both the BAR summing to 5.0. Figure 8 presents posterior medians and
+histograms. The results of the Gibbs sampler are quite close to the mle results. The BAR
+coe¢ cients are e¤ectively in…nite. Note that the median of
+mate and clearly positive. The distribution of
+the distribution of
+
+2
+
+1
+
+1
+
++
+
+2
+
+is close to the mle esti-
+
+is almost entirely to the left of zero and
+
+is almost entirely to the right. The posterior for
+
+1
+
++
+
+2
+
+has greater
+
+spread and the median is somewhat farther from the mle.
+
+Page: 20
+
+Figure 8:
+
+8.4
+
+Structural Break in the Recession Process
+
+From visual inspection of Figure 3 it appears that pre-War and post-War business cycles are
+di¤erent. (The choice of 1945 as a break date re‡ects the NBER’s use of 1945 as a break in
+presenting summary statistics.) Since the end of World War II, the U.S. economy has spent
+a lower proportion of time in recessions. Contractions have been shorter and expansions
+have been longer.
+BARM A(2; 2)
+
+0
+
+1
+
+2
+
+1
+
+2
+
+logL
+
+2
+RM
+
+Rp2
+
+all
+
+2:62
+
+42:54
+
+37:58
+
+9:53
+
+5:20
+
+180:78
+
+:54
+
+:61
+
+pre-1945
+
+2:64
+
+24:30
+
+19:06
+
+10:46
+
+4:50
+
+114:52
+
+:54
+
+:55
+
+1945-
+
+2:97
+
+24:65
+
+20:10
+
+7:12
+
+3:30
+
+56:20
+
+:54
+
+:61
+
+BARM A(2; 2) Models of U.S. Recessions - Table 3
+Page: 21
+
+The likelihood ratio statistic on the null of no break equals 20.12, with an associated
+p-value of 0.001. Figure 9 shows the separate APFs. The shapes change modestly, with the
+primary di¤erence being the the lower post-War mean re‡ecting the lower value of
+
+0.
+
+Figure 9:
+
+9
+
+Conclusion
+
+The BARM A(2; 2) model is a substantial improvement over the traditional Markov model for
+U.S. recession data. More generally, the BARMA model is a useful extension to the statistical
+toolbox for modeling binary series over time. Its principal advantages are the ability to
+estimate restricted Markov models to circumvent the curse of dimensionality, and the ability
+to model non-Markovian processes. The autopersistence function and autopersistence graph
+provide graphical tools analogous to the autocorrelation function and correlogram used for
+Gaussian ARMA models.
+Page: 22
+
+The BARMA model can also be embedded in an unobserved state-switching model (see
+Kim and Startz (2006)), extending the work of Hamilton (1989) to a non-Markovian framework.
+
+Page: 23
+
+10
+
+References
+
+Albert. J.H and Chib, S. (1993), “Bayesian Analysis of Binary and Polychotomous Response
+Data,”Journal of the American Statistical Society, 89, 669-679.
+Benjamin, M.A., Rigby, R.A., and Stasinopoulos, D.M. (2003), “Generalized Autoregressive Moving Average Models,”Journal of the American Statistical Society, 98, 214-223.
+Cox, D.R. (1981), “Statistical Analysis of Time Series: Some Recent Developments,”
+Scandinavian Journal of Statistics, 8, 93-115.
+de Jong, R.M. and Woutersen, T.M. (2005), “Dynamic Time Series Binary Choice,”
+Department of Economics, Ohio State University working paper.
+Efron, B. (1978), “Regression and ANOVA with Zero-One Data: Measures of Residual
+Variation,”Journal of the American Statistical Association, 73, 113-212.
+Eichengreen, B., Watson, M.W., and Grossman, R.S. (1985), “Bank Rate Policy Under
+the Interwar Gold Standard,”The Economic Journal, 95, 725-745.
+Hamilton, J.D., (1989), “A New Approach to the Economic Analysis of Nonstationary
+Time Series and the Business Cycle,”Econometrica, 57, 357-384.
+Jacobs, P.A. and Lewis, P.A.W. (1978), “Discrete Time Series Generated By Mixture,
+I: Correlational and runs properties,” Journal of the Royal Statistical Society, Series B 40,
+94-105.
+Kim, C.J. and Startz, R. (2006), “Estimation of Unobserved Binomial Autoregressive
+Moving Average Switching Models,” Department of Economics, University of Washington
+Working Paper.
+Koop, Gary (2003), Bayesian Econometrics, John Wiley & Sons.
+Li, W.K. (1994), “Time Series Models Based on Generalized Linear Models: Some Further
+Results,”Biometrics, 50, 506-511.
+McFadden, D.(1974), “The Measurement of Urban Demand Travel,” Journal of Public
+Economics, 3, 303-328.
+Raftery, A. E. (1985). “A Model for High-Order Markov Chains,” J. Roy. Statist. Soc.
+Page: 24
+
+Ser. B, 47, 528–539.
+Zeger, S.L. and Qaqish, B. (1988), “Markov Regression Models for time series: A quasilikelihood approach,”Biometrics, 44, 1019-1031.
+
+Page: 25
+
+

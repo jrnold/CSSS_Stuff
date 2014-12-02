@@ -1,0 +1,3477 @@
+Estimating Demographic Parameters with Uncertainty
+from Fragmentary Data ∗
+Mark C. Wheldon, Adrian E. Raftery, Samuel J. Clark
+University of Washington
+Patrick Gerland
+United Nations Population Division
+
+Working Paper no. 108
+Center for Statistics and the Social Sciences
+University of Washington
+March 1, 2011
+
+∗
+
+Mark C. Wheldon is a PhD. candidate in the Department of Statistics, University of Washington, Seattle, WA 98195 (e-mail: mwheldon@uw.edu); Adrian E. Raftery is Professor of Statistics and Sociology at the
+University of Washington (e-mail: raftery@u.washington.edu); Samuel J. Clark is an Assistant Professor in
+the Department of Sociology at the University of Washington and Researcher at the Institute of Behavioral
+Science (IBS), University of Colorado at Boulder, CO, USA and MRC/Wits Rural Public Health and Health
+Transitions Research Unit (Agincourt), School of Public Health, Faculty of Health Sciences, University of
+the Witwatersrand, Johannesburg, South Africa (e-mail: samclark@u.washington.edu); and Patrick Gerland
+is a Population Affairs Officer with the United Nations Department of Economic and Social Affairs, Population Division, New York, NY 10017 (e-mail: gerland@un.org). This work was supported by grants R01
+HD054511 and K01 HD057246 from the Eunice Kennedy Shriver National Institute of Child Health and
+Human Development. The views and opinions expressed in this paper are those of the authors and do not
+necessarily represent those of the United Nations. This paper has not been formally edited and cleared by
+the United Nations.
+
+1
+
+Abstract
+Current methods for reconstructing human population structures of the past are
+deterministic or do not formally account for measurement error. We propose a method
+for simultaneously estimating age-specific population counts, fertility rates, mortality
+rates and net international migration flows from fragmentary data, that incorporates
+measurement error. Inference is based on joint posterior probability distributions which
+yield fully probabilistic interval estimates. It is designed for the kind of data commonly
+collected in modern demographic surveys and censuses. Population dynamics over the
+period of reconstruction are modeled by embedding formal demographic accounting relationships in a Bayesian hierarchical model. Informative priors are specified for vital
+rates, migration rates, population counts at baseline, and the accuracies of their respective measurements. We investigate calibration of central posterior marginal probability
+intervals by simulation and demonstrate the method by reconstructing the female population of Burkina Faso from 1960 to 2000.
+KEY WORDS:
+
+Bayesian hierarchical model; Cohort component model;
+Fertility rate; Markov chain Monte Carlo;
+International migration; Mortality rate.
+
+2
+
+CONTENTS
+1 INTRODUCTION
+
+5
+
+2 METHODS OF RECONSTRUCTION IN DEMOGRAPHY
+
+6
+
+3 METHOD
+3.1 Notation and Terminology . . . . . . . .
+3.2 Model Description . . . . . . . . . . . .
+3.2.1 A Hierarchical Model . . . . . . .
+3.2.2 Determining the Hyperparameters
+3.2.3 Summary of Model . . . . . . . .
+3.3 Estimation . . . . . . . . . . . . . . . . .
+4 SIMULATION STUDY
+4.1 Method . . . . . . . .
+4.1.1 Inputs . . . . .
+4.1.2 Study Design .
+4.2 Results and Discussion
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+5 BURKINA FASO, 1960–2000
+5.1 Data . . . . . . . . . . . . .
+5.1.1 Population Counts .
+5.1.2 Fertility . . . . . . .
+5.1.3 Mortality . . . . . .
+5.1.4 Migration . . . . . .
+5.2 Results . . . . . . . . . . . .
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+7
+8
+9
+9
+10
+12
+13
+
+.
+.
+.
+.
+
+13
+13
+13
+15
+16
+
+.
+.
+.
+.
+.
+.
+
+19
+19
+19
+19
+20
+24
+24
+
+6 DISCUSSION
+
+32
+
+LIST OF TABLES
+1
+2
+3
+4
+
+True Vital Rates Used in the Simulation Study. . . . . . . . . . . . . . . . .
+True Population Counts Used in Simulation Study. . . . . . . . . . . . . . .
+Hyperparameter Details. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Estimated Coverage Probabilities of 95 Percent Posterior Intervals for all Demographic Parameters of Interest. . . . . . . . . . . . . . . . . . . . . . . . .
+
+14
+15
+16
+17
+
+LIST OF FIGURES
+1
+2
+
+Schematic Showing the Relationships Between Parameters, Measurements and
+the CCMPP in the Estimation Model. . . . . . . . . . . . . . . . . . . . . .
+Ninety-five Percent Central Credible Intervals for Selected Parameters From
+a Single Replication of the Simulation Study. . . . . . . . . . . . . . . . . . .
+
+3
+
+11
+18
+
+3
+4
+5
+6
+7
+
+8
+
+9
+10
+11
+
+Data Points for the Age-Specific Fertility Patterns of Burkina Faso Women,
+1960–2000, Grouped By on Five-year Sub-Interval. . . . . . . . . . . . . . .
+Data Points for the Age-Specific Fertility Patterns of Burkina Faso Women,
+1960–2000, Grouped by Five-year Age Group. . . . . . . . . . . . . . . . . .
+Ninety-five Percent Central Marginal Posterior Intervals for Initial Age-specific
+Population Counts for the Female Population of Burkina Faso, 1960. . . . .
+Ninety-five Percent Central Marginal Posterior Intervals for Age-specific Fertility Rates for the Female Population of Burkina Faso, 1960–2005. . . . . .
+Ninety-five Percent Central Marginal Posterior Interals for the Age-specific
+Mortality Rates for the Female Population of Burkina Faso, Ages 0–59, 1960–
+2005. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Ninety-five Percent Central Marginal Posterior Interals for the Age-specific
+Mortality Rates for the Female Population of Burkina Faso, Ages 60 and
+Over, 1960–2005. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Ninety-five Percent Central Marginal Posterior Intervals for Age-specific Net
+Migration Proportions for the Female Population of Burkina Faso, 1960–2005.
+Ninety-five Percent Central Marginal Posterior Intervals for Population Counts
+for the Female Population of Burkina Faso, 1960–2005. . . . . . . . . . . . .
+Ninety-five Percent Central Credible Intervals for Selected Age-summarized
+Parameters for the Female Population of Burkina Faso, 1960–2005. . . . . .
+
+4
+
+21
+22
+25
+26
+
+27
+
+28
+29
+30
+31
+
+1.
+
+INTRODUCTION
+
+Every two years the United Nations Population Division (UNPD) publishes detailed estimates of key demographic parameters for all countries in the world; they appear in the
+United Nations World Population Prospects (UNWPP; e.g., United Nations 2009). The parameters reported include age-specific fertility and mortality rates (vital rates), population
+counts and international migration rates. These figures are used for the development and
+assessment of policy by the United Nations (UN), national governments, researchers, journalists and many other groups. They and are of particular importance for countries that
+lack their own well-resourced official statistical systems. For many of these countries, the
+UNPD is a key partner in the process of compiling, analyzing and publishing the data.
+The United Nations World Population Prospects (UNWPP) tables can be classified into
+two broad groups, known as estimates and projections. Projections are predictions about
+demographic parameters in the future, while estimates concern population structures of the
+past. We will use the term reconstruction which we find less ambiguous. Nevertheless, use
+of the term “estimate” agrees with standard usage in statistics; data about demographic
+parameters in the past are used to estimate the true values. Between the biennial editions
+of the UNWPP, new data are collected, and old data become available, thus revisions must
+be made to the reconstructions to accommodate it.
+Implicit in the previous paragraph is the assertion that there is uncertainty in the measurements. This is hardly controversial; demographers have long acknowledged that some
+parameters are almost immune to perfect measurement and many so-called indirect methods
+exist for estimating them (e.g., United Nations 1983). Most of these, however, are focused
+on obtaining a best point estimate of a single quantity. Although it has been standard practice to produce ranges of estimates for many parameters based on different scenarios, high,
+medium and low fertility for example, the ranges produced cannot be interpreted probabilistically. This approach is still commonly used for projections, but since the mid 1990s
+new methods began to appear which do yield probabilistic predictions; Lee (1998) and Booth
+(2006) provided reviews. In contrast, there has been relatively little work on the development
+of fully probabilistic methods for demographic reconstruction. Here we propose a general
+method for reconstruction that accounts for measurement uncertainty and works with the
+type of demographic data that have commonly been collected for most countries over the
+last 60 years or so. It has been designed to fit within the UNPD’s existing work-flow, but
+we hope it is general enough to have broad appeal.
+In Section 2 we will briefly describe existing reconstruction techniques from the demographic literature; a discussion of relevant work in other areas such as ecology and fisheries
+
+5
+
+will be deferred until the Discussion. In Section 3 we lay down our notation and describe
+the method. In Section 4, we investigate some statistical properties of our method through
+simulation before applying it to real data from Burkina Faso in Section 5. We close with
+a summary of the results, a literature review and a discussion of some technical issues in
+Section 6.
+
+2.
+
+METHODS OF RECONSTRUCTION IN
+DEMOGRAPHY
+
+Outside of official statistical agencies, demographers have undertaken population reconstructions for at least two reasons: historical studies of populations of the past (e.g., Wrigley
+and Schofield 1981) and to estimate excess mortality in crises such as famine or social upheaval (e.g., Boyle and Grada 1986, Heuveline 1998, Merli 1998, Goodkind and West 2001).
+The most commonly used methods are based on the demographic balancing equations. These
+are the basic accounting relationships which state that the population size at time t + δ is
+equal to the size at time t plus births and immigrants, minus deaths and emigrants. These
+relationships are encoded in the cohort component model of population projection (CCMPP;
+Lewis 1942, Leslie 1945, 1948). Given the size and age-structure of a population at some
+baseline time, its size and structure at any point in the future can be determined from the
+baseline population and the fertility, mortality and international migration rates that prevail
+over the period of reconstruction.
+The back projection method of reconstruction (Wrigley and Schofield 1981) attempts
+to apply these relationships in reverse by using an estimate of population structure at the
+terminal year of the period of reconstruction. This approach is problematic since the cohort
+component model of population projection (CCMPP) procedure is not formally invertible.
+To produce sensible results, some additional constraints have to be imposed or somewhat
+ad-hoc fixes applied.
+In response to these concerns, Lee (1971, 1974) proposed the method of inverse projection.
+Inverse projection enacts the reconstruction forward through time; it is named for the fact
+that, instead of estimating counts of births and deaths from rates, count data are used to
+infer rates.
+Both of these methods have been developed since their inception. For example, McCaa
+and Barbi (2004) and Rosina (2004) described extensions of inverse projection. Oeppen
+(1993) proposed generalize inverse projection (GIP). This method produces estimates of demographic parameters by minimizing the discrepancy between population structures implied
+by the estimates and those observed. Additional constraints, such as a smoothness criterion
+6
+
+on estimates of migration, are used to ensure parameter identifiability. However, all of the
+extended methods remain purely deterministic.
+A stochastic reconstruction method was proposed by Bertino and Sonnino (2003) who
+modeled childbirth and death as inhomogeneous Poisson processes. The method is designed
+to work with counts of births and deaths aggregated over age and so requires the analyst
+to specify model age-patterns for fertility and mortality, although different schedules can
+be chosen for different sub-periods. These schedules are taken as the intensity functions of
+the process and realizations are simulated through time to produce sequences of empirical
+estimates of population age structures. Hence, the only source of variation accounted for
+is natural variation around the demographic rates; the total numbers of deaths by year are
+assumed to be recorded without error. Moreover, international migration is assumed to be
+negligible over the period of reconstruction.
+Finally, all of the above methods were designed to work with aggregate data of the kind
+sometimes found in European parish registers. The data available for many countries in
+our intended application is not as detailed, even for periods stretching as little as 50 years
+into the past. The aim of this article is to introduce a new method of reconstruction that
+uses measurements of demographic parameters available for 40–50 years in the past from
+multiple noisy data sources. Moreover, uncertainty due to measurement error is expressed
+as probability distributions and intervals rather than deterministic scenario-based ranges.
+
+3.
+
+METHOD
+
+In this article we restrict our attention to the dynamics of populations of females only;
+extension to two-sex populations is left for future work. The parameters of interest are the
+basic demographic parameters: age- and time-specific vital rates, net international migration
+flows and population counts. In the sequel we will refer to “international migration” as simply
+“migration” as this is the only type we consider.
+The method we propose can be viewed as a reconciliation of two different estimates of
+age-specific population counts, namely the estimate based on direct enumeration or surveys
+(e.g., censuses) and the estimate from applying the CCMPP to measurements of fertility,
+mortality and migration. The reconciliation is through a Bayesian model which provides
+probabilistic posterior distributions of all of the parameters of interest. The posterior distributions summarize uncertainty due to measurement error. Probability intervals for summary
+measures such as total fertility rate (TFR) and life expectancy at birth (LEB) can also be
+easily calculated.
+
+7
+
+3.1.
+
+Notation and Terminology
+
+We will index all demographic parameters by age, denoted by a, and time, denoted by t.
+Age is measured on an open-ended scale with the largest value A+ , 80 years and older, for
+example. We will be interested in the value of the key parameters at five-year increments of
+age and time, a = 0, 5, . . . , A+ and t = t0 , t0 + 5, . . . , T . We will use the symbol A++ to refer
+to the age at time t of those who were aged A+ for the first time at time t − 5. Furthermore,
+[fert]
+
+aL
+
+[fert]
+
+and aU
+
+will refer to the lower and upper ages of non-zero fertility, respectively. Finally,
+
+we will need to refer to a special subset of time-points for which censuses or other direct
+[cen]
+
+[cen]
+
+estimates of the population counts are available; we denote these times by tL , . . . , tU
+where “L” and “U” indicate lower and upper limits.
+
+We adopt the standard demographic definition of fertility rate, and let fa,t denote the
+ratio of the number of births to women in the age range [a, a + 5) to the number of person
+years lived by those women over the time period [t, t + 5) (Preston, Heuveline, and Guillot
+2001).
+Mortality will be expressed as the proportion of people who survive from one age group
+to the next. Thus we set sa,t to be the proportion in the age range [a − 5, a) at time t who
+survive to be aged [a, a + 5) at time t + 5. That is, sa,t is the proportion of people surviving
+into the age range [a, a + 5) over the 5 years between t and t + 5. The number of people
+aged [a, a + 5) at exact time t will be denoted by na,t .
+Net migration over a period of time will be measured in proportionate terms; let ga,t be
+the net number of migrants to the population aged [a, a + 5) who migrate during the time
+period [t, t + 5), expressed as a proportion of na,t . Thus, the share of na,t+5 − na,t attributable
+to migration is ga,t na,t .
+Bold face and omission of the age index will be used to denote vectors of particular agespecific parameters for a given time. For example, f t is the vector of age-specific fertility
+rates for the period [t, t + 5). When convenient, we will use θ to represent
+(nt=t0 , f t0 , f t0 +5 , . . . , f T , st0 , . . . , sT , g t0 , . . . , g T ),
+the vector of all age-time-specific parameters.
+To avoid confusion when we refer to periods of time, we will use the term “reconstruction
+period” to indicate the span of time over which the population is reconstructed.
+
+8
+
+3.2.
+
+Model Description
+
+3.2.1.
+
+A Hierarchical Model
+
+Given nt , f t , st and g t , the CCMPP gives nt+5 via the deterministic relationship
+
+
+
+
+
+
+
+
+n0,t (1 + g0,t /2)
+fe0,t fe5,t · · · feA+ −5,t feA+ ,t
+
+ s
+
+
+n5,t (1 + g0,t /2)
+0
+0 
+
+  5,t 0
+
+
+
+ 
+
+
+..
+
+ =  0 s10,t . . .
+
+
+
+.
+0
+0 
+
+ 
+
+nA+ −5,t+5   0
+0
+0
+0  nA+ −5,t (1 + gA+ −5,t /2)
+nA+ ,t+5
+nA+ ,t (1 + gA+ ,t /2)
+0
+0 · · · sA+ ,t sA++ ,t
+
+
+n0,t g0,t /2
+
+
+n5,t g5,t /2
+
+
+
+
+.
+..
++
+ (1)
+
+
+nA+ −5,t gA+ −5,t /2
+nA+ ,t gA+ ,t /2
+n0,t+5
+n5,t+5
+..
+.
+
+where
+
+fea,t = 5(s0,t /2)(1 + SRB)−1 fa,t + f(a+5),t · sa+5,t ,
+and the sex ratio at birth (SRB) is taken to be fixed at 1.05, a standard default (Preston
+et al. 2001). We use sA++ ,t to denote the proportion of those in the open-ended interval who
+survive to time t + 5. Equation (1) can be written more compactly as
+
+
+1
+1
+et + g
+e, g
+e = diag(g t )nt ,
+nt+5 = Lt nt + g
+2
+2 t t
+
+(2)
+
+where Lt is called the Leslie matrix (Leslie 1945, 1948). We will abbreviate (1) as nt+5 =
+M (nt , f t , st , g t ).
+We use an asterisk (∗ ) to distinguish between the unknown, true values and measurements
+∗
+of them based on data. Specifically, let fa,t be the true fertility rate and fa,t
+be a measurement
+of it, and similarly for all other parameters of interest. In what follows, we will use D to
+represent the set of all such measurements.
+In addition to a measurement of the population size at baseline (n∗t=t0 ), measurements of
+population counts at exact times in (t0 , T ] are typically available. These direct measurements
+might be from censuses or demographic surveys. Therefore, if n∗t0 , n∗t+5 , f ∗t , s∗t and g ∗t are
+available, we have two estimates of nt+5 , namely n∗t+5 and M (nt = M (nt−5 ), f ∗t , s∗t , g ∗t )
+where M (nt0 ) is defined to be n∗t0 . We combine these two sources into a joint distribution
+of all parameters in the following four-level hierarchical model, where we have made the
+simplifying assumption that the elements of θ are mutually independent a priori :
+Level 1 :
+
+
+[cen]
+[cen]
+log n∗a,t | na,t , σn2 ∼ Normal log na,t , σn2 , t = tL , . . . , tU
+9
+
+(3)
+
+Level 2 :
+
+na,t | nt−5 , f t−5 , st−5 , g t−5 = M (nt−5 , f t−5 , st−5 , g t−5 ),
+
+(4)
+
+t = t0 + 5, t0 + 10, . . . , T
+Level 3 :
+
+
+log na,t0 | σn2 ∼ Normal log n∗a,t0 , σn2 , a = 0, 5, . . . , A+
+
+
+[fert]
+[fert]
+2
+∗
+
+Normal log fa,t , σf , a = aL , . . . , aU
+log fa,t | σf2 ∼
+t = t0 , t0 + 5, . . . , T
+
+
+undefined,
+otherwise
+
+2
+∗
+2
+logit sa,t | σs ∼ Normal logit sa,t , σs , a = 0, 5, . . . , A++
+
+(5)
+(6)
+(7)
+
+t = t0 , t0 + 5, . . . T
+∗
+ga,t | σg2 ∼ Normal ga,t
+, σg , a = 0, 5, . . . , A+ ,
+
+
+2
+
+(8)
+
+t = t0 , t0 + 5, . . . , T
+Level 4 :
+
+σv2 ∼ InvGamma(αv , βv ), v ∈ {n, f, s, g}.
+
+(9)
+
+For 0 < x < 1, logit x ≡ log(x/(1 − x)).
+In standard Bayesian terms, expressions (5)–(8) could be viewed as informative priors
+for θ while (3) is the likelihood of n∗a,t | θ. Inference will be based on the joint posterior
+distribution of these parameters, p(θ | D). We also explicitly impose the restriction that
+all population counts be positive. Therefore, the joint prior on all parameters at time t,
+p(nt0 , f t , st , g t ), is multiplied by
+(
+
+1; na,t+5 ≥ 0, a = 0, . . . , A+
+I M (nt , f t , st , g t ) > 0 ≡
+(10)
+0 otherwise.
+The quantities involved, and their dependence relations, are summarized in Figure 1.
+3.2.2.
+
+Determining the Hyperparameters
+
+To determine plausible values of αv and βv , v ∈ {n, f, s, g}, we view the σv2 as representing
+the measurements of the respective demographic parameters. Although prior knowledge
+about these accuracies is unlikely to be exact, we expect that informative estimates can be
+derived from experts’ knowledge of the data sources. Methods for eliciting prior information
+from experts are numerous (e.g., O’Hagan et al. 2006). Here, we use a straightforward
+method based on the mean absolute error (MAE) of the transformed measurements.
+Taking fertility rate as an example, note that (6) implies MAE(log fa,t | σf2 ) ≡ E(| log fa,t −
+p
+∗
+log fa,t
+| | σf2 ) = σf 2/π. The prior distribution for σf2 can be specified by choosing quantiles
+for MAE(log fa,t | σf2 ). Suppose expert opinion is that MAE(log fa,t | σf2 ) is close to 0.1, but
+could be as high as 0.5. This suggests setting median(σf2 ) = (0.1)2 π/2 ≈ 0.0151 and the 0.975
+10
+
+11
+
+Key
+
+...
+
+fA+ ,T
+
+s∗a,t0
+
+Dependence relation
+
+Fixed parameter based on data
+
+Fixed parameter
+
+Random variable
+
+∗
+fA,T
+
+...
+
+σf2
+
+βf
+
+...
+
+sa,t0
+
+αs
+
+n∗a,t1
+
+βs
+
+sA++ ,T
+
+na,t1
+
+s∗A++ ,T
+
+...
+
+σs2
+
+Mortality
+
+...
+
+...
+
+CCMPP
+
+...
+
+nA+ ,T C
+
+n∗A+ ,T C
+
+∗
+ga,t
+0
+
+ga,t0
+
+αg
+
+gA∗ + ,T
+
+...
+
+σg2
+
+Migration
+
+gA+ ,T
+
+βg
+
+n∗a,t0
+
+...
+
+na,t0
+
+αn
+
+n∗A+ ,t0
+
+...
+
+σn2
+
+βn
+
+nA+ ,t0
+
+Baseline count
+
+Figure 1. Schematic Showing the Relationships Between Parameters,
+Measurements and the CCMPP in the Estimation Model.
+1
+
+∗
+fa,t
+0
+
+fa,t0
+
+αf
+
+Fertility
+
+quantile to 0.5. To find an inverse gamma distribution with these quantiles, we fixed αf at a
+range of values between 0.3 and 6 and chose βf such that median(MAE(log fa,t | σf2 )) = 0.1.
+The parameter αf was then chosen such that the 0.95 quantile of MAE(log fa,t | σf2 ) was
+about 0.5.
+Since demographers are more used to thinking about untransformed fertility rates, it
+is useful to consider what specifying MAE(log fa,t | σf2 ) means on the original scale. In
+∗
+(0.92) ≤ fa,t ≤
+terms of probabilities, setting MAE(log fa,t | σf2 ) = 0.1 implies that Pr fa,t
+
+
+∗
+∗
+∗
+(1.25) | σf2 ≈ 0.95. In other words, there
+(0.75) ≤ fa,t ≤ fa,t
+(1.08) | σf2 ≈ 0.5, and Pr fa,t
+fa,t
+is roughly an even chance that the true fertility rate lies within plus or minus eight percent
+
+of the measured value and a high probability that it lies within plus or minus 25 percent
+of it. On the log scale, MAE approximates mean absolute relative error (MARE) on the
+∗
+∗
+. This approximation is good
+| | σf2 )/fa,t
+original scale where MARE(fa,t | σf2 ) ≡ E(|fa,t − fa,t
+for the MAE values used here. The MARE has been used previously by demographers as a
+
+way of quantifying measurement accuracy (Keilman 1998).
+The population count variance, σn2 , is also modeled on the log scale and αn , βn are found
+in the same way as αf and βf . Survival is measured on the logit scale, but this should not be
+too difficult to interpret. Note that E(| logit s¯a,t −logit s¯∗a,t | | σs2 ) = E(| logit sa,t −logit s∗a,t | | σs2 )
+where s¯a,t = 1 − sa,t . In practice, the s¯a,t are close to zero, so that s¯a,t ≈ s¯a,t /(1 − s¯a,t ). Thus
+specifying the MAE of the log-odds of survival is not that different from specifying it for the
+log probability of death. For the migration parameter, which is a proportion, we specify the
+MAE directly.
+3.2.3.
+
+Summary of Model
+
+We model the transformed vital and migration rates as unimodal distributions centered
+at the relevant measurements which serve as fixed prior means. This is equivalent to the
+assumption that the measurements are median-unbiased but noisy, which might require
+preprocessing of the vital rate data. Techniques for estimating, and hence removing, the
+bias in vital rate estimates are probably best developed separately as they will depend on
+data collection methods and other data-specific factors. For example, building on work by
+Hill et al. (1999) and UNICEF et al. (2007), Alkema et al. (2008) developed a technique for
+removing the bias in TFR measurements.
+The use of informative priors for both the mean and the variance parameters in (5)–(8)
+is necessary because the model will be technically over-parameterized and hence underidentified in most practical applications.
+
+12
+
+3.3.
+
+Estimation
+
+Samples from the joint posterior can be drawn using a Markov chain Monte Carlo
+(MCMC) sampler (Metropolis et al. 1953, Hastings 1970, Geman and Geman 1984). Without
+the restriction in (10), the full conditional posterior distributions for the variance hyperparameters would be the usual conjugate inverse gamma distributions. For example, the full
+conditional for σf2 would be
+Pa[fert]
+U
+
+
+
+σf2 | θ ∼ InvGamma αf +
+
+ PT
+
+1
+[fert] 1
+t=t0
+
+a=aL
+
+2
+
+[fert]
+
+aU
+
+, βf +
+
+T
+X
+
+
+
+
+1 X
+∗ 2
+log fa,t − log fa,t
+.
+2
+[fert] t=t
+a=aL
+
+0
+
+With the restriction, the conjugate forms are not exactly correct but will probably be very
+close to the true full conditionals. Therefore, to update these parameters we use the conjugate
+full conditional distributions as proposal densities in Metropolis-Hastings (M-H) steps. The
+posterior densities of the remaining parameters are not easy to express analytically since
+each vital rate enters the likelihood through the map M . Therefore, these parameters are
+updated using M-H steps with univariate normal proposal densities, with variances tuned
+by the method of Raftery and Lewis (1996). We will use the term “iteration” to refer to one
+complete sweep through all age-time specific parameters and variance parameters.
+The R environment for statistical computing (R Development Core Team 2010), together
+with the CODA package (Plummer et al. 2006, 2010) were used for all data manipulation,
+model estimation and output analysis.
+
+4.
+
+SIMULATION STUDY
+
+Simulation was used to investigate whether the true vital rates, migration proportions
+and population counts could be recovered from noisy data under the model. To this end, we
+used a small, synthetic population for which the true values of all key parameters were known.
+The estimation procedure was applied to noisy measurements of the true parameter values
+and central posterior marginal probability intervals were compared to the truth. Calibration
+of the intervals was assessed by replication.
+
+4.1.
+4.1.1.
+
+Method
+Inputs
+
+The true vital and migration rates assumed to have prevailed in this population are
+shown in Table 1. We have a = 0, 5, 10, 15+, t = 1960, 1965, 1970, 1975 and t[cen] =
+13
+
+Table 1. True Vital Rates Used in the Simulation Study.
+
+a [1960, 1965)
+
+Time period
+[1965, 1970) [1970, 1975)
+
+[1975, 1980)
+
+0
+5
+10
+15
+
+0.00
+0.40
+0.30
+0.00
+
+Fertility Rate
+0.00
+0.40
+0.30
+0.00
+
+0
+5
+10
+15
+20+
+
+0.90
+0.95
+0.85
+0.80
+0.10
+
+Survival Proportion
+0.90
+0.95
+0.85
+0.80
+0.10
+
+0.90
+0.95
+0.85
+0.80
+0.10
+
+0.90
+0.95
+0.85
+0.80
+0.10
+
+-0.03
+-0.05
+-0.06
+-0.01
+
+Migration Proportion
+-0.05
+-0.10
+-0.11
+-0.01
+
+0.03
+0.05
+0.06
+0.01
+
+0.05
+0.10
+0.11
+0.01
+
+0
+5
+10
+15
+
+[fert]
+
+0.00
+0.40
+0.30
+0.00
+
+0.00
+0.40
+0.30
+0.00
+
+[fert]
+
+1960, 1965, 1970, 1975. Moreover, aL = 5 and aU = 10. This is not intended to be a
+realistic model of a human population; datasets typically encountered in human demography
+have up to 18 age categories and any number of time periods. However, we believe that this
+reduced population model is of sufficient size and complexity to explore the characteristics
+of the statistical model while not being too computationally expensive. The TFR and LEB
+were kept constant at 0.7 births per woman per year and 15.61 years, respectively, for the
+duration of the reconstruction. A varying pattern of migration was chosen which consisted of
+net out-migration in the first half of the reconstruction period followed by net in-migration in
+the second half. The magnitude of the flows was quite volatile, varying from 13 percent to 26
+percent of the receiving population. Moreover, migration in both directions was concentrated
+in the two middle age groups.
+The true population counts are shown in Table 2. Those for 1960 were chosen to represent
+a young population. Those for the subsequent time periods were derived by applying the
+CCMPP to the 1960 population using the vital rate and migration parameters in Table 1.
+Therefore, the underlying true population dynamics over the reconstruction period were
+completely and deterministically defined by (1).
+
+14
+
+Table 2. True Population Counts Used in Simulation Study.
+
+a 1960 1965
+0 7500 8482
+5 6000 6886
+10 4000 4862
+15 3000 3404
+4.1.2.
+
+Year
+1970 1975 1980
+9453 11436 14504
+7512 9280 11600
+5293 6690 8651
+3998 4762 6149
+
+Study Design
+
+The coverage of central marginal posterior probability intervals under the model was
+estimated by the following experiment. For j = 1, . . . , J :
+2[j]
+
+1. Randomly sample σv , v = n, f, s, g from (9).
+∗[j]
+
+∗[j]
+
+∗[j]
+
+2. Generate measurements fa,t , ga,t for a = 0, . . . , 15+, t = 1960, . . . , 1975, sa,t , for
+∗[j]
+
+a = 0, . . . , 20+ t = 1960, . . . , 1975, and na,t=t0 for a = 0, . . . , 15+ from the distributions
+in (5)–(8).
+∗[j]
+
+3. Generate measurements na,t for a = 0, . . . , 15+ and t in t = 1965, . . . , 1975 from (3).
+4. Check that (10) is satisfied by the measurements; if not return to step 1.
+5. Draw a large MCMC sample from the joint posterior and find the 0.025, 0.5 and 0.975
+quantiles of the marginal distribution of each parameter.
+The estimated coverage is then the proportion of the J central posterior marginal intervals
+containing the known, true value for each parameter.
+The hyperparameters of the inverse gamma distributions were determined as described
+in Section 3.2.2. The median MAEs for log fertility rate, logit survival and log population
+counts were set to 0.1 with 0.975 quantiles of approximately 0.5. The same figures for
+migration were set to 0.2 and approximately 1, respectively. The resulting values of αv , βv
+and MAE quantiles are shown in Table 3.
+We set J = 200 and applied the estimation method described in Section 3.3. Initial values
+for the population counts, vital rates and migration proportions were set to the measured
+values. Initial values for the variances were arbitrarily set to five as this appeared to have a
+negligible effect on the final results. Approximately 9000 iterations, with a burn in of 100,
+were judged sufficient for accurate inference.
+
+15
+
+Table 3. Hyperparameter Details. Values of the σv2 and selected implied quantiles of the
+mean absolute error (MAE) of the respective demographic parameters, used in the simulation
+p
+2) = σ
+study and the application
+to
+Burkina
+Faso.
+For
+v
+∈
+{n,
+f
+},
+MAE(log
+v
+|
+σ
+2/π;
+a,t
+v
+v
+p
+p
+MAE(logit sa,t | σs2 ) = σs 2/π; MAE(ga,t | σg2 ) = σg 2/π.
+
+α
+1
+1
+
+4.2.
+
+β
+0.0109
+0.0436
+
+MAE quantiles
+0.025 0.25
+0.5 0.75
+0.0433 0.0707 0.1 0.1552
+0.0867 0.1414 0.2 0.3104
+
+0.975
+0.5232
+1.0465
+
+Results and Discussion
+
+Point estimates of the coverage of the marginal 0.95 posterior probability intervals are
+shown in Table 4. These are all close to 0.95.
+In practical applications with real data sets, where the true parameter values are unknown, interest will be in interval estimates for the demographic parameters. These should
+be based on the joint posterior distribution. For illustration, we have plotted central marginal
+credible intervals for a selection of parameters and transformations that might be of interest
+based on the MCMC sample from a single replicate of the simulation study. For comparison,
+we have also plotted the true parameter values used throughout the simulation and the noisy
+measurements generated under the model.
+Marginal central credible intervals can be plotted for age-specific parameters as has been
+done for age-specific fertility rates in Figure 2a. Credible intervals for any function of the
+age-specific parameters can be obtained immediately by transforming each vector of agespecific values in the MCMC sample and computing the sample quantiles. We show TFR
+in Figure 2b. This is obtained from the age-specific rates by summing them and multiplying by the width of the sub-intervals of the reconstruction period, which is five in this
+case. In a stationary population (Preston et al. 2001) subject to the survival proportions,
+s0,t , . . . , sA+ ,t , sA++ ,t ,
+LEB = 5
+
+A+ a
+X
+Y
+a=0 i=0
+
+si,t +
+
+A+
+Y
+
+!
+si,t
+
+
+sA++ ,t /(1 − sA++ ,t ) .
+
+i=0
+
+We plot this in Figure 2c. The total net number of migrants (Figure 2d) can be calculated
+by solving (1) for g t and summing over age.
+
+16
+
+Table 4. Estimated Coverage Probabilities of 95 Percent Posterior Intervals for all Demographic
+Parameters of Interest.
+
+years
+1960
+
+[1960, 1965)
+
+[1965, 1970)
+
+[1970, 1975)
+
+[1975, 1980)
+
+ages
+[0, 5)
+[5, 10)
+[10, 15)
+[15, 20)
+[0, 5)
+[5, 10)
+[10, 15)
+20+
+[0, 5)
+[5, 10)
+[10, 15)
+20+
+[0, 5)
+[5, 10)
+[10, 15)
+20+
+[0, 5)
+[5, 10)
+[10, 15)
+20+
+
+population fertility
+0.90
+0.94
+0.89
+0.88
+0.93
+0.95
+
+0.94
+0.96
+
+0.92
+0.92
+
+0.95
+0.96
+
+17
+
+survival
+
+migration
+
+0.94
+0.97
+0.95
+0.94
+0.93
+0.93
+0.92
+0.94
+0.92
+0.97
+0.96
+0.94
+0.93
+0.93
+0.94
+0.95
+
+0.94
+0.94
+0.93
+0.92
+0.94
+0.96
+0.98
+0.94
+0.95
+0.94
+0.96
+0.97
+
+Post. median
+95% Post. Int.
+
+measured
+truth
+5
+
+[1960, 1965)
+
+●
+
+●
+
+6
+
+●
+
+7
+
+8
+
+9
+
+10
+
+[1965, 1970)
+
+1.1
+
+0.6
+
+●
+
+●
+●
+
+Total Fertility Rate
+
+age−specific fertility rate
+
+0.4
+
+●
+
+1.0
+
+●
+
+0.2
+
+[1970, 1975)
+
+[1975, 1980)
+
+0.6
+
+●
+
+●
+●
+
+5
+
+6
+
+7
+
+8
+
+9
+
+0.9
+0.8
+0.7
+
+●
+
+●
+
+●
+
+●
+
+1960
+
+1965
+
+1970
+
+1975
+
+0.6
+
+0.4
+
+0.5
+
+0.2
+
+0.4
+
+●
+
+10
+
+year
+
+age
+
+(a)
+
+(b)
+
+●
+
+17.0
+
+median
+95% PI
+truth
+measured
+
+Total Net Number of Migrations (000s)
+
+Life expectancy at birth (years)
+
+17.5
+
+16.5
+16.0
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+●
+
+15.5
+●
+
+15.0
+14.5
+14.0
+1960
+
+median
+95% PI
+truth
+measured
+
+1965
+
+1970
+
+1975
+
+10
+
+●
+
+5
+●
+●
+
+0
+
+●
+●
+
+−5
+
+−10
+1960
+
+year
+
+median
+95% PI
+measured
+true
+
+1965
+
+1970
+
+1975
+
+year
+
+(c)
+
+(d)
+
+Figure 2. Ninety-five Percent Central Credible Intervals for Selected Parameters From a Single
+Replication of the Simulation Study. (a) Age specific fertility rate. (b) Total fertility rate. (c)
+Life expectancy at birth in the stable equivalent population. (d) Total net migration.
+
+18
+
+5.
+
+RECONSTRUCTION OF THE POPULATION
+OF BURKINA FASO, 1960–2000
+
+We now illustrate the method by reconstructing the population of Burkina Faso from
+1960 to 2000.
+
+5.1.
+5.1.1.
+
+Data
+Population Counts
+
+Population count measurements in exact years 1960, 1975, 1985, 1995 and 2005 by sex
+were taken from United Nations (2009) which are based on a 1960–1961 demographic survey
+and censuses in 1975, 1985, 1996 and 2006. The UN figures are preferred over the raw census
+counts because important adjustments were made for underenumeration. This form of bias is
+more common in certain age-groups and efforts to reduce it are based on post-censal surveys.
+5.1.2.
+
+Fertility
+
+Information on fertility rates during the period 1960–2005 in Burkina Faso has been
+collected through various means including questions about birth histories in censuses and
+surveys such as the Demographic and Health Survey (DHS). Estimates of age-specific fertility rates for Burkina Faso based on data from recent births (in the preceding 12 months)
+and retrospective birth histories were obtained from various sources. The recent births data
+came from the 1960 and 1991 demographic surveys, as well as from the 1976 census postenumeration survey and the 1985, 1996 and 2006 censuses themselves. The retrospective
+birth histories were taken from the 1992–93, 1998–99 and 2003 DHSs and refer to the preceding 20 years. In addition, for each of these data sources, adjusted fertility rates for the
+most recent period were also estimated using women’s lifetime parity information and the
+Brass-Feeney P/F ratio method (Brass 1964, Feeney 1996; see also United Nations 1983,
+Ch. II, Sect. B).
+Alkema et al. (2008) studied estimates of TFR for seven West African countries, including
+Burkina Faso, and found noticeable disagreement among estimates from the various data
+sources. This suggested the need to account for potential bias and to estimate the variability
+of the estimates. Therefore, our prior median estimates of age-specific fertility were based
+on Alkema et al.’s (2008) median bias-adjusted estimates of TFRs for Burkina Faso for the
+five-year increments between, and inclusive of, the years 1962–1997. These were chosen as
+they are the mid-points of the five-year sub-intervals [1960, 1965), [1965, 1970), . . . , [1995,
+2000) which span the reconstruction period. Since the latest estimate given by Alkema et al.
+
+19
+
+(2008) is for 2001, this was used as the estimate for the period [2000, 2005). These were
+then disaggregated into age-specific rates by applying an age-specific fertility pattern. These
+patterns, which sum to one, indicate the share of fertility attributable to each age-group.
+Therefore, the final age-specific fertility rates are the product of TFR and the age pattern.
+The patterns were determined through a process we now describe.
+Since we require average fertility rates for the sub-intervals [1960, 1965), . . . , [2000,
+2005), we grouped the available estimates by the sub-interval into which they fell. Data of
+this kind are often summarized by a single series of age-specific values per sub-interval using
+a relational model or a smoothing technique. Relational models take a fixed age-pattern,
+often derived from a combination of data collected in similar populations and theory about
+the underlying social and biological processes, and adjust it to fit the observed data, usually
+by way of a parsimonious parameterization on a transformed scale. The method of Coale and
+Trussell (1974), updated by Xie (1990) and Xie and Pimentel (1992), is an example. However,
+the validity of these methods rests, in part, on an appropriate choice of model age pattern.
+Data-driven smoothing techniques avoid this problem, albeit at the cost of not modeling the
+underlying mechanisms. Since we are not primarily concerned with such mechanisms, we
+used loess (Cleveland 1979, Cleveland, Grosse, and Shyu 1992) to smooth the age-specific
+fertility patterns within five-year sub-interval. The loess method performs a series of locally
+weighted regressions and is implemented in the R function with the same name. Smoothing
+within five-year sub-interval (Figure 3) yielded trends that were also sensible, a priori, when
+viewed by five-year age group (Figure 4). No age-pattern data were available for the period
+[1965,1970). To generate a prior for this period, we assumed that the [1960,1965) held over
+this period but used Alkema et al.’s (2008) median TFR estimate for 1967. The resulting
+∗
+age-specific fertility rate measurements, fa,t
+, are shown in Figure 6.
+
+5.1.3.
+
+Mortality
+
+Abridged life tables for Burkina Faso can be computed from data on recent household
+deaths in years for which data is available. However, potential biases arise due to the omission
+of deaths, recall period errors, age heaping and age exaggeration by survey respondents. The
+approach favored by the UN in this context has been to use a Brass two-parameter relational
+logit model (Brass 1971), with the Timæus Sahelian standard mortality pattern (Timæus
+1999), to estimate a complete set of abridged life tables for each five-year sub-interval of the
+reconstruction period. Relational models use data to adjust a standard mortality pattern
+such that it reflects the pattern in the population of interest. Brass’s method treats the
+logit of the life table for the population of interest as a linear function of the logit of an
+appropriately selected standard life table. The intercept and slope are estimated using
+20
+
+15 20 25 30 35 40 45
+
+[1960, 1965)
+
+[1970, 1975)
+●
+
+●
+●
+
+0.20
+
+●
+
+●
+●
+
+●
+●
+
+●
+
+0.15
+
+[1965, 1970)
+
+●
+
+0.25
+
+●
+●
+
+●
+●
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+0.10
+
+●
+●
+●
+●
+
+0.05
+
+●
+●
+●
+●
+
+0.00
+
+●
+●
+
+[1975, 1980)
+
+[1980, 1985)
+
+●
+●
+●
+
+●
+●
+●
+●
+
+●
+●
+●
+●
+
+fa,t
+
+●
+●
+
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+
+●
+●
+●
+●
+
+●
+
+●
+●
+●
+●
+●
+
+[1985, 1990)
+●
+●
+
+●
+●
+●
+●
+●
+
+0.25
+●
+●
+●
+
+0.20
+
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+
+●
+●
+●
+
+0.10
+
+●
+●
+
+●
+●
+●
+●
+●
+
+0.15
+●
+●
+●
+
+●
+●
+●
+
+●
+●
+●
+
+0.05
+0.00
+
+[1990, 1995)
+0.25
+
+●
+●
+●
+●
+●
+●
+●
+
+0.20
+0.15
+0.10
+0.05
+
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+
+[1995, 2000)
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+
+[2000, 2005)
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+
+0.00
+15 20 25 30 35 40 45
+
+15 20 25 30 35 40 45
+
+age
+
+Figure 3. Data Points for the Age-Specific Fertility Patterns of Burkina Faso Women, 1960–
+2000, Grouped By on Five-year Sub-Interval. The lines are the within-time loess smooths.
+
+21
+
+00
+
+20
+
+90
+95
+19
+
+19
+
+80
+85
+19
+
+19
+
+70
+75
+19
+
+19
+
+60
+65
+19
+
+19
+
+[15, 20)
+
+[20, 25)
+●
+
+0.25
+0.20
+
+●
+
+●
+
+●
+●
+
+●
+●
+
+●
+
+●
+●
+
+●
+●
+
+●
+●
+
+[25, 30)
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+
+●
+●
+
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+
+●
+
+0.15
+
+●
+
+●
+●
+
+●
+●
+
+●
+
+●
+●
+●
+
+●
+
+0.10
+
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+
+0.05
+
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+
+0.00
+
+[30,35)
+
+[35, 40)
+
+[40, 45)
+0.25
+
+●
+●
+
+●
+●
+●
+●
+
+●
+●
+●
+●
+
+●
+●
+
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+
+0.20
+
+fa,t
+
+●
+●
+●
+
+●
+
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+●
+
+●
+●
+●
+
+0.15
+●
+●
+●
+●
+
+●
+
+●
+●
+●
+●
+
+●
+●
+●
+
+●
+●
+●
+
+●
+
+●
+●
+
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+
+●
+●
+●
+●
+
+0.10
+0.05
+0.00
+
+[45, 50)
+0.25
+0.20
+0.15
+0.10
+●
+●
+●
+●
+●
+
+00
+
+95
+
+●
+●
+●
+●
+
+20
+
+90
+
+●
+●
+●
+●
+●
+
+19
+
+85
+
+●
+●
+●
+
+19
+
+80
+
+●
+●
+●
+
+19
+
+75
+
+70
+
+65
+
+19
+
+60
+
+19
+
+19
+
+●
+●
+●
+●
+
+●
+●
+
+19
+
+●
+●
+●
+
+0.00
+
+19
+
+0.05
+
+year
+
+Figure 4. Data Points for the Age-Specific Fertility Patterns of Burkina Faso Women, 1960–
+2000, Grouped by Five-year Age Group. The lines are the within-time loess smooths, the same
+as those plotted in Figure 3.
+
+22
+
+ordinary least squares (OLS).
+Brass’s model was fitted to robust estimates of under-five mortality and adjusted estimates of adult mortality. Under-five mortality estimates were based on three types of data:
+(i) recent household deaths from the 1960–1961 and 1991 national demographic surveys and
+the 1976, 1985, 1996 and 2006 censuses; (ii) births and deaths to under-fives calculated from
+maternity-history data from the 1992–1993, 1998–1999 and 2003 DHSs; and (iii) data on
+children ever-born and surviving classified by age of mother (and the South model of the
+Coale-Demeny Model Life Tables) from the data sources in (ii) as well as from UNICEF’s
+Multiple Indicator Cluster Survey—Round 3 conducted in 2006. Estimates of adult mortality were based on four sources: (i) recent household deaths data (unadjusted and adjusted for
+underregistration using the growth-balance and synthetic-extinct generation methods) from
+the 1960–1961 and 1991 national demographic surveys and the 1976, 1985, 1996 and 2006
+censuses; (ii) parental orphanhood from the 1993 and 2003 DHSs and the 2006 census; (iii)
+sibling deaths from the 1998–1999 and 2003 DHSs; and (iv) intercensal survivorship from
+successive census age distributions (smoothed and not smoothed) for the periods 1976–1985,
+1985–1996 and 1996–2006.
+The usual approach to obtaining age-specific survival proportions from the resulting lifetables is to assume the relationships s0,t = L0,t /(5·l0,t ), sa,t = La,t /La−5,t for a = 5, . . . , 80 and
+P∞
+P
+s85+,t = ∞
+a=80 La,t which hold in the stationary equivalent population (Preston
+a=85 La,t /
+et al. 2001). La,t is the number of person years lived between years t and t + 5 by those
+with ages in [a, a + 5) in year t and l0,t is the radix of the life table or annual number of
+births in the stable equivalent population. While we need survival ratios for the CCMPP,
+demographers more often deal with the mortality rates, ma,t ≡ da,t /La,t , where da,t is the
+number of deaths to the age group [a, a + 5) in the life table operating during the subinterval [t, t + 5). In the stationary equivalent population, da,t = sa,t na,t − na,t so that the
+sa,t can be easily re-expressed as mortality rates. The mortality rates per thousand implied
+by the survival proportion measurements we obtained from the Brass procedure are plotted
+in Figures 7 and 8.
+The stationary equivalent device is used frequently in demography. In stationary populations the birth rate and age-specific death rates are constant over time and the population
+is closed to migration. However, we emphasize that stationary population conditions are not
+assumed to hold in the estimation process. The device is invoked only to derive the measurements, s∗a,t , and as a way to re-express the survival proportions in a form more familiar
+to demographers.
+
+23
+
+5.1.4.
+
+Migration
+
+Estimates of migration for many countries, even those with well-resourced official statistics systems, are often unavailable, unreliable or available only at the whole population level.
+Nevertheless, some estimates of migrant flows for Burkina Faso by broad age-group and sex
+are given by Cond´e (1980) for the period 1960–1975. In addition, whole-population estimates
+for 1960–2005 are available from United Nations (2009) and United States Census Bureau
+(2009) which indicate sustained net out-migration over the period 1960–2000 followed by a
+brief reversal from 2000–2005. Cond´e (1980) implies that the proportion of migration due to
+females is low. Therefore, we made the a priori assumptions that migration was concentrated
+among those in the age range 15–50 and that there was net out-migration for the period
+1960–2000 but net in-migration from 2000–2005. The mean magnitude for females was estimated at ±7 percent based on Cond´e’s (1980) figures. The final migration measurements
+are shown in Figure 9.
+
+5.2.
+
+Results
+
+The parameters αv and βv , v ∈ {n, f, s, g}, were set to the same values as in the simulation
+study (Table 3); the MAEs given there were based on expert opinions provided by UNPD
+analysts for the case of Burkina Faso. Start values were also chosen in the same way as
+for the simulation study. Chains of length 15,000 with a burn-in of 500 were found to be
+sufficient.
+Central marginal 95% credible intervals and posterior medians for the population counts
+and age-specific fertility rates are shown in Figures 5 and 6 for illustration. Similar plots can
+be constructed for age specific mortality rates, migration rates and population counts in the
+years following t0 . In Bayesian terminology, the latter are the “prior predictive” distributions
+of nt .
+Central marginal credible intervals for (a) TFR, (b) total net number of migrants, (c)
+probability of death before age 5 (5 q0 ) and (d) LEB are shown in Figure 11. The interval
+widths for TFR over the reconstruction period are consistently equivalent to about plus or
+minus half a child. There was a decline in TFR from 7.9–7.0 children to 6.8–6.0 children
+per woman over the period 1980–2005. There was a strong upward trend in life expectancy
+from 33.5–37.1 to 50.9–53.8 years is implied over the period 1960–2005. While the posterior
+medians for the total net number of migrants suggest a change from a net loss to a net gain
+between 1995 and 2000, all 0.95 credible intervals contain zero. Our interpretation of this
+result is that there is not enough information on migration to clearly indicate a trend.
+
+24
+
+Post. median
+95% Post. Int.
+
+measured
+
+1960
+
+age−specific baseline count
+
+4e+05
+
+3e+05
+
+2e+05
+
+1e+05
+
+0e+00
+0
+
+20
+
+40
+
+60
+
+80
+
+age
+
+Figure 5. Ninety-five Percent Central Marginal Posterior Intervals for Initial Age-specific Population Counts for the Female Population of Burkina Faso, 1960. Also shown are the measured
+values.
+
+25
+
+Post. median
+
+95% Post. Int.
+15
+
+20
+
+25
+
+30
+
+35
+
+measured
+40
+
+45
+
+1960
+
+1965
+
+1970
+
+1975
+
+1980
+
+1985
+
+0.4
+
+0.3
+
+0.2
+
+0.1
+
+age−specific fertility rate
+
+0.4
+
+0.3
+
+0.2
+
+0.1
+
+1990
+
+1995
+
+2000
+
+0.4
+
+0.3
+
+0.2
+
+0.1
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+age
+
+Figure 6. Ninety-five Percent Central Marginal Posterior Intervals for Age-specific Fertility
+Rates for the Female Population of Burkina Faso, 1960–2005. Also shown are the measured
+values.
+
+26
+
+Post. median
+
+95% Post. Int.
+0
+
+10
+
+20
+
+30
+
+measured
+40
+
+50
+
+1960
+
+1965
+
+1970
+
+1975
+
+1980
+
+1985
+
+0.08
+0.06
+0.04
+
+age−specific mortality rates (per 1000)
+
+0.02
+0.00
+
+0.08
+0.06
+0.04
+0.02
+0.00
+
+1990
+
+1995
+
+2000
+
+0.08
+0.06
+0.04
+0.02
+0.00
+0
+
+10
+
+20
+
+30
+
+40
+
+50
+
+0
+
+10
+
+20
+
+30
+
+40
+
+50
+
+age
+
+Figure 7. Ninety-five Percent Central Marginal Posterior Interals for the Age-specific Mortality
+Rates for the Female Population of Burkina Faso, Ages 0–59, 1960–2005. The rates are per
+thousand and apply to the equivalent stationary population. Also shown are the measured
+values.
+
+27
+
+Post. median
+
+95% Post. Int.
+60
+
+65
+
+70
+
+75
+
+measured
+80
+
+85
+
+1960
+
+1965
+
+1970
+
+1975
+
+1980
+
+1985
+
+1.0
+0.8
+0.6
+0.4
+
+age−specific mortality rates (per 1000)
+
+0.2
+0.0
+
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+
+1990
+
+1995
+
+2000
+
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+60
+
+65
+
+70
+
+75
+
+80
+
+85
+
+60
+
+65
+
+70
+
+75
+
+80
+
+85
+
+age
+
+Figure 8. Ninety-five Percent Central Marginal Posterior Interals for the Age-specific Mortality
+Rates for the Female Population of Burkina Faso, Ages 60 and Over, 1960–2005. The rates are
+per thousand and apply to the equivalent stationary population. Also shown are the measured
+values.
+
+28
+
+Post. median
+
+95% Post. Int.
+0
+
+20
+
+40
+
+measured
+60
+
+80
+
+1960
+
+1965
+
+1970
+
+1975
+
+1980
+
+1985
+
+0.2
+
+0.0
+
+age−specific migration proportion
+
+−0.2
+
+0.2
+
+0.0
+
+−0.2
+
+1990
+
+1995
+
+2000
+
+0.2
+
+0.0
+
+−0.2
+
+0
+
+20
+
+40
+
+60
+
+80
+
+0
+
+20
+
+40
+
+60
+
+80
+
+age
+
+Figure 9. Ninety-five Percent Central Marginal Posterior Intervals for Age-specific Net Migration Proportions for the Female Population of Burkina Faso, 1960–2005.
+
+29
+
+Post. median
+
+95% Post. Int.
+0
+
+20
+
+40
+
+measured
+60
+
+80
+
+1965
+
+1970
+
+1975
+
+1980
+
+1985
+
+1990
+
+1000000
+
+500000
+
+population counts
+
+0
+
+1000000
+
+500000
+
+0
+
+1995
+
+2000
+
+2005
+
+1000000
+
+500000
+
+0
+0
+
+20
+
+40
+
+60
+
+80
+
+0
+
+20
+
+40
+
+60
+
+80
+
+age
+
+Figure 10. Ninety-five Percent Central Marginal Posterior Intervals for Population Counts for
+the Female Population of Burkina Faso, 1960–2005.
+
+30
+
+median
+95% PI
+measured
+
+9
+
+median
+95% PI
+measured
+
+Total Net Number of Migrations (000s)
+
+400
+
+Total Fertility Rate
+
+8
+
+7
+
+6
+
+200
+
+0
+
+−200
+
+−400
+5
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+year
+
+1980
+
+1990
+
+2000
+
+1990
+
+2000
+
+year
+
+(a)
+
+(b)
+median
+95% PI
+measured
+
+0.30
+
+median
+95% PI
+measured
+
+60
+
+55
+Life expectancy at birth (years)
+
+5q0
+
+0.25
+
+0.20
+
+0.15
+
+50
+
+45
+
+40
+
+35
+
+0.10
+
+30
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+1960
+
+year
+
+1970
+
+1980
+year
+
+(c)
+
+(d)
+
+Figure 11. Ninety-five Percent Central Credible Intervals for Selected Age-summarized Parameters for the Female Population of Burkina Faso, 1960–2005. (a) Total Fertility Rate. (b)
+Total Net Migration. (c) Child Mortality (5 q0 ) in the Stable Equivalent Population. (d) Life
+Expectancy at Birth in the Stable Equivalent Population.
+
+31
+
+6.
+
+DISCUSSION
+
+We have described a method for reconstructing past populations by age and sex which is
+designed to work with the type of data commonly collected in modern demographic surveys
+and censuses. Population dynamics are modeled by the well-known CCMPP and measurement error is accounted for in a coherent, fully probabilistic manner through a Bayesian
+hierarchical model. Inference is based on the joint posterior distribution of all parameters.
+Lee (1971, 1974) and Oeppen (1993) proposed deterministic methods of population reconstruction. We have assumed a deterministic model only for the population dynamics.
+That is, given the true vital and migration rates, the evolution of the population is modeled deterministically. In contrast, Bertino and Sonnino (2003) give a method wherein the
+population dynamics are stochastic and the vital rates function as mean parameters. We
+agree with Cohen (2006) and expect that, in our applications at least, variation due to measurement error will overwhelm any additional variation arising from a stochastic population
+dynamics model.
+Daponte, Kadane, and Wolfson (1997) use an approach similar to ours to construct a
+counterfactual history of the Iraqi Kurdish population between 1977 and 1990. They, too,
+represented errors in the measurement of demographic parameters as the standard deviations
+of probability distributions. However, they used a low dimensional parameterization of
+mortality and fixed the age patterns of fertility.
+Girosi and King (2008) use Bayesian models with covariates to forecast mortality. Our
+aim was not to produce forecasts, nor model dependence on covariates. Instead, we have
+shown how information only about the parameters themselves can be used to produce probabilistic distributions summarizing uncertainty due to measurement error. Where useful
+covariate information is available, we suggest that this be applied in a preprocessing stage,
+for example to remove the bias from the age-specific estimates which our model takes as
+input and assumes are median-unbiased. Our method would then be used to ensure that
+final estimates of multiple parameters are coherent in that they satisfy the basic demographic
+accounting relationships.
+In previous work, migration has been handled in different ways. Lee’s inverse projection method estimates it as a residual if censuses are available at intermediate years in the
+reconstruction interval. Alho (1992) added it as extra error in measuring survival. Here,
+migration is treated explicitly and age-time specific estimates are available as for the other
+parameters.
+Similar models have been used extensively in demographic studies of marine life and
+complex population dynamics models have been developed by fisheries researchers (e.g.,
+
+32
+
+Quinn and Deriso 1999). As is the case in human demography, multiple sources of data
+informing the same demographic parameters often exist. This led Raftery, Givens, and
+Zeh (1992, 1995), Givens, Raftery, and Zeh (1993) and McAllister et al. (1994) to develop
+Bayesian approaches to synthesizing these in a coherent manner.
+A large body of work also exists on the dynamics of land animal populations. As with
+fisheries research, data commonly come from mark-recapture or mark-recovery studies, but
+radio-telemetry and age-at-harvest data are also common; Seber (1982) is a classic reference and more recent reviews are Pollock (1991) and Schwarz and Seber (1999). Bayesian
+approaches to the analysis of this type of data were suggested at least as early as Gaskell
+and George (1972) but Vounatsou and Smith (1995) were among the first to take advantage
+of modern computers and MCMC methods to simultaneously estimate several parameters.
+Subsequently, a large body of literature developed; Brooks, Catchpole, and Morgan (2000a),
+Brooks et al. (2002) provided reviews while Barry et al. (2003), Conn et al. (2008) and
+Corkrey et al. (2008) are just a few examples of more recent studies.
+An issue given some consideration in this literature (and the demography literature;
+see Lee 1985, 1993) is the fact that the population dynamics models are typically overparameterized. This causes problems for likelihood based inference because the likelihood
+surface then contains ridges (e.g., Catchpole, Kgosi, and Morgan 2001). Nevertheless, in one
+of the models they studied, Brooks et al. (2000b) show that a Bayesian approach can yield
+sensible estimates.
+Naturally, there are ways in which our framework can be refined. An extension to twosex populations is an obvious example. We expect this to be straightforward conceptually,
+although technical issues associated with estimation may arise. With two sexes, we might
+also attempt to estimate the SRB parameter.
+We made the simplifying assumption of constant variance across age and time for each
+demographic parameter on the log scale. Allowing uncertainty estimates to vary would
+allow for the fact that more is typically known about infant and child mortality than old-age
+mortality, for example. However, the benefits of this extension would have to be weighed
+against the expense of having to estimate more parameters. This might be beneficial if
+estimation is done simultaneously for groups of countries. If the groups are chosen to be
+demographically similar, it might be realistic to set some of the variance parameters constant
+across countries but allow for variation over time or age.
+Alternatively, a small number of variance parameters could be chosen representing dif2
+2
+2
+2
+ferent degrees of uncertainty, for example, σSM
+L < σM ED < σLGE < σXL . These would then
+
+be assigned to the age-specific parameters following the same reasoning we have advocated
+above. An advantage is that the number of parameters can be determined by the analyst as
+33
+
+opposed being dependent on the number of age groups or sub-intervals.
+
+REFERENCES
+Alho, J. M. (1992), “The Magnitude of Error Due to Different Vital Processes in Population
+Forecasts,” International Journal of Forecasting, 8, 301–314.
+Alkema, L., Raftery, A. E., Gerland, P., Clark, S. J., and Pelletier, F. (2008), “Estimating the
+Total Fertility Rate from Multiple Imperfect Data Dources and Assessing its Uncertainty,”
+Working Paper 89, University of Washington, Center for Statistics and the Social Sciences.
+Barry, S. C., Brooks, S. P., Catchpole, E. A., and Morgan, B. J. T. (2003), “The Analysis
+of Ring-Recovery Data Using Random Effects,” Biometrics, 59, 54–65.
+Bertino, S. and Sonnino, E. (2003), “The Stochastic Inverse Projection and the Population
+of Velletri (1590-1870),” Mathematical Population Studies, 10, 41–73.
+Booth, H. (2006), “Demographic Forecasting: 1980 to 2005 In Review,” International Journal of Forecasting, 22, 547–581.
+Boyle, P. P. and Grada, C. O. (1986), “Fertility Trends, Excess Mortality, and the Great
+Irish Famine,” Demography, 23, 543–562.
+Brass, W. (1964), “Uses of Census and Survey Data for the Estimation of Vital Rates,”
+Paper prepared for the African Seminar on Vital Statistics, Addis Ababa.
+— (1971), Biological Aspects of Demography, London: Taylor and Francis Ltd., chap. On
+the Scale of Mortality, pp. 69–110.
+Brooks, S. P., Catchpole, E. A., and Morgan, B. J. T. (2000a), “Bayesian Animal Survival
+Estimation,” Statistical Science, 15, 357–376.
+Brooks, S. P., Catchpole, E. A., Morgan, B. J. T., and Barry, S. C. (2000b), “On the Bayesian
+Analysis of Ring-Recovery Data,” Biometrics, 56, 951–956.
+Brooks, S. P., Catchpole, E. A., Morgan, B. J. T., and Harris, M. P. (2002), “Bayesian
+Methods for Analysing Ringing Data,” Journal of Applied Statistics, 29, 187–206.
+Catchpole, E. A., Kgosi, P. M., and Morgan, B. J. T. (2001), “On the Near-Singularity of
+Models for Animal Recovery Data,” Biometrics, 57, 720–726.
+
+34
+
+Cleveland, W. S. (1979), “Robust Locally Weighted Regression and Smoothing Scatterplots,”
+Journal of the American Statistical Association, 74, 829–836.
+Cleveland, W. S., Grosse, E., and Shyu, W. M. (1992), “Local Regression Models,” in
+Statistical Models in S, eds. Chambers, J. and Hastie, T., Pacific Grove, Calif: Wadsworth
+& Brooks/Cole, chap. 8.
+Coale, A. J. and Trussell, J. (1974), “Model Fertility Schedules: Variations in the Age
+Structure of Childbearing in Human Populations,” Population Index, 40, 185–258.
+Cohen, J. E. (2006), “Stochastic Demography,” in Encyclopedia of Statistical Sciences, John
+Wiley and Sons, Inc., article Online Posting Date: August 15, 2006.
+Cond´e, J. (1980), “Migration in Upper Volta,” in Demographic Aspects of Migration in West
+Africa, eds. Zachariah, K. C. and Cond´e, J., Washington D. C.: World Bank, vol. 2 of
+Staff Working Paper, No. 415.
+Conn, P. B., Diefenbach, D. R., Laake, J. L., Ternent, M. A., and White, G. C. (2008),
+“Bayesian Analysis of Wildlife Age-at-Harvest Data,” Biometrics, 64, 1170–1177.
+Corkrey, R., Brooks, S., Lusseau, D., Parsons, K., Durban, J. W., Hammond, P. S., and
+Thompson, P. M. (2008), “A Bayesian Capture-Recapture Population Model With Simultaneous Estimation of Heterogeneity,” Journal of the American Statistical Association,
+103, 948–960.
+Daponte, B. O., Kadane, J. B., and Wolfson, L. J. (1997), “Bayesian Demography: Projecting the Iraqi Kurdish Population, 1977-1990,” Journal of the American Statistical
+Association, 92, 1256–1267.
+Feeney, G. (1996), “A New Interpretation of Brass’ P/F Ratio Method Applicable When Fertility is Declining,” http://www.heart-intl.net/HEART/HIV/Comp/
+InterpretationofFertiline.pdf.
+Gaskell, T. J. and George, B. J. (1972), “A Bayesian Modification of the Lincoln Index,”
+Journal of Applied Ecology, 9, 377–384.
+Geman, S. and Geman, D. (1984), “Stochastic Relaxation, Gibbs Distributions, and the
+Bayesian Restoration of Images,” Pattern Analysis and Machine Intelligence, IEEE Transactions on, PAMI-6, 721–741.
+Girosi, F. and King, G. (2008), Demographic Forecasting, Princeton, NJ: Princeton University Press.
+35
+
+Givens, G. H., Raftery, A. E., and Zeh, J. E. (1993), “Benefits of a Bayesian Approach
+for Synthesizing Multiple Sources of Evidence and Uncertainty Linked by a Deterministic
+Model,” Report of the International Whaling Commission, 43, 495–500.
+Goodkind, D. and West, L. (2001), “The North Korean Famine and its Demographic Impact,” Population and Development Review, 27, 219–238.
+Hastings, W. K. (1970), “Monte Carlo Sampling Methods Using Markov Chains and Their
+Applications,” Biometrika, 57, 97–109.
+Heuveline, P. (1998), “‘Between One and Three Million’: Towards the Demographic Reconstruction of a Decade of Cambodian History (1970–79).” Population Studies, 52, 49–65.
+Hill, K., Pande, R., Mahy, M., and Jones, G. (1999), Trends in Child Mortality in the
+Developing World: 1960 to 1996, New York, NY: UNICEF.
+Keilman, N. (1998), “How Accurate Are the United Nations World Population Projections?”
+Population and Development Review, 24, 15–41.
+Lee, R. D. (1971), “Econometric Studies of Topics in Demographic History,” Disseration in
+economics, Harvard University, Cambridge, Massachucetts.
+— (1974), “Estimating Series of Vital Rates and Age Structures from Baptisms and Burials:
+A New Technique, with Applications to Pre-Industrial England,” Population Studies, 28,
+495–512.
+— (1985), “Inverse Projection and Back Projection: A Critical Appraisal, and Comparative
+Results for England, 1539 to 1871,” Population Studies, 39, 233–248.
+— (1993), “Inverse Projection and Demographic Fluctuations,” in Old and New Methods in
+Historical Demography, eds. Reher, D. S. and Schofield, R., Oxford, England: Clarendon
+Press, chap. 1, pp. 7–28.
+— (1998), “Probabilistic Approaches to Population Forecasting,” Population and Development Review, 24, 156–190.
+Leslie, P. H. (1945), “On the Use of Matrices in Certain Population Mathematics,”
+Biometrika, 33, 183–212.
+— (1948), “Some Further Notes on the Use of Matrices in Population Mathematics,”
+Biometrika, 35, 213–245.
+
+36
+
+Lewis, E. G. (1942), “On the Generation and Growth of a Population,” Sankhy¯a: The Indian
+Journal of Statistics (1933-1960), 6, 93–96.
+McAllister, M. K., Pikitch, E. K., Punt, A. E., and Hilborn, R. (1994), “A Bayesian Approach
+to Stock Assessment and Harvest Decisions Using the Sampling/Importance Resampling
+Algorithm,” Canadian Journal of Fisheries and Aquatic Sciences, 51, 2673–2687.
+McCaa, R. and Barbi, E. (2004), “Inverse Projection: Fine-Tuning and Expanding the
+Method,” in Inverse Projection Techniques: Old and New Approaches, eds. Barbi, E.,
+Bertino, S., and Sonnino, E., Berlin: Springer-Verlag, pp. 11–28.
+Merli, M. G. (1998), “Mortality in Vietnam, 1979-1989,” Demography, 35, 345–360.
+Metropolis, N., Rosenbluth, A. W., Rosenbluth, M. N., Teller, A. H., and Teller, E. (1953),
+“Equation of State Calculations by Fast Computing Machines,” Journal of Chemical
+Physics, 21, 1087–1092.
+Oeppen, J. (1993), “Back projection and Inverse Projection: Members of a Wider Class of
+Constrained Projection Models,” Population Studies, 47, 245–267.
+O’Hagan, A., Buck, C. E., Deaneshkhah, A., Eiser, J. R., Garthwaite, P. H., Jenkinson,
+D. J., Oakley, J. E., and Rakow, T. (2006), Uncertain judgements: Eliciting Experts’
+Probabilities, Statistics in Practice, London: Wiley.
+Plummer, M., Best, N., Cowles, K., and Vines, K. (2006), “CODA: Convergence Diagnosis
+and Output Analysis for MCMC,” R News, 6, 7–11.
+— (2010), CODA: Output Analysis and Diagnostics for MCMC., Comprehensive R Archive
+Network (CRAN), www.r-project.org.
+Pollock, K. H. (1991), “Modeling Capture, Recapture, and Removal Statistics for Estimation
+of Demographic Parameters for Fish and Wildlife Populations: Past, Present, and Future,”
+Journal of the American Statistical Association, 86, 225–238.
+Preston, S. H., Heuveline, P., and Guillot, M. (2001), Demography: Measuring and Modeling
+Population Processes, Blackwell.
+Quinn, T. J. and Deriso, R. B. (1999), Quantitative Fish Dynamics, New York, NY: Oxford
+University Press.
+R Development Core Team (2010), R: A Language and Environment for Statistical Computing, R Foundation for Statistical Computing, Vienna, Austria, ISBN 3-900051-07-0.
+37
+
+Raftery, A. E., Givens, G. H., and Zeh, J. E. (1992), “Inference from a Deterministic Population Dynamics Model About Bowhead Whale, Balaena Mysticetus, Replacement Yield,”
+Technical Report 232, Department of Statistics, University of Washington, Seattle, WA.
+— (1995), “Inference from a Deterministic Population Dynamics Model for Bowhead
+Whales,” Journal of the American Statistical Association, 90, 402–416.
+Raftery, A. E. and Lewis, S. M. (1996), “Implementing MCMC,” in Markov Chain Monte
+Carlo in Practice, eds. Gilks, W. R., Richardson, S., and Spiegelhalter, D. J., London:
+Chapman & Hall, pp. 115–130.
+Rosina, A. (2004), “Using Information on the Age Distribution of Deaths in Population
+Reconstruction: An Extension of Inverse Projection with Applications,” in Inverse Projection Techniques: Old and New Approaches, eds. Barbi, E., Bertino, S., and Sonnino,
+E., Berlin: Springer-Verlag, pp. 29–38.
+Schwarz, C. J. and Seber, G. A. F. (1999), “Estimating Animal Abundance: Review III,”
+Statistical Science, 14, 427–456.
+Seber, G. A. F. (1982), The Estimation of Animal Abundance and Related Parameters,
+London: Charles Griffin & Company Ltd., 2nd ed.
+Timæus, I. M. (1999), “Notes on a Series of Life Table Estimates of Mortality in the Countries
+of the sub-Saharan Africa Region,” Unpublished manuscript prepared for the World Health
+Organization.
+UNICEF, WHO, The World Bank, and UN Population Division (2007), “Levels and Trends
+of Child Mortality in 2006: Estimates developed by the Inter-agency Group for Child
+Mortality Estimation,” Working paper, New York, NY.
+United Nations (1983), Manual X: Indirect Techniques for Demographic Estimation, no. 81
+in Population Studies (Department of International, Economic and Social Affairs), New
+York, NY: United Nations, Sales No. E.83.XIII.2.
+— (2009), “World Population Prospects: The 2008 Revision,” http://esa.un.org/unpd/
+wpp2008/index.htm.
+United States Census Bureau (2009), “International Data Base: Table 008, Crude Birth and
+Death, Net Migration, and Growth Rates, Births, Deaths, and Migrants, Burkina Faso,
+1976–2050,” http://www.census.gov/ipc/www/idb/tables.html.
+
+38
+
+Vounatsou, P. and Smith, A. F. M. (1995), “Bayesian Analysis of Ring-Recovery Data Via
+Markov Chain Monte Carlo Simulation,” Biometrics, 51, 687–708.
+Wrigley, E. A. and Schofield, R. S. (1981), The Population History of England, 1541–1871:
+A Reconstruction, Studies in Social and Demographic History, London: Edward Arnold.
+Xie, Y. (1990), “What is Natural Fertility? The Remodelling of a Concept,” Population
+Index, 56, 656–663.
+Xie, Y. and Pimentel, E. E. (1992), “Age Patterns of Marital Fertility: Revising the CoaleTrussell Method,” Journal of the American Statistical Association, 87, 977–984.
+
+39
+
+

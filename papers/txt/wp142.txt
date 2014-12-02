@@ -1,0 +1,1967 @@
+Equivariant and scale-free Tucker decomposition models
+Peter David Hoff1
+Working Paper no. 142
+Center for Statistics and the Social Sciences
+University of Washington
+Seattle, WA 98195-4320
+December 31, 2013
+
+1
+
+Departments of Statistics and Biostatistics, University of Washington.
+
+Abstract
+Analyses of array-valued datasets often involve reduced-rank array approximations, typically obtained via least-squares or truncations of array decompositions. However, least-squares approximations tend to be noisy in high-dimensional settings, and may not be appropriate for arrays that
+include discrete or ordinal measurements. This article develops methodology to obtain low-rank
+model-based representations of continuous, discrete and ordinal data arrays. The model is based
+on a parameterization of the mean array as a multilinear product of a reduced-rank core array and
+a set of index-specific orthogonal eigenvector matrices. It is shown how orthogonally equivariant
+parameter estimates can be obtained from Bayesian procedures under invariant prior distributions.
+Additionally, priors on the core array are developed that act as regularizers, leading to improved
+inference over the standard least-squares estimator, and providing robustness to misspecification
+of the array rank. This model-based approach is extended to accommodate discrete or ordinal
+data arrays using a semiparametric transformation model. The resulting low-rank representation
+is scale-free, in the sense that it is invariant to monotonic transformations of the data array. In
+an example analysis of a multivariate discrete network dataset, this scale-free approach provides a
+more complete description of data patterns.
+Keywords: factor analysis, rank likelihood, social network, tensor, Tucker product.
+
+1
+
+Introduction
+
+Many datasets are naturally represented as multiway arrays, often referred to as tensors. For
+example, data gathered under all combinations of levels of three conditions can be expressed as a
+three-way array Y = {yi,j,k : i ∈ {1, . . . , n1 }, j ∈ {1, . . . , n2 }, k ∈ {1, . . . , n3 }}. The index sets are
+referred to as the modes of the array, and an array with K modes is typically referred to as a K-way
+array. Such array-valued datasets are common in several disciplines, including chemometrics, signal
+processing and psychometrics. Another class of array-valued data includes multivariate relational
+networks, which consist of several types of relational measurements between pairs of nodes. Such
+a dataset may be represented as a three-way array Y ∈ Rn×n×p , where n is the number of nodes,
+p is the number of relation types, and the entries of Y are such that yi,j,k is the value of the kth
+relation type from node i to j. For example, yi,j,1 may give the number of emails sent from person i
+to person j and yi,j,2 may encode an evaluation of i’s friendship to j measured on an ordinal scale.
+In this case, the three modes of the array correspond to the initiator of the relation, the target of
+the relation and the relation type, respectively.
+A popular method for describing heterogeneity in array-valued datasets is with array decompositions. One category of decompositions are the “Tucker decompositions” (Tucker, 1964, 1966; Kolda
+and Bader, 2009), which express a K-way data array Y as Y = S × {U1 , . . . , UK }, where S is a
+K-way core array, “×” is a a multilinear operator known as the Tucker product and {U1 , . . . , UK }
+is a collection of mode-specific factor matrices. De Lathauwer et al. (2000) study a particular
+type of Tucker decomposition in which the Uk ’s are orthogonal, and argue that this “higher-order”
+singular value decomposition (HOSVD) is a natural extension of the matrix SVD to arrays, with
+the core array S playing a role analogous to that of the singular values of a matrix. Data analysis
+based on this decomposition often proceeds by obtaining a low-rank representation of Y either via
+truncation of the core array or with a least-squares approximation, and then using its mode-specific
+singular vectors to describe the heterogeneity in the entries of Y along each of its K modes.
+While providing a relatively simple approach to exploratory data-analysis, least-squares methods may be limited in terms of their performance and applicability. For example, least-squares
+methods tend to be noisy in multiparameter estimation problems, leading many researchers to favor regularized procedures instead. Recent work on the analysis of matrix-valued datasets indicates
+that soft-thresholding the singular values of a data matrix can lead to improved estimation of its
+1
+
+mean matrix as compared to a least-squares approach (Mazumder et al., 2010; Cai et al., 2010;
+Josse and Sardy, 2013). Penalized approaches have also been studied in the context of array-valued
+data: Recent theoretical work has focused on array completion problems, in which the task is to
+recover a reduced-rank array based on random linear combinations of its elements (Liu et al., 2009;
+Mu et al., 2013). The algorithms studied typically involve finding the minimum rank among arrays
+that match the data at the observed entries. Variants of these procedures include finding arrays
+that minimize different criteria while still matching the observed data, or by minimizing a residual
+sum of squares subject to a penalty on the fitted array (Tomioka et al., 2011).
+However, such approximations of the raw data may be inappropriate when the data are binary,
+ordinal or otherwise non-normally distributed. For example, Section 5 of this article considers an
+analysis of skewed, discrete multivariate relational data. These data, obtained from the GDELT
+project (Leetaru and Schrodt (2013), gdelt.utdallas.edu), consist of weekly summaries of 20 different
+types of actions between the 30 most active countries in the GDELT database in 2012. These data
+can be represented as a 30 × 30 × 52 × 20 four-way array Y, with entries {yi,j,k,t : 1 ≤ i, j ≤ 30, i 6=
+j, 1 ≤ k ≤ 20, 1 ≤ t ≤ 52}, where yi,j,k,t is the number of days in week t in which country i took
+action k with country j as the target. A least-squares approximation to these data is problematic
+for several reasons, one of which is that such an approximation predominantly represents the small
+number of large entries of the array, and is therefore unrepresentative of “most” of the data.
+As an alternative to least-squares procedures, this article develops a model-based version of a
+penalized Tucker decomposition, and an extension that can accommodate the analysis of discrete,
+ordinal or otherwise non-normal data. The approach is Bayesian, in that the penalty term can
+be viewed as a prior distribution on the unknown parameters, and estimates can be obtained via
+Markov chain Monte Carlo methods. This Bayesian model-based approach is similar to that of
+Chu and Ghahramani (2009), who present a Tucker decomposition model and prior in which the
+core array S and factor matrices {U1 , . . . , UK } all have i.i.d. standard normal entries. Unlike their
+approach, this article parameterizes the model so that the factor matrices are orthogonal, as in
+the HOSVD of De Lathauwer et al. (2000). This parameterization facilitates construction of a
+class of prior distributions for which posterior inference is both scale-equivariant and orthogonallyequivariant. Additional identifiability considerations lead to a particular form for a prior distribution over the core array S. This prior allows for mode-specific penalization of the singular values,
+
+2
+
+and also has an interpretation as a version of normal factor analysis for array-valued data.
+The work presented here is related to some recently developed statistical models that make use
+of the multilinear Tucker product. The core array S is penalized using a class of array normal
+distributions, generated by the multilinear Tucker product (Hoff, 2011). Xu et al. (2012) develop
+a prior over the array normal model in which the mode-specific covariance matrices are functions
+of a potentially infinite set of latent features. In a similar vein, Fosdick and Hoff (2012) develop
+a version of factor analysis based on the array normal model. The Tucker product has also been
+used to construct priors in applications where it is the parameters in the model that are arrays:
+Bhattacharya and Dunson (2012) use a Tucker product to develop a prior over probability distributions for multivariate categorical data, and Volfovsky and Hoff (2012) use a collection of connected
+array normal distributions as a prior over parameter arrays in ANOVA decompositions. Regarding penalization, Allen (2012) has proposed a sparsity penalty on the factor matrices of a Tucker
+decomposition, thereby encouraging zeros in their entries. While appropriate in some applications,
+procedures based on such a sparsity penalty will not be orthogonally equivariant. In contrast, the
+uniform priors on the factor matrices used in this article lead to orthogonally equivariant estimates,
+and penalization is focused on the core array in order to encourage low-rank approximations to the
+data.
+An outline of this paper is as follows: The next section provides a brief review of array rank
+and Tucker decompositions. In Section 3 a parameterization of the Tucker decomposition model
+is presented, along with a class of prior distributions that allow for equivariant estimation of the
+model parameters. Section 4 develops a subclass of priors that allows for mode-specific penalization
+of the singular values. In a simulation study, this prior distribution is shown to perform as well as
+an “oracle” prior when no mode-specific penalization is warranted, and greatly outperforms such
+a prior when the rank of the model is misspecified. This methodology is extended in Section 5 to
+accommodate discrete, ordinal and non-normal data via a semiparametric transformation model,
+allowing for scale-free reduced-rank representations of array data of diverse types. This extension
+is illustrated with an analysis of discrete multivariate international relations data. A discussion
+follows in Section 6.
+
+3
+
+2
+
+Review of array rank and Tucker decompositions
+
+Recall that the rank of a matrix M ∈ Rn1 ×n2 is equal to the dimension of the linear space spanned
+by the columns (or rows) of M. Now suppose M ∈ Rn1 ×n2 ×n3 is a three-way array, with elements
+{mi,j,k : 1 ≤ i ≤ n1 , 1 ≤ j ≤ n2 , 1 ≤ k ≤ n3 }. The notion of array rank considered by Tucker
+(1964), De Lathauwer et al. (2000) and others is defined by the ranks of various reshapings of M into
+matrices, called matricizations. For example, the mode-1 matricization M(1) of M is the n1 ×(n2 n3 )
+matrix having column vectors of the form mj,k = (m1,j,k , . . . , mn1 ,j,k )T , that is, elements of M with
+varying values of the first index and fixed values of the second and third indices. Heterogeneity
+in the values of M ascribable to heterogeneity in the first index set can be described in terms of
+the linear space spanned by the columns of M(1) . The dimension r1 of this linear space (which is
+equal to the rank of M(1) ) is called the mode-1 rank of M. The mode-2 and mode-3 matricizations
+of M can be formed similarly, and their ranks provide the mode-2 rank r2 and mode-3 rank r3 ,
+respectively. The array rank of M is the vector r = (r1 , r2 , r3 ), and is sometimes referred to as the
+multilinear rank. Unlike the row and column ranks of a matrix, the ranks corresponding to the
+different modes of an array are not generally equal.
+Any matrix M ∈ Rn1 ×n2 can be expressed in terms of its SVD M = U1 SUT2 where S =
+diag(s1 , . . . , sr ), U1 ∈ Vr,n1 , U2 ∈ Vr,n2 and r ≤ n1 ∧ n2 is the rank of M. Here, Vr,n is the
+space of n × r matrices with orthonormal columns, known as the Stiefel manifold. As shown by
+De Lathauwer et al. (2000), an analogous representation holds for any array. The analogy is most
+easily seen via vectorization: The SVD of a matrix M yields a representation of m = vec(M) as
+m = (U2 ⊗ U1 ) s, where s = vec(S) and “⊗” is the Kronecker product. Similarly, every K-way
+array M of dimension n1 × · · · × nK and rank r = (r1 , . . . , rK ) can be expressed as
+m = (UK ⊗ · · · ⊗ U1 ) s,
+
+(1)
+
+where m is the vectorization of M, Uk ∈ Vrk ,nk for k ∈ {1, . . . , K} and s is the vectorization of
+an r1 × · · · × rK array S known as the “core array.” This representation is often referred to as
+the higher-order SVD (HOSVD). More generally, any representation of m of the form (1), without
+U1 , . . . , UK necessarily being orthogonal, is known as a “Tucker decomposition.”
+An equivalent representation of M that retains its array structure is obtained using the so-called
+“Tucker product” (Tucker, 1964) of the core array S with the list of factor matrices U1 , . . . , UK .
+4
+
+This representation expresses M as
+M = S × {U1 , . . . , UK },
+
+(2)
+
+where the Tucker product “×” is defined by the equivalence between Equations 1 and 2. More generally, For A ∈ Rn1 ×···×nK , B ∈ Rr1 ×···×rK and Ck ∈ Rnk ×rk , k = 1, . . . , K, A = B × {C1 , . . . , CK }
+means that vec(A) = (CK ⊗ · · · ⊗ C1 ) vec(B).
+For the calculations that follow it will be useful to re-express a Tucker decomposition of M in
+terms of its matricizations. If M can be expressed as in (1) or (2), then it also follows that for each
+k ∈ {1, . . . , K},
+M(k) = Uk S(k) (UK ⊗ · · · Uk+1 ⊗ Uk−1 ⊗ · · · ⊗ U1 )T ≡ Uk S(k) UT−k ,
+
+(3)
+
+where M(k) and S(k) are the mode-k matricizations of M and S respectively.
+
+3
+
+A model-based Tucker decomposition for arrays
+
+A commonly used model of low-dimensional structure for a matrix-valued dataset Y ∈ Rn1 ×n2 is
+that Y is equal to some mean matrix M of rank r < n1 ∧ n2 , plus an error matrix σE having
+i.i.d. mean-zero entries with variance σ 2 . Let M = U1 DUT2 be the SVD of M and S = D/σ be
+the singular values scaled by the error standard deviation σ. This model can be parameterized as
+Y = σU1 SUT2 + σE, or alternatively in vector form as
+y = σ(U2 ⊗ U1 ) s + σe,
+where y, s and e are the vectorizations of Y, S and E respectively.
+Now consider an analogous model for an array Y ∈ Rn1 ×···×nK . As in the matrix case, the
+model is Y = M + σE, where M is an array with array rank r and E is a mean-zero error array.
+Equation 1 says that this model can be expressed as
+y = σ(UK ⊗ · · · ⊗ U1 ) s + σe
+
+(4)
+
+where s ∈ Rr1 ···rK and Uk ∈ Vrk ,nk for each k = 1, . . . , K. An equivalent representation in terms of
+the Tucker product is that
+Y = σS × {U1 , . . . , UK } + σE.
+5
+
+This section discusses estimation of the unknown parameters (σ, U, S) in this Tucker decomposition
+model (TDM) when the error E is assumed to consist of i.i.d. standard normal random variables.
+Results on optimal equivariant estimation in the case that S is known are used to motivate certain
+priors for equivariant Bayesian inference in the more realistic case that S is unknown. It is shown
+that posterior inference under such prior distributions can be made with a relatively straightforward
+Markov chain Monte Carlo (MCMC) algorithm, based on Gibbs sampling.
+
+3.1
+
+Equivariant estimation
+
+First consider the (unrealistic) case that the core array S is known. Letting n = n1 · · · nK , r =
+r1 · · · rK and U = {U : U = UK ⊗ · · · ⊗ U1 , Uk ∈ Vrk ,nk }, the normal TDM can be expressed as
+y = σUs + σe , e ∼ Nn (0, I) , (σ, U) ∈ R+ × U.
+
+(5)
+
+Let W = {W : W = WK ⊗ · · · ⊗W1 , Wk ∈ Onk } be the space of Kronecker products of orthogonal
+matrices, and note that WU ∈ U for all W ∈ W and U ∈ U. It follows that the model (5) is
+invariant under the group of transformations on Y given by G = {g : y → aWy, a > 0, W ∈ W},
+which induces a group G¯ on the parameter space given by G¯ = {¯
+g : (σ, U) → (aσ, WU)}. This
+motivates the use of equivariant estimators of σ and U. For example, it is natural to prefer
+estimators such that σ
+ˆ (aWy) = aˆ
+σ (y), so that the scale changes to the data result in the same
+change to the estimate of the scale parameter σ. Similarly, one may prefer estimators of U such
+ˆ
+ˆ
+ˆ
+ˆ
+that U(aWy)
+= WU(y)
+and estimators of m = σUs such that m(aWy)
+= aWm(y).
+As with many invariant statistical models, risk-optimal equivariant decision rules can be obtained as Bayes rules under a prior distribution derived from the group:
+Proposition 1. Let θ = (σ, U) and Θ = R+ × U. Under any invariant loss function L(d, θ) the
+minimum risk equivariant decision rule δ(y) is given for each y by the minimizer in d of
+Z
+L(d, θ)p(y|θ)πI (dθ),
+where for measurable sets A ⊂ R+ and B ⊂ U, πI (A×B) = πσ (A)×πU (B), with πσ (A) =
+
+R
+
+Aσ
+
+−1 dσ
+
+and πU corresponding to the (proper) probability distribution of UK ⊗ · · · ⊗ U1 when each Uk is
+uniformly distributed on Vrk ,nk .
+
+6
+
+This result is an application of more general results from invariant decision theory (a proof
+is in the Appendix). To put the result more simply, optimal equivariant decision rules can be
+obtained from the posterior distribution of (σ, U) under an improper prior for σ with density 1/σ
+and independent uniform priors for U1 , . . . , UK . In what follows, πσ and πU will refer to either
+these measures or their densities, depending on the context.
+Unfortunately, uniformly optimal equivariant decision rules no longer exist under this group
+when the core array s is unknown, as the best equivariant estimator will depend on s. This article
+focuses attention on Bayesian inference for (σ, U, s) using prior distributions with densities of the
+form π(σ, U, s) = πσ (σ)πU (U)πs (s), where πs (s) is a proper probability density. Although not
+corresponding to a proper joint prior distribution (because of the improper prior on σ), such densities can be used to construct proper posterior distributions that provide estimates of functions of
+(σ, U, s) that are equivariant with respect to G and G¯ = {¯
+g : (σ, U, s) → (aσ, WU, s)}. Addressing
+the propriety of such a posterior first, for each y ∈ Rn define a function f (σ, U, s : y) so that
+f (σ, U, s : y) ∝ p(y|σ, U, s) × π(σ, U, s),
+where p(y|σ, U, s) is the normal sampling density of y, having mean σUs and variance σ 2 I. If f
+is integrable in (σ, U, s) for the observed value of y, a “posterior” probability distribution can be
+defined via the density
+π(σ, U, s|y) = R
+
+f (σ, U, s : y)
+.
+f (σ, U, s : y) dσdUds
+
+(6)
+
+That f is generally integrable can be seen by first integrating with respect to σ:
+Z
+
+∞
+
+Z
+
+∞
+
+f (σ, U, s : y) dσ = πU (U)πs (s)
+0
+
+p(y|σ, U, s)πσ (σ) dσ
+Z0 ∞
+
+= πU (U)πs (s)
+
+(2π)−n/2 σ −n−1 exp(−σ −2 ||y − Us||2 /2) dσ
+
+0
+
+= πU (U)πs (s) × [ 12 π −n/2 Γ(n/2)] × ||y − Us||−n .
+ˆ where m
+ˆ is the least squares estimate of m. Since m
+ˆ is of reduced
+Now ||y − Us|| ≥ ||y − m||,
+ˆ > 0 unless the array rank of y is less than or equal to that of the fitted rank.
+rank, ||y − m||
+ˆ −n . Since
+Presuming this is not the case, it follows that ||y − Us||−n is bounded above by ||y − m||
+the priors for U and s are proper, the integral of ||y − Us||−n with respect to πU (U) and πs (s) is
+finite. Therefore, f (σ, U, s : y) is integrable and (6) is a proper probability density.
+
+7
+
+As stated above, the decision rules obtained from such a posterior are not globally risk optimal
+among equivariant rules, as optimal rules for (σ, U) depend on the unknown value of s. However,
+such posterior distributions still provide equivariant inference in the following sense:
+Proposition 2. Let the prior for θ = (σ, U, s) be such that the marginal prior for (σ, U) is the
+invariant prior πI and s is independent of (σ, U). Then for any a > 0, W ∈ W and functions
+g : y → aWy and g¯ : (σ, U, s) → (aσ, WU, s),
+Pr(θ ∈ A|y) = Pr(θ ∈ g¯A|gy)
+for all measurable subsets A of R+ × U × Rr .
+A proof is in the Appendix. The result says that, using such a prior, the belief that the correct
+θ-value is in A having observed y is the same as the belief that the correct θ-value is in g¯A having
+observed gy.
+
+3.2
+
+Posterior approximation via the Gibbs sampler
+
+The results in the previous subsection hold as long as s is a priori independent of σ and U and
+the prior for s is proper. The remainder of the article focuses attention on normal priors for s, so
+that the joint prior distribution of (σ, U, s) has a density of the form π(σ, U, s) = πI (σ, U) × πs (s),
+where πI is density of the invariant prior discussed previously and πs is a zero-mean multivariate
+normal prior with covariance matrix Ψ. Not only are such priors for s computationally convenient,
+but they lead to an interpretation of the model as a multiway extension to a normal factor analysis
+model, as will be discussed in the next section.
+Posterior inference under such a prior can be made via a reasonably straightforward Gibbs sampling algorithm that approximates the posterior distribution of (σ 2 , U, s) given y. The algorithm
+proceeds by iteratively updating the values of these parameters as follows:
+1. Simulate (σ 2 , s) from π(σ 2 , s|y, U) as follows:
+(a) simulate σ 2 from π(σ 2 |y, U), an inverse-Gamma distribution;
+(b) simulate s from π(s|y, U, σ 2 ), a multivariate normal distribution.
+2. For k ∈ {1, . . . , K}, simulate Uk from π(Uk |y, s, {Uj : j 6= k}, σ 2 ), a von Mises-Fisher
+distribution on Vrk ,nk .
+8
+
+Repeated iteration of the above procedure generates a Markov chain whose stationary distribution
+is the posterior distribution of (σ 2 , U, s) given y.
+Full conditional distribution of (σ 2 , s): Recall that the model for y is y = σUs + σe, e ∼
+Q
+Nn (0, I), where n = nk . The normal prior s ∼ Nr (0, Ψ) implies that, unconditionally on s, y is
+multivariate normal with mean 0 and covariance matrix
+E[yyT |U, σ] = σ 2 E[UssT UT + eeT + 2UseT ]
+
+= σ 2 UΨUT + I .
+Based on this result, standard calculations show that the conditional distribution of σ 2 used in step
+1 of the above algorithm is an inverse-gamma distribution:
+1/σ 2 ∼ gamma(n/2, yT (UΨUT + I)−1 y/2).
+Now given σ and U, the model can be expressed as y/σ = Us + e where the entries of e are i.i.d.
+standard normal random variables. This has the same form as a regression model with s playing
+the role of the vector of unknown regression coefficients. Combining this “regression likelihood”
+with the normal prior s ∼ Nr (0, Ψ) gives a normal full conditional distribution for s with mean
+and variance given as follows:
+˜ = (Ψ−1 + I)−1
+Var[s|y, U, σ 2 , Ψ] = Ψ
+˜ T y/σ.
+E[s|y, U, σ 2 , Ψ] = ΨU
+The next section discusses specification and estimation of Ψ, and its relationship to the modespecific singular values of the mean array M.
+Full conditional distribution of U: Let Y(1) , S(1) and E(1) be the mode-1 matricizations of
+the arrays Y, S and E respectively. The model can then be written as Y(1) /σ = U1 S(1) UT−1 + E(1)
+where U−1 = (UK ⊗ · · · ⊗U2 ) and the elements of E(1) are i.i.d. standard normal random variables.
+Since the prior for U1 is the uniform distribution on Vr1 ,m1 , its full conditional distribution is
+proportional to the density of Y(1) :
+π(U1 | . . .) ∝U1 p(Y(1) |S, U, σe2 ) ∝U1 exp(− 21 ||Y(1) /σ − U1 S(1) UT−1 ||2 )
+∝U1 etr(UT1 Y(1) U−1 ST(1) )/σ) ≡ etr(UT1 H)
+9
+
+where H = Y(1) U−1 ST(1) /σ. This is proportional to the matrix-variate von Mises-Fisher distribution
+vMF(H) on Vr1 ,m1 . An algorithm for direct simulation from vMF(H) is described in Hoff (2009).
+The full conditional distributions of U2 , . . . , UK can be derived analogously.
+
+4
+
+Estimation of Ψ
+
+The covariance matrix Ψ of the core array S can be viewed as a description of the scale of M
+relative to the scale σ of the error, or alternatively, as a penalty on the magnitude of S that serves
+to provide a regularized estimator of the mean array M = σS × U. In practice, an appropriate
+value of Ψ may not be known in advance, and therefore must be estimated from the data. This
+section discusses estimation of Ψ in the context of two models for S. The first of these is simply
+that vec(S) = s ∼ Nr (0, τ 2 I), where τ 2 is a scale parameter to be estimated. In a simulation study,
+it is shown that this model provides better estimates of M than those obtained by minimizing the
+residual sum of squares. However, this simple covariance model shrinks all values of S equally, and
+does not recognize the array structure of S. As an alternative to this homoscedastic i.i.d. model,
+a heteroscedastic separable variance model is developed, of the form Cov[s] = τ 2 ΛK ⊗ · · · ⊗ Λ1 ,
+where each Λk is a diagonal matrix with positive entries that sum to 1. Such a model allows for
+separate penalization of the mode-specific eigenvalues of the array M. Such penalization is useful
+when it is feared that the fitted rank r is larger than the actual rank of the mean array for some
+of the modes. In such cases, it is desirable to have a procedure that can shrink the estimate of M
+towards arrays with lower mode-specific ranks. This section first derives this heteroscedastic model
+and provides some interpretation of the parameters, and then illustrates in a simulation study how
+estimators based on this model can shrink towards low-rank solutions when the fitted rank is too
+large.
+
+4.1
+
+Derivation and interpretation of the heteroscedastic model
+
+Even if s were observed, unrestricted estimation of Ψ based on the model s ∼ Nr (0, Ψ) would be
+problematic, as s corresponds to only a single realization from the Nr (0, Ψ) distribution. Instead,
+consider first estimation of Ψ restricted to the class of separable covariance matrices, so that
+Ψ = ΨK ⊗ · · · ⊗ Ψ1 , where each Ψk is an rk × rk positive definite matrix. Now recall that
+marginally over s, the distribution for y = vec(Y) is a mean-zero n-variate normal distribution
+10
+
+with covariance matrix proportional to UΨUT + I. As U and Ψ are both separable, it follows that
+Cov[y|σ, U, Ψ]/σ 2 = UΨUT + I = (UK ΨK UTK ⊗ · · · ⊗ U1 Ψ1 UT1 ) + I.
+This covariance model is not identifiable unless restrictions are placed on the Ψk ’s. First, the
+eigenvectors of each Ψk are not identifiable: If Ψk = Vk Λk VkT is the eigendecomposition of Ψk ,
+˜ k Λk U˜k T , where U
+˜ k = Uk VT ∈ Vr ,n . Second, the scales of the Ψk ’s are
+then Uk Ψk UTk = U
+k k
+k
+not separately identifiable: For example, replacement of (Ψk1 , Ψk2 ) with (cΨk1 , Ψk2 /c) does not
+change the covariance matrix. With this in mind, Ψ is parameterized as Ψ = τ 2 (ΛK ⊗ · · · ⊗ Λ1 )
+where τ 2 > 0 and for each k, Λk is an rk × rk diagonal matrix of positive entries that sum to 1.
+The parameters Λ1 , . . . , ΛK can be interpreted in terms of the prior or penalty they induce
+over the mode-specific eigenvalues of the mean array M = σS × U. These eigenvalues are often of
+interest in multiway data analysis as they describe the extent to which the variation along a mode
+can be attributed to a small set of orthogonal factors. To relate these eigenvalues to the Λk ’s, recall
+that M(1) = σU1 S(1) UT(−1) , and so M(1) MT(1) = σ 2 U1 S(1) ST(1) UT1 . Now S(1) is equal in distribution
+1/2
+
+1/2
+
+to τ Λ1 ZΛ−1 , where Λ−1 = ΛK ⊗ · · · ⊗ Λ2 and Z is an r1 × r−1 matrix of independent standard
+normal entries. This gives
+1/2
+
+1/2
+
+E[M(1) MT(1) ] = σ 2 τ 2 U1 Λ1 E[ZΛ−1 ZT ]Λ1 UT1
+1/2
+
+1/2
+
+= σ 2 τ 2 U1 Λ1 (tr(Λ−1 )I)Λ1 UT1
+= σ 2 τ 2 U1 Λ1 UT1 ,
+where the last calculation follows because the sum of the entries of each Λk is 1, making tr(Λ−1 ) = 1.
+Based on this calculation for M(1) (and analogous calculations for the other M(k) ’s), τ 2 is seen to
+be the expected squared magnitude of the mean array M relative to the error variance σ 2 , and
+each Λk is the (scaled) diagonal eigenvalue matrix of E[M(k) MT(k) ]. Additionally, if one or more of
+the diagonal elements of Λk are very close to zero, then M(k) will be very close to a matrix of rank
+less than rk .
+An additional way to interpret the Λk parameters is in terms of a version of factor analysis
+for array-valued data. Under the heteroscedastic model for s, the marginal covariance of y takes
+the form of a convex combination of a reduced-rank positive semidefinite matrix UΛUT and the
+full-rank matrix I. This is similar to a factor analysis model in which the covariance matrix is equal
+to a reduced rank matrix, representing covariance due to latent factors, plus a full rank diagonal
+11
+
+matrix representing measurement error. The fact that U and Λ are separable allows the factor
+analysis analogy to be applied to the modes of the array Y individually. For example, considering
+T ], straightforward calculations show
+the expected sum of squares along the first mode E[Y(1) Y(1)
+
+that
+T
+] = σ 2 (τ 2 U1 Λ1 UT1 + n2 · · · nK I).
+E[Y(1) Y(1)
+T takes
+As with the covariance of y, this expectation of the mode-1 sum-of-squares matrix Y(1) Y(1)
+
+the form of a convex combination of a positive semidefinite matrix U1 Λ1 UT1 of reduced rank r1 ≤ n1
+with eigenvalues Λ1 and a full-rank diagonal matrix, as would be the case in an ordinary factor
+analysis model that treated the rows of Y(1) as variables and the columns as observations. One
+difference between ordinary factor analysis and this model is that the former presumes independence
+along the columns of Y(1) , whereas this model allows for dependence along each mode of Y. Another
+difference is that factor analysis permits a non-identity diagonal matrix in place of I.
+
+4.2
+
+Simulation Study
+
+A natural estimator of the reduced-rank mean array M based on the data array Y is the minimizer
+of the residual sum of squares ||Y −M||2 . If K > 2 the least-squares estimator of M is not available
+ˆ ALS via an alternating
+in closed form, and so standard practice is to obtain a local minimizer M
+least-squares (ALS) algorithm. The algorithm minimizes the sum of squares iteratively in the
+mode-specific eigenvectors of M, a process that has been called “higher order orthogonal iteration”
+(HOOI) (De Lathauwer et al., 2000).
+One might anticipate that estimates of the mean array M based on the homoscedastic model
+ˆ ALS due to the ability of the former to shrink
+for S, in which s ∼ Nr (0, τ 2 I), will outperform M
+the values of S and the tendency of least-squares estimators to overfit, particularly for large values
+of r. It might be further anticipated that the heteroscedastic covariance model for S, in which
+s ∼ Nr (0, τ 2 (ΛK ⊗ · · · ⊗ Λ1 )), will outperform the homoscedastic model when r is chosen to be too
+large, as the heteroscedastic model allows for mode-specific shrinkage of the mean array towards
+estimates of lower rank. However, such desirable performance in the case of a misspecified rank
+may come at the expense of poorer performance when the rank is correctly specified.
+These possibilities were investigated with a simulation study comparing three different estimators of the mean array M:
+12
+
+ˆ ALS , obtained with the ALS algorithm;
+1. M
+ˆ HOM , the posterior mean under the homoscedastic model s ∼ Nr (0, τ 2 I);
+2. M
+ˆ HET , the posterior mean under the heteroscedastic model s ∼ Nr (0, τ 2 ΛK ⊗ · · · ⊗ Λ1 ).
+3. M
+ˆ HOM was obtained using a conjugate inverse-gamma(ν0 /2, τ 2 /2) prior for
+The Bayes estimator M
+0
+QK
+2
+2
+2
+τ , where ν0 = 1 and τ0 = k=1 nk /rk . This value of τ0 makes the expected prior magnitude of the
+mean array equal to that of the error, so that E[||M||2 ] = E[||E||2 ] a priori. The Bayes estimator
+ˆ HET was obtained under a prior on (τ 2 , Λ1 , . . . , ΛK ) in which τ 2 has an inverse-gamma(1/2, τ 2 /2)
+M
+0
+distribution and the diagonal elements of each Λk are uniform on the rk -dimensional simplex. The
+Q
+2
+2
+value of τ02 = K
+k=1 nk was chosen so that E[||M|| ] = E[||E|| ] a priori, as with the prior used to
+ˆ HOM . The uniform priors on the Λk ’s are not conjugate, and so the Markov chain for
+obtain M
+posterior estimation in this model relies on a Metropolis-Hastings update for these parameters.
+Three-dimensional data arrays Y ∈ R60×50×40 were simulated according to the following procedure: For a given rank vector r0 = (r01 , r02 , r03 ),
+1. simulate Uk ∼ uniform(Vr0k ,nk ) for each k ∈ {1, 2, 3};
+2. simulate s ∼ Nr (0, ψ ×
+
+Q
+
+K
+2
+k=1 r0k
+
+−1/3
+
+× I);
+
+3. let M = S × {U1 , . . . , UK }, where vec(S) = s;
+4. let Y = M + E, where E has i.i.d. standard normal entries.
+Data were generated under two values of r0 and two values of ψ for a total of four different
+conditions. The values of r0 included a “low-rank” condition r0 = (6, 5, 4) and a “high-rank”
+condition r0 = (30, 25, 20), and the values of ψ included a “low-signal” condition ψ = 1000 and a
+“high-signal” condition ψ = 2000. Ten datasets were generated under each of these four conditions,
+ˆ ALS , M
+ˆ HOM and M
+ˆ HET were obtained
+for a total of forty simulated datasets. For each dataset, M
+with the assumed rank r equal to the true rank r0 . Each Bayesian estimate was obtained via 11,000
+iterations of the MCMC algorithm described in the previous section. The first 1000 iterations
+of each Markov chain were dropped to allow for convergence to the stationary distribution, and
+parameter values were saved every 10th iteration thereafter, resulting in 1000 simulated values of
+M with which to approximate its posterior mean. Convergence and mixing of the Markov chains
+13
+
+rank
+signal
+
+r0 = (6, 5, 4)
+
+r0 = (30, 25, 20)
+
+low
+
+high
+
+low
+
+high
+
+ˆ ALS )
+RSE(M
+
+0.195
+
+0.088
+
+0.848
+
+0.379
+
+ˆ HOM )
+RSE(M
+
+0.165
+
+0.082
+
+0.485
+
+0.280
+
+ˆ HET )
+RSE(M
+
+0.165
+
+0.082
+
+0.489
+
+0.281
+
+Table 1: Relative squared estimation errors.
+were monitored via traceplots of the simulated values of σ 2 and τ 2 , as well as their effective sample
+sizes, which roughly measure the approximation variability of the posterior mean estimates relative
+to those that would be obtained from independent Monte Carlo simulations. Effective sample sizes
+for σ 2 and τ 2 were above 300 for all scenarios and datasets, and close to half the Markov chains
+attained the maximum possible value of 1000.
+For each estimator and each simulation condition, a relative squared estimation error (RSE)
+ˆ 2 /||M||2 across the 10 datasets. These values
+was computed by averaging the value of ||M − M||
+ˆ HOM is to some extent an “oracle” estimator, in that it is based
+are given in Table 1. Note that M
+ˆ HOM requires estimation
+on a prior distribution that was used to simulate the data (although M
+of τ 2 ). Nevertheless, in the low-rank case (r0 = (6, 5, 4)), the two Bayes estimators performed
+nearly identically in terms of RSE, and the ALS estimator performed slightly worse. In terms of
+ˆ HET in
+ˆ HOM outperformed M
+ˆ ALS for all datasets, and outperformed M
+variability across datasets, M
+10 of the 20 datasets. The story is similar for the 20 high-rank datasets (r0 = (30, 25, 20)), except
+that ALS performs more poorly in this case than in the low-rank case, presumably because of the
+much larger number of parameters and the general tendency of least-squares estimators to overfit
+ˆ 2 was lower for the ALS estimator
+the data. Regarding this, the residual squared error ||Y − M||
+than the Bayes estimators across all datasets and scenarios.
+ˆ ALS , M
+ˆ HOM and M
+ˆ HET were also obtained
+For the same 40 simulated datasets, estimates M
+using a fitted rank of r = 2 × r0 , that is, twice the actual rank of M. Note that in the high-rank
+scenario the fitted rank is r = (60, 50, 40), which is the dimension of the data array. In this case,
+the estimates are of full rank and so in particular the ALS estimate is simply Y. Also, the Bayes
+estimates in this full rank case were obtained using a proper gamma(1/2, 1/2) prior distribution for
+σ 2 to guarantee the propriety of the posterior (recall the discussion in Section 2). Relative squared
+14
+
+rank
+signal
+
+r0 = (6, 5, 4)
+
+r0 = (30, 25, 20)
+
+low
+
+high
+
+low
+
+high
+
+ˆ ALS )
+RSE(M
+
+0.855
+
+0.404
+
+4.840
+
+2.420
+
+ˆ HOM )
+RSE(M
+
+0.260
+
+0.141
+
+1.364
+
+0.840
+
+ˆ HET )
+RSE(M
+
+0.166
+
+0.082
+
+0.495
+
+0.284
+
+Table 2: Relative squared estimation errors when the fitted rank is twice that of r0 .
+ˆ ALS
+errors (RSEs) for these misspecified-rank estimators are given in Table 2. Not surprisingly, M
+performs poorly across all scenarios, and roughly 4 to 6 times worse than it does when the rank is
+ˆ HOM performs reasonably well in the low-rank scenario,
+correctly specified. The Bayes estimator M
+but roughly 3 times worse than it does in the high-rank scenario with correctly specified rank. In
+ˆ HET with a misspecified rank is nearly identical to its performance
+contrast, the performance of M
+with a correctly specified rank. This suggests that the heteroscedastic model for S is able to shrink
+the estimate of M towards arrays of the correct rank.
+ˆ obtained with a misspecified
+This is explored further in Figure 1. For each Bayesian estimate M
+ˆ (1) was constructed and the normalized eigenvalues of M
+ˆ (1) M
+ˆT
+rank, its mode-1 matricization M
+(1)
+were computed, from which the normalized eigenvalues of M(1) MT(1) were subtracted off, where
+M(1) is the mode-1 matricization of the true mean array M. These eigenvalue differences are plotted across datasets and conditions in Figure 1. For example, the plot in the upper-left corner of the
+figure shows results under the low-signal low-rank condition, for which the true rank is r = (6, 5, 4)
+ˆ (1) M
+ˆT
+but the fitted rank is r = (12, 10, 8). Each black line corresponds to the eigenvalues of M
+(1)
+obtained under the heteroscedastic model minus the eigenvalues of M(1) MT(1) , for one of the 10
+simulated datasets. The gray lines correspond to the analogous differences under the homoscedastic model. The results indicate that the homoscedastic model generally underestimates non-zero
+eigenvalues and substantially overestimates zero eigenvalues. In contrast, the heteroscedastic model
+generally does a very good job of estimating the zero eigenvalues as being very nearly zero. However, for the non-zero eigenvalues, the estimated eigenvalues for the the heteroscedastic model are
+somewhat too “steep”, overestimating the true large non-zero eigenvalues and underestimating
+the small non-zero eigenvalues. A larger signal appears to ameliorate these biases, as the differences between estimated and true eigenvalues is diminished in going from the low-signal to the
+15
+
+0.00
+
+−0.04
+
+homoscedastic
+heteroscedastic
+4
+
+6
+
+8
+
+10
+
+12
+
+0
+
+10
+
+20
+
+30
+
+40
+
+50
+
+60
+
+0
+
+2
+
+4
+
+6
+
+8
+
+10
+
+12
+
+0
+
+10
+
+20
+
+30
+
+40
+
+50
+
+60
+
+0.00
+−0.02
+
+−0.02
+
+0.00
+
+0.02
+
+2
+
+0.02
+
+0
+
+−0.04
+
+0.00
+
+0.04
+
+high signal
+
+0.04
+
+low signal
+
+ˆ (1) M
+ˆ T and M(1) MT . Estimates in the first row are
+Figure 1: Difference of eigenvalues between M
+(1)
+(1)
+based on a true rank of r0 = (6, 5, 4) and a fitted rank of r = (12, 10, 8). Estimates in the second
+row are based on a true rank of r0 = (30, 25, 20) and a fitted rank of r = (60, 50, 40).
+high-signal scenario. However, the presence of such biases suggests exploration of more complex
+adaptive penalties or hierarchical priors, i.e. ones that could more flexibly adapt to the shape of
+the eigenspectra in the observed data. For example, a beta(a, b) prior over the diagonal elements of
+Λk could be used instead of the uniform prior. However, in the absence of prior information about
+the eigenspectra, the values of a and b would need to be obtained from the data. Such an empirical
+Bayes approach would be similar in spirit to the two-parameter matrix regularizer of Josse and
+Sardy (2013).
+
+5
+
+A scale-free Tucker decomposition model
+
+In this section the TDM is extended in order to analyze data arrays for which the assumption of normally distributed errors is inappropriate. The approach presented is based upon a transformation
+model in which the observed data array is modeled as an unknown increasing function of a la-
+
+16
+
+tent array that follows a normal TDM. The model fitting procedure provides parameter estimates
+that are invariant to monotonic transformations of the data array, thereby giving a “scale-free”
+TDM. This approach is motivated and illustrated with an analysis of discrete multivariate data on
+relations between countries in the year 2012.
+
+5.1
+
+Data description
+
+The motivating application of this section is to obtain a low-rank representation of relational data
+on actions between countries, obtained from the GDELT project (gdelt.utdallas.edu). The data
+analyzed consist of a weekly summary of 20 different types of actions between the 30 most active
+countries in the GDELT database in 2012. These data can be represented as a 30 × 30 × 20 × 52
+four-way array Y, with entries {yi,j,k,t : 1 ≤ i, j ≤ 30, i 6= j, 1 ≤ k ≤ 20, 1 ≤ t ≤ 52} where yi,j,k,t is
+the number of days in week t in which country i took action k with country j as the target. The
+types of actions include “positive” actions such as diplomatic cooperation and the provision of aid,
+as well as “negative” actions such as the expression of disapproval, military threats and military
+conflict. More details on the action types, as well as a list of the 30 countries in the data array, are
+provided in the Appendix. Figure 2 provides a graphical summary of the array Y for four of the
+twenty action types. To construct this figure, counts for each of the four action types between each
+ordered pair of countries were summed across the 52 weeks of the year and then dichotomized, so
+that a link between two countries indicates the presence of the action type for at least one day of
+the year.
+The data array Y has nearly one million entries but is very sparse, with just over 2% of the
+entries being non-zero. This sparsity varies by action type from a high of about 12% for the action
+“consult” to a low of less than .01% for the action “use unconventional mass violence.” Sparsity
+also varies considerably by country: The first panel of Figure 3 plots outdegrees and indegrees
+P
+P
+of each country, computed (for country i) as jkt yi,j,k,t and jkt yj,i,k,t , respectively. These two
+measures of activity are highly correlated across countries, with Syria being somewhat of an outlier,
+being the target of more actions than it initiates. Additionally, the counts for each action are highly
+skewed: There are more counts of zero than counts of one, more counts of one than counts of two,
+and so on. This is illustrated in the second panel of Figure 3, which gives the empirical distribution
+of the nonzero entries of Y.
+
+17
+
+provide aid
+
+engage in material cooperation
+
+UKR
+
+PSE
+
+NGA
+
+ITA
+
+LBY
+PAK
+NGA
+
+AUS
+
+JPN
+
+CHN
+
+LBY
+
+IDN
+
+RUSUSA
+
+FRA
+
+SAU
+
+TUR
+
+JPN
+
+KOR
+
+DEU
+AFG
+
+ITA
+
+IRN
+
+threaten
+
+PAK
+CHN
+JPN
+
+NZL
+
+ARM
+
+ISR
+
+USA
+GBR
+
+LBY
+
+AZE
+
+FRA
+
+CAN
+
+EGY
+IRN
+SYR
+
+IDN
+AUS
+
+IRQ
+
+CAN
+
+GBR
+
+EGY
+PSE
+
+TUR
+
+RUS
+LBY
+
+IND
+
+PAK
+
+AZE
+
+PSE
+
+IND
+IDN
+
+SAU
+
+IRQ TUR
+ARM
+
+EGY
+
+demand
+NZL
+
+CAN
+
+AFG
+SYR
+
+KOR RUS
+
+IRQ
+
+AZE
+
+AUS
+
+USA
+
+PSE
+ISR
+IND
+
+SYR
+
+IRN
+
+EGY
+
+PHL
+
+FRA
+
+CAN
+
+NGA
+
+ISR
+GBR
+
+ARM
+DEU
+
+GBR
+
+PHL
+
+ITA
+
+AUS
+
+CHN
+AFG
+
+NZL
+
+NZL
+
+DEU
+
+IDN
+
+UKR
+
+FRADEU
+
+SYR
+USA
+RUS
+ISR
+
+TUR
+IRN
+
+NGA
+SAU
+
+JPN
+
+KOR
+
+PAK
+
+CHN
+
+SAU
+
+ARM
+
+PHL
+
+IRQ
+
+AFG
+
+IND
+
+ITA
+
+AZE
+KOR
+
+PHL
+
+Figure 2: Networks corresponding to four of the twenty action types.
+
+5.2
+
+Scale free TDM
+
+Existing array decomposition methods applied directly to these data would be problematic for several reasons. One particular issue in applying matrix or array decomposition methods to relational
+datasets is that self-relations are typically undefined, that is, yi,i,k,t is not defined for any i, k or
+t. This issue can be addressed via an alternating least-squares algorithm that iterates between
+fitting a reduced-rank model and replacing any missing values with fitted values (see, for example,
+Ward and Hoff (2007) for details on such an algorithm applied to matrix-valued relational data).
+A more serious problem is that the discrete or ordinal nature of many relational datasets makes
+least-squares methods of limited use. For example, as will be illustrated at the end of this section,
+a reduced rank representation of the GDELT data array Y obtained via alternating least squares
+
+18
+
+proportion of nonzero counts
+0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7
+
+9
+5
+
+6
+
+log(indegree)
+7
+8
+
+SA
+
+U
+
+RS
+RISCUHRNNBR
+IGG A R
+R AF FARTKUEU
+P Y
+SY
+D
+EG AUDN N
+S
+INJPPSECZEA S
+AYQ U
+LBIR TAAORRM
+I
+K
+A
+LN
+PHID ZL
+NKR
+U A
+G
+N
+
+5
+
+6
+
+7
+8
+log(outdegree)
+
+9
+
+1
+
+2
+
+3
+
+4
+y
+
+5
+
+6
+
+7
+
+Figure 3: Descriptive data plots. The left panel shows country-specific outdegrees and indegrees
+on the log scale. The right panel gives a histogram of the non-zero action counts.
+generally represents the largest data values at the expense of other interesting features of the data.
+While the normal TDM model presented in the previous section may not be appropriate for
+ordinal or discrete data, the normal model can be extended to accommodate such data via a latent
+variable formulation, in which the entries of Y are modeled as a non-decreasing function of the
+elements of a latent array Z that follows the Tucker decomposition model. If the elements of Y
+take on a known finite number of possible values, then such an approach can be viewed as similar
+to an ordered probit model.
+In many datasets one of the indices of the array Y represents variables that may be best
+evaluated on different scales. For example, the large heterogeneity in sparsity between the 20
+different action types in the GDELT dataset suggests modeling the different types on different
+scales. As another example, consider an n × n × 2 relational array where yi,j,1 is the number of
+emails sent from person i to person j, and yi,j,2 encodes an evaluation of i’s friendship to j on
+an ordinal scale. In such a case, it may not make sense to model yi,j,1 and yi,j,2 as the same
+transformation of the latent variables zi,j,1 and zi,j,2 . In particular, the number of levels of the two
+variables may be different. For cases such as these, a more appropriate transformation model may
+
+19
+
+be one with with variable-specific transformations, so that
+Z = S × {U1 , · · · , UK } + E
+
+(7)
+
+vec(E) ∼ Nn (0, I)
+yi,j = gj (zi,j ),
+where i ∈ {1, . . . , n1 } × · · · × {1, . . . , nK−1 }, j ∈ {1, . . . , nK }, and for notational convenience the
+variables to be modeled on different scales are indexed by the Kth mode of the array. Note
+that the scale parameter σ from the TDM in the previous sections would be confounded with the
+transformations g1 , . . . , gnK , and so can be set to 1.
+In the case that the transformations g1 , . . . , gnK are nuisance parameters, scale-free estimation
+of (S, U) can be obtained using a rank likelihood LR , defined as
+LR (S, U : Y) = Pr(Z ∈ R(Y)|S, U),
+where R(Y) is the set of Z-values consistent with the observed data Y and the fact that the
+functions g1 , . . . , gnK are non-decreasing. This set can be expressed as
+R(Y) = {Z : max{zi0 ,j : yi0 ,j < yi,j } < zi,j < min{zi0 ,j : yi,j < yi0 ,j }}.
+A feature of estimates obtained from the rank likelihood is that they are scale-free: The set R(Y) is
+invariant to strictly increasing transformations of the data, and therefore so is the rank likelihood.
+While maximum likelihood estimation using the rank likelihood is generally computationally
+intractable, Bayesian inference using this likelihood is feasible via the Gibbs sampler (see Hoff (2007)
+and Hoff (2008) for applications of the rank likelihood to semiparametric copula and regression
+models, respectively). Under a prior distribution for (S, U) from the previous section, posterior
+estimates for this scale-free TDM can be obtained via a simple extension of the previous algorithm.
+The extended algorithm can be roughly understood as follows: If Z were observed, parameter
+estimates could be obtained from the MCMC algorithm for the normal TDM. As Z is not observed,
+the algorithm requires additional steps in order to integrate over the possible values of Z. This
+can be done by simulating values of the elements of Z from their full conditional distributions at
+each step of the Markov chain. Specifically, posterior approximation for this scale-free TDM can
+proceed by iterating the following steps: Given current values (Z, S, U),
+20
+
+1. update (S, U) as in the case of the normal TDM, with Z taking on the role of Y;
+2. update the elements of Z given Y, S and U as follows:
+(a) compute M = S × {U1 , . . . , UK };
+(b) simulate each zi,j from the constrained normal(mi,j , 1) distribution, constrained so that
+max{zi0 ,j : yi0 ,j < yi,j } < zi,j < min{zi0 ,j : yi,j < yi0 ,j }.
+Iteration of steps 1 and 2 generates a Markov chain, samples from which approximate the posterior
+distribution proportional to LR (S, U : Y) × π(S, U). As mentioned above, parameter estimates
+obtained from this posterior distribution are invariant to monotonic transformations of each variable
+along the Kth mode of the array. For this reason, this estimation procedure and the resulting
+estimates can be referred to as a scale-free Tucker decomposition (SFTD).
+
+5.3
+
+Analysis of GDELT data
+
+A rank r = (4, 4, 4, 4) representation of the GDELT data was obtained from the SFTD procedure
+described above, using the heteroscedastic prior described in Section 4 and modeling the 20 action
+types on different scales. A rank of 4 for each mode was chosen because of the substantial amount of
+heterogeneity in the outdegrees and indegrees as displayed in the first panel of Figure 3. A standard
+approach to representing such heterogeneity would be with an additive model in which the entries
+of M are expressed as the sum of mode-specific effects, for example mi,j,k,t = ai + bj + ck + dt .
+Such an additive effects model has a rank of (2, 2, 2, 2). A rank (4, 4, 4, 4) approximation was fit to
+Y in order to capture the rank (2, 2, 2, 2) additive effects along with two additional dimensions of
+non-additive data patterns, which are shown below.
+The MCMC algorithm described above was run for 55,000 iterations. The first 5,000 iterations
+were dropped to allow for convergence to the stationary distribution, and parameter values were
+saved every 10th iteration thereafter. This resulted in 5,000 simulated values of the parameters with
+which to approximate posterior quantities of interest. Mixing of the Markov chain was evaluated
+with traceplots and effective sample sizes of τ 2 and the eigenvalue parameters Λ1 , . . . , Λ4 . The
+effective sample size for τ 2 was 1197. Effective sample sizes for the eigenvalues ranged between 371
+and 1266, with a mean of 678. Traceplots of some of the eigenvalues are plotted in Figure 4. The
+
+21
+
+first eigenvalues of the third and fourth modes (corresponding to action type and week) are close
+to one with high posterior probability, meaning that M(3) and M(4) are both close to being rank-1
+matrices. Eigenspectra of the first and second modes (corresponding to initiators and targets of
+the actions) were more evenly distributed. For both of these two modes, the first two eigenvectors
+predominantly represented the heterogeneity in outdegrees and indegrees. To examine non-additive
+ˆ was centered along each index of each mode,
+patterns in the data, the posterior mean array M
+
+0.0
+
+0.2
+
+λ1, λ4
+0.4
+0.6
+
+0.8
+
+1.0
+
+˜ representing the non-additive patterns in the data.
+creating an array M
+
+0
+
+10000
+
+20000
+
+30000
+iteration
+
+40000
+
+50000
+
+Figure 4: Traceplots of λ1,k and λ4,k for k ∈ {1, 2, 3, 4}.
+˜ (1) , M
+˜ (2) and M
+˜ (3) are displayed in Figure 5. The
+The first two left singular vectors of M
+˜ These patterns
+first two plots indicate strong geographic patterns in the first two modes of M.
+indicate that, after accounting for additive effects, countries that have similar patterns of activity
+in the dataset are typically close to one another geographically. The converse is not generally true:
+PSE and ISR are far apart from SYR, IRQ and IRN on the plot, indicating heterogeneity in the
+˜ (3)
+dataset that is non-geographic. The third plot in Figure 5 displays the singular vectors of M
+corresponding to the different action types. Plotting symbols “+” and “-” are used to indicate
+actions that are categorized as “positive” or “negative” respectively (a list and categorization of
+˜ (3) distinguish somewhat the
+the action types are given in the appendix). The singular vectors of M
+two types of actions, but there is considerable overlap. This is not too surprising, since countries
+that interact frequently with each other generally relate both positively and negatively during the
+22
+
+course of the year.
+
+ISR
+
+IND
+AFG
+USA
+ITA
+
+0.2
+
+0.2
+
+PSE
+ISR
+
++
+
+0.4
+
+PAK
+
+PSE
+
++
+
+0.2
+
+0.3
+
+AFG
+IND
+PAK
+
++
++
+
++
+
+−0.2
+
+IRQ
+
+−0.3
+
+AZE
+ARM
+RUS
+UKR
+−0.2
+
+0.0
+
+TUR
+SYR
+0.2
+
+SYR
+0.4
+
+−0.3
+
+−0.2
+
+−0.1
+
+0.0
+
+0.1
+
+0.2
+
+0.3
+
+−
+
+0.0
+
++
+−
+
+−0.2
+
++
+
++
+
++
+−−
+−
+−
+
+−
+
+−
+
+−
+
+−0.4
+
+EGY
+
+EGY
+GBR
+CAN
+AUS NGA
+SAU
+CHN
+FRA
+JPN
+IRN
+DEU
+NZL
+PHL
+IDN
+KOR
+LBY
+IRQ
+TUR
+RUS
+UKRARM AZE
+
+−0.6
+
+0.0
+
+CAN
+LBY
+GBRSAU
+DEU
+IRN
+FRA
+
+−0.2
+
+PHL
+AUS
+IDN
+CHN NZL
+JPN
+KOR
+
+−0.1
+
+0.0
+
+0.1
+
+NGA
+USA
+ITA
+
+−
+
+−
+0.10
+
+0.15
+
+0.20
+
+0.25
+
+0.30
+
+˜ (1) , M
+˜ (2) and M
+˜ (3) , from the SFTD of Y.
+Figure 5: Plots of the first two left singular vectors of M
+The utility of the SFTD in comparison to a least-squares approach can be seen by contrasting
+this scale-free representation of Y given in Figure 5 to an analogous least-squares representation
+shown in in Figure 6. This plot gives the first two singular vectors of the first three modes of
+˜ ALS , where M
+˜ ALS was constructed as with the SFTD except using a rank (4,4,4,4) alternating
+M
+ˆ ALS to Y instead of the posterior mean array M.
+ˆ The least squares
+least-squares approximation M
+approach is primarily identifying the countries that have the most number of data values of 7
+(the highest value possible), at the expense of representing the other patterns in the data. For
+˜ ALS
+example, the first singular vectors of the both the first- and second-mode matricizations of M
+are essentially devoted to distinguishing the USA from the other countries.
+ˆ and the least squares representation M
+ˆ ALS can also be evaluated
+The posterior mean array M
+in terms of how well they represent the rank ordering of the values of Y. This is done by computing
+Kendall’s τ , a scale-free measure of association, between the entries of Y and each of the two lowˆ and M
+ˆ ALS . This is done separately for each of the 20 action types in order
+rank representations M
+to evaluate any heterogeneity in performance. As shown in Figure 7, the SFTD representation
+has a higher degree of association with the ranks of Y than the least-squares representation for
+ˆ
+all action types. This is perhaps not too surprising - the SFTD is inherently scale-free, and so M
+ˆ ALS
+is only representing information about the rank ordering of the entries of Y. In contrast, M
+must also represent differences in magnitude. For these highly skewed data, a good representation
+of large differences in magnitude comes at the cost of a poorer representation of small differences,
+23
+
+0.6
+0.4
+
+SYR
+EGY
+GBR
+PAK
+
+0.0
+
++
+
+0.0
+
+0.4
+
+0.6
+
+0.8
+
+−0.2
+
+−−−
++−+−
++− −
+−
+
++
++
+
+1.0
+
+0.0
+
++
+
+−
+−
+
+RUS
+AFGISR
+
+0.2
+
++
+
+−0.4
+
+ISR
+
+CHN
+−0.4
+
+−0.4
+
+AFGCHN
+RUS
+
+−0.5
+
+−0.3
+
+−0.3
+
+PAK
+GBR
+
+USA
+
+0.2
+
+−0.1
+
+JPN
+TUR
+IRN
+EGY
+
++
+
+UKR
+NGA
+NZL
+IDN
+AZE
+ITA
+ARM
+AUS
+PSE
+PHL
+IRQ
+DEU
+KOR
+SAU
+CAN
+FRA
+IND
+TUR
+LBY
+JPN
+IRN
+
+0.0
+
+USA
+
+−0.2
+
+0.0
+−0.1
+−0.2
+
+NGA
+UKR
+NZL
+IDN
+ITA
+AZE
+PHL
+ARM
+KOR
+AUS
+PSE
+IRQ
+DEU
+SAU
+SYR
+IND
+CAN
+LBY
+FRA
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+−
+0.0
+
+0.1
+
+0.2
+
+0.3
+
+0.4
+
+0.5
+
+0.6
+
+˜ ALS(1) , M
+˜ ALS(2) and M
+˜ ALS(3) .
+Figure 6: Plots of the first two left singular vectors of M
+which constitute most of the differences in the entries of Y.
+
+−
+
+−
+− −
+−
+
++
++
+− +− +
++
+
+−+
++
++
+
+−
+
+−
+
++
+
+0.60
+
+Kendall's τ − SFTD
+0.65 0.70 0.75 0.80
+
+0.85
+
+−
+
+0.60
+
+0.65 0.70 0.75 0.80
+Kendall's τ − ALS
+
+0.85
+
+ˆ (vertical axis) and M
+ˆ ALS (horizontal
+Figure 7: Kendall’s τ measure of association between Y and M
+axis), by action type. Positive and negative actions are plotted as “+” and “-” respectively.
+
+6
+
+Discussion
+
+While the objectives of an array-valued data analysis may be primarily descriptive, model-based
+approaches may be appealing for a variety of reasons. For example, regularized data descriptions
+may be obtained using model-based Bayesian procedures, with the prior acting as a penalty term.
+24
+
+This article has developed a parameterization of the normal Tucker decomposition model that
+allows for scale-equivariant and orthogonally-equivariant estimates and data descriptions, while still
+allowing for penalization of mode-specific singular values. Such regularized estimates can greatly
+improve upon least-squares estimates in situations where the data array is equal to a reduced-rank
+mean array plus noise. Another benefit of the model-based approach is its extensibility to a variety
+of different data types and data analysis scenarios. For example, the semiparametric transformation
+model developed in Section 5 provides a scale-free reduced-rank representation for data arrays that
+consist of discrete, ordinal or other types of measurements for which a least squares criterion is not
+appropriate.
+A useful extension of the model would be to data analysis situations in which it is desired to
+account for known explanatory factors or patterns in the data. For example, one extension of the
+model used to analyze the GDELT data in Section 5 takes the form
+Z = hX, Bi + S × {U1 , · · · , UK } + E
+vec(E) ∼ N (0, Σ(ρ) ⊗ I ⊗ I ⊗ I)
+where X and B represent arrays of known explanatory variables and unknown regression coefficients
+respectively, and Σ(ρ) is some simple one-parameter model that accounts for some of the temporal
+dependence in the data. In such a model, the reduced rank term S × {U1 , · · · , UK } would express
+data patterns not accounted for by hX, Bi or Σ(ρ). Bayesian inference for parameters in such a
+model could be obtained by adding steps to the MCMC algorithm outlined in this article.
+Replication code for the results in Sections 4 and 5 is available at the author’s website: www.
+stat.washington.edu/~hoff. This research was supported by NI-CHD grant R01HD067509.
+
+A
+
+Proofs
+
+Proof of Proposition 1. Suppose a model {p(y|θ) : θ ∈ Θ} is invariant under a group G that acts
+properly on Y and for which the induced group G¯ over Θ is transitive. By Theorem 6.5 of Eaton
+(1989), a minimum risk equivariant decision rule under an invariant loss L(d, θ) is then given by
+the minimizer in d of
+Z
+H(d, y) =
+G¯
+
+L(d, g¯θ0 )p(y|¯
+g θ0 ) µ(d¯
+g) ,
+
+25
+
+(8)
+
+¯ Since G¯
+where θ0 is an arbitrary point in Θ and µ is the right invariant Haar measure on G.
+is transitive and the integrand depends on g¯ only through g¯θ, a change of variables allows us to
+re-express (8) as
+Z
+H(d, y) =
+
+L(d, θ)p(y|θ) π(dθ) ,
+
+(9)
+
+Θ
+
+where π is the measure on Θ induced by µ via π(A) = µ({¯
+g : g¯θ0 ∈ A}). As H(d, y) is proportional
+to the posterior risk under prior π, the minimum risk equivariant estimator is equivalent to the
+Bayes solution under the (potentially improper) prior π.
+The Tucker decomposition model with known core array S is invariant under transformations
+of the form gaW : y → aWy and g¯aW : (σ, U) → (aσ, WU) for a > 0 and W ∈ W. The set of such
+transformations g¯ forms a group G¯ with composition as the group action, so that g¯a1 W1 g¯a2 W2 =
+g¯a1 a2 W1 W2 , and note that the elements of the group are uniquely indexed by (a, W) ∈ R+ × W.
+Although the group G does not act properly on Rn , it does act properly on Rn \ {0}, and so the
+above results apply on this reduced sample space that has probability one under the model (see
+Eaton (1989, section 6.3)). It is straightforward to show that the group G¯ is transitive over the
+parameter space: Given θ1 = (σ1 , U1 ) and θ2 = (σ2 , U2 ), then θ2 = g¯θ1 for the g¯ given by a = σ2 /σ1
+⊥
+and W = [U2 U⊥
+2 ][U1 U1 ].
+
+It is first shown that a right invariant Haar measure over this group is given by the product
+of a measure µ1 over R+ having density h(a) ∝ 1/a with respect to Lebesgue measure, and the
+d
+
+probability measure µ2 over W induced by letting W = WK ⊗ · · · ⊗ W1 , where each Wk has the
+invariant (uniform) probability measure over Onk , independently for each k = 1, . . . , K. To see
+this, let f be any measurable function of (a, W). For any (b, X) ∈ R+ × W,
+ 
+Z
+Z
+ da 
+f (ab, WX)h(a) da × µ2 (dW) = f (˜
+a, WX)h(˜
+a/b)   d˜
+a × µ2 (dW),
+d˜
+a
+by the change of variables from a to a
+˜ = ab. Now da/d˜
+a = 1/b and h(˜
+a/b) = bh(˜
+a), and so
+Z
+Z
+f (ab, WX)h(a) da × µ2 (dW) = f (˜
+a, WX)h(˜
+a) d˜
+a × µ2 (dW)
+Z
+= f (a, WX)h(a) da × µ2 (dW).
+Finally, if under µ2 the Wk ’s are independent and each Wk has the invariant distribution over
+d
+
+d
+
+Onk , then Wk = Wk Xk and W = WX. This gives
+Z
+Z
+f (ab, WX)h(a) da × µ2 (dW) = f (a, W)h(a) da × µ2 (dW)
+
+26
+
+for all (b, X) ∈ R+ × W, thereby showing that the measure µ = µ1 × µ2 described above is the right
+¯
+invariant Haar measure over the set R+ × W that indexes G.
+Following Eaton (1989, page 86), the measure µ over values of (a, W) induces a measure π over
+(σ, U), allowing (8) to be re-expressed as (9). The induced measure π is given by
+π({(σ, U) : (σ, U) ∈ A × B}) = µ({(a, W) : aσ0 ∈ A, WU0 ∈ B})
+= µ1 ({a : aσ0 ∈ A}) × µ2 ({W : WU0 ∈ B})
+for sets A ⊂ R+ and B ⊂ U and arbitrary (σ0 , U0 ) ∈ R+ × U. Letting σ0 = 1, one sees that
+π({(σ, U) : σ ∈ A}) = µ1 (A). As for the distribution of U under π, let U0 = JK ⊗ · · · ⊗ J1 where
+Jk = [Irk ×rk 0rk ×nk ]T . The distribution of U is therefore the same as that of WK JK ⊗ · · · ⊗ W1 J1 ,
+were for each k, Wk is uniform on Onk . However, Wk Jk is simply the nk × rk orthonormal matrix
+made up of the first rk columns of Wk , which has the uniform (invariant) distribution on Vrk ,nk .
+Proof of Proposition 2. Letting θ = (σ, U), the probability Pr(θ ∈ g¯A|gy) is given by
+R
+1(θ ∈ g¯A)p(gy|θ, s)πI (dθ)πs (ds)
+R
+Pr(θ ∈ g¯A|gy) =
+.
+p(gy|θ, s)πI (dθ)πs (ds)
+Now with gy = aWy, one has
+p(gy|θ, s) = (2π)−n/2 σ −n exp{−[a2 yT y − 2aσyT WT Us + σ 2 sT s]/[2σ 2 ]}
+= a−n (2π)−n/2 (σ/a)−n exp{−[yT y − 2(σ/a)yT WT Us + (σ/a)2 sT s]/[2(σ/a)2 ]}
+= a−n p(y|¯
+g −1 θ, s).
+This constant a−n appears in both the numerator and denominator of (10), and so
+R
+1(¯
+g −1 θ ∈ A)p(y|¯
+g −1 θ, s)πI (dθ)πs (ds)
+R
+Pr(θ ∈ g¯A|gy) =
+.
+p(y|¯
+g −1 θ, s)πI (dθ)πs (ds)
+As πI was derived from the right invariant Haar measure over the transformations g¯, one has
+R
+∆(¯
+g −1 ) 1(θ ∈ A)p(y|θ, s)πI (dθ)πs (ds)
+R
+Pr(θ ∈ g¯A|gy) =
+∆(¯
+g −1 ) p(y|θ, s)πI (dθ)πs (ds)
+R
+1(θ ∈ A)p(y|θ, s)πI (dθ)πs (ds)
+R
+=
+= Pr(θ ∈ A|y),
+p(y|θ, s)πI (dθ)πs (ds)
+where ∆ is the Haar modulus.
+
+27
+
+(10)
+
+B
+
+Description of GDELT data
+
+A full description of the GDELT project and data can be found at gdelt.utdallas.edu. The data
+analyzed in this article were obtained from the historical backfiles of the 2012 data available at
+gdelt.utdallas.edu/data/backfiles. Attention was restricted to events involving governmental agencies of pairs of countries (their governments, militaries, police, judiciaries or intelligence agencies).
+Each event was categorized as belonging to one of the following twenty CAMEO action types
+(Schrodt et al., 2008): make public statement; appeal; express intent to cooperate; consult; engage
+in diplomatic cooperation; engage in material cooperation; provide aid; yield; investigate; demand;
+disapprove; reject; threaten; protest; exhibit force posture; reduce relations; coerce; assault; fight;
+use unconventional mass violence. In the political science literature it is standard to categorize the
+first nine of these as “positive” and the last eleven as “negative” (Arva et al., 2013).
+For each ordered pair of countries, action type and week of the year, the number of days
+within the week in which the type of relation occurred was recorded. This was done to reduce
+instances in which a single event was recorded multiple times in the dataset. The number of events
+in which each country participated was computed, from which the thirty most active countries
+were identified. These included Afghanistan (AFG), Armenia (ARM), Australia (AUS), Azerbaijan
+(AZE), Canada (CAN), China (CHN) Germany (DEU), Egypt (EGY), France (FRA), Great Britain
+(GBR), Indonesia (IDN), India (IND), Iran (IRN), Iraq(IRQ), Israel (ISR), Italy (ITA), Japan
+(JPN), South Korea (KOR), Libya (Libya), Nigeria (NGA), New Zealand (NZL), Pakistan (PAK),
+Philippines (PHL), Palestinian Occupied Territories (PSE), Russia (RUS), Saudi Arabia (SAU),
+Syria (SYR), Turkey (TUR), Ukraine (UKR) and the United States (USA).
+
+References
+Allen, G. (2012). Regularized tensor factorizations and higher-order principal components analysis.
+arXiv:1202.2476.
+Arva, B., J. Beieler, B. Fisher, G. Lara, P. A. Schrodt, W. Song, M. Sowell, and S. Stehle (2013).
+Improving forecasts of international events of interest. In EPSA 2013 Annual General Conference
+Paper, Volume 78.
+
+28
+
+Bhattacharya, A. and D. B. Dunson (2012). Simplex factor models for multivariate unordered
+categorical data. J. Amer. Statist. Assoc. 107 (497), 362–377.
+Cai, J.-F., E. J. Cand`es, and Z. Shen (2010). A singular value thresholding algorithm for matrix
+completion. SIAM J. Optim. 20 (4), 1956–1982.
+Chu, W. and Z. Ghahramani (2009). Probabilistic models for incomplete multi-dimensional arrays.
+In 12th International Conference on Artificial Intelligence and Statistics, Volume 5, pp. 89–96.
+De Lathauwer, L., B. De Moor, and J. Vandewalle (2000). A multilinear singular value decomposition. SIAM Journal on Matrix Analysis and Applications 21 (4), 1253–1278.
+Eaton, M. L. (1989). Group invariance applications in statistics. NSF-CBMS Regional Conference
+Series in Probability and Statistics, 1. Hayward, CA: Institute of Mathematical Statistics.
+Fosdick, B. and P. Hoff (2012). Testing and modeling dependencies between a network and nodal
+attributes. To appear in Annals of Applied Statistics.
+Hoff, P. D. (2007). Extending the rank likelihood for semiparametric copula estimation. Ann. Appl.
+Stat. 1 (1), 265–283.
+Hoff, P. D. (2008). Rank likelihood estimation for continuous and discrete data. ISBA Bulletin 15 (1), 8–10.
+Hoff, P. D. (2009). Simulation of the matrix Bingham-von Mises-Fisher distribution, with applications to multivariate and relational data. J. Comput. Graph. Statist. 18 (2), 438–456.
+Hoff, P. D. (2011). Separable covariance arrays via the Tucker product, with applications to
+multivariate relational data. Bayesian Analysis 6 (2), 179–196.
+Josse, J. and S. Sardy (2013). Reduced rank matrix estimation by adaptive trace norm regularization. arXiv:1310.6602.
+Kolda, T. G. and B. W. Bader (2009). Tensor decompositions and applications. SIAM Rev. 51 (3),
+455–500.
+Leetaru, K. and P. Schrodt (2013). GDELT: Global data on events, language, and tone, 1979-2012.
+In International Studies Association Annual Conference, San Diego, CA.
+29
+
+Liu, J., P. Musialski, P. Wonka, and J. Ye (2009). Tensor completion for estimating missing values
+in visual data. In Computer Vision, 2009 IEEE 12th International Conference on, pp. 2114–2121.
+IEEE.
+Mazumder, R., T. Hastie, and R. Tibshirani (2010). Spectral regularization algorithms for learning
+large incomplete matrices. J. Mach. Learn. Res. 11, 2287–2322.
+Mu, C., B. Huang, J. Wright, and D. Goldfarb (2013). Square deal: Lower bounds and improved
+relaxations for tensor recovery. arXiv:1311.5870.
+¨ Yilmaz, D. Gerner, and D. Hermreck (2008). The cameo (conflict and mediation
+Schrodt, P. A., O.
+event observations) actor coding framework. In 2008 Annual Meeting of the International Studies
+Association.
+Tomioka, R., T. Suzuki, K. Hayashi, and H. Kashima (2011). Statistical performance of convex
+tensor decomposition. In Advances in Neural Information Processing Systems, pp. 972–980.
+Tucker, L. (1966). Some mathematical notes on three-mode factor analysis. Psychometrika 31 (3),
+279–311.
+Tucker, L. R. (1964). The extension of factor analysis to three-dimensional matrices. Contributions
+to mathematical psychology, 109–127.
+Volfovsky, A. and P. Hoff (2012). Hierarchical array priors for ANOVA decompositions. To appear
+in Annals of Applied Statistics.
+Ward, M. D. and P. D. Hoff (2007). Persistent patterns of international commerce. Journal of
+Peace Research 44 (2), 157–175.
+Xu, Z., F. Yan, and A. Qi (2012, July). Infinite tucker decomposition: Nonparametric bayesian
+models for multiway data analysis. In J. Langford and J. Pineau (Eds.), Proceedings of the 29th
+International Conference on Machine Learning, ICML ’12, pp. 1023–1030.
+
+30
+
+

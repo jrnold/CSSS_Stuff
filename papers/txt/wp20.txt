@@ -1,0 +1,2011 @@
+On convergence of least-squares identifiers for infinite
+AR models
+Andrey Barabanov,
+Department of Mathematics and Mechanics,
+Saint-Petersburg State University,
+198504 St.-Petersburg, Russia
+andrey.barabanov@pobox.spbu.ru
+
+and
+Yulia Gel,
+CSSS, Department of Statistics, University of Washington,
+Box 354322, Seattle, WA 98195-4322, USA,
+ygl@stat.washington.edu
+
+Center for Statistics and the Social Sciences
+University of Washington
+Working Paper no. 20
+March 18, 2002
+
+Abstract
+In this paper time series identification problem amounts to estimating the unknown parameters of an ARMA model, which is transformed to an infinite AR model. A modification
+of the Least Squares method is proposed for the identification of an AR model of infinite
+order. The analysis of convergence of the LS estimates with probability 1 is carried out
+for an infinite case. Moreover, it is established the result on the estimate of the degree of
+convergence of the LS estimates for infinite AR model. Such an approach has been studied before for the ”long” AR models but an overall convergence analysis has been lacking.
+Moreover, an infinite AR model is a new identification object, which has not been considered
+before. In addition, in this paper it is presented a complimentary result on the convergence
+of semi-martingales, which is a corner-stone for proof of all theorems here, but is of interest
+by itself.
+Keywords: ARMA, infinite AR models, parameter estimation, semi-martingales
+
+1
+
+Introduction
+
+One of the most used linear models of stochastic time series is a regressive equation, i.e.
+an ARMA model. The problem of estimating unknown parameters of a regressive equation
+is a corner-stone of mathematical statistics, and an extensive literature is devoted to this
+question. A special modification of the Least Squares method (LSM), known as the Extended
+Least Squares method (ELSM), was introduced and justified under the positive realness
+condition on the transfer function of a filter. The estimates provided by ELSM are unbiased
+and strongly consistent, i.g. converge almost surely to the unknown parameters of an ARMA
+model. However, the positive realness condition is rather a severe restriction on a class of the
+considered time series. It is not surprising that the development of new algorithms without
+the positive-realness condition is of constant interest to both theoreticians and engineers, as
+reflected in the significant number of publications. Let us discuss briefly the results achieved.
+An alternative approach to this identification problem is to transform the ARMA model
+to an AR model of infinite order. A historical overview of this approach is given by Mari et
+al (2000). According to Mari et al (2000) the idea of approximating an ARMA process by
+AR processes of high order go back to Wold (1938), Durbin (1959) and Whittle (1953). To
+that list it may also be added the paper of Marple-Jr. (1987). Following such an approach,
+Mari and coauthors suggested an identification algorithm for ARMA models based on a
+three-step procedure: 1) empirical estimation of a partial covariance sequence; 2) covariance
+extension by the maximum-entropy method, leading to a high order AR model with the
+transfer function Wˆυ (z) = z υ /φˆυ (z), where φˆυ (z) is the normalized Szego polynomial of
+degree υ, which is computed from the estimated covariance data; 3) determination of a
+ˆ (z) via stochastically balanced truncation. The
+reduced-degree approximation Wˆυ (z) of W
+proposed algorithm shares certain features with the subspace method of identification. In
+particular, both of them are based on partial stochastic realization theory. However, in
+contrast to subspace methods the method presented by Mari et al (2000) guarantees the
+minimal phase property. It is stipulated by using stochastically balanced truncation by
+Mari et al (2000). The authors developed a simple computational procedure and provided
+theoretical analysis and a simulation example. The idea of using model truncation for systems
+identification appears in the papers of Wahlberg (1989), Green (1995).
+However, it should be emphasized that all above-mentioned papers considered the approximation of the ARMA model by ”long” AR models of finite order. For the first time the
+problem of transforming an ARMA model to an AR model of infinite order was introduced
+by V.N. Fomin (Gel and Fomin (1998)). In the paper of Gel and Fomin (1998) an identification method for the stationary stochastic time series was proposed. The method is based on
+the analysis of an infinite AR equation, whose coefficients are estimated by the Yule-Walker
+method, and on the subsequent reconstruction of the parameters of the ARMA model by the
+Pad´e approximation. It should be mentioned that the Pad´e approximation needs to estimate
+only a finite number of coefficients of the infinite AR model to reconstruct coefficients of the
+ARMA model. The proposed identification algorithm is easily implemented as it involves
+only linear algebra operations and no nonconvex optimization computations are required.
+1
+
+Here the approach suggested by Gel and Fomin (1998, 2001) is developed further, and
+an AR model of infinite order is considered. The Least Squares method is used to estimate
+unknown parameters of the infinite AR model. In this paper presented the analysis of
+consistency and the degree of convergence of the LS estimates for an infinite case, which is
+by no means a new result for systems identification.
+
+2
+
+The problem statement
+
+Time series identification problem studied here amounts to estimating the unknown system
+parameters for the ARMA model
+a(∇)yt = b(∇)vt
+
+(1)
+
+p
+from the data {yt }∞
+t=1 , where a(λ) and b(λ) are polynomials (a(λ) = 1+λa1 +· · ·+λ ap , b(λ) =
+1 + λb1 + · · · + λp bq ); vt is the martingale difference (E(vt |Ft−1 ) ≡ 0, E(vt2 |Ft−1 ) = σ 2
+a.s.; here Ft−1 is the σ-algebra generated by the stochastic variables v1 , v2 , . . . , vt−1 ), and
+supt Evt4 < ∞; ∇ is the shift-back operator (∇yt = yt−1 ).
+If system (1) is minimal phase (b(λ) 6= 0, |λ| ≤ 1), it may be transformed to
+∞
+
+a
+˜(∇)yt = vt ,
+
+a
+˜(λ) =
+
+a(λ) X k
+λ a
+˜k .
+=
+b(λ)
+k=0
+
+(2)
+
+This linear system is called an AR model of infinite order. Write it in the form of a linear
+observation scheme
+yt = Φ∗t−1 τ∗ + vt ,
+
+(3)
+
+where Φt−1 = (yt−1 , yt−2 , . . . , y1 , 0, . . .), τ∗ = −(˜
+a1 , a
+˜2 , . . .).
+The vector of unknown parameters τ∗ is estimated using the recursive LS method
+τt+1 = τt + γtε Φt (yt+1 − Φ∗t τt ),
+ε
+γt+1
+= γtε − γtε Φt−1 (1 + Φ∗t γtε Φt )−1 Φ∗t γtε .
+The matrix γtε is inverse to the information matrix, γtε = (Rtε )−1 , where Rtε =
+
+T
+P
+k=1
+
+Φk Φ∗k +εR, a
+
+R = diag{eµk }∞
+k=1 is a regularizer. The idea of such a regularizer for the LSM of infinite order
+and its theoretical basis belong to V.N. Fomin (see Gel and Fomin (2001)). The estimates
+(4) are called the regularized estimates of the Least Squares method.
+The main results from the analysis of consistency of the LS estimates τt for the infinite
+case are the following:
+1. The estimates τt converge almost surely to the vector of unknown parameters τ∗ ,
+i.g. are strongly consistent. In this connection, it is shown that the regularized information
+T
+P
+matrix Rtε = ( Φk Φ∗k + εR) is strictly positive definite as t → ∞.
+k=1
+
+2. It is established the degree of convergence with probability 1 of the estimates τt to the
+vector τ∗ .
+2
+
+3
+
+The degree of convergence of semi-martingales
+
+The result formulated in this section forms the foundation for all subsequent theorems in
+this paper on the convergence analysis of the LS estimates for the infinite AR model. The
+idea is suggested by the result on convergence of semi-martingales (see Fomin (1999)) based
+on the Doob inequality. According to V.N. Fomin formulate it as follows.
+Theorem 1. Assume that the sequence of nonnegative stochastic variables (ξn )∞
+n=0 satisfy
+E(ξn+1 |ξ1 , . . . , ξn ) ≤ (1 + αn )ξn + ζn
+where αn ≥ 0, ζn = ζn (ξ1 , . . . , ξn ) ≥ 0 and
+
+∞
+P
+
+αn < ∞,
+
+k=1
+
+surely and Eξ < ∞.
+
+∞
+P
+
+(4)
+
+Eζn < ∞. Then ξn → ξ almost
+
+n=1
+
+In the lemma stated below the degree of convergence of the stochastic variables {ξk } is
+estimated, thereby extending the previous results obtained for the limiting case.
+Lemma 1. Assume the stochastic variables ξt ≥ 0 and ζt satisfy
+1)
+
+ξ0 = 0, ∀t ≥ 0 E(ξt+1 |ξt , . . . , ξ1 ) ≤ ξt + ζt ;
+∞
+X
+E|ζt | = C < ∞.
+
+2)
+
+t=0
+
+Then
+∀X > 0 P {∀T ≥ 0, ξT ≤ X} ≥ 1 −
+
+C
+.
+X
+
+(5)
+
+Proof of Lemma 1. Let X > 0. Define the random stopping time τ by
+τ = min{t ≥ 0 | ξt > X}
+with τ = ∞ if the full trajectory is below the level X. For any t ≥ 0 define the random
+characteristic function χτ (t) which is equal to 1 if τ > t and else equals to 0. Minimum of τ
+and t will be denoted by τ ∧ t. Then for any t ≥ 0 it holds
+ξτ ∧t =
+
+t−1
+X
+
+χτ (k)(ξk+1 − ξk ).
+
+k=0
+∞
+Denote the flow of σ–algebras associated with (ξt )∞
+t=0 by (Ft )t=0 . Then for any t > 0 the
+random variable χτ (t) is measurable with respect to Ft and therefore
+
+Eξτ ∧t = E
+
+t−1
+X
+
+χτ >k (E{ξk+1 | Fk } − ξk ) ≤
+
+k=0
+
+t−1
+X
+k=0
+
+3
+
+E|ζk | ≤
+
+∞
+X
+k=0
+
+E|ζk | = C.
+
+Since ξt ≥ 0 and ξτ (ω) > X when τ (ω) < ∞ it holds
+XP {∃t > 0 | ξt > X} ≤ lim inf Eξτ ∧t ≤ C
+t→∞
+
+and assertion of Lemma 1 follows.
+P
+Corollary 1. Let ψT = µT Tt=1 νt ηt , in which µT is a decreasing positive function, the
+random process (ηt ) satisfies the relation E{ηt |η1 , η2 , . . . , ηt−1 } = 0; for any t > 0 the random
+variable νt is measurable with respect to (ηt−1 , ηt−2 , . . . , η1 ); and
+∞
+X
+
+µ2t Eνt2 Eηt2 ≤ C < ∞.
+
+t=1
+
+Then
+∀X > 0 P {∀T > 0, |ψT |2 ≤ X} ≥ 1 −
+
+C
+.
+X
+
+The assertion directly follows from Lemma 1 with ξt = ψt2 .
+Let δ1 > 0. Corollary 1 allows to describe a degree of convergence to zero of the random
+variable κt = t−δ1 |ψt |2 almost surely:
+∀Y > 0, ∀T > 0,
+
+P {∀t ≥ T, κt ≤ tδ2 −δ1 Y } ≥ 1 −
+
+C
+Y T δ2
+
+(6)
+
+with 0 < δ2 < δ1 .
+
+4
+
+The degree of convergence of the LS estimates for
+an AR model of infinite order
+
+The question of consistency of the LS estimates for the AR equation of finite order is very
+well worked out (see an overview in Fomin (1998), Ljung (2000)). However, not so many
+papers cover the analysis of the degree of convergence even for the finite case (Barabanov
+(1983), Lai and Wei (1982)). Below the result on the estimate of the degree of convergence
+of the LS estimates for the AR equation of infinite order is stated.
+Assertion. For any positive δ1 and δ2 there is a constant C > 0 such that
+¾
+½
+C
+1
+2
+∀T0 > 0 P ∀T ≥ T0 , |τT − τ∗ | ≤ 1−δ1 −δ2 ≥ 1 − δ2 .
+(7)
+T
+T0
+The proof of the main assertion follows readily from the following two theorems.
+Theorem 2. For all δ > 0,
+lim (τT +1 − τ∗ )∗
+
+T →∞
+
+T
+1 X
+(
+Φt Φ∗t + εR)(τT +1 − τ∗ ) = 0
+δ
+T t=1
+
+4
+
+holds with probability 1. Moreover, there is a positive constant Cδ such that
+½
+¾
+T
+X
+∗ 1
+∗
+P ∀T ≥ 0, (τT +1 − τ∗ ) δ (
+Φt Φt + εR)(τT +1 − τ∗ ) ≤ X
+T t=1
+
+∀X > 0,
+
+≥1−
+
+Cδ
+.
+X
+
+Let us briefly discuss the main idea of the proof of Theorem 2. The justification of
+assertion (8) is based on the convergence properties of the stochastic variable
+T −1
+X
+VT = (τT − τ∗ )
+(
+Φt Φt ∗ + εR)(τT − τ∗ ).
+δ
+(T − 1) t=1
+∗
+
+1
+
+(8)
+
+It is shown that
+E(VT +1 |V1 , . . . , VT ) ≤ VT +
+
+σ2 ∗
+ΦT γT ΦT ,
+Tδ
+
+(9)
+
+and that
+T
+X
+1
+σ
+EΦt ∗ γt Φt < ∞.
+δ
+t
+t=1
+2
+
+(10)
+
+In view of the inequality in Lemma 1 and arbitrariness of δ > 0 it follows that the
+stochastic variables VT converge to 0 with probability 1 as T → ∞, i.e. the assertion of
+Theorem 2.
+The main assertion (7) will follow directly from Theorem 2 if to show that the information
+T
+P
+matrix T −δ ( Φt Φ∗ +εR) is bounded away from 0 for T > 0. Below derived and justified the
+t=1
+
+estimate of the probability that the information matrix is uniformly bounded away from 0.
+The relation between the consistency of the LS estimates and the behavior of the information
+matrix in the finite case is studied in the works of Barabanov (1983), Lai and Wei (1982).
+Extension to the infinite case requires the special bounding of infinite-dimensional matrices,
+in which the regularizer R plays a significant role.
+Theorem 3. For any α ∈ (0, 1) there are positive constants C0 , β and T0 such that
+∀T1 > T0
+
+¾
+½
+T
+C0
+1 X
+∗
+(
+Φk Φk + εR) ≥ βI ≥ 1 − α
+P ∀T ≥ T1 ,
+T k=1
+T1
+
+where Φk = (yk , yk−1 , . . . , y1 , 0, 0, . . .)∗ .
+Just as for the previous theorem let us discuss briefly the main idea of the proof.
+5
+
+Choose an arbitrary positive integer N , N < T . Afterwards N = N (T ) will be chosen as
+a determistic function of T . The vector Φk has the form
+Φk = AN Φk−N +
+
+N
+−1
+X
+
+Aj Bvk−j
+
+(11)
+
+j=0
+
+when k > N . The information matrix RT = T −1
+
+T
+P
+k=1
+
+Φk Φ∗k may be divided into three sums
+
+(below all present quantities with negative indexes are 0):
+T
+1X
+Φk Φ∗k = Q1,T,N + Q2,T,N + Q3,T,N ,
+T k=1
+
+(12)
+
+where
+Q1,T,N
+
+T
+1X N
+=
+A Φk−N Φ∗k−N A∗N ,
+T k=1
+
+Q2,T,N = 2
+
+N
+−1
+X
+j=0
+
+Q3,T,N =
+
+T
+1X
+Φk−N vk−j )B ∗ A∗j ,
+A (
+T k=1
+N
+
+N
+−1 N
+−1
+X
+X
+j=0 i=0
+
+T
+1X
+A B(
+vk−j vk−i )B ∗ A∗i .
+T k=1
+j
+
+(13)
+(14)
+(15)
+
+Clearly, the matrix Q1,T,N is nonnegative. Let us derive a lower bound for the matrix
+Q2,T,N + ε1 R/T , where ε = ε1 + ε2 , ε1 , ε2 > 0.
+Lemma 2. There exist C1 , C2 , C3 > 0 such that for any X0 > 0 and ε3 > 0 it holds
+½
+log T C3 T 1/2−ε3
+ε1
+P ∀T > 0, ∀N ∈ [
+,
+], Re Q2,T,N + R
+µ
+X0
+T
+¾
+2
+C2 N X0
+C1
+≥ − 1/2−ε3 I ≥ 1 −
+T
+ε3 X02
+where I is the identity operator.
+Turn now to a bound on the matrix Q3,T,N . Divide it into Q3,T,N = σ 2 UN + WT,N where
+UN =
+WT,N =
+
+N
+−1
+X
+i=0
+N
+−1
+X
+i=0
+
++ 2Re
+
+Ai BB ∗ A∗i ,
+T
+1X 2
+AB
+(v − σ 2 )B ∗ A∗i
+T k=1 k−i
+i
+
+N
+−1 N
+−1
+X
+X
+i=0
+
+T
+1X
+A B(
+vk−i vk−j )B ∗ A∗j
+T
+j=i+1
+k=1
+i
+
+6
+
+and ReX = (X T + X)/2 for any square matrix X.
+The sums UN and WT,N are bounded in the following assertion.
+Lemma 3. 1. There exist C4 > 0, C5 > 0 such that for any ε4 ∈ (0, 1/2)
+½
+¾
+C4 N 2 Y0
+C5
+∀Y0 > 0, P ∀T > 0, ∀N > 0, kWT,N k ≤ 1/2−²4 ≥ 1 −
+.
+T
+²4 Y02
+2. There exist K > 0, α > 0 such that for any N ≥ K
+PN −K
+
+N
+−1
+X
+
+Ai BB ∗ A∗i PN −K ≥ αPN −K
+
+i=0
+
+where Pm is a standard projector, Pm c = (c0 , c1 , . . . , cm−1 , 0, 0, . . .) when c = (c0 , c1 , . . .).
+Finally, collecting the bounds for the matrixes Q2,T and Q3,T yields the required result
+of Theorem (3).
+From (7) follows directly the power degree of convergence with probability 1 of the LS
+estimates for the infinite-dimensional AR equation.
+Corollary 2.
+lim T 1−δ |τT − τ∗ |2 = 0
+
+(16)
+
+T →0
+
+with probability 1.
+
+5
+
+Proofs of lemmas and theorems
+
+First of all, prove the following auxiliary lemma.
+2
+Lemma 4. Let c = (ck )∞
+˜(z) be an analytical function with no
+k=0 be a sequence from ` and a
+zeros in the neighbourhood of the unit disk. Denote
+
+c(z) =
+
+∞
+X
+
+∞
+
+X
+1
+γk z k .
+=
+a
+˜(z) k=0
+
+k
+
+ck z ,
+
+k=0
+
+Then the sequence (c∗ Ak B)∞
+a(z):
+k=0 contains the Taylor coefficients of c(z)/˜
+∞
+
+c(z) X ∗ k k
+=
+c A Bz
+a
+˜(z) k=0
+and
+
+∞
+X
+k=0
+
+Z
+∗
+
+k
+
+2
+
+|c A B| =
+|z|=1
+
+|c(z)|2
+dm(z) ≤ Ma−2 kck2
+2
+|˜
+a(z)|
+
+where Ma = inf |z|=1 |˜
+a(z)| is positive and dm(z) = dz/(2πiz) means the normalized Lebesgue
+measure on the unit circle.
+7
+
+Proof of Lemma 4. Indeed, the transfer function of the system a
+˜(∇)xt = ut , yt = c(∇)yt
+is equal to Hy/u (z) = c(z)/˜
+a(z). It is well known that the pulse response of this system is
+the sequence (c∗ Ak B)∞
+k=0 . Hence, the assertion follows from the relation between a pulse
+response and a transfer function.
+The second assertion follows from the Parseval equality.
+Proof of Theorem 2. Let δ be a positive number. Consider a stochastic variable
+VT = (τT − τ∗ )∗
+
+ε
+Rt−1
+
+(T − 1)δ
+
+(τT − τ∗ ).
+
+The estimation error
+∆τT +1 = τT +1 − τ∗ = ∆τT + γTε ΦT (vT +1 − ΦT ∗ ∆τT )
+= γTε RTε −1 ∆τT + γTε ΦT vT +1
+
+(17)
+
+consists of two uncorrelated terms. The conditional mathematical expectation of VT +1 with
+respect to the σ-algebra FT generated by the stochastic variables v1 , v2 , . . . , vT may be upper
+bounded as
+E(VT +1 |FT )
+
+1
+σ2 ∗ ε
+∗ ε
+ε ε
+∆τ
+R
+γ
+R
+∆τ
++
+ΦT γT ΦT
+T
+T δ T t−1 T t−1
+Tδ
+σ2
+≤ VT + δ ΦT ∗ γTε ΦT .
+T
+
+=
+
+To use the inequality in Lemma 1, show that σ 2
+
+T
+P
+t=1
+
+1
+
+˜ t = (εR)− 2 Φt ,
+Φ
+
+˜T =
+R
+
+T
+X
+
+(18)
+
+t−δ EΦt ∗ γtε Φt < ∞. Denote
+
+˜ tΦ
+˜ ∗ + I,
+Φ
+t
+
+˜ −1 .
+γ˜T = R
+T
+
+(19)
+
+t=1
+
+Extend the function Φ(t) of Φ(t) = Φt for integer t on the positive semiaxis as a step function
+t
+˜ = R Φ(s)
+˜ −1 . Then
+˜ Φ(s)
+˜ ∗ ds and γ˜( s) = R(s)
+on every interval (t, t + 1]. Consequently, R(t)
+0
+T
+X
+t=1
+
+EΦt ∗ γtε Φt
+
+=
+
+T
+X
+
+ZT
+˜ ∗ γ˜t Φ
+˜t
+EΦ
+t
+
+t=1
+
+≤
+
+˜ ∗ R(s)
+˜ −1 Φ(s)ds
+˜
+EΦ(s)
+
+0
+
+˜ T − ln R
+˜ 0 ) ≤ Tr(ln ER
+˜ T − ln ER
+˜ 0 ) = Tr ln ER
+˜T .
+= TrE(ln R
+
+(20)
+
+Here the first inequality follows from the condition γ˜( s) ≥ γ˜t as s ≤ t. The second inequality
+follows from concavity of logarithm and the Jensen inequality. In addition, take into account
+˜ 0 = ln I = 0.
+that ln R
+8
+
+˜ = (R
+˜ ij )t . The matrix R
+˜
+definite matrix R
+i,j=1
+
+Consider an arbitrary symmetric positive
+may be written as
+µ
+˜ 11
+R
+˜
+R=
+∗
+˜ t,1
+R
+
+˜ t,1
+R
+˜ t,2
+R
+
+¶
+.
+
+˜ may be reduced to the block-diagonal form
+Using orthogonal transformations, the matrix R
+µ
+¶
+µ
+¶
+−1 ˜
+˜ 11
+˜ 11
+R
+0
+I −R
+Rt,1
+∗˜
+S RS =
+,
+S=
+.
+−1 ˜ ∗
+˜ t,2 − R
+˜ t,1 R
+˜ 11
+0
+I
+0 R
+Rt,1
+Hence,
+˜ = det R
+˜ 11 det(R
+˜ t,2 − R
+˜ t,1 R
+˜ −1 R
+˜∗
+˜
+˜
+det R
+11 t,1 ) ≤ det R11 det Rt,2 .
+It follows by induction that
+˜t ≤
+det R
+
+t
+Y
+
+˜ ii .
+(R)
+
+i=1
+
+Since Tr ln A = ln det A, the inequality (20) may be written
+∞
+X
+
+˜ ∗ γ˜t Φ
+˜ t ≤ ln det ER
+˜T ≤
+EΦ
+t
+
+t=1
+
+T
+X
+
+˜ T }ii
+ln {ER
+
+i=1
+
+≤
+
+T
+X
+i=1
+
+ln E(1 + e−µi
+
+T
+X
+
+yk2 ) ≤
+
+ln (1 + e−µi
+
+i=1
+
+k=1
+
+Let us estimate Eyk2 . Since yk = c∗1 Φk = c∗1
+
+T
+X
+
+k−1
+P
+
+T
+X
+
+Eyk2 ).
+
+k=1
+
+Aj Bvk−j where c1 = (1, 0, 0, . . .)∗ , and
+
+j=0
+
+vk−i = 0, i > k, then
+Eyk2
+
+=
+
+k−1 X
+k−1
+X
+
+c∗1 Ai BB ∗ A∗j c1 Evk−i vk−j
+
+(21)
+
+i=0 j=0
+
+= σ2
+
+k−1
+X
+
+c∗1 Ai BB ∗ A∗i c1 ≤ σ 2
+
+∞
+X
+
+2
+
+(c∗1 Ai B) ≤ C < ∞.
+
+i=0
+
+i=0
+
+Convergence of the last series follows from Lemma 4. Substituting this estimate into (21)
+yields
+T
+X
+i=1
+
+ln (1 +
+
+T
+T
+X
+e−µi X 2
+e−µi
+ln (1 +
+CT ).
+Eyk ) ≤
+ε k=1
+ε
+i=1
+
+9
+
+(22)
+
+Consequently,
+T
+X
+i=0
+
+e−µi
+ln (1 +
+CT ) ∼
+ε
+
+ZT
+ln (1 +
+
+e−µx
+CT )dx ∼ C1 ln2 T
+ε
+
+(23)
+
+0
+
+as T → ∞. Here C1 depends on ε and µ but not on T . Taking into account this estimate,
+the inequality (20) and using the Abel transformation, leads to
+µ X
+T
+T
+X
+1
+1
+∗
+2
+γ
+Φ
+=
+σ
+EΦ
+EΦt ∗ γt Φt +
+σ
+t t t
+δ
+δ
+t
+T
+t=1
+t=1
+2
+
+T X
+t
+X
+t=1
+
+¡1
+1 ¢
+EΦk γk Φk δ −
+t
+(t − 1)δ
+k=1
+
+¶
+
+∗
+
+T
+
+C1 ln2 T X C2 ln2 t
+≤
++
+≤ C3 < ∞.
+Tδ
+tδ+1
+t=1
+In view of that inequality and the estimate (18), the stochastic variables VT satisfy the
+conditions of Lemma 1. Thus,
+½
+¾
+C
+∃C > 0 : ∀X > 0, P ∀T ≥ 0, VT ≤ X ≥ 1 − .
+(24)
+X
+From arbitrariness of δ the stochastic variables
+(τT − τ∗ )∗
+
+T −1
+¡X
+
+1
+(T − 1)
+
+δ
+
+¢
+Φt Φt ∗ + εR (τT − τ∗ )
+
+(25)
+
+t=1
+
+converge with probability 1 for all δ > 0. Consequently, the limit must be 0:
+T −1
+X
+(
+Φt Φt ∗ + εR)(τT − τ∗ ) = 0.
+lim VT = lim (τT − τ∗ )
+δ
+T →0
+T →0
+(T − 1) t=1
+∗
+
+1
+
+Proof of Lemma 2. Let α > 0. Define the diagonal operator Sα = (ε1 R/T + αI)1/2 where I
+is the identity operator. It is required to find conditions on α under which it holds
+Re Q2,T,N + Sα2 = Sα (Sα−1 Re Q2,T,N Sα−1 + I)Sα ≥ 0.
+The last inequality follows from kSα−1 Q2,T,N Sα−1 k ≤ 1.
+By definition the matrix Sα−1 Q2,T,N Sα−1 has the form
+Sα−1 Q2,T,N Sα−1
+
+=
+
+2Sα−1 AN
+
+N
+−1
+X
+
+T
+1X
+(
+Φk−N vk−j )B ∗ A∗j Sα−1 .
+T
+j=0
+k=1
+
+10
+
+Bound the matrix norm as follows:
+°
+°
+N
+−1
+T
+°
+°
+X
+X
+1
+°
+°
+(
+kSα−1 Q2,T,N Sα−1 k = sup °2Sα−1 AN
+Φk−N vk−j )(Sα−1 Aj B)∗ c°
+°
+°
+T
+kck=1
+j=0
+k=1
+√
+≤ 2 p1 p2 ,
+°2
+°
+N
+−1
+T
+N
+−1 °
+°
+X
+X
+X
+°
+° −1 N 1
+|c∗ Sα−1 Aj B|2 .
+Φk−N vk−j ° , p2 = sup
+p1 =
+°S α A
+°
+°
+T
+kck=1
+j=0
+
+j=0
+
+k=1
+
+2
+To find an upper bound for p2 , choose c = (ci )∞
+i=0 ∈ ` , kck = 1. Define
+
+c(z) =
+
+∞
+X
+
+i
+
+ci z ,
+
+cS (z) =
+
+i=0
+
+∞
+X
+
+i
+ci s−1
+i z ,
+
+i=0
+
+where si = (α + ε1 eµi /T )1/2 , i ≥ 0, are the diagonal elements of Sα . By Lemma 4 the number
+c∗ Sα−1 Aj B is the j-th Taylor coefficient of the function cS (z)/˜
+a(z) and
+p2 ≤ sup
+
+∞
+X
+
+|c
+
+∗
+
+kck=1 j=0
+
+Sα−1 Aj B|2
+
+∞
+X
+1
+1
+2
+s−2
+≤ 2 sup
+.
+k |ck | ≤
+Ma kck=1 k=0
+Ma2 α
+
+By definition, p1 is a sum of kzj k2 where zj ∈ `2 ,
+zj =
+
+T
+TX
+−N
+1
+1 −1 N X
+Φk−N vk−j = Sα−1 AN
+Φk vk+N −j
+Sα A
+T
+T
+k=1
+k=1
+
+for j = 0, 1 . . . , N − 1. Notice that Φk = (yk , yk−1 , . . .). Define the random variables
+ηt,m =
+
+t
+X
+
+yk vk+m ,
+
+t ≥ 1,
+
+m ≥ 1.
+
+k=1
+
+The sequence ξt = t−1/2−ε3 ηt,m with fixed m satisfies all the conditions of Corollary 1. Hence,
+∀Xm > 0 P {∀t ≥ 1 t−1/2−ε3 |ηt,m | ≤ Xm } ≥ 1 −
+
+C
+.
+2
+ε3 Xm
+
+The constant C does not depend on m and ε3 . Choose Xm = X0 m1/2+ε4 for m ≥ 1 and with
+0 < ε4 < 1/2. Then it holds
+∀X0 > 0 P {∀t ≥ 1 ∀m ≥ 1 |ηt,m | ≤ X0 t1/2+²3 m1/2+ε4 } ≥ 1 −
+
+C1
+.
+ε3 X02
+
+−
+Let operators PN− , PN+ split an arbitrary sequence c = (ci )∞
+i=0 into the parts PN c =
++ N
++
+(c0 , c1 , . . . , cN −1 ), PN c = (cN , cN +1 , . . .). According to definition of A the operator PN A is
+
+11
+
+the identity. This implies
+kPN+ zj k2
+
+¯
+¯2
+∞
+T −N
+¯
+1 X ¯¯ 1 X
+¯
+=
+y
+v
+¯
+k−m k+N −j ¯
+¯
+T 2 m=0 ¯ sm+N k=1
+¯
+¯2
+T −N −1
+T −N
+¯
+X−m
+1 X ¯¯ 1
+¯
+yk vk+N −j+m ¯
+=
+¯
+2
+¯
+T m=0 ¯ sm+N k=1
+¯2
+T −N −1 ¯
+¯
+1 X ¯¯ 1
+=
+ηT −N −m,N −j+m ¯¯
+¯
+2
+T m=0 sm+N
+
+Therefore for any X0 > 0 it holds with probability not less than 1 − C1 /(ε3 X02 ) that for
+any j = 0, 1, . . . , N − 1
+kPN+ zj k2
+
+T −N −1
+1 X X02
+≤ 2
+(T − N − m)1+2²3 (N − j + m)1+2ε4
+T m=0 s2m+N
+T −1
+T −1
+X
+m1+2ε4
+m1+2ε4
+X02 X
+≤ 1−2ε3
+=
+T
+s2m
+T 1−2ε3 m=N α + ε1 T −1 eµm
+m=N
+Z ∞
+Z ∞
+x1+2ε4
+2X02
+2 −1 2ε3
+x2 e−µx dx
+≤ 1−2ε3
+dx ≤ 2X0 ε1 T
+−1 eµx
+T
+α
++
+ε
+T
+1
+N −1
+N −1
+−µ(N −1)
+2
+2
+2ε3 e
+= 2X02 ε−1
+((N − 1)2 + (N − 1) + 2 )
+1 T
+µ
+µ
+µ
+µ
+2ε3
+2e T
+2
+2
+≤ X02 ε−1
+(N 2 + N + 2 )
+1
+µN
+µ e
+µ
+µ
+µ
+2e
+1
+2
+2
+2
+≤ X02 ε−1
+(N
++
+N
++
+)
+1
+1−2ε
+3
+µ T
+µ
+µ2
+
+X02
+
+since eµN ≥ T .
+The rest vector PN− zj is bounded similarly. On the same set of trajectories with probability
+not less than 1 − C1 /(ε3 X02 ) it holds that for any j = 0, 1, . . . , N − 1
+¯ −N
+¯2
+N
+−1 ¯TX
+¯
+X
+1
+¯
+¯
+yk−m vk+N −j ¯
+kPN− zj k2 ≤ kSα−1 k2 kAN k2 2
+¯
+¯
+¯
+T
+≤
+≤
+
+m=0 k=1
+−1
+N −1
+2 N
+MA X
+MA2 X 2
+2
+|η
+|
+≤
+X (N
+T −N −m,N −j+m
+αT 2 m=0
+αT 1−2ε3 m=0 0
+N −1
+MA2 X 2
+4MA2 X02 N 3
+2
+X (2N ) ≤
+αT 1−2ε3 m=0 0
+αT 1−2ε3
+
+− j + m)1+2ε4
+
+where MA = supN >0 kAkN is finite because the operator A is stable.
+12
+
+Finally, by definition p1 ≤ N max0≤j≤N −1 (kPN+ zj k2 + kPN− zj k2 ). Hence
+P {∀T > 0, ∀α > 0, ∀N > µ−1 log T, p1 <
+
+∀X0 > 0
+
+≥1−
+where
+q(α, N ) =
+
+C1
+ε3 X02
+
+X02 N 4
+q(α, N )}
+αT 1−2ε3
+
+2eµ
+2
+2
+α
+α
+(1 +
++ 2 2 ) + 4MA2 ≤ d0 + d1
+ε1 µ
+µN
+µN N
+N
+
+and d0 = 4MA2 , d1 = 2eµ µ−3 (µ2 + 2µ + 2).
+Thus, it is proved that for any X0 > 0
+
+p
+2
+2X
+N
+q(α, N )
+0
+P {∀T, α > 0, ∀N ≥ µ−1 log T, kSα−1 Q2,T,N Sα−1 k ≤
+}
+1/2−ε
+3
+M1 αT
+C1
+≥1−
+.
+ε3 X02
+
+It remains to find such an α that it holds
+
+p
+2X0 N 2 q(α, N )
+≤1
+M1 αT 1/2−ε3
+
+or 2X0 N 2
+
+p
+d0 + d1 α/N ≤ M1 αT 1/2−ε3 . This inequality holds, for example, if simultaneously
+p
+d0 ≥ d1 α/N.
+2 2d0 X0 N 2 = M1 αT 1/2−ε3 ,
+
+This system is equivalent to
+√
+2 2d0 X0 N 2
+α=
+,
+M1 T 1/2−ε3
+
+√
+M1 d0 T 1/2−ε3
+√
+N≤
+.
+2 2d1 X0
+√
+The assertion of Lemma 2 follows with C2 = 2 2d0 /M1 and C3 = d0 /(C2 d1 ).
+2
+Proof of Lemma 3. Let c = (ci )∞
+i=0 ∈ ` and kck = 1. It is required to bound
+∗
+
+c WT,N c
+
+=
+
+N
+−1
+X
+i=0
+
++2
+
+T
+1X 2
+|c A B|
+(v − σ 2 )
+T k=1 k−i
+∗
+
+i
+
+N
+−1 N
+−1
+X
+X
+
+2
+
+c∗ Ai B(
+
+i=0 j=i+1
+
+T
+1X
+vk−i vk−j )c∗ Aj B.
+T k=1
+
+Let ²1 > 0. For any t > 0 denote
+ζt,0 =
+
+1
+t0.5+²1
+
+t
+X
+
+(vk2 − σ 2 ),
+
+ζt,j =
+
+k=1
+
+13
+
+1
+t0.5+²1
+
+t
+X
+k=1
+
+vk vk+j ,
+
+j = 1, 2, . . . .
+
+The conditions of Corollary to Lemma 1 are obviously satisfied. Hence, there exists C1 > 0
+such that
+∀j ≥ 0 ∀Yj > 0, P {∀T > 0, |ζT,j | ≤ Yj } ≥ 1 −
+
+C1
+.
+²1 Yj2
+
+(26)
+
+Choose Yj = jY0 . Then
+∀Y0 > 0, P {∀T > 0, ∀j > 0, |ζT,j | ≤ jY0 } ≥ 1 −
+
+C2
+²1 Y02
+
+with some C2 > 0. Now fix Y0 > 0. Then it holds with probability not less than 1−C2 /(²1 Y02 )
+that
+∗
+
+|c WT,N c| ≤
+
+N
+−1
+X
+
+|c∗ Ai B|2
+
+i=0
+
++2
+
+N
+−1 N
+−1
+X
+X
+
+(T − i)1/2+²1
+|ζT −i,0 |
+T
+
+|c∗ Ai B| |c∗ Aj B|
+
+i=0 j=i+1
+
+≤ Y0 T
+
+−1/2+ε1
+
++2Y0 T −1/2+ε1
+
+N
+−1
+X
+
+(T − i)1/2+²1
+|ζT −i,j−i |
+T
+
+|c∗ Ai B|2
+
+i=0
+N
+−1 N
+−1
+X
+X
+
+(j − i)1/2+²1 |c∗ Ai B| |c∗ Aj B|
+
+i=0 j=i+1
+
+≤ Y0 T −1/2+ε1 Ma−2 + 2Y0 T −1/2+ε1 N 2 (
+
+N
+−1
+X
+
+|c∗ Ai B|)2
+
+i=0
+
+≤ C4 Y0 T
+
+−1/2+ε1
+
+N
+
+2
+
+Ma−2
+
+where the last inequality follows from Lemma 4. This completes proof of assertion 1 of
+Lemma 3.
+number K in the assertion 2 of Lemma 3 is defined inP
+terms of partial sums SN (z) =
+PNThe
+−1
+∞
+i
+i
+γ
+z
+of
+the
+Taylor
+expansion
+of
+the
+function
+1/˜
+a
+(z)
+=
+i
+i=0
+i=0 γi z . The series converges
+uniformly in the closed unit disk. Therefore the value M1 = sup|z|=1 |˜
+a(z)|2 is finite and the
+2
+sequence eN = sup|z|=1 |1/˜
+a(z) − SN (z)| tends to zero as N → ∞.
+There exist α > 0 and K > 0 such that M1−1 − α > eK . Fix these values K and
+α and prove assertion 2 of Lemma 3. Assume N ≥ K and c ∈ `2 . It is sufficient to
+consider c = PN −K c = (cj )∞
+j=0 with cj = 0 for j > N − K. Define the polynomial c(z) =
+c0 + · · · + cN −K z N −K .
+P∞
+P
+k
+k
+For any series f (z) = ∞
+k=0 fk z .
+k=−∞ fk z define its analytical part by (f )+ (z) =
+
+14
+
+Since c∗ Ai B is the i-th Taylor coefficient of c(z)/˜
+a(z) by Lemma 4 it holds
+N
+−1
+X
+j=0
+
+=
+≥
+−
+≥
+
+j
+
+2
+
+|c A B| =
+
+∞
+X
+
+∗
+
+j
+
+2
+
+|c A B| −
+
+j=0
+
+∞
+X
+
+|c∗ Aj B|2
+
+j=N
+
+¯
+¯
+¯µ
+¶ ¯
+Z
+¯ c(z) ¯2
+¯ −N c(z) ¯2
+¯
+¯ dm(z) −
+¯ z
+¯ dm(z)
+¯a
+¯
+¯
+¯
+˜
+(z)
+a
+˜
+(z)
+|z|=1
+|z|=1
++
+¯µ
+¶ ¯2
+Z
+Z
+¯ −N c(z)
+¯
+|c(z)|2
+−N
+¯
+z
+dm(z) −
+− z c(z)SK (z) ¯¯ dm(z)
+¯
+2
+a(z)|
+a
+˜(z)
+|z|=1 |˜
+|z|=1
++
+Z
+1
+inf
+|c(z)|2 dm(z)
+|z|=1 |˜
+a(z)|2 |z|=1
+¯
+¶¯2
+µ
+Z
+¯ −N
+¯
+1
+¯z c(z)
+− SK (z) ¯¯ dm(z)
+¯
+a
+˜(z)
+|z|=1
+¯2 Z
+¯
+¯
+¯ 1
+−1
+2
+|c(z)|2 dm(z)
+M1 kck − sup ¯¯
+− SK (z)¯¯
+a
+˜
+(z)
+|z|=1
+|z|=1
+Z
+
+=
+
+∗
+
+= kck2 (M1−1 − eK ) ≥ αkck2 ,
+that completes proof of Lemma 3.
+Proof of Theorem 3. It follows from Lemma 2 and Lemma 3 that there exist positive C1 ,
+C2 , C3 , C4 , C5 such that for any X0 > 0, Y0 > 0 it holds
+(
+T
+ε1
+log T C3 T 1/2−ε3
+1X
+Φk Φ∗k + R
+P ∀T > 0, ∀N ∈ [
+,
+],
+µ
+X0
+T k=1
+T
+¾
+C2 N 2 X0
+C 4 N 2 Y0
+C1
+C5
+≥ αPN −K − 1/2−ε3 I − 1/2−ε4 I ≥ 1 −
+−
+.
+2
+T
+T
+ε3 X0
+ε4 Y02
+Let 0 < γ < 1. Choose ε3 = ε4 = % > 0 such that γ/2 + % < 1/2. Let T0 > 0 be sufficiently
+1/2−γ/2−%
+holds for any T1 ≥ T0 . Choose T1 ≥ T0 ,
+large so that the inequality µ−1 log T1 < C3 T1
+γ/2
+−1
+X0 = Y0 = T1 and define N = N (T ) = µ log T . Denote C2 + C4 = C6 and C1 + C5 = C7 .
+Then
+(
+Ã T
+!
+1 X
+P ∀T ≥ T1 ,
+Φk Φ∗k + (ε1 + ε2 )R
+T k=1
+¾
+C6 log2 T
+C7
+ε2
+.
+≥ R + αPN −K − 2 1/2−γ/2−% I ≥ 1 −
+T
+µT
+%T1γ
+If i > N − k then ε2 Rii /T = ε2 eµi /T ≥ ε2 e−µK . Hence,
+ε2
+R + αPN −K ≥ C8 I
+T
+15
+
+with C8 = min{ε2 e−µK , α}. Assume the inequality
+1/2−γ/2−%
+
+.
+
+!
+
+)
+
+2C6 µ2 log2 T1 ≤ C8 T1
+holds for all T1 ≥ T0 . Then
+(
+P
+
+1
+∀T ≥ T1 ,
+T
+
+Ã T
+X
+
+Φk Φ∗k + εR
+
+k=1
+
+C8
+≥
+I
+2
+
+≥1−
+
+C7
+,
+%T1γ
+
+which proves Theorem 3.
+
+6
+
+Conclusion
+
+In the standard estimation algorithms the number of parameters is fixed and their convergence with probability 1 is proved as the number of observations tends to infinity. If the
+number of observations is fixed then an attempt to estimate too many parameters leads to an
+unreliable result. It is recommended to choose a model with the number of parameters proportional to log T , where T is the number of observations (the AIC criterion). If T increases
+then the model can be made richer, but the number of parameters increases much slower
+than T and proportional to log T . The LS algorithm in the infinite dimensional regression
+model does not satisfy this logarithmic relation.
+The number of parameters that are obtained after T observations in the infinite linear
+regression model is equal to T for the RLS algorithm. Therefore it is impossible to extract a
+small set of parameters that are estimated precisely and to expand this set slowly with time
+T . Let a function F (p) be the accuracy of the estimates of the first p parameters. In the
+standard approaches (Mari et al (2000)) this function is small for the first log T parameters
+and arbitrary for others that were not estimated after T observations. This function can be
+smoothed in the standard LS algorithm if the initial conditions are chosen properly.
+The initial covariance of parameter estimates in the RLS algorithm is equal to the inverse
+of the initial information matrix, namely the regularizer R. Small covariances imply small
+correction gains. The rate of correction is inversely proportional to the values of R. It is
+proposed in in this paper to define R as a diagonal matrix with exponential entries eµk on
+the diagonal. A sum of correction gains at time T for parameter number k achieves some
+fixed value when k ∼ log T . The number of parameters that can be precisely estimated is
+proportional to log T , and estimates of other parameters cannot move far from their initial
+values. For this reason the initial information matrix R determines a smoothed number of
+parameters with reliable estimates at time T .
+The degree of convergence with probability 1 is obtained from the lemma on convergence of semi-martingales. This lemma presented in Section 4 gives a simple expression for
+probability of the exceptional set if a semi-martingale converges. It is used in the proofs of
+different assertions in this paper.
+Proofs of the main theorems about the degree of convergence of the RLS estimates for
+the AR(∞) model are based on the standard Lyapunov function associated with the LS
+16
+
+approach [1]. A special mathematical technique was developed to find appropriate lower and
+upper bounds on the information matrix and to analyze their asymptotic behavior almost
+surely.
+
+Acknowledgments.
+This research was partially supported by the Russian Foundation for Basic Research under
+grant number N 01-01-00306, by the grant for Russian scientific schools N 00-15-96-028 and
+by the DoD Multidisciplinary University Research Initiative (MURI) program administered
+by the US Office of Naval Research under Grant N00014-01-10745.
+
+References
+[1] Barabanov, A. Ye. (1983). Strong convergence of the method of least squares. Automat. Remote
+Control 10, part 2, 1338–1346.
+[2] Durbin, J. (1959). The fitting of time-series models. Rev. Inst. Int. Stat., 223–243.
+[3] Fomin, V.N. (1999). Optimal filtering. Vol.1. Filtering of stochastic processes. Kluwer Academic Publishers, Dordrecht.
+[4] Gel, Yu.R. and Fomin, V.N. (1998). Linear model approximation of stochastic stationary time series.
+Vestnik of St.-Petersburg University 2, 24–31.
+[5] Gel, Yu.R. and Fomin, V.N. (2001). Identification of an unstable ARMA equation. Mathematical
+Problems in Engineering. 7, 97–112.
+[6] Green, M. (1995).Linear robust control. Prentice Hall, New Jersey.
+[7] Lai, T.L. and Wei, C.Z. (1982). Asymptotic properties of projections with application to stochastic
+regression problems. J. Multivariate Analysis 12, 346–370.
+[8] Ljung, L. (1977). Analysis of recursive stochastic algorithms. IEEE Transactions on Automatic Control
+22, 551–575.
+[9] Ljung, L. (1999 ). System Identification - Theory For the User. Prentice Hall, New Jersey.
+[10] Mari, J. Dahlen, A. and A. Lindquist (2000). A covariance extension approach to identification of
+time series. Automatica J. IFAC 36, no. 3, 379–398.
+[11] Marple, S. L., Jr. (1987).Digital spectral analysis with applications. Prentice Hall, New Jersey.
+[12] Wahlberg, B. (1989). Estimation of autoregressive moving-average models via high-order autoregressive approximations. Journal of Time Series Analysis 10, 283–299.
+[13] Whittle, P. (1953). Estimation and information in stationary time series. Ark. Mat. Astr. Fys. 2,
+423–434.
+[14] Wold, H. (1938). A study in the analysis of Stationary Time Series. Almqvist and Wiksell.
+
+17
+
+

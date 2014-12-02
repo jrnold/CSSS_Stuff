@@ -1,0 +1,1432 @@
+Marginal set likelihood for semiparametric copula estimation
+Peter D. Hoff 1
+Working Paper no. 65
+Center for Statistics and the Social Sciences
+University of Washington
+Seattle, WA 98195-4320
+October 11, 2006
+
+1
+
+Departments of Statistics, Biostatistics and the Center for Statistics and the Social Sciences, University
+
+of Washington, Seattle, Washington 98195-4322, U.S.A.. Web: http://www.stat.washington.edu/hoff/.
+
+Abstract
+Quantitative studies in many fields involve the analysis of multivariate data of diverse types, including measurements that we may consider binary, ordinal and continuous. One approach to the
+analysis of such mixed data is to use a copula model, in which the associations among the variables
+are parameterized separately from their univariate marginal distributions. The purpose of this
+article is to provide a method of semiparametric inference for copula models via the construction
+of what we call a marginal set likelihood function for the association parameters. The proposed
+method of inference can be viewed as a generalization of marginal likelihood estimation, in which
+inference for a parameter of interest is based on a summary statistic whose sampling distribution
+is not a function of any nuisance parameters. In the context of copula estimation, the marginal set
+likelihood is a function of the association parameters only and its applicability does not depend on
+any assumptions about the marginal distributions of the data, thus making it appropriate for the
+analysis of mixed continuous and discrete data with arbitrary margins. Estimation and inference
+for parameters of the Gaussian copula are available via a straightforward Markov chain Monte
+Carlo algorithm based on Gibbs sampling.
+Some key words: Bayesian inference, latent variable model, marginal likelihood, Markov chain
+Monte Carlo, multivariate estimation, polychoric correlation, sufficiency.
+
+1
+
+Introduction
+
+Studies involving multivariate data often include measurements of diverse types. For example, a
+survey or observational study may record the sex, education level and income of its participants,
+thus including measurements that we may consider binary, ordinal and continuous. Many surveys
+also include questions about attitudes and preferences measured on Likert scales. In such cases,
+the interest is primarily in the association among the variables, and not the scale on which they
+are measured.
+One approach to the analysis of such data is to use rank-based measures of bivariate association.
+These procedures are scale-free, but involve ad-hoc methods for dealing with ties in discrete data
+and provide inference that is generally limited to hypothesis tests of bivariate association. In
+contrast, model-based procedures can address a variety of inferential questions and can directly
+take into account the sample space of each measured variable. These methods generally proceed
+by modeling each component of a vector of observations with a parametric exponential family
+model, in which the parameters for each component involve an unobserved latent variable. For
+example, Chib and Winkelmann [2001] present a model for a vector of correlated count data in
+which each component is a Poisson random variable with a mean depending on a component-specific
+latent variable. Dependence among the count variables is induced by modeling the vector of latent
+variables with a multivariate normal distribution. Similar approaches are proposed by Dunson
+[2000] and described in Chapter 8 of Congdon [2003]. The model of Chib and Winkelmann can be
+viewed as a copula model, in which the association parameters are modeled separately from the
+marginal distributions of the observed data. Such a modeling approach can be applied to a wide
+variety of multivariate analysis problems: An old mathematical result known as Sklar’s Theorem
+says that every multivariate probability distribution can be represented by its univariate marginal
+distributions and a copula, which is a type of joint distribution with fixed marginals.
+The marginal distributions of survey data such as age, number of children, income and ordinal
+preferences generally do not belong to standard parametric families. For such data a semiparametric estimation strategy may be appropriate, in which the associations among the variables are
+represented with a simple parametric model but the marginal distributions are estimated nonparametrically. In the case where all the variables are continuous, Genest et al. [1995] suggest
+a “pseudo-likelihood” approach to estimation, in which the observed data is transformed via the
+empirical marginal distributions to obtain pseudo-data that can be used to estimate the association
+parameters. Klaassen and Wellner [1997] study a similar type of estimation in the case of the Gaussian copula. Such estimators are well-behaved for continuous data but can fail for discrete data,
+making them somewhat inappropriate for the analysis of mixed continuous and discrete data. For
+ordinal discrete data with a known number of categories, the dependence induced by the Gaussian
+copula model is called polychoric correlation. Olsson [1979] describes a two-stage estimation proce1
+
+dure for the parameters in the copula, and this and other estimation strategies appear in a number
+of software packages including SAS PROC FREQ and the LISREL module PRELIS. However, such
+procedures do not accommodate continuous data, and may even be problematic for discrete data
+with a large number of categories, as inference in this case requires the simultaneous estimation of
+the large number of parameters specifying the marginal distributions.
+As an alternative to these procedures, this article presents an approach to copula estimation in
+which the marginal distributions are arbitrary and of unspecified types, thus accommodating both
+discrete and continuous data. This approach is based on a type of marginal likelihood function called
+a marginal set likelihood. This likelihood function is a function of the association parameters only,
+and does not make assumptions about the form of the marginal distributions. Inference based on
+this set likelihood function is therefore appropriate for the joint analysis of continuous and ordinal
+discrete data. This likelihood approach is similar to standard marginal likelihood estimation in
+the presence of nuisance parameters, in which inference is based on a statistic whose sampling
+distribution depends only on the parameter of interest and not any nuisance parameters.
+In what follows we work with the Gaussian copula model, although the basic ideas can be
+extended to other parametric families of copulas. In the next section we review the general Gaussian
+copula model, and discuss how inference for discrete data using existing semiparametric methods
+is problematic. Section 3 derives the set likelihood as a general approach to semiparametric copula
+estimation and discusses parameter estimation in the context of Bayesian inference using a relatively
+simple Gibbs sampling scheme. Section 4 gives an example analysis of data from the General
+Social Survey, a multivariate dataset that includes a number of discrete and non-Gaussian random
+variables. Section 5 considers notions of statistical sufficiency relevant to the set likelihood, and
+a discussion follows in Section 6. A short computer program for Gaussian copula estimation is
+provided in the Appendix.
+
+2
+
+Semiparametric copula estimation
+
+Let y1 and y2 be two random variables with continuous CDF’s F1 and F2 . The transformed
+variables u1 = F1 (y1 ) and u2 = F2 (y2 ) both have uniform marginal distributions. The term
+“copula modeling” generally refers to a model that parametrizes the joint distribution of u1 and u2
+separately from the marginal distributions F1 and F2 . A semiparametric copula model includes a
+parametric model for the joint distribution of u1 and u2 , but lacks any parametric restrictions on
+F1 or F2 .
+Any continuous multivariate distribution can be used to form a copula model via an inverse-CDF
+transformation. For example, the bivariate normal distribution can be used to generate dependent
+data with arbitrary marginals F1 and F2 as follows:
+
+2
+
+1. sample
+
+z1
+z2
+
+!
+
+"
+∼ bivariate normal
+
+0
+0
+
+!
+,
+
+1 ρ
+ρ 1
+
+!#
+;
+
+2. set y1 = F1−1 [Φ(z1 )], y2 = F2−1 [Φ(z2 )],
+where F −1 (u) = inf{y : F (y) ≥ u} denotes the pseudo-inverse of a CDF F . The correspondence to
+the usual copula formulation can be seen by noting that Φ(z) = u is uniformly distributed.
+Suppose (y1,1 , y1,2 ), . . . , (yn,1 , yn,2 ) are samples from a population that we wish to model with
+a Gaussian copula. If the marginal distributions F1 and F2 were continuous and known, then the
+values zi,j = Φ−1 [Fj (yi,j )] could be treated as observed data and ρ could be estimated directly from
+P
+the z’s, perhaps using the unbiased estimator ρˆ = n1 ni=1 zi,1 zi,2 . Of course, the marginal CDF’s are
+not typically known. One semiparametric estimation strategy is to plug-in the the empirical CDF’s
+n ˆ
+Fj (yi,j )] ≡ Φ−1 [F˜j (yi,j )], where the rescaling is to
+Fˆ1 and Fˆ2 to obtain pseudo-data z˜i,j = Φ−1 [ n+1
+P
+avoid infinities. For continuous data, the estimator ρ˜ = n1 ni=1 z˜i,1 z˜i,2 is asymptotically equivalent
+to the asymptotically efficient Van der Waerden normal-scores rank correlation coefficient [H´
+ajek
+ˇ ak, 1967, Klaassen and Wellner, 1997]. This estimator is similar to one obtained from a
+and Sid´
+more general pseudo-likelihood estimation procedure described and studied by Genest et al. [1995].
+In the context of the Gaussian copula model, the maximum pseudo-likelihood procedure is to
+1. set z˜i,j = Φ−1 [F˜j (yi,j )];
+2. maximize in ρ the pseudo-log-likelihood
+
+Pn
+
+zi,1 , z˜i,2 |ρ),
+i=1 log bvn(˜
+
+where bvn(·|ρ) denotes the bivariate normal density with standard normal marginals. Genest et
+al. show that the resulting pseudo-likelihood estimator is consistent and asymptotically normal
+under the condition that F1 and F2 are continuous. However, this condition calls into question the
+appropriateness of the pseudo-likelihood approach for non-continuous data such as sex, education
+level, age or any other type of data where there are likely to be ties.
+What could go wrong with such an estimator in situations involving discrete data? In general,
+these pseudo-data estimators of copula parameters will be problematic for discrete data because
+transformations of such data do not really change the data distribution, they just change the
+sample space. Consider the simple case of a continuous variable y1 and a binary variable y2 such
+that Pr(y2 = 0) = Pr(y2 = 1) = 1/2. Letting z˜i,j = Φ−1 [F˜j (yi,j )], the distribution of z˜1,1 , . . . , z˜n,1
+will have an approximately standard normal distribution, but z˜i,2 will be approximately equal to
+n
+n
+) or Φ−1 ( n+1
+) with probability one-half each. If the Gaussian copula model is
+either Φ−1 ( 21 n+1
+
+correct, then one can show that the expectation of ρ˜ is roughly
+
+√ρ Φ−1 ( n ).
+n+1
+2π
+
+As n increases so
+
+does the expectation of ρ˜, and it is not a consistent estimator. One problem here is that all of the
+n
+z˜i,2 ’s such that yi,2 = 1 are being pushed to the extreme standard normal quantile Φ−1 ( n+1
+), which
+
+in the case of continuous data would happen just to a single datapoint. The situation is only partly
+3
+
+improved by using the sample correlation of the pseudo-data as an estimator: The variance of z˜1
+n
+is approximately 1 and the variance of z˜2 is approximately [ 21 Φ−1 ( n+1
+)]2 , giving an approximate
+p
+sample correlation of Cor(˜
+zi,1 , z˜i,2 ) ≈ ρ 2/π.
+
+3
+
+Marginal set likelihood and sufficiency
+
+In this section we derive a likelihood function that depends on the association parameters and
+not on the unknown marginal distributions. For continuous data this function is equivalent to
+the distribution of the multivariate ranks. This is not the case of discrete data, for which the
+distribution of the ranks depends on the univariate marginal distributions. In this case the derived
+likelihood function contains less total information than one based on the ranks, but it is free of any
+parameters describing the marginal distributions.
+
+3.1
+
+Marginal set likelihood
+
+Generalizing from the previous section, the Gaussian copula sampling model can be expressed as
+follows:
+z1 , . . . , zn |C ∼ i.i.d. multivariate normal(0, C),
+yi,j
+
+(1)
+
+= Fj−1 [Φ(zi,j )],
+
+where C is a p × p correlation matrix and each Fj−1 denotes the (pseudo) inverse of an unknown
+univariate CDF, not necessarily continuous.
+Our goal is to make inference on C, and not on the potentially high-dimensional parameters
+F1 , . . . , Fp . If the z’s were observed we could use them to directly estimate C. The z’s are not
+observed of course, but the y’s do provide a limited amount of information about them, even absent
+any knowledge of the F ’s: Since the F ’s are non-decreasing, observing yi1 ,j < yi2 ,j implies that
+zi1 ,j < zi2 ,j . More generally, observing Y = (y1 , . . . , yn )T tells us that Z = (z1 , . . . , zn )T must lie
+in the set
+{Z ∈ Rn×p : max{zk,j : yk,j < yi,j } < zi,j < min{zk,j : yi,j < yk,j }}.
+We can take the occurrence of this event as our data. Letting D be the fixed subset of Rn×p
+generated by the observed value of Y, we can calculate the following “likelihood”:
+Z
+Pr(Z ∈ D|C, F1 , . . . , Fp ) =
+p(Z|C) dZ = Pr(Z ∈ D|C).
+D
+
+As a function of the parameters, this likelihood depends only on the parameter of interest C and
+not the nuisance parameters F1 , . . . , Fp . Estimation of C can proceed by maximizing Pr(Z ∈ D|C)
+as a function of C, or by obtaining a posterior distribution Pr(C|Z ∈ D) ∝ p(C) × Pr(Z ∈ D|C).
+4
+
+We call this likelihood function a marginal set likelihood, or s-likelihood, as it is based on the
+marginal probability of an event: Roughly speaking, we have
+p(Y|C, F1 , . . . , Fp ) = p(Y, Z ∈ D|C, F1 , . . . , Fp )
+= Pr(Z ∈ D|C) × p(Y|Z ∈ D, C, F1 , . . . , Fp ).
+
+(2)
+(3)
+
+Equation (2) holds because the event Z ∈ D occurs whenever Y is observed. This derivation can
+be made more rigorous by deriving the density p(Y|C, F1 , . . . , Fp ) from the limit of Pr(∩i,j (yi,j −
+, yi,j ]|C, F1 , . . . , Fp ).
+
+3.2
+
+Estimation of dependence parameters
+
+Bayesian inference for C can be achieved via construction of a Markov chain having a stationary
+distribution equal to p(C|Z ∈ D) ∝ p(C) × p(Z ∈ D|C). In the case of the Gaussian copula with a semi-conjugate prior distribution, the Markov chain can be constructed quite easily
+using Gibbs sampling. This prior distribution for C is defined as follows: Let V have an inverseWishart(ν0 , ν0 V0 ) prior distribution, parameterized so that E[V−1 ] = V−1
+0 , and let C be equal in
+p
+distribution to the the correlation matrix with entries V[i,j] / V[i,i] V[j,j] . Using this prior distribution, approximate samples from p(C|Z ∈ D) can be obtained by iterating the following Gibbs
+sampling scheme:
+Resample Z. Iteratively over (i, j), sample zi,j from p(zi,j |Z[−i,−j] , V) as follows:
+For each j ∈ {1, . . . , p}
+For each y ∈ unique{y1,j , . . . , yn,j }
+1. Compute zl = max{zi,j : yi,j < y} and zu = min{zi,j : y < yi,j }
+2. For each i such that yi,j = y,
+(a) compute σj2 = V[j,j] − V[j,−j] V−1
+[−j,−j] V[−j,j]
+T
+(b) compute µi,j = Z[i,−j] (V[j,−j] V−1
+[−j,−j] )
+
+(c) Sample ui,j uniformly from (Φ[
+
+zl −µi,j
+zu −µi,j
+])
+σj ], Φ[ σj
+
+(d) Set zi,j = µi,j + σj × Φ−1 (ui,j )
+Resample V. Sample V from an inverse-Wishart(ν0 + n, ν0 V0 + ZT Z) distribution.
+p
+Compute C. Let C[i,j] = V[i,j] / V[i,i] V[j,j] .
+Iteration of this algorithm generates a Markov chain in C whose stationary distribution is p(C|Z ∈
+D). This algorithm is easily modified to accommodate data that are missing-at-random: If yi,j is
+
+5
+
+missing, the full conditional distribution of zi,j is the unconstrained normal distribution with mean
+µi,j and variance σj2 given above.
+The astute reader may have noticed that the samples of Z are based on the covariance matrix
+V and not the correlation matrix C. To see why this does not matter for estimation of C, compare
+our original model,
+V ∼ inverse-Wishart(ν0 , ν0 V0 )
+q
+{C[i,j] } = {V[i,j] / V[i,i] V[j,j] }
+z1 , . . . , zn ∼ i.i.d. multivariate normal(0, C)
+yi,j
+
+= Gj (zi,j ),
+
+to the equivalent model
+V ∼ inverse-Wishart(ν0 , ν0 V0 )
+z1 , . . . , zn ∼ i.i.d. multivariate normal(0, V)
+q
+z˜i,j = zi,j / V[j,j] , and let C = Cov(˜
+z)
+yi,j
+
+= Gj (˜
+zi,j ).
+
+˜’s in the second, and so posterior
+The z’s in the first formulation are equal in distribution to the z
+inference for C is equivalent under either model. The Gibbs sampling scheme outlined above is
+based on a Markov chain in V and z1 , . . . , zn based on the second formulation. Note that in this
+˜’s and the z’s.
+formulation the observed data implies the same ordering D on both the z
+A short computer program to implement the estimation strategy outlined above is provided in
+the Appendix.
+
+4
+
+GSS Example
+
+The General Social Survey (GSS) is currently a biannual survey of the noninstitutionalized U.S.
+adult population. Questions on the survey include a wide variety of discrete and (somewhat)
+continuous demographic data as well as data on opinions and attitudes measured on Likert scales.
+Data and details on the survey are available at http://webapp.icpsr.umich.edu/GSS/. In this
+section we describe the dependence relationships among a set of 10 ordinal variables of interest to
+the author, using the model and estimation scheme of Section 3. The variables of interest are:
+
+6
+
+0.6
+0.4
+Cij
+0.2
+0.0
+−0.2
+−0.4
+0
+
+5000
+
+10000
+
+15000
+
+20000
+
+25000
+
+scan
+
+Figure 1: Markov chain Monte Carlo samples of 11 of the correlation coefficients.
+SEX:
+
+sex of the respondent
+
+AGE:
+
+age of the respondent
+
+CHILDS:
+EDU:
+PAREDU:
+WORDSUM:
+
+number of children ever had
+number of years of education
+maximum of mother’s and father’s years of education
+score on a vocabulary test
+
+INCOME:
+
+family income
+
+ATTEND:
+
+church attendance, from low to high
+
+RELITEN:
+
+strength of religious belief, from not religious to strongly religious
+
+BIBLE:
+
+belief that the bible is a book of fables, an inspired book, or the word of god
+
+Relationships among the variables were analyzed using data from the n = 2832 respondents in
+the 1998 survey. This is the most recent survey for which the data are publicly available on the
+GSS webpage. The number of respondents having no missing data for these 10 variables was 667,
+or about 24%. Most of the variables had missing-data rates of about 10% or less. The exceptions
+were BIBLE, having a rate of about 20%, and WORDSUM, having a rate of about 54%. The
+majority of these missing data result from the fact that these two questions were not asked on all
+versions of the survey. These missing values can be reasonably considered missing at random.
+
+7
+
+●
+
+●
+
+●
+
+0.2
+
+●
+●
+
+●
+●
+●
+
+●
+
+●
+
+●
+●
+●
+
+●
+
+●
+
+●
+
+0.2
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+−0.6
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+●
+
+●
+
+●
+
+−0.6
+
+●
+
+−0.6
+
+●
+
+0.2
+
+0.2
+
+●
+
+●
+●
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+●
+
+●
+●
+
+●
+
+●
+
+0.2
+
+●
+
+●
+●
+
+−0.6
+
+−0.6
+
+●
+
+●
+
+0.2
+
+●
+●
+
+−0.6
+
+●
+
+●
+●
+
+●
+
+●
+●
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+−0.6
+
+0.2
+
+●
+
+●
+
+0.2
+
+●
+●
+
+●
+
+−0.6
+0.2
+
+●
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+●
+
+●
+
+●
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+−0.6
+
+●
+
+−0.6
+
+●
+
+−0.6
+
+●
+●
+
+0.2
+
+0.2
+
+●
+
+●
+
+●
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+−0.6
+
+●
+
+−0.6
+
+●
+
+●
+
+0.2
+
+0.2
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+Figure 2: Marginal distributions and dependence parameters for the GSS data. The plot in the
+second column gives posterior mean estimates of correlation coefficients E[zj zk ]. The plot in the
+third column gives regression coefficients ∇E[zj |z−j ].
+
+8
+
+BIBLE
+
+INCOME
+
+EDU
+
+CHILDS
+
+SEX
+
+BIBLE
+
+−0.6
+
+●
+
+RELITEN
+
+PAREDU
+
+WORDSUM
+
+EDU
+
+CHILDS
+
+SEX
+
+AGE
+
+●
+
+RELITEN
+
+●
+
+ATTEND
+
+●
+
+INCOME
+
+●
+
+●
+
+ATTEND
+
+●
+
+●
+
+PAREDU
+
+●
+
+●
+
+AGE
+
+●
+
+WORDSUM
+
+●
+●
+
+0.2
+
+0.2
+
+●
+
+●
+
+−0.6
+
+●
+
+0.2
+
+●
+●
+
+−0.6
+
+0.2
+
+●
+
+●
+
+−0.6
+
+PAREDU
+WORDSUM
+INCOME
+ATTEND
+RELITEN
+
+●
+
+●
+
+●
+
+−0.6
+
+CHILDS
+EDU
+
+●
+●
+
+0.2
+
+●
+
+●
+
+●
+
+BIBLE
+
+●
+
+●
+●
+
+●
+
+−0.6
+
+0.2
+0.2
+
+●
+
+●
+
+−0.6
+
+SEX
+AGE
+
+●
+
+4.1
+
+Estimation of C
+
+Using an inverse-Wishart (p + 2, (p + 2) × I) prior distribution for V, the Gibbs sampling scheme
+outlined in Section 3 was iterated 25,000 times with with parameter values saved every 20 scans,
+resulting in 1250 samples of C for posterior analysis. Mixing of the Markov chain was quite good:
+Figure 1 shows MCMC samples of 11 entries of C, the entries being chosen to span the range of
+E[C|Z ∈ D]. Convergence to stationarity appears to occur quickly, almost certainly within the first
+5000 scans. Dropping these scans to allow for burn-in, we are left with 1000 saved scans for posterior
+analysis. The autocorrelation across these saved scans was low, with the lag-20 autocorrelation less
+than 0.05 in absolute value for all entries of C, and much closer to zero for most.
+The first column of Figure 2 gives a histogram of each variable, highlighting the non-normality
+of many of these marginal distributions. Posterior distributions of the correlation parameters
+are summarized in the second and third columns: The second column gives marginal posterior
+2.5%, 50% and 97.5% quantiles of the correlation coefficients, and the third column gives the
+same quantiles for the “regression coefficients” C[j,−j] C−1
+[−j,−j] . The confidence intervals are quite
+small due to the large sample size. Various interesting relationships can be determined from these
+coefficients. For example, INCOME and PAREDU are positively correlated, but their association
+conditional on EDU (and the other variables) is much weaker.
+
+4.2
+
+Asymptotic experiments
+
+As discussed in the next section, the s-likelihood for discrete data does not correspond to the
+marginal distribution of a sufficient statistic, and so estimation of the correlation parameters using
+the s-likelihood may differ from estimation using the full likelihood. To explore potential differences,
+we first obtained the Bayes estimate of C using the full likelihood p(Y|C, F1 , . . . , Fp ) and the same
+prior distribution for C as above. In this case, Bayesian estimation requires that prior distributions
+be specified for each of the p = 10 univariate marginal distributions. Although some of the 10
+variables have a large number of levels (AGE has 72, INCOME has 23), each variable is technically
+discrete as a result of how the data were recorded. Letting Kj be the number of possible levels
+of variable j, the prior distribution for each Fj was taken to be the “standard” default prior
+distribution for a vector of multinomial probabilities, the uniform distribution on the Kj -simplex.
+A Markov chain consisting of 25,000 scans was constructed using Gibbs sampling on all parameters, with the first 5,000 scans being discarded to allow for burn in. Every 20th remaining scan
+was then used to construct a posterior mean estimate of C. This estimate of C was essentially
+identical to the one obtained using the s-likelihood, with an absolute difference between the two
+estimates of 0.0015, averaged across the 45 correlation parameters. This is quite small compared to
+the magnitude of the estimates, as can be seen in Figure 3, which plots the two estimates against
+one another.
+9
+
+Although the two estimation procedures produce essentially the same results for this large
+sample size of n = 2832, the existence and nature of potential differences for small sample sizes is
+not immediately clear. On one hand, the s-likelihood does not use all the information in the data,
+and so might result in less precise inference. On the other hand, using the full likelihood requires
+estimation of the univariate marginal CDFs, which for the GSS data amount to 164 additional
+parameters to estimate. Uncertainty in these unknown parameters could result in less precise
+inference for C. To explore these possibilities we undertook a simulation study to examine the
+sampling properties of the two different estimation methods. For each value of ns ∈ {25, 50, 100}
+we generated 50 different GSS datasets of sample size ns via simple random sampling of cases from
+the original set of n = 2832. An estimate of C was then obtained for each of these 50 × 3 datasets
+using both the s-likelihood and full likelihood approaches described above. We then examined the
+sampling bias and variance of these two estimators under the three different sample sizes, using the
+n = 2832 estimate as the truth.
+The bias and sampling variance of the s-likelihood estimates are shown in Figure 4. The three
+horizontal line segments for each pair of variables represents the sampling mean plus and minus
+two sampling standard deviations of the estimator of the corresponding correlation for the three
+different sample sizes. Below these lines is a black square representing the estimate of the correlation
+using the full dataset. As the figure shows, the estimates are generally biased towards zero (the
+prior mean value), with bias decreasing as the sample size increase. Across the 45 correlation
+parameters, the mean squared error decreased by an average amount of 39% in going from ns = 25
+to ns = 50, and by an average amount of 43% in going from ns = 50 to ns = 100.
+The differences in MSE between the two approaches are described in Figure 5. The first panel
+compares the MSE in estimating the 45 correlation coefficients for ns = 25. For most parameters
+(37 out of 45) the MSE is lower using the s-likelihood as opposed to the full likelihood. For ns = 50
+the MSE from the s-likelihood estimator is lower for 30 out of 45 parameters, but only 12 out of
+45 in the case of ns = 100. One potential explanation of these results is that, for low sample sizes,
+the limited amount of information makes it difficult to accurately estimate the univariate marginal
+distributions, resulting in parameter estimates with high MSE when using the full likelihood. For
+moderate to large sample sizes, estimation of C might be slightly improved by simultaneously
+estimating F1 , . . . , Fp , but for very large sample sizes such as n = 2832 the differences between the
+two procedures appear to be negligible.
+
+5
+
+Notions of sufficiency
+
+The marginal set likelihood described above can be viewed as a generalization of marginal likelihood,
+a standard technique for dealing with nuisance parameters (see Section 8.3 of Severini [2000] for a
+
+10
+
+Estimate from ordinary likelihood
+−0.2
+0.0
+0.2
+0.4
+0.6
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+
+●●
+●●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●●
+●
+●
+
+●
+●
+●
+●
+●
+●
+
+−0.2
+0.0
+0.2
+0.4
+0.6
+Estimate from s−likelihood
+
+Figure 3: Posterior mean estimates of correlation parameters using the s-likelihood compared to
+those using the full likelihood.
+review). One benefit of using such a likelihood is a gain in robustness, as inference no longer depends
+on assumptions about the relationship of the data to the nuisance parameters. Another benefit
+is a general simplification of the estimation problem, as the need to estimate a potentially highdimensional set of parameters is eliminated. These benefits come at the cost of potentially losing
+information about the parameters of interest by only using part of the available data. Ideally,
+the statistic that generates the marginal likelihood is “partially sufficient” in the sense that it
+contains all relevant information in the data about the parameter of interest. Various definitions
+of partial sufficiency have been developed: Fraser [1956] defined S-sufficiency via properties of the
+marginal and conditional distributions of the statistic and the data. The concept of G-sufficiency
+was introduced in Barnard [1963] as a general principle for making inference about a parameter of
+interest when the inference problem remains invariant under a group of transformations. R´emon
+[1984] developed a generalization of these notions based on profile likelihoods called L-sufficiency,
+which has been refined and studied by Barndorff-Nielsen [1988, 1999]. The general recommendation
+of these authors is to base inference for a parameter of interest on the sampling distribution of a
+statistic that is sufficient in some sense.
+If F1 , . . . , Fp are all continuous then there are no ties among the data, and knowledge of Z ∈ D
+provides a complete ordering of {y1,j , . . . , yn,j } for each j. This information is equivalent to the
+information contained in the ranks, and so Pr(Z ∈ D|C) is equivalent to the sampling distribution
+of the multivariate ranks. Following the notation of R´emon [1984] we now show that the ranks
+r(Y) are a G-sufficient statistic in the sense of Barnard [1963]: Let C ∈ C describe the copula and
+11
+
+ATTEND:RELITEN
+EDU:WORDSUM
+EDU:PAREDU
+AGE:CHILDS
+EDU:INCOME
+RELITEN:BIBLE
+ATTEND:BIBLE
+PAREDU:WORDSUM
+WORDSUM:INCOME
+PAREDU:INCOME
+AGE:RELITEN
+CHILDS:RELITEN
+CHILDS:ATTEND
+SEX:ATTEND
+CHILDS:BIBLE
+SEX:RELITEN
+AGE:ATTEND
+SEX:CHILDS
+SEX:BIBLE
+AGE:BIBLE
+AGE:WORDSUM
+EDU:ATTEND
+SEX:WORDSUM
+SEX:AGE
+INCOME:ATTEND
+INCOME:RELITEN
+AGE:INCOME
+CHILDS:INCOME
+EDU:RELITEN
+WORDSUM:ATTEND
+SEX:EDU
+WORDSUM:RELITEN
+SEX:PAREDU
+PAREDU:ATTEND
+PAREDU:RELITEN
+CHILDS:WORDSUM
+SEX:INCOME
+AGE:EDU
+INCOME:BIBLE
+CHILDS:EDU
+PAREDU:BIBLE
+EDU:BIBLE
+CHILDS:PAREDU
+WORDSUM:BIBLE
+AGE:PAREDU
+
+−0.6
+
+−0.4
+
+−0.2
+
+0.0
+0.2
+correlation
+
+0.4
+
+0.6
+
+0.8
+
+Figure 4: Bias and variance of the Bayes estimates for n ∈ {25, 50, 100} using the s-likelihood.
+
+12
+
+●
+●
+● ●
+●● ●
+●● ●●
+●●
+●●●●●
+●
+●●
+●●
+●
+●
+●
+●
+●
+● ●●●●
+● ●
+●
+●
+
+●
+●●●
+●
+●●
+● ●
+●●
+● ●●
+● ●
+●
+●
+●
+●●
+●
+●●
+●● ● ●
+●
+●●
+●●
+●
+●
+●
+●
+●
+●
+●
+
+●
+
+●
+●
+
+0.03
+0.05
+MSE from s−likelihood
+
+0.015
+0.025
+0.035
+MSE from s−likelihood
+
+0.020
+
+●
+
+n=100
+
+●
+●
+
+0.015
+
+●
+
+0.025
+
+●
+
+●
+
+0.035
+
+●
+
+n=50
+
+0.010
+
+●
+●
+
+0.015
+
+MSE from ordinary likelihood
+0.03
+0.05
+0.07
+
+●
+
+n=25
+
+●
+
+●●●●
+●
+●●●
+●●
+●●
+●
+●
+●●
+● ●●●
+●
+●
+●
+●
+● ●●
+●
+●
+●
+●●●
+●
+●
+●
+●
+
+●
+
+●
+
+0.010 0.015 0.020
+MSE from s−likelihood
+
+Figure 5: MSE comparison of the two methods for three different sample sizes.
+F = {F1 , . . . , Fp } ∈ F the marginal distributions, and so the parameter space is Ω = C × F and
+the model space is P = {Pr(·|ω) : ω ∈ Ω}, where Pr(·|ω) is a probability measure on Rp for each
+ω ∈ Ω. Furthermore, let G be the group of collections of p continuous strictly increasing functions,
+so that G = {G = (G1 , . . . , Gp ) : Gj is a continuous and strictly increasing function on R}. To
+each G ∈ G there corresponds a one-to-one function on P mapping P (·|ω) to P (G−1 (·)|ω) and the
+model space is closed under the action of G. As a result, G induces a group G¯ = {fG : G ∈ G} on
+Ω defined by P (·|fG ω) = P (G−1 (·)|ω).
+If the marginals are continuous the orbits of Ω under G¯ can be put into 1-1 correspondence
+with C, and C is therefore a maximal invariant parameter. Barnard defined a statistic t(Y) to be
+G-sufficient if it can be put into 1-1 correspondence with the orbits of Rp under G. This is the case
+for the ranks r(Y) of Y, and so r(Y) is said to be G-sufficient for estimation of C. For continuous
+data, the marginal distribution of the ranks is equal to the partial set likelihood, and so basing
+inference on this likelihood function can been seen as using all available, relevant information in
+the G-sufficient sense.
+A notion of sufficiency that is more directly related to maximum likelihood estimation is Lsufficiency: In the context of copula modeling, a statistic t(Y) is said to be L-sufficient for C
+if
+A1. t(Y0 ) = t(Y1 ) ⇒ sup{F1 ,...,Fp }∈F p(Y0 |C, F1 , . . . , Fp ) = sup{F1 ,...,Fp }∈F p(Y1 |C, F1 , . . . , Fp );
+A2. p(t(Y)|C, F1 , . . . , Fp ) = p(t(Y)|C).
+Note that the maximum likelihood estimate of C and its distribution will be a function only of
+an L-sufficient statistic, if one exists. If F contains only continuous marginals, then one can show
+directly that the ranks r(Y) satisfy A1 and A2 (alternatively, R´emon [1984] shows that a G-sufficient
+13
+
+statistic is also L-sufficient). Thus in the continuous case, the ranks are G- and L-sufficient, the
+MLE of C is a function of the ranks alone, and inference for C can be based on the distribution of
+the multivariate ranks, or equivalently, the s-likelihood.
+If the marginals are allowed to be discontinuous then the orbits of Ω under G¯ cannot be put into
+1-1 correspondence with C and so C is not a maximal invariant. The problem is basically that if
+Fj (·) is a discrete CDF, then Fj [G−1
+j (·)] does not range over the space of all CDF’s as G ranges over
+G. The ranks are no longer L-sufficient either: Condition A1 holds but A2 is violated because in
+the discrete case the distribution of the ranks depends on the marginal distributions. This means
+that estimation based on Pr(r(Y)|C, F1 , . . . , Fp ) requires estimation of the nuisance parameters
+F1 , . . . , Fp . This may not be much of an issue if the number of levels of each variable is low, but for
+moderate numbers of levels we may wonder about the variability of the estimates due to the large
+number of parameters, or the need to specify a prior distribution for the marginals F1 , . . . , Fp in the
+context of Bayesian estimation. In contrast, the s-likelihood based on Pr(Z ∈ D|C) does not depend
+on F1 , . . . , Fp , thereby reducing the number of parameters to estimate and eliminating any need
+for a prior distribution on F1 , . . . , Fp . Furthermore, the s-likelihood is “sufficient” for continuous
+data but can be used with mixed continuous and discrete data. However, the concern remains that
+the s-likelihood may not be making full use of the information in discrete data about the copula
+parameters of interest. Although the asymptotic experiments in Section 4.2 may have alleviated this
+concern somewhat, it would still be desirable to describe precisely any potential information loss
+that results from using the s-likelihood as opposed to a full likelihood approach. Such a description
+could be obtained by comparing the curvatures of the s-likelihood and full likelihood surfaces,
+although the complicated parameter space and likelihood functions make description difficult except
+for the simplest of cases. A general description of the information properties of the s-likelihood in
+the context of copula estimation is a current research interest of the author.
+
+6
+
+Discussion
+
+This article has presented an inferential procedure for copula parameters that can be applied to
+mixed continuous and discrete data. The procedure is based on a type of marginal likelihood,
+called an s-likelihood, which does not depend on the univariate marginal distributions of the data.
+The procedure therefore allows for the estimation of dependence parameters without the burden of
+having to estimate the marginal distributions. In an example, for small sample sizes the s-likelihood
+approach was seen to give parameter estimates having a lower MSE than those of a full likelihood
+approach with nonparametrically estimated marginals. Differences between the two approaches
+were negligible when a large sample size was used.
+Although this article has focused on semiparameteric estimation of a Gaussian copula, the
+
+14
+
+notion of s-likelihood is equally applicable to other copula models: Letting {p(u|θ) : θ ∈ Θ} denote
+a parametric family of copula densities and {yi,j = Gj (ui,j ), i = 1 . . . , n, j = 1, . . . , p} be the
+observed data, the s-likelihood for θ is given by Pr(max{uk,j : yk,j < yi,j } < ui,j < min{uk,j :
+yi,j < yk,j }, i = 1, . . . , n, j = 1, . . . , p|θ). Given a prior distribution on θ, posterior inference can
+be obtained via a Markov chain Monte Carlo algorithm which iteratively resamples values of θ and
+the ui,j ’s. However, full conditional distributions for these unknown quantities are generally hard
+to come by, and an MCMC sampler based on the Metropolis-Hastings algorithm is required for
+most models.
+Code to to implement the estimation strategy outlined in Section 3, written in the R statistical
+computing environment, is provided in the Appendix. A more detailed open-source software package
+is downloadable from R-archive at the following website:
+http://cran.r-project.org/src/contrib/Descriptions/msgcop.html
+
+A
+
+R-code for Gaussian copula estimation
+
+# See also http://cran.r-project.org/src/contrib/Descriptions/msgcop.html
+#
+# Preconditions: Y,
+
+an n-observations by p-variables matrix
+
+#
+
+S0,
+
+a p x p prior covariance matrix
+
+#
+
+n0,
+
+an integer hyperparameter
+
+#
+
+NSCAN, an integer number of iterations
+
+########## helper functions
+ldmvnorm<-function(Y,S) {
+
+# log-density of a normal matrix
+
+n<-dim(Y)[1]
+p<-dim(Y)[2]
+-.5*n*log(det(S)) -.5*n*p*log(2*pi)-.5*sum( diag( solve(S)%*%t(Y)%*%Y))
+}
+rwish<-function(S0,nu){
+
+# sample from a Wishart distribution
+
+sS0<-chol(S0)
+Z<-matrix(rnorm(nu*dim(S0)[1]),nu,dim(S0)[1])%*%sS0
+t(Z)%*%Z
+}
+##########
+########## starting values
+n<-dim(Y)[1]
+p<-dim(Y)[2]
+set.seed(1)
+Z<-qnorm(apply(Y,2,rank,ties.method="random")/(n+1))
+Zfill<-matrix(rnorm(n*p),n,p)
+
+15
+
+Z[is.na(Y)]<-Zfill[is.na(Y) ]
+Z<- t( (t(Z)-apply(Z,2,mean))/apply(Z,2,sd) )
+S<-cov(Z)
+##########
+########## constraints
+R<-NULL
+for(j in 1:p) { R<-cbind(R, match(Y[,j],sort(unique(Y[,j])))) }
+##########
+########## start of Gibbs sampling scheme
+for(nscan in 1:NSCAN) {
+#### update Z[,j]
+for(j in sample(1:p)) {
+Sjc<- S[j,-j]%*%solve(S[-j,-j])
+sdj<- sqrt( S[j,j] -S[j,-j]%*%solve(S[-j,-j])%*%S[-j,j]
+
+)
+
+muj<- Z[,-j]%*%t(Sjc)
+for(r in sort(unique(R[,j]))){
+ir<- (1:n)[R[,j]==r & !is.na(R[,j])]
+lb<-suppressWarnings(max( Z[ R[,j]<r,j],na.rm=T))
+ub<-suppressWarnings(min( Z[ R[,j]>r,j],na.rm=T))
+Z[ir,j]<-qnorm(runif(length(ir),
+pnorm(lb,muj[ir],sdj),pnorm(ub,muj[ir],sdj)),muj[ir],sdj)
+}
+ir<-(1:n)[is.na(R[,j])]
+Z[ir,j]<-rnorm(length(ir),muj[ir],sdj)
+}
+####
+#### update S
+S<-solve(rwish(solve(S0*n0+t(Z)%*%Z),n0+n))
+####
+}
+########## end of Gibbs sampling scheme
+
+References
+G. A. Barnard. Logical aspects of the fiducial argument. Bull. Inst. Internat. Statist., 40:870–883,
+1963.
+O. E. Barndorff-Nielsen. L-nonformation, L-ancillarity, and L-sufficiency. Teor. Veroyatnost. i
+Primenen., 44(1):225–229, 1999. ISSN 0040-361X.
+16
+
+Ole E. Barndorff-Nielsen. Parametric statistical models and likelihood, volume 50 of Lecture Notes
+in Statistics. Springer-Verlag, New York, 1988. ISBN 0-387-96928-4.
+Siddhartha Chib and Rainer Winkelmann. Markov chain Monte Carlo analysis of correlated count
+data. J. Bus. Econom. Statist., 19(4):428–435, 2001. ISSN 0735-0015.
+Peter Congdon. Applied Bayesian modelling. Wiley Series in Probability and Statistics. John Wiley
+& Sons Ltd., Chichester, 2003. ISBN 0-471-48695-7.
+David B. Dunson. Bayesian latent variable models for clustered mixed outcomes. J. R. Stat. Soc.
+Ser. B Stat. Methodol., 62(2):355–366, 2000. ISSN 1369-7412.
+D. A. S. Fraser. Sufficient statistics with nuisance parameters. Ann. Math. Statist., 27:838–842,
+1956.
+C. Genest, K. Ghoudi, and L.-P. Rivest. A semiparametric estimation procedure of dependence
+parameters in multivariate families of distributions. Biometrika, 82(3):543–552, 1995. ISSN
+0006-3444.
+ˇ ak. Theory of rank tests. Academic Press, New York, 1967.
+Jaroslav H´ajek and Zbynˇek Sid´
+Chris A. J. Klaassen and Jon A. Wellner. Efficient estimation in the bivariate normal copula model:
+normal margins are least favourable. Bernoulli, 3(1):55–77, 1997. ISSN 1350-7265.
+Ulf Olsson. Maximum likelihood estimation of the polychoric correlation coefficient. Psychometrika,
+44(4):443–460, 1979. ISSN 0033-3123.
+M. R´emon. On a concept of partial sufficiency: L-sufficiency. Internat. Statist. Rev., 52(2):127–135,
+1984. ISSN 0306-7734.
+Thomas A. Severini. Likelihood methods in statistics, volume 22 of Oxford Statistical Science Series.
+Oxford University Press, Oxford, 2000. ISBN 0-19-850650-3.
+
+17
+
+

@@ -1,0 +1,454 @@
+Kruskal-Wallis and Friedman type tests for
+nested effects in hierarchical designs
+
+1
+
+Assaf P. Oron and Peter D. Hoff
+Department of Statistics, University of Washington, Seattle
+assaf@u.washington.edu, hoff@stat.washington.edu
+
+Working Paper no. 68
+Center for Statistics and the Social Sciences
+University of Washington
+December 21, 2006
+
+1 This
+
+work was performed under a seed grant from the University of Washington’s Center for Statistics in the Social Sciences (CSSS). The authors thank
+A. Roth for providing the Roth et al. (1991) dataset, and S. Sirakaya for useful
+discussion.
+
+Abstract
+In hierarchical-design experiments researchers need to test for nested effects, but sometimes parametric assumptions are violated. We show that
+the Kruskal-Wallis (K-W) rank test can be extended to test for such effects.
+Let B = b1 . . . bh be the tested effect, and A = a1 . . . ag be the effect immediately above it in the hierarchy. If one calculates separate K-W statistics
+for the effect B at each level of A, then under H0 for B, the sum of all these
+statistics is asymptotically χ2h−g . This test is demonstrated using a wellknown experimental economics dataset. We also show that the Friedman
+test can be extended in a similar fashion for designs that are both nested
+and crossed. In general, the preferable inference approach is using the label
+permutation distribution rather than the asymptotic distribution. Codes for
+carrying out such tests have been implemented and are available.
+
+1
+
+Introduction
+
+The motivating application for this problem was encountered during reanalysis of a highly influential four-country economic experiment (Roth et al.,
+1991). A major question of interest in this experiment was whether cultural
+differences affect bargaining behavior, as judged from offers in a two-player
+game called ”ultimatum game”. Three sessions were held in each of four
+sites located in four different countries. In each session there were 10 rounds.
+In each round, ”buyers” were paired with ”sellers” for a single game, in a
+round-robin pairing. Since the data are skewed and heteroscedastic, the authors performed rank tests and concluded that there were significant country
+differences in offer amounts. Upon inspecting the data we noticed that a potential nested session effect was overlooked. But even had such an effect been
+originally identified, the problem is that economists and other researchers do
+not have at their disposal an ’off-the-shelf’, easy to use rank test to check
+whether it’s significant.
+Rank tests are readily available for one-way designs (Kruskal-Wallis or
+Wilcoxon-Mann-Whitney) and for complete balanced two-way designs (Friedman). The Friedman test can be relatively easily extended to incomplete
+and/or unbalanced designs; see e.g. Mack and Skillings (1980), though this
+option appears to be much less known, except among researchers specializing
+in nonparametric statistics. For more complex designs or research questions,
+there are generic frameworks suggesting overall formulae for tests (Akritas
+
+1
+
+et al., 1997; Gao and Alvo, 2005). These provide templates from which an
+individual test can be derived. Our question of interest may be covered by
+these frameworks, but the resulting test would be neither as simple nor as
+accessible to applied researchers as the one described below.
+
+2
+2.1
+
+Nested Kruskal-Wallis Test
+Asymptotic Theory
+
+For this article’s purpose, let a hierarchical experiment design be any design
+where there is at least one effect (hereafter, the ”nested” effect), whose levels are each observed within exactly one level of the effect above it in the
+hierarchy (the ”nesting” effect). The design may be purely hierarchical, i.e.,
+that all effects are either nested or nesting, or it may be combined with other
+types. For our discussion, Let the nested effect be B = b1 . . . bh , and one
+nesting effect A = a1 . . . ag - so that h levels of B are nested within g levels of A (trivially, h > g). Please note, that the effect can be a controlled
+treatment, or an uncontrollable factor, e.g. a country as in the motivating
+example.
+It is customary and more convenient to use two indices to denote the
+P
+nested levels, e.g B = bi(j) , i(j) = 1 . . . hj , j = 1 . . . g. Obviously gj=1 hj = h.
+A parametric ANOVA null hypothesis for B would be µi(j) = µj ∀i, j. The
+analogous Kruskal-Wallis (K-W) null hypothesis is: Fi(j) = Fj ∀i, j, where
+Fi(j) is the distribution of outcomes for level bi(j) . The alternative is that
+2
+
+∃l, i, j, such that Fi(j) > Fl(j) with the ’greater than’ sign denoting stochastically greater, i.e., all quantiles of Fi(j) are greater than the corresponding
+quantiles of Fl(j) .
+Consider a single level of A, aj with hj levels of B, each with ni(j) obPhj
+servations, and i(j)=1
+ni(j) = nj . Then, under the K-W null hypothesis,
+the ranks of all nj observations are i.i.d discrete uniform. Therefore for each
+level of B,
+√
+
+
+ni(j)
+
+nj + 1
+r¯i(j) −
+2
+
+
+
+−
+−−−−→
+n−
+i(j) → ∞ N
+
+
+
+(nj + 1)(nj − 1)
+0,
+12
+
+
+,
+
+(1)
+
+where r¯i(j) is the sample mean rank of observations for level bi(j) . Therefore,
+12ni(j)
+(nj + 1)nj
+
+
+
+nj + 1
+r¯i(j) −
+2
+
+2
+
+−
+−−−−→ 2
+n−
+i(j) → ∞ χ1 .
+
+(2)
+
+Summing (2) over all levels nested in aj , we obtain the ordinary K-W statistic
+H (Kruskal and Wallis, 1952). Since the ranks are constrained by a constant
+sum, H is asymptotically χ2hj −1 . Now under the K-W null for B as defined
+above, if we take another level of A, ak , and in the absence of any effect
+crossing the hierarchical structure, the ranks within ak would be independent
+of the ranks within aj . Therefore, the analogous K-W statistics would be
+independent across different levels of A. Therefore H (nest) , the sum of all
+K-W statistics from different levels of A would have (under the K-W null)
+
+3
+
+the following asymptotic distribution:
+
+H
+
+(nest)
+
+≡
+
+g
+X
+j=1
+
+Hj =
+
+hj
+g
+X
+X
+j=1 i=1
+
+12ni(j)
+(nj + 1)nj
+
+
+
+nj + 1
+r¯i(j) −
+2
+
+2
+
+−
+−−−→ 2
+n−
+j → ∞ χh−g . (3)
+
+The process for performing a nested K-W test is schematically illustrated
+in fig. 1.
+
+2.2
+
+Permutation K-W Tests
+
+While establishing asymptotic properties is intrinsically important and useful, often the K-W test is called for in a limited sample-size scenario. Moreover, in many datasets ties are common. There exists a tie correction to the
+K-W statistic, but it, too, is based upon asymptotic properties. Fortunately,
+the tool of label permutation tests provides an adequate solution.
+We take the standard permutation test approach, focusing on a single
+level of A, aj : under the K-W null for B, all ranks are uniformly distributed
+and therefore all possible assignment of ranks to hj subgroups with subgroup
+sizes {ni(j) }, is equally likely. This is of course true for all levels of A. Thus,
+randomly generating M distinct sets of groups and subgroup labels (keeping
+(nest)
+
+the same subgroup sizes as the true ones), calculating Hm , m = 1 . . . M
+n
+o
+(nest)
+and ordering them into H(m)
+provides a representative sample from the
+true sampling distribution of H (nest) . Setting a significance level α, we would
+(nest)
+
+reject the K-W null hypothesis for B nested in A, if H (nest) > H(M (1−α)) .
+
+4
+
+Figure 1: Schematic illustration of the nested K-W test. Some individual
+data points are labeled; this requires a minimum of 3 indices. The K-W
+statistic H is calculated separately for each level of the nesting effect A,
+comparing points grouped by the nested effect B. The overall test is carried
+out on the sum of all such statistics. A label permutation test for B would
+involve randomly re-assigning points to the groups within each level of A
+- and calculating H (nest) for each such assignment. In the data example,
+effect A is country, effect B is session, and data points for the test are player
+summaries.
+
+5
+
+2.3
+
+Data Example
+
+As stated in the introduction, Roth et al. (1991)’s ultimatum game experiment was designed, among other things, to test for country differences in bargaining behavior. It took place in 1989-1990, in four cities around the world:
+Jerusalem (Israel and Palestinian West Bank), Tokyo (Japan), Pittsburgh
+(U.S.A.) and Ljubljana (formerly Yugoslavia, nowadays Slovenia). Three
+sessions were run in each city. In each session there were 10 buyers and 10
+sellers, matched with each other for a round-robin game of 10 rounds.1 In
+each round and for each buyer-seller encounter, buyer suggested a division
+of a fixed sum of real money with the seller. If seller accepted the offer, the
+division was carried out. If seller refused, neither player received any money.
+All interactions were indirect and anonymous.
+The authors recognized that in general there is a dependence within any
+given buyer’s offers. Therefore, they used only a single value from each buyer
+for inference - the round 10 offer. They also assumed that these offers are
+independent of session assignment, yielding a test sample size of 116. Descriptive statistics of this sample seem to suggest significant country differences
+(fig. 2).
+The authors’ inference method was pairwise Mann-Whitney tests, which
+yielded 3 highly significant and 2 significant pairwise differences at the 0.05
+level.2 But was the independence assumption correct?
+1
+
+Due to ’no shows’, three sessions ended up having fewer players; however, the number
+of rounds remained 10 in all sessions.
+2
+There was a fundamental error in the execution of pairwise tests: confidence levels
+
+6
+
+40
+30
+20
+10
+
+Percent of Pie Offered
+
+50
+
+Roth et el. 1991: Round 10 Offers by Country
+
+Israel
+
+Japan
+
+USA
+
+Yugo
+
+Country
+
+Figure 2: Roth et al. (1991) ”buyer” offers during the last round of play
+(round 10), grouped by site (country).
+7
+
+Revisiting the experimental design and play evolution, it seems that buyers gradually adapt to seller responses and vice versa.3 Since all buyers of
+a given session face the same pool of sellers, and since these pools differ
+for different sessions, it makes sense to assume some intra-session dependence. Figure 3, splitting the 116 round-10 offers by session, does show
+marked session-specific differences at all sites. We performed a permutation
+nested K-W test for the session effect on round 10 data. H (nest) = 22.4 on 8
+d.f., yielding a permutation p-value of 1.3 ∗ 10−3 (permutation sample size:
+50, 000). Hence, one can safely conclude that the within-session independence
+assumption was wrong. In the absence of any explicit model accounting for
+the intra-session dependence, the effective sample size for testing the country
+effect is the number of sessions: only 12. Subsequent testing for country differences using various session summaries (including round 6 − 10 summaries
+instead of only round 10), all yield p-values greater than 0.1.4 Pairwise tests
+are impossible for this sample size, and the only two-way contrast indicating
+a marginally significant effect is Jerusalem vs. all other three sites. We conclude that given the significant intra-session dependence in player behavior,
+a larger number of sessions needs to be designed into this type of experiment
+in order to draw meaningful conclusions about the main effect.
+were not adjusted for pairwise comparisons. Following a Bonferroni correction, 3 tests
+(all those involving Jerusalem) are still deemed significant, while two more comparisons
+involving Tokyo fail to reject the null at the 0.1 level.
+3
+The authors also reached this conclusion, though it wasn’t factored into their inference
+procedure.
+4
+Analysis using intra-session dependence models was also attempted; the resulting
+inference was not substantially different from the one reported here.
+
+8
+
+40
+30
+20
+10
+
+Percent of Pie Offered
+
+50
+
+Roth et el. 1991: Round 10 Offers by Country and Session
+
+1.Israel
+
+2.Israel
+
+3.Israel
+
+1.Japan
+
+2.Japan
+
+3.Japan
+
+1.USA
+
+2.USA
+
+3.USA
+
+1.Yugo
+
+2.Yugo
+
+3.Yugo
+
+Session.Country
+
+Figure 3: Roth et al. (1991) ”buyer” offers during the last round of play
+(round 10), grouped by session and site (country).
+9
+
+3
+
+Nested Friedman Test
+
+The same logic leading to the nested K-W test can produce a nested Friedman
+test. Here there would be at least one blocking effect C, crossing the A, B
+hierarchical design. Even under the null hypothesis for B, ranks within each
+level of A may now depend upon C. The natural solution is to perform a
+separate ranking for each level of C. Within a single level of A and given a
+balanced complete design, this is a simple Friedman test (Friedman, 1937).5
+Using the approach of Section 2.1, since the process adjusts for C via the
+separate rankings, the Friedman statistics Qj obtained for each level of A are
+mutually independent. Therefore, under the null hypothesis for B the sum
+of separate Friedman statistics from all levels of A would have asymptotic
+properties analogous to (3) (cf. fig. 4):
+
+(nest)
+
+Q
+
+≡
+
+g
+X
+
+−−→
+Qj = −
+v−→
+∞ χ2h−g .
+
+(4)
+
+j=1
+
+If the design is incomplete or unbalanced, weighted Friedman-type statistics
+as in Mack and Skillings (1980) can be used instead. Of course, a permutation
+test implementation is highly recommended in any case.
+In the data example above, a nested Friedman-type test can be performed
+for the buyer effect nested within sessions. This yields a test statistic of 562
+on 104 degrees of freedom (both asymptotic and permutation p-values are
+5
+
+Note that testing for C can still be achieved using a simple Friedman test, in spite of
+the hierarchy. One needs to perform a separate ranking for each level of the nested effect
+B.
+
+10
+
+practically zero), compared with 511 with the same d.f., using an analogous
+nested K-W test, i.e., one that ignores the crossed round factor. For this
+particular application, both tests yield a strongly significant effect, as was
+deduced by the researchers without any formal testing. However, there may
+be similar applications in other fields where the nested Friedman test may
+prove useful.
+
+4
+
+Conclusions
+
+The two nested rank tests described here are easily implemented and accessible to any researcher. Additionally, they possess clear asymptotic properties and are directly related to well-known standard tests. Therefore, this
+should present a significant enhancement of the readily-available nonparametric toolset for the analysis of experiments with nontrivial designs.
+We recommend using these tests via a permutation application. R language codes (R Development Core Team, 2005), including permutation codes
+for the original non-nested K-W and Friedman tests and a generic Friedmantype formulation that allows for incomplete and unbalanced designs, are
+available from the authors.
+
+11
+
+Figure 4: Schematic illustration of the nested Friedman test. Nested and
+nesting levels are as in fig. 1, but now they are crossed with effect C (having,
+say, v levels) in a complete design. If one wishes to test for C, then a
+single Friedman Q statistic would suffice, which is equivalent to ranking
+observations within each column, then summing ranks by row. However,
+in order to test for B nested in A and assuming C can be significant, one
+needs to calculate a separate Q statistic for each level of A and test their
+sum. This is equivalent to ranking observations within each row (marked
+with horizontal rectangles), then summing ranks by column - but doing so
+separately for each array of points. Like in the K-W example, inference is
+obtained by summing all separate Q statistics. A label permutation test for
+B would involve randomly scrambling points in each row, within each level
+of A - and calculating Q(nest) for each such assignment. In the data example,
+effect A is session, effect B is ”buyer”, and effect C is round. Individual
+points are single offers.
+
+12
+
+References
+Akritas, M., Arnold, S., Brunner, E., 1997. Nonparametric hypotheses and
+rank statistics for unbalanced factorial designs. J. Amer. Statist. Assoc.
+92, 258–265.
+Friedman, M., 1937. The use of ranks to avoid the assumption of normality
+in the analysis of variance. J. Amer. Statist. Assoc. 32, 675–701.
+Gao, X., Alvo, M., 2005. A unified nonparametric approach for unbalanced
+factorial designs. J. Amer. Statist. Assoc. 100, 926–941.
+Kruskal, W. H., Wallis, W. A., 1952. Use of ranks in one-criterion variance
+analysis. J. Amer. Statist. Assoc. 47, 583–621.
+Mack, G., Skillings, J., 1980. A friedman-type rank test for main effect in a
+two-factor ANOVA. J. Amer. Statist. Assoc. 75, 947–951.
+R Development Core Team, 2005. R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria,
+ISBN 3-900051-07-0.
+URL http://www.R-project.org
+Roth, A., Prasnikar, V., Okuno-Fujiwara, M., Zamir, S., 1991. Bargaining
+and market behavior in Jerusalem, Ljubljana, Pittsburgh and Tokyo: an
+experimental study. Amer.Econ.Rev. 81, 1068–1095.
+
+13
+
+

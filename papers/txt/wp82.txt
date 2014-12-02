@@ -1,0 +1,841 @@
+Bayesian melding for estimating uncertainty in national
+HIV prevalence estimates
+Leontine Alkema, Adrian E. Raftery and Tim Brown1
+Working Paper no. 82
+Center for Statistics and the Social Sciences
+University of Washington
+February 8, 2008
+
+1 Author’s
+
+affiliations: L. Alkema and A. E. Raftery, University of Washington, Center for Statistics and the Social Sciences, Seattle, Washington, USA. T. Brown, East-West Center, Honolulu,
+Hawaii, USA. Correspondence to Leontine Alkema, Center for Statistics and the Social Sciences,
+Box 354320, University of Washington, Seattle, WA 98195-4320. Email: alkema@u.washington.edu.
+This work was supported by the National Institute of Child Health and Development through grant
+no. R01 HD054511. It was also supported by a seed grant from the Center for Statistics and the Social Sciences, by a Shanahan fellowship at the Center for Studies in Demography and Ecology, and
+by the Blumstein-Jordan Professorship, all at the University of Washington. The authors would
+like to thank Peter Ghys, Eleanor Gouws, Nick Grassly, Meade Morgan, Josh Salomon, Karen
+Stanecki and John Stover for helpful discussions. However, the authors are solely responsible for
+the content of the article.
+
+Abstract
+Objective: To construct confidence and prediction intervals for HIV prevalence in countries
+with generalized epidemics.
+Methods: In the Bayesian melding approach, a sample of country-specific epidemic curves
+describing HIV prevalence over time is derived based on time series of antenatal clinic prevalence data and general information on the parameters that describe the HIV epidemic. The
+prevalence trends at antenatal clinics are calibrated based on population prevalence estimates. For countries without population based estimates, a general calibration method is
+developed. Based on the sample of calibrated epidemic curves, we derive annual 95% confidence intervals for HIV prevalence in past years and 95% prediction intervals for future HIV
+prevalence. The curve that best represents the data at antenatal clinics and populationbased surveys, as well as general information about the epidemic, is chosen to represent the
+best estimates and predictions.
+Results: We present results of the method for urban areas in Haiti and Namibia.
+
+Keywords: Demographic and Health Survey; Probabilistic projections; Sampling Importance
+Resampling; UNAIDS Estimation and Projection Package.
+
+Contents
+1 Introduction
+
+1
+
+2 Methods
+2.1 Constructing a sample of prevalence curves . . .
+2.2 Prior distributions . . . . . . . . . . . . . . . . .
+2.3 Calibrating ANC prevalence curves . . . . . . . .
+2.3.1 Countries without a DHS survey . . . . .
+2.4 Best estimate, confidence and prediction intervals
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+1
+2
+3
+4
+6
+9
+
+3 RESULTS
+9
+3.1 Haiti . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+3.2 Namibia . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+4 Discussion
+
+12
+
+List of Figures
+1
+2
+
+3
+
+4
+
+Histogram of UNAIDS 2005 estimates for (a) r with density of exp(U[log(0.5),
+log(150)]) in red and (b) φ with density of Logistic(100,50) in red. . . . . . . . . .
+Ratio of adjusted ANC prevalence over ANC prevalence for countries without a DHS
+survey for (a) urban and (b) rural areas. The grey line is the identity line representing
+no adjustment. The solid black lines are the adjustments of ANC prevalence based on
+the observed mean adjustments (on the probit scale) in other countries. The dotted
+lines give the 95% CI for the ratio of estimated prevalence over ANC prevalence after
+adjustment. The dots are the observed outcomes of the ratio of DHS surveys over
+estimated ANC prevalence. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Bayesian melding for estimating and projecting HIV prevalence (on the y-axis) in
+urban areas of Haiti (a) based on antenatal clinic data only, and (b) based on antenatal clinic data and the 2006 DHS survey. The colored lines with symbols show
+the raw antenatal clinic prevalence rates and the large red diamond shows the DHS
+estimate. The light grey curves are a sample from the posterior distribution of the
+prevalence curve, and the red curve is the posterior mode. The dashed lines show
+the year-specific 95% confidence intervals for prevalence. . . . . . . . . . . . . . .
+Bayesian melding for estimating and projecting HIV prevalence (on the y-axis) in
+urban areas of Namibia (a) based on antenatal clinic data only, and (b) calibrated
+to represent prevalence among the overall urban population. The colored lines with
+symbols show the raw antenatal clinic prevalence. The light grey curves are a sample
+from the posterior distribution of the prevalence curve, and the red curve is the
+posterior mode. The dashed lines show the year-specific 95% confidence intervals for
+prevalence. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+1
+
+.
+
+4
+
+.
+
+8
+
+. 10
+
+. 11
+
+1
+
+Introduction
+
+In 2003, UNAIDS included information on uncertainty in its estimates and projections by
+calculating and presenting plausibility bounds (C. et al. 2004). These bounds were derived
+by combining the results of a bootstrap method with expert opinion regarding the range of
+possible epidemic curves, and were not to be interpreted as formal statistical confidence intervals. Alkema, Raftery and Clark (2007) proposed using Bayesian melding for uncertainty
+assessment in the model in the Estimation and Projection Package (EPP), the package
+used by UNAIDS and country officials for prevalence estimation and prediction. Bayesian
+melding provides a way of including expert opinion while still giving formal statistical confidence intervals. It is a method for assessing uncertainty about the inputs and outputs of
+a deterministic model, such as the EPP model. Bayesian melding was first developed to
+estimate the rate of increase of whale populations (E. et al. 1995; D. and Raftery 2000), and
+was successfully applied to policy-making in that context. When applying this approach to
+the EPP model, it gives the one “best” trajectory of HIV prevalence over time, as well as
+the uncertainty in the estimates and projections in the form of a set of possible epidemic
+curves. These curves reflect the uncertainty about the past and future and are based on the
+(imperfect) information that is available about the model’s inputs and outputs.
+In 2006 the UNAIDS reference group recommended the use of Bayesian melding for uncertainty assessment in EPP. The application of Bayesian melding to the EPP model is
+discussed in detail in (L. et al. 2007). In this paper we summarize the approach in a less
+technical way in the Methods section and discuss the recent changes based on recommendations by the UNAIDS reference group: the prior distributions on the input parameters and
+the calibration of prevalence curves based on antenatal clinic prevalence to the outcomes of
+population-based surveys. We give results for Haiti and Namibia and end with a discussion
+of the method.
+
+2
+
+Methods
+
+Bayesian melding for the Estimation and Projection Package
+In Bayesian melding, “melding” refers to combining (melding) information about the inputs
+and outputs of a deterministic model, such as the model in EPP for generalized epidemics
+(UNAIDS Reference Group on Estimates, Modelling and Projections 2002). In the EPP
+model, the population of 15 to 49 year-olds is divided into three groups, a not-at-risk group,
+an at-risk group and an infected group. Three differential equations describe the changes in
+those groups over time, and thus in prevalence over time. Four parameters determine the
+shape of the epidemic curve: r, which is the growth rate of the epidemic, f0 , the fraction
+of population initially at risk, t0 the start year of the epidemic (in which a fraction of the
+1
+
+population that is initially at risk get infected) and φ, the behavioral response. Information
+about the inputs and outputs in the EPP model is given by expert knowledge about the
+input parameters and upper bounds on prevalence in certain years, and prevalence data.
+“Bayesian” refers to Bayesian inference, which starts by quantifying prior beliefs (expert
+knowledge) about the true value of a quantity of interest. For example, in HIV estimation
+using EPP, there could be a consensus that the epidemic started no sooner than 1970, and
+no later than 1990. The upper and lower bounds on the start year of the epidemic serve
+as boundaries on any projections that would then be developed. In Bayesian inference,
+prior beliefs are represented by probability distributions; for example, the start year of the
+epidemic could have a uniform distribution on the interval between the upper and lower
+bounds. Likewise, priors distributions can be determined for the other three parameters in
+the epidemic curve fit, as well as for the output of the EPP model, prevalence over time.
+For example, there could be a consensus that prevalence in 1980 was no higher than 5%.
+After quantifying prior beliefs, they are applied to generate a set of possible epidemic
+curves (curves that are based on the EPP parameters and satisfy the constraints imposed on
+prevalence). The beliefs, i.e, the ranges of parameters which are acceptable, are then updated
+based on the observed outcomes of comparing these curves with the observed data. For HIV
+prevalence estimates with the EPP model, HIV prevalence is observed at antenatal clinics,
+and for some countries population surveys are available as well. Data and information on
+measurement errors are used to calculate a measure of the so-called ”likelihood”: An epidemic
+curve which is similar to the level and trend in observed prevalence has a high likelihood of
+representing true prevalence.
+Combining prior distributions with likelihood (updating prior beliefs) gives the “posterior” distribution of the quantity of interest. Melding the prior distributions on inputs
+and output with the likelihood on output gives posterior distributions on inputs as well as
+outputs; e.g. the posterior distribution of past and future prevalence.
+The Bayesian melding approach for EPP produces a sample from the posterior distributions on inputs and outputs. All the information that is needed can be derived from this
+sample. For example, the best prediction and lower and upper bounds of future prevalence
+are calculated from the posterior sample of prevalence curves.
+
+2.1
+
+Constructing a sample of prevalence curves
+
+We now describe how to get a sample of prevalence curves based on data from antenatal
+clinics (ANC). For most countries, these data sets are the only available source of times series
+of prevalence data which are needed to estimate the trend in HIV prevalence. Nationally
+representative population surveys, particularly the Demographic and Health Surveys (DHS),
+are used to calibrate the results based on antenatal clinic data, as discussed below.
+The sample from the posterior distribution of HIV prevalence curves is drawn using the
+2
+
+Sampling Importance Resample (SIR) algorithm (Rubin 1987, 1988), as follows:
+1. Sample a large number of different combinations of the input parameters r, f0 , t0 and
+φ from their prior distributions.
+2. For each combination of the input parameters, run the EPP model to produce the
+corresponding epidemic curve.
+3. Each curve is compared to HIV prevalence data from antenatal clinics and assigned a
+weight based on the likelihood of the curve (how well it fits the data) and the prior
+assumptions on prevalence. For example, if the epidemic curve, as generated by the
+various combinations of input parameters, is very different from the observed rates,
+that curve will get a low or zero weight. If the curve resembles the data reasonably
+well, it will get a high weight. If the curve falls outside any user established prior
+limitations on prevalence (e.g., if the expert user specified prevalence in 1999 is less
+than 5% and the curve being compared has a prevalence of 9%), its weight is set to
+zero.
+4. The epidemic curves as well as their input parameters get resampled, based on these
+weights. The probability of resampling is proportional to the weight that has been
+assigned to that curve.
+The result is a sample from the posterior distribution of prevalence, in the form of a set
+of prevalence curves. The number of sets of input parameters that are sampled in step 1
+should be large enough such that they cover the input space and a reasonable number of
+unique curves get selected in the last step. We found 200,000 sets of inputs to work well
+for most countries. A much smaller number is needed in the resample step (5), e.g. 3,000
+curves, to get a sample from the posterior based on the large set of initial curves.
+
+2.2
+
+Prior distributions
+
+Prior distributions on the four input parameters to the EPP model are specified using expert
+knowledge. They should be broad enough to not exclude values that are supported by the
+data (i.e. that have high likelihood) unless there is strong knowledge that excluding some
+values is appropriate. In the EPP 2007 computer program, default prior distributions are
+given for each of the four input parameters. The prior distribution for the fraction initially
+at risk, f0 , is uniform between 0 and 1, and the start year of the epidemic, t0 , is discrete
+uniform on {1970, . . . , 1990}. If the default limits on these distributions are too constraining,
+users can change them to ones that are appropriate for their own country’s situation. For
+example, in many Asian countries, a more reasonable range of start years might be 1980 to
+2000.
+3
+
+Values of the rate of increase, r, as used in the country projections by UNAIDS in 2005,
+are shown in Figure 1(a). Based on this, the default prior distribution for r in EPP 2007
+
+0
+
+50
+
+100
+
+150
+
+200
+
+0.000 0.002 0.004 0.006 0.008
+
+Density
+
+0.00 0.02 0.04 0.06 0.08 0.10
+
+Density
+
+was set to be uniform on the log scale between 0.5 and 150; its density function is shown on
+the figure.
+
+−200
+
+0
+
+200
+
+400
+
+φ
+
+r
+
+Figure 1: Histogram of UNAIDS 2005 estimates for (a) r with density of exp(U[log(0.5),
+log(150)]) in red and (b) φ with density of Logistic(100,50) in red.
+
+Figure 1(b) shows the estimates of behavioral response φ from 2005 (excluding a few very
+large values, for easier visualization). The default prior distribution chosen for the behavioral
+response φ is drawn in the same figure and is given by:
+φ ∼ Logistic(100, 50),
+
+(1)
+
+such that φ ranges roughly between -50 and 250, centered around 100. This is broad enough
+to cover the range of the previous estimates, and also reflects the expectation that the
+behavioral response parameter is unlikely to be highly negative.
+EPP also allows the user to specify upper or lower bounds on prevalence in certain years,
+for example, restricting prevalence in 1980 to be smaller than 1% to exclude unrealistic
+epidemic curves that peak around that year at high prevalence levels.
+
+2.3
+
+Calibrating ANC prevalence curves
+
+Because of the difference between antenatal clinic prevalence and population prevalence as
+measured by surveys like the DHS as discussed in (E. 2008) and (K. 2008), calibration of
+the prevalence curves based on, and thus representing, antenatal clinic prevalence is needed.
+This section discusses the calibration of HIV prevalence for countries in which one or more
+population surveys have been conducted, and the calibration method for countries without
+population surveys, based on observed differences between ANC and population prevalence
+in other countries.
+4
+
+Countries with population survey(s)
+For countries with one DHS estimate, a calibration constant is calculated such that median
+posterior prevalence in the year of the survey as given by the Bayesian melding procedure
+based on ANC data will be rescaled at the DHS estimate. The calibration constant is
+calculated on the probit scale, such that the influence of the calibration constant decreases
+for lower prevalence. We define probit transformed observed HIV prevalence as measured in
+the DHS in year t as:
+Wdhs,t = Φ−1 (xdhs,t ),
+
+(2)
+
+where Φ(·) is the standard normal cumulative distribution function and
+xdhs,t
+
+Ydhs,t + 12
+=
+.
+Ndhs,t + 1
+
+(3)
+
+In equation (3), Ydhs,t is the number of HIV-positives in the DHS sample in year t and Ndhs,t
+is the sample size of the DHS survey. The constants 1/2 and 1 in Eq. 3 are included to
+avoid problems with zeros. We denote the probit transformed curves representing antenatal
+ˆ anc,t . The
+clinic prevalence by Wanc and the transformed median estimate in year t by W
+calibration constant for the DHS survey in year t is denoted by ct and given by:
+ˆ anc,t .
+ct = Wdhs,t − W
+
+(4)
+
+For countries with one survey, the final calibration constant is c = ct , and is added to the
+trajectories of antenatal clinic prevalence to get the calibrated population prevalence:
+Wpop = Wanc + c,
+
+(5)
+
+ρ = Φ(Wpop ),
+
+(6)
+
+where Wpop is a sampled calibrated epidemic curve on the probit scale, and ρ is a sampled
+trajectory of HIV prevalence representative for the overall population. Note that calibration
+is done separately for urban and rural areas. For countries with more than one survey,
+the calibration constant c is given by the mean of each of the survey-specific calibration
+constants.
+In order to take into account the uncertainty in the DHS estimate and to incorporate
+possible trends as given by more than one DHS estimate, the calibrated curves need to be
+resampled, with weights proportional to the DHS likelihood, to incorporate the likelihood
+of the DHS estimates in the posterior sample of prevalence curves. As for the antenatal
+clinic data in (L. et al. 2007), we derive the likelihood for DHS data by assuming that the
+sampling error is normally distributed on the probit scale:
+Wdhs,t |Wpop,t ∼ N (Wpop,t , V ar(Wdhs,t )).
+5
+
+(7)
+
+The variance of the DHS estimate is based on the binomial variance in the sample, multiplied
+by the design effect to take into account the cluster sampling procedure. The design effect
+for a cluster design is the ratio of the variance for that design to the variance calculated
+from a simple random sample of the same size. In EPP 2007 the default value for the design
+effect is 2, according to UNAIDS guidelines for measuring prevalence in population based
+surveys (UNAIDS/WHO 2005). With design effect δ, the variance of the DHS estimate on
+the probit scale is approximately equal to:
+V ar(Wdhs,t ) = δπρdhs,t (1 − ρdhs,t )e(Φ
+
+−1 (ρ
+
+2
+dhs,t )
+
+) /N
+
+dhs,t ,
+
+(8)
+
+where ρdhs,t is the true DHS prevalence rate. Estimating ρdhs,t by xdhs,t gives an estimate of
+the variance on the probit scale. The likelihood of the DHS data given a calibrated epidemic
+curve can now be determined using Eq. 7. An example of the calibration is given in the
+Results section for Haiti.
+2.3.1
+
+Countries without a DHS survey
+
+EPP allows ANC prevalence estimates for countries without DHS estimates to be adjusted
+based on the biases revealed by DHS surveys in other countries. We assume that there is
+an overall bias which gives the difference between ANC and DHS. This bias is unknown,
+because of the measurement errors in both the ANC and the DHS estimates. The mean
+bias and its standard error are estimated from the data from countries with DHS surveys,
+separately for urban and rural areas. These estimates are used to adjust ANC prevalence in
+countries without population prevalence estimates.
+Observed differences between ANC prevalence and DHS estimates are used to calculate
+calibration constants on the probit scale. The distribution of the calibration constant is based
+on the observed ANC bias in 17 countries in Sub-Saharan Africa (Burkina Faso, Burundi,
+Cameroon, Chad, Ghana, Guinea, Ethiopia, Kenya, Lesotho, Malawi, Mali, Niger, Rwanda,
+Sierra Leone, Tanzania, Uganda and Zambia)1 . The adjustment for rural areas is bigger
+than for urban areas, so we derive the distribution of the calibration constant for those two
+sub-populations separately. On the probit scale the mean calibration constant (difference
+between ANC and DHS prevalence) for urban areas is 0.11 with standard error 0.04, for
+rural areas 0.17 with standard error 0.05.
+To construct calibrated prevalence curves that are representative for the overall population in urban areas, a calibration constant curban is sampled and added to Wanc :
+curban ∼ N (0.11, .042 ),
+
+(9)
+
+Wpop = Wanc + curban ,
+
+(10)
+
+ρ = Φ(Wpop ),
+
+(11)
+
+1
+
+We excluded Senegal because there HIV seems to be more concentrated in high risk groups, and so the
+survey might not be representative of overall national prevalence.
+
+6
+
+where Wanc is a sampled trajectory of ANC prevalence on the probit scale, Wpop is the
+corresponding calibrated epidemic curve on the probit scale, and ρ is the resulting sampled
+trajectory of HIV prevalence for the overall population, in this case the population living in
+urban areas. The adjustment for rural epidemics is done similarly, with:
+crural ∼ N (0.17, .052 ).
+
+(12)
+
+Table 1 summarizes the effect of the calibration when ANC prevalence is 5, 10, 15 and
+20%. For example, if ANC prevalence is 15% in urban areas, urban population prevalence is
+estimated as 12.6% with 95% confidence interval [11.2%, 14.1%]. The downward adjustment
+is larger for rural prevalence: for example, if ANC prevalence is 15%, the adjusted prevalence
+in rural areas is 11.3%, with 95% confidence interval [9.6%, 13.3%].
+Table 1: Adjustments of ANC prevalence for urban and rural areas, with 95% confidence
+intervals for the adjustment.
+ANC
+prevalence
+5%
+10%
+15%
+20%
+
+Urban adjusted Rural adjusted
+prevalence (%) prevalence (%)
+4.0 [3.4, 4.6]
+3.5 [2.8, 4.3]
+8.2 [7.2, 9.3]
+7.3 [6.0, 8.7]
+12.6 [11.2, 14.1] 11.3 [9.6, 13.3]
+17.1 [15.4, 18.9] 15.5 [13.3, 17.9]
+
+Figure 2 shows the ratio of adjusted (calibrated) prevalence over ANC prevalence for ANC
+prevalence ranging from 0 to 30%. The observed ratios of DHS surveys over ANC prevalence
+are shown in the same figure. The results of this calibration method are illustrated for urban
+areas in Namibia in the Results section.
+
+7
+
+●
+
+0.6
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+●●
+
+●
+
+0.00
+
+0.10
+
+0.20
+
+0.30
+
+1.4
+1.0
+
+●
+●
+
+●
+
+●●
+
+●
+
+●
+
+●
+●
+
+●
+●
+
+●
+●
+●
+
+0.00
+
+ANC Prevalence
+
+●
+
+●
+
+0.6
+
+1.0
+
+●
+●
+
+0.2
+
+Adjusted prev/ANC prev
+
+1.4
+
+●
+
+0.2
+
+Adjusted prev/ANC prev
+
+●
+
+●
+
+0.10
+
+0.20
+
+0.30
+
+ANC Prevalence
+
+(a) Urban
+
+(b) Rural
+
+Figure 2: Ratio of adjusted ANC prevalence over ANC prevalence for countries without a
+DHS survey for (a) urban and (b) rural areas. The grey line is the identity line representing
+no adjustment. The solid black lines are the adjustments of ANC prevalence based on the
+observed mean adjustments (on the probit scale) in other countries. The dotted lines give
+the 95% CI for the ratio of estimated prevalence over ANC prevalence after adjustment. The
+dots are the observed outcomes of the ratio of DHS surveys over estimated ANC prevalence.
+
+8
+
+2.4
+
+Best estimate, confidence and prediction intervals
+
+Based on the (calibrated) sample of curves from the posterior distribution of HIV prevalence
+curves, a 95% confidence or prediction interval for prevalence in a given year is given by
+the lower 2.5th and the upper 97.5th percentiles of the prevalences for that year within the
+sample. The “best” prediction is the trajectory that is most likely to represent prevalence
+over time, given prior distributions and data. This maximum a posteriori (MAP) trajectory
+is the one with the highest posterior density, proportional to the product of the prior distributions on the inputs of the curve, the prior distributions on outputs and the likelihood of
+the data. For countries without a DHS estimate, the best calibrated prediction is given by
+the MAP curve as derived for ANC data, with the mean calibration constant added to it.
+For countries with one or more DHS estimates, the maximum a posteriori curve is given by
+the calibrated curve with the maximum product of input priors, ANC likelihood and DHS
+likelihood.
+Epidemics are fit separately for urban and rural areas. For deriving nationally representative estimates and projections, sub-epidemics are combined by sampling trajectories from
+each sub-epidemic, weighting each trajectory by population size in each year and adding
+them up.
+
+3
+
+RESULTS
+
+In this section we will present the results of the Bayesian melding procedure for urban areas in
+Haiti and Namibia. Note that the estimates and predictions as derived here are illustrative
+and are not the official estimates, as our analysis might not include all the information
+available.
+
+3.1
+
+Haiti
+
+Adult HIV prevalence in the Caribbean is estimated at 1.0% [0.9%, 1.2%] in 2007, (UNAIDS 2007). Prevalence in this region is highest in the Dominican Republic and Haiti.
+In Figure 3(a), HIV prevalence data for urban areas in Haiti is given by the colored lines
+for 17 antenatal clinics (data taken from (M. and Eustache (2007)). Sample sizes for each
+clinic range from 14 to 393 women, and observed prevalence in 2006-2007 ranges from 0% to
+12.2%. The light grey curves in the plot are a sample from the posterior distribution of the
+ANC prevalence curves, based on the default priors on the input parameters, and restricting
+prevalence in 1980 to be smaller than 1%. The red curve gives the best estimates and (MAP
+curve) and the dashed lines show the year-specific 95% confidence and prediction intervals.
+Based on antenatal clinic data, the posterior median of prevalence is 5.3% for 2007, with
+95% confidence interval [4.3%, 6.7%].
+
+9
+
+In 2005-2006, DHS carried out a population-based survey in Haiti. For urban areas,
+HIV prevalence was estimated to be 2.3% (with sample size 4382, design effect set to 2).In
+Figure 3(a) and (b) the DHS estimate is shown by the red diamond. In Figure 3(b), this
+estimate is used to calibrate the trajectories as given by the ANC data. In this plot, each
+of the light grey curves represents calibrated prevalence over time, with 95% confidence
+intervals (dashed lines) and best estimate as given by the MAP curve (red). The calibration
+based on the DHS estimate gives a significant reduction in estimated prevalence level and
+uncertainty. Based on antenatal clinic data and the DHS estimate, the posterior median of
+prevalence is 2.3% for 2007, with 95% confidence interval [1.9%, 2.8%].
+
+(a) Antenatal clinic data
+
+(b) Antenatal clinic data and DHS
+
+Figure 3: Bayesian melding for estimating and projecting HIV prevalence (on the y-axis)
+in urban areas of Haiti (a) based on antenatal clinic data only, and (b) based on antenatal
+clinic data and the 2006 DHS survey. The colored lines with symbols show the raw antenatal
+clinic prevalence rates and the large red diamond shows the DHS estimate. The light grey
+curves are a sample from the posterior distribution of the prevalence curve, and the red curve
+is the posterior mode. The dashed lines show the year-specific 95% confidence intervals for
+prevalence.
+
+10
+
+3.2
+
+Namibia
+
+Sub-Saharan Africa remains the most affected region in the global AIDS epidemic. The scale
+and trends of the epidemics in the region vary considerably, with southern Africa most seriously affected (UNAIDS 2007). Namibia is one of the countries in Southern Africa with high
+HIV prevalence levels. Figure 4 shows data from three urban antenatal clinics in Katurtura,
+Walvisbay and Windhoek (data taken from the Epidemiological Fact Sheets on HIV/AIDS
+and Sexually Transmitted Infections 2006 at
+http://www.who.int/globalatlas/predefinedReports/EFS2006/index.asp and (of Health
+and Namibia 2007)). In Katurtura (in pink) prevalence is given for 2004 and 2006, 15.9%
+and 21.1% respectively. In Walvisbay (turquoise) data is available from 1998 until 2006,
+with prevalence decreasing from 29% in 1998 to 22.1% in 2006. For the clinic in Windhoek
+(green), HIV prevalence estimates are available from 1994 until 2006. Note that prevalence
+in 2002 was estimated at 26.7%, while at the next measurement in 2006, it was 9.1%. Based
+on the antenatal clinic data, median prevalence in 2007 is estimated at 16.2%, with 95%
+confidence interval [12.2%, 21.4%].
+Namibia has no DHS survey to calibrate the ANC prevalence curves. We use the general
+calibration method as described in the previous section. The results are shown in Figure 4(b).
+After calibrating the ANC curves, median prevalence in 2007 is estimated at 13.5%, with
+95% confidence interval [10.0%, 18.0%]. Note the uncertainty in past estimates in HIV
+prevalence, the lengths of the confidence intervals are approximately 10% from 1998 until
+2006.
+
+(a) Antenatal clinic data
+
+(b) Calibrated prevalence curves
+
+Figure 4: Bayesian melding for estimating and projecting HIV prevalence (on the y-axis)
+in urban areas of Namibia (a) based on antenatal clinic data only, and (b) calibrated to
+represent prevalence among the overall urban population. The colored lines with symbols
+show the raw antenatal clinic prevalence. The light grey curves are a sample from the
+posterior distribution of the prevalence curve, and the red curve is the posterior mode. The
+dashed lines show the year-specific 95% confidence intervals for prevalence.
+11
+
+4
+
+Discussion
+
+In this article we have described the Bayesian melding approach to assessing uncertainty in
+HIV prevalence estimates as given by the model in the Estimation and Projection Package.
+Using the Bayesian melding procedure, prevalence over time is described by a sample of epidemic trajectories, which are chosen based on all available information on input parameters
+of the model and prevalence data. Uncertainty about past and future prevalence is given by
+year-specific 95% confidence and prediction intervals.
+The trend in prevalence over time is derived from what has been observed at antenatal
+clinics, and calibrated to represent prevalence in the overall population based on populationbased surveys. In the current calibration of HIV prevalence curves to population-based
+estimates, the latter estimates are taken to be unbiased estimates of population prevalence.
+The general calibration method for countries without population-based estimates allows for
+adjusting upwards biases in antenatal clinic data as compared to population estimates. This
+calibration method gives the overall adjustment, based on what has been observed in several
+countries. With more population-based surveys becoming available, fewer countries will need
+to use the general calibration method, and country-specific calibrations can be carried out
+to get more accurate estimates and predictions of HIV prevalence.
+
+References
+B., R. D. (1987). Comment on “The calculation of posterior distributions by data augmentation”, by M.Tanner and W.H.Wang. Journal of the American Statistical Association 82, 543–546.
+B., R. D. (1988). Using the SIR algorithm to simulate posterior distributions. Bayesian
+Statistics 3, Eds. J.M. Bernardo, et al., Oxford, U.K.: Clarnedon Press, 395–402.
+C., G. N., M. Morgan, N. Walker, G. Garnett, K. A. Stanecki, J. Stover, T. Brown,
+and P. D. Ghys (2004). Uncertainty in estimates of HIV/AIDS: the estimation and
+application of plausibility bounds. Sexual Transmitted Infections 80(Suppl I), i31 –
+i38.
+D., P. and A. E. Raftery (2000). Inference for deterministic simulation models: The
+Bayesian melding approach. Journal of the American Statistical Association 95, 1244–
+1255.
+E., G. (2008). Comparison of HIV prevalence in population-based national surveys and
+ANC surveillance: implications for calibrating surveillance data.
+E., R. A., G. H. Givens, and J. E. Zeh (1995). Inference from a deterministic population dynamics model for bowhead whales (with discussion). Journal of the American
+12
+
+Statistical Association 90, 402–416.
+K., S. (2008). National population-based surveys in generalised epidemics: summary of
+findings of xx? national surveys.
+L., A., A. E. Raftery, and S. J. Clark (2007). Probabilistic Projections of HIV prevalence
+Using Bayesian Melding. The Annals of Applied Statistics 1 (No.1), 229 – 248.
+M., G. E. and L. Eustache (2007). Estimation de la s´eropr´evalence du VIH en Haiti en
+2007 selon le milieu de r´esidence urbain et rural pour chacun des 10 d´epartements.
+USAID.
+of Health, M. and S. S. Namibia (2007). Results of the 2006 sentinel survey among pregnant
+women.
+UNAIDS (2007). 2007 AIDS Epidemic Update. Geneva:
+
+UNAIDS. Available from
+
+http://www.unaids.org/en/Publications.
+UNAIDS Reference Group on Estimates, Modelling and Projections (2002). Improved
+methods and assumptions for estimation of the HIV/AIDS epidemic and its impact:
+Recommendations of the UNAIDS reference group on estimates, modelling and projections. AIDS 16(9), W1–W14.
+UNAIDS/WHO (2005). Working Group on Global HIV/AIDS and STI surveillance.
+Guidelines for measuring national HIV prevalence in population-based surveys.
+
+13
+
+

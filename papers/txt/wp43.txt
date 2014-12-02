@@ -1,0 +1,1144 @@
+Inference in curved exponential family models for
+networks 1
+David R. Hunter
+Pennsylvania State University, University Park
+Mark S. Handcock
+University of Washington, Seattle
+
+Working Paper no. 43
+Center for Statistics and the Social Sciences
+University of Washington
+August 3, 2004
+
+1
+
+David R. Hunter is Assistant Professor of Statistics, Department of Statistics, Pennsylvania State University, University Park, PA 16802 (E-mail: dhunter@stat.psu.edu); Mark S. Handcock is Professor of Statistics and Sociology, Department of Statistics, University of Washington, Box 354322, Seattle WA 98195-4322. E-mail: handcock@stat.washington.edu; Web:
+www.stat.washington.edu/handcock. This research supported by Grant DA012831 from NIDA
+and Grant HD041877 from NICHD. The authors are grateful to Tom Snijders for detailed comments and
+discussions. We thank Steven Goodreau and Martina Morris for comments.
+
+Abstract
+Network data arise in a wide variety of applications. Although descriptive statistics for networks
+abound in the literature, the science of fitting statistical models to complex network data is still in its
+infancy. The models considered in this article are based on exponential families; therefore, we refer
+to them as exponential random graph models (ERGMs). Although ERGMs are easy to postulate,
+maximum likelihood estimation of parameters in these models is very difficult. In this article, we
+first review the method of maximum likelihood estimation using Markov chain Monte Carlo in the
+context of fitting linear ERGMs. We then extend this methodology to the situation where the model
+comes from a curved exponential family. The curved exponential family methodology is applied
+to new specifications of ERGMs, proposed by Snijders et al. (2004), having non-linear parameters
+to represent structural properties of networks such as transitivity and heterogeneity of degrees. We
+review the difficult topic of implementing likelihood ratio tests for these models, then apply all
+these model-fitting and testing techniques to the estimation of linear and non-linear parameters for
+a collaboration network between partners in a New England law firm.
+KEY WORDS: exponential random graph model; maximum likelihood estimation;
+Markov chain Monte Carlo; p−star model.
+
+1. INTRODUCTION
+A network is a way to represent “relational data” — i.e., data whose properties cannot be reduced to the attributes of the individuals involved — in the form of a mathematical graph. For
+the purposes of this article, a network consists of a set of nodes and a set of edges, where an edge
+is an ordered or unordered pair of nodes. In typical applications, the nodes in a graph represent
+individuals, and the edges represent a specified relationship between individuals. Nodes can also
+be used to represent larger social units such as groups, families, or organizations; objects such as
+physical resources, servers, or locations; or abstract entities such as concepts, texts, tasks, or random variables. Networks have been applied to a wide variety of situations, including the structure
+of social networks, the dynamics of epidemics, the interconnectedness of the World Wide Web,
+and long-distance telephone calling patterns.
+This article concerns inference in specific probabilistic models for networks. Throughout, we
+will represent a generic random network by the matrix Y , an n × n matrix where n is the number of
+nodes. Each Yi j can equal zero or one, with one indicating the presence of an edge between i and j
+and zero indicating the absence of such an edge. More complicated networks may be represented
+if Yi j is allowed to take on arbitrary values, in which case the edges may be considered to have
+weights; however, we avoid such complications here. We disallow the possibility of self-edges,
+so Yii = 0 for all i. Furthermore, for the sake of simplicity we develop arguments using the
+assumption that Y is undirected — that is, Yi j = Y ji for all i and j so only the lower triangle of
+Y is relevant. However, none of the theory we present depends essentially on the undirectedness
+assumption.
+The models we consider for the random behavior of Y rely on a p-vector Z(Y ) of statistics and
+a parameter vector η ∈ R p . The canonical exponential family model is
+P(Y = y) = exp{ηt Z(y) − ψ(η)},
+
+(1)
+
+X
+
+(2)
+
+where
+exp{ψ(η)} =
+
+exp{ηt Z(x)}
+
+x
+
+is the familiar normalizing constant associated with an exponential family of distributions (BarndorffNielsen 1978; Lehmann, 1983). The sum in (2) is taken over the whole sample space, which
+presents a very important problem in most applications: A sample space consisting of all possible
+
+undirected graphs on n nodes contains exp{ n2 log 2} elements, an astronomically large number
+even for moderately sized n of, say, 20. Thus, for most applications it is impossible even to evaluate the likelihood function for a particular η, let alone maximize it. We consider ways around this
+problem in Section 2.
+1
+
+The range of network statistics that might be included in the Z(y) vector is vast — see Wasserman and Faust (1994) for the most comprehensive treatment of these statistics — though we will
+consider only a few in this article. We allow the vector Z(y) to include covariate information about
+nodes or edges in the graph in addition to information derived directly from the matrix y itself.
+Thus, Z(y) should be viewed as a function not only of y, but also potentially of certain exogenous
+covariates, by which we mean covariates on nodes or pairs of nodes whose values are not affected
+by the presence or absence of edges. For example, if each node is a person, Z(y) might include
+the total number of edges between individuals of the same gender, which is a function of both the
+graph y and the exogenous nodal covariate gender. For notational simplicity, we prefer to allow
+the dependence of Z on exogenous covariates to be implicit rather than explicitly indicated by the
+notation.
+There has been a lot of work on models of the form (1), to which we refer as exponential
+random graph models or ERGMs for short. (We avoid the lengthier EFRGM, for “exponential
+family random graph models,” both for the sake of brevity and because we consider some models
+in this article that should technically be called curved exponential families.) Holland and Leinhardt
+(1981) appear to be the first to propose a specific case of model (1) in the literature. Their model,
+which they called the p1 model, resulted in each dyad — by which we mean each pair of nodes
+— having edges independently of every other dyad. Based on developments in spatial statistics
+(Besag 1974), Frank and Strauss (1986) generalized to the case in which dyads exhibit a kind of
+Markovian dependence: Two dyads are dependent, conditional on the rest of the graph, only when
+they share a node. Frank (1991) mentioned the application of model (1) to social networks in its
+full generality. This was pursued in depth by Wasserman and Pattison (1996). In honor of Holland
+and Leinhardt’s p1 model, they referred to model (1) as p∗ ( p−star), a name that has been widely
+applied to ERGMs in the social networks literature.
+Inference for this class of models was considered in the seminal paper by Geyer and Thompson
+(1992), building on the methods of Frank and Strauss (1986) and the above cited papers. Until
+recently, inference for social networks models has relied on maximum pseudolikelihood estimation
+(Besag 1974; Frank and Strauss, 1986; Strauss and Ikeda, 1990; Geyer and Thompson 1992).
+Geyer and Thompson (1992) proposed a stochastic algorithm to approximate maximum likelihood
+estimates for model (1) among other models; this Markov chain Monte Carlo (MCMC) approach
+forms the basis of the method described in this article. The development of these methods for
+social network data has been considered by Dahmstr¨om and Dahmstr¨om (1993), Corander et al.
+(1998), Crouch et al. (1998), Snijders (2002), and Handcock (2002).
+In this article, we begin with a summary in Section 2 of the basic idea behind the MCMC maximum likelihood approach. Many of the estimation ideas in Section 3 are more or less implicit in
+the articles of Geyer and Thompson (1992) and Geyer (1994), though their application to fitting
+
+2
+
+curved exponential family models is new. Section 4 describes several particular ERGMs due to
+Snijders et al. (2004) and demonstrates how to fit them. Section 5 discusses an approach to the
+difficult issue of implementing a likelihood ratio test in this context. Finally, Section 6 ties all of
+the previous sections together, demonstrating the use of these methods to fit an ERGM to a collaboration network among lawyers, a problem considered by Snijders et al. (2004). Whereas Snijders
+et al. (2004) estimated some of the parameters in their model but assumed others were fixed and
+known, we apply the curved exponential family machinery to estimating all of the parameters.
+2. MARKOV CHAIN MONTE CARLO MAXIMUM LIKELIHOOD ESTIMATION
+In Section 1, we pointed out the difficulty of evaluating ψ(η) in equation (2) due to the fact
+that it involves a sum with an extremely large number of terms. Here, we discuss a way around this
+problem in preparation for a discussion in Section 3 about estimating the parameters via maximum
+likelihood. The method uses Markov chain Monte Carlo to approximate the likelihood function,
+and then maximizes this approximation.
+Let η and η0 denote two distinct values of the canonical parameter in model (1). We are
+interested in calculating exp{ψ(η) − ψ(η0 )} as a function of η, where η0 is fixed and known. Since
+
+
+X
+exp{(η0 )t Z(x)}
+0
+0 t
+exp{ψ(η) − ψ(η )} =
+exp{(η − η ) Z(x)}
+exp{ψ(η0 )}
+x
+h
+i
+= E η0 exp{(η − η0 )t Z(Y )} ,
+(3)
+we may approximate exp{ψ(η) − ψ(η0 )} by the sample mean
+m
+1 X
+exp{(η − η0 )t Z(Yi )},
+m
+
+(4)
+
+i=1
+
+where Y1 , . . . , Ym is a sample of random graphs from the distribution defined by η0 . Such a sample
+may be obtained using Markov chain Monte Carlo.
+Let `(η) be the log-likelihood for model (1) based on observing a single realization yobs of
+def
+
+Y . Letting r (η, η0 ) =`(η) − `(η0 ) denote the logarithm of the likelihood ratio, we apply the ideas
+above and approximate r (η, η0 ) by
+#
+m
+1 X
+0 t
+rˆm (η, η ) = (η − η ) Z(yobs ) − log
+exp{(η − η ) Z(Yi )} .
+m
+"
+
+0
+
+def
+
+0 t
+
+(5)
+
+i=1
+
+The strong convergence of rˆm (η, η0 ) to r (η, η0 ) as m → ∞ is guaranteed by a Markov chain version of the strong law of large numbers (Meyn and Tweedie, 1993). Thus, for a fixed sample size
+m, maximization of rˆm (η, η0 ) as a function of η gives an approximation to the maximum likelihood
+3
+
+ˆ This procedure, which may be termed Markov chain Monte Carlo maximum likeliestimator η.
+hood estimation (MCMCMLE for those who like acronyms), originates in Geyer and Thompson
+(1992).
+Note that `(η) and r (η, η0 ) are unchanged if Z(y) is replaced by Z(y) − a for some constant
+vector a. For example, we might take a = Z(yobs ), in which case Z(y) represents the change in
+the vector of statistics for the graph y relative to the observed graph yobs . This makes Z(yobs ) = 0,
+which simplifies the definition of rˆm (η, η0 ) in equation (5). Alternatively, we might take a =
+1 Pm
+i=1 Z(Yi ), which has the effect of centering the Z(Yi ) at zero, leading to more stable numerical
+m
+calculations.
+In some applications, we may want to estimate not merely the likelihood ratio but the actual
+value of the log-likelihood itself. This may be accomplished by noting that `(0) = − log M,
+where M is the size of the sample space. For instance, if the sample space includes all undirected
+
+graphs on n nodes, then log M = n2 log 2. By combining `(0) with estimates of `(η) − `(η0 ) and
+`(0) − `(η0 ), we obtain
+def
+ˆ
+`(η)
+= rˆm (η, η0 ) − rˆm (0, η0 ) − log M.
+
+(6)
+
+It remains to describe how to generate a Markov chain whose stationary distribution is given by
+equation (1). The simplest Markov chain proceeds by choosing (by some method, either stochastic
+or deterministic) a dyad (i, j) and then deciding whether to set Yi j = 1 or Yi j = 0 at the next step
+of the chain. One way to do this is using Gibbs sampling, whereby the new value of Yi j is sampled
+from the conditional distribution of Yi j conditional on the rest of the graph. Denote “the rest of the
+graph” by Yicj . Then Yi j |Yicj = yicj has a Bernoulli distribution, with odds given by
+P(Yi j = 1|Yicj = yicj )
+P(Yi j = 0|Yicj = yicj )
+
+= exp{ηt 1(Z(y))i j },
+
+(7)
+
+where 1(Z(y))i j denotes the difference between Z(y) when yi j is set to 1 and Z(y) when yi j is
+set to 0. A simple variant to the Gibbs sampler (which is an instance of a Metropolis-Hastings
+algorithm) is a pure Metropolis algorithm in which the proposal is always to change the value of
+yi j . This proposal is accepted with probability min{1, π}, where
+π=
+
+P(Yi j = 1 − yi j |Yicj = yicj )
+P(Yi j =
+
+yi j |Yicj
+
+=
+
+yicj )
+
+
+=
+
+
+	
+exp ηt 1(Z(y))i j 	
+exp −ηt 1(Z(y))i j
+
+if yi j = 0;
+if yi j = 1.
+
+The vector 1(Z(y))i j used by these MCMC schemes is often much easier to calculate directly than
+as the difference of two separate values of Z(y). For instance, if one of the components of the Z(y)
+vector is the total number of edges in the graph, then the corresponding component of 1(Z(y))i j
+is always equal to 1.
+4
+
+The Metropolis scheme is usually preferred over the Gibbs scheme because it results in a
+greater probability of changing the value of yi j , a property thought to produce better-mixing chains.
+However, it is well known that these simple MCMC schemes often fail for various reasons to
+produce well-mixed chains (Snijders 2002; Handcock 2002, 2003; Snijders et al. 2004). The
+choice of the model class and more sophisticated MCMC schemes are a topic of ongoing research.
+We return to the former in Section 4.
+3. ESTIMATION FOR CURVED EXPONENTIAL FAMILIES
+Suppose that η ∈ R p , the canonical parameter in equation (1), is a function of a lowerdimensional parameter θ ∈ R q , q < p. If the function is linear, say η = Aθ for some p × q
+matrix A, then θ is simply the canonical exponential family parameter for the reduced set of statistics At Z(y). However, if the function mapping θ to η is nonlinear, then in general the situation is
+more complicated. The family of distributions
+P(Y = y) = exp{η(θ )t Z(y) − ψ[η(θ )]}, θ ∈ R q
+is called a curved exponential family in the terminology of Efron (1975).
+The maximum likelihood estimator θˆ satisfies the likelihood equation
+∇`(θˆ ) = ∇η(θˆ )t [Z(yobs ) − E
+
+η(θˆ )
+
+Z(Y )] = 0,
+
+(8)
+
+where ∇η(θ ) is the p × q matrix of partial derivatives of η with respect to θ . We may search
+for a solution to equation (8) using an iterative technique such as Newton-Raphson; however, the
+exponential family form of the model makes the Fisher information matrix
+I (θ ) = ∇η(θ )t [Varη(θ ) Z(Y )]∇η(θ )
+
+(9)
+
+easier to calculate than the Hessian matrix of second derivatives required for Newton-Raphson.
+For more about equations (8) and (9), see Efron (1978). The information matrix (9) is the basis for
+the method of Fisher scoring, which is analogous to Newton-Raphson except that −I (θ ) is used
+in place of the Hessian matrix. Thus, if θ (k) denotes the estimate of θ at the kth iteration, Fisher
+scoring sets
+θ
+
+(k+1)
+
+=θ
+
+(k)
+
+h
+
++ I (θ
+
+(k)
+
+)
+
+i−1
+
+∇`(θ (k) ).
+
+(10)
+
+The biggest obstacle to overcome in implementing the scoring algorithm (10) is the fact that
+E η(θ ) Z(Y ) and Varη(θ ) Z(Y ) are difficult to calculate directly for ERGMs. One approach to estimating these quantities is to use one of the MCMC methods described in Section 2 to generate
+a sample Y1 , . . . , Ym from the distribution defined by the parameter value θ , then use the sample
+5
+
+mean and covariance of Z(Y1 ), . . . , Z(Ym ) to approximate E η(θ ) Z(Y ) and Varη(θ ) Z(Y ). However, such an approach could prove computationally expensive in an optimization routine, since a
+new sample would have to be generated each time the value of θ changed. An alternative is to generate a single sample, based on a fixed parameter value θ 0 . Let Y1 , . . . , Ym denote this sample, and
+suppose that θ (k) is the value of the parameter vector at the kth iteration of an iterative algorithm.
+Then the approximate Fisher scoring method is implemented as
+"
+#
+n
+o−1
+X (k)
+θ (k+1) = θ (k) + Iˆ(θ (k) )
+∇η(θ)t Zobs −
+w Zi ,
+
+(11)
+
+i
+
+i
+
+where Zobs and Zi denote Z(yobs ) and Z(Yi ), respectively;
+exp{[η(θ (k) ) − η(θ 0 )]t Zi }
+wi(k) = Pn
+;
+(k)
+0 t
+j=1 exp{[η(θ ) − η(θ )] Z j }
+and
+Iˆ(θ (k) ) = ∇η(θ (k) )t
+
+(
+
+m
+X
+
+wi(k) Zi Zit −
+
+i=1
+
+m
+X
+i=1
+
+wi(k) Zi
+
+!
+
+m
+X
+
+wi(k) Zi
+
+!t )
+
+∇η(θ (k) ).
+
+(12)
+
+i=1
+
+Equations (11) and (12) are derived by first writing E η(θ ) Z(Y ) and Varη(θ ) Z(Y ) in terms of expectations involving only E
+as in equation (3), then substituting sample means like expression
+η (θ 0 )
+(4) for population means.
+The two ideas above for stochastic optimization algorithms, one in which we generate a new
+sample with every iteration and one in which we generate only a single sample, each have their
+drawbacks. As pointed out above, the first idea is expensive computationally. However, the second
+may lead to an estimate rˆm that is not very close to r (where there is no ambiguity, we write rˆm and
+r instead of rˆm [η(θ ), η(θ 0 )] and r [η(θ), η(θ 0 )], respectively). A compromise is represented by the
+following scheme, which is similar to the approach used by Geyer and Thompson (1992):
+1. Select an initial value θ 0 .
+2. Generate an MCMC sample Z(Y1 ), . . . , Z(Ym ) using the parameter θ 0 .
+3. Iterate algorithm (11) until convergence, obtaining a maximizer θ˜ of rˆm .
+p
+ˆ θ)),
+ˆ θ))
+˜ say VarMC rˆm > b`(η(
+˜
+4. If VarMC rˆm of equation (13) is too large compared to `(η(
+for some constant b < 0, then set θ 0 = θ˜ and return to step 2.
+5. Take θ˜ to be the MCMCMLE.
+
+6
+
+Since θ˜ is a maximizer of rˆm by step 3, the logic of the algorithm is that we take θ˜ to be the
+MCMCMLE as long as we’re convinced that rˆm is close to the true r .
+Let Ui denote exp{[η(θ) − η(θ 0 )]t Zi } for i = 1, . . . , m and U¯ =
+
+1 Pm
+i=1 Ui .
+m
+
+The variance
+
+used in step 4 is
+  def
+VarMC rˆm =
+
+K
+X
+1
+(m − |k|)γˆk ,
+m 2U¯ 2 k=−K
+
+(13)
+
+where γˆk = γˆ−k denotes the sample lag-k autocovariance of the sequence U1 , U2 , . . ., which we
+assume to be stationary. Equation (13) is obtained from the Taylor approximation log(a/b) ≈
+(a − b)/b, whence
+
+
+Var(U¯ )
+Var log U¯
+≈
+.
+[E(U¯ )]2
+The value of K in equation (13) is chosen large enough so that the lag-k autocovariance is approximately zero for |k| > K . If the Ui are approximately uncorrelated (for example, if the Markov
+P
+chain is sampled only at very large intervals), expression (13) reduces to [ i U 2 /(m U¯ )2 ] − 1/m.
+i
+
+After the algorithm has converged, the question of obtaining standard errors remains. There
+are two interesting aspects of the error: The MCMC error, which is the error in approximating
+the true MLE, θˆ , by the MCMCMLE, θ˜ ; and the usual error inherent in using the MLE θˆ to
+approximate reality. For the latter, we rely on standard asymptotic results and use the estimated
+Fisher information matrix (12) to obtain an estimate [ Iˆ(θ˜ )]−1 of the covariance matrix.
+For the former error, incurred by approximating θˆ by θ˜ , we obtain a separate MCMC covariance
+√
+ˆ is asymptotically
+matrix. Geyer (1994) gives mild regularity conditions under which m(θ˜ − θ)
+√
+normal, conditional on θˆ . The asymptotic covariance matrix of m(θ˜ − θˆ ) forms the basis of our
+MCMC covariance matrix.
+A first-order Taylor expansion gives
+√
+
+h
+i−1 h√
+i
+2
+˜
+ˆ
+˜
+ˆ
+m(θ − θ ) ≈ − ∇ rˆm (θ )
+m∇ rˆm (θ ) .
+
+(14)
+
+(Note that we write rˆm (θ) instead of rˆm [η(θ ), η(θ 0 )] in order to simplify notation.) Suppose
+that graphs Y1 , Y2 , . . . arise from a (stationary) Markov chain defined by θ 0 . In expression (14),
+√
+m∇ rˆm (θˆ ) converges in distribution as m → ∞ to a q-variate normal distribution with mean 0
+and covariance matrix
+"
+
+c(θ 0 )
+c(θˆ )
+
+#2
+
+∞
+X
+
+Cov[W1 (θˆ ), W1+|k| (θˆ )],
+
+(15)
+
+k=−∞
+
+def
+
+where c(θ) = exp{ψ[η(θ)]} is the normalizing constant of equation (2) and
+n
+o
+def
+Wi (θ ) = {Z(yobs ) − Z(Yi )} exp [η(θ) − η(θ 0 )]t Z(Yi ) .
+7
+
+(16)
+
+We do not know the value of θˆ in expression (15); therefore, we approximate it by θ˜ . Using a sample mean as in equation (4) to approximate the ratio c(θ 0 )/c(θ˜ ), expression (15) is approximately
+V˜
+
+" m
+#2 K
+X
+1 X
+0
+˜ )]t Z(Yi )}
+=
+exp{[η(θ
+)
+−
+η(
+θ
+ξˆk ,
+m2
+
+def
+
+k=−K
+
+i=1
+
+where ξˆk = ξˆ−k is the sample lag-k autocovariance of the sequence W1 (θ˜ ), W2 (θ˜ ), . . ..
+As we remarked earlier, the Hessian matrix ∇ 2rˆm (θ˜ ) of equation (14) is difficult to calculate.
+Therefore, we make one final substitution and use instead the estimated Fisher information matrix
+Iˆ(θ˜ ), which yields
+1 h ˆ ˜ i−1 ˜ h ˆ ˜ i−1
+I (θ )
+V I (θ)
+m
+
+(17)
+
+as our estimated MCMC covariance matrix for θ˜ .
+4. ALTERNATING K -STARS AND ALTERNATING K -TRIANGLES
+We illustrate the methods discussed in Sections 2 and 3 by applying them to a class of ERGMs
+proposed by Snijders et al. (2004). To begin with, we define graph statistics D0 (y), . . . , Dn−1 (y),
+known as the degree distribution of y, and P0 (y), . . . , Pn−2 (y), known as the shared partner distribution of y. The degree distribution statistics are well-known in the networks literature, whereas
+the shared partner distribution statistics appear to be novel.
+For a given i, 1 ≤ i ≤ n − 1, Di (y) is defined to be the number of nodes in y whose degree
+— the number of edges incident to the node — equals i. For instance, Dn−1 (y) = n when y is the
+complete graph and D0 (y) = n when y is the empty graph. Note that D0 , . . . , Dn−1 satisfy the
+linear constraint D0 + · · · + Dn−1 = n.
+For a given i, 1 ≤ i ≤ n − 2, Pi (y) is defined to be the number of dyads ( j, k) — where we
+assume j < k since the graph is assumed undirected — such that j and k are neighbors of each
+other and they share exactly i neighbors in common. (“Neighbors” are simply nodes connected by
+an edge.) Unlike the Di statistics, the Pi statistics do not satisfy a linear constraint; however, note
+that P0 + · · · + Pn−2 equals the total number of edges in the graph.
+Snijders et al. (2004) base some of their ERGMs on graph statistics that may be derived from
+the Di and Pi Let Sk (y), 1 ≤ k ≤ n − 1, denote the number of k-stars in the graph y. A k-star
+consists of a node together with a set of k of its neighbors. Like the degree statistics Di , the k-star
+
+statistics are well-known in the networks literature. Since a node with degree i is the center of ki
+k-stars,
+Sk (y) =
+
+n−1  
+X
+i
+i=1
+
+k
+
+Di (y) for k ≥ 2.
+8
+
+(18)
+
+For k = 1, a k-star is simply an edge, and the number of edges is
+n−1
+
+1X
+E(y) = S1 (y) =
+i Di (y).
+2
+def
+
+(19)
+
+i=1
+
+In addition to the well-known k-star statistics, Snijders et al. (2004) also introduce a new set
+of statistics they call k-triangles. They use Tk (y), 1 ≤ k ≤ n − 2, to denote the number of ktriangles in the graph y. A k-triangle consists of k triangles that share a common edge. Thus, if the
+endpoints of a particular edge share exactly i neighbors in common, then that edge is the base of
+
+exactly ki k-triangles. The relationship between the k-triangle statistics Tk and the shared partner
+statistics Pi is very similar to the relationship between the k-star statistics and the degree statistics
+expressed in equation (18):
+Tk (y) =
+
+n−2  
+X
+i
+i=1
+
+k
+
+Pi (y) for k ≥ 2.
+
+(20)
+
+For k = 1, a k-triangle is simply a triangle, so
+n−2
+
+1X
+T1 (y) =
+i Pi (y).
+3
+
+(21)
+
+i=1
+
+2
+1
+4
+3
+
+5
+
+Figure 1: For this undirected, five-node graph, the degree distribution (D0 , . . . , D4 ) is given by
+(0, 1, 1, 3, 0) and the shared partner distribution (P0 , . . . , P3 ) is given by (1, 4, 1, 0). The edges
+might represent, say, some social relationship between individuals, and the node shapes might
+signify some exogenous categorical covariate such as gender.
+To make these concepts concrete, consider the simple undirected graph depicted in Figure 1.
+
+There are three 3-stars, centered at nodes 2, 3, and 4, and each of these accounts for 32 = 3 of the
+ten 2-stars. There are two 1-triangles (i.e., two triangles), and since these two triangles share an
+edge there is also one 2-triangle. The degree distribution and the shared partner distribution, given
+in the caption of Figure 1, may be used to verify equations (18), (19), (20), and (21) along with the
+Pn−2
+fact that E(y) = i=0
+Pi (y). These relationships may be combined to yield
+n−1
+
+n−2
+
+X
+1X
+P0 (y) =
+i Di (y) −
+Pi (y).
+2
+i=1
+
+i=1
+
+9
+
+(22)
+
+Since both D0 and P0 may be expressed as linear combinations of the other Di and Pi statistics,
+the vector Z(y) of ERGM (1) based on all degree and shared partner statistics should omit D0 and
+P0 :
+
+t
+Z(y) = D1 (y), . . . , Dn−1 (y), P1 (y), . . . , Pn−2 .
+
+(23)
+
+When Z(y) of equation (23) is used in model (1) with an unconstrained η ∈ R 2n−3 , the model
+class is subject to well-known issues of degeneracy (Snijders 2002; Handcock 2002, 2003; Snijders
+et al. 2004). One type of model degeneracy occurs when the model places most of the probability
+mass on only a few of the possible graph configurations. The fact that nondegenerate values of
+η form only a small section of the natural parameter space (Handcock 2003) reduces the value of
+this model class for describing realistic phenomena. Another problem is the nonexistence of an
+MLE: Whenever the observed graph statistics fall on the convex hull of the sample space of graph
+statistics, then the MLE does not exist (Barndorff-Nielsen 1978, Handcock 2003). If the full Z(y)
+vector of equation (23) is used, this problem is virtually guaranteed to occur, since typically at least
+one element of Z(y) is zero for any realistic network.
+To address these problems, we consider constraints on the natural parameter space. In doing
+so, we hope to limit our attention to subsets of the full parameter space that result in more realistic
+social network models. Furthermore, the constraints reduce the dimension of the sample space of
+statistics and make it more probable that an MLE will exist. One way to implement constraints in
+this case was recommended by Snijders et al. (2004), who introduced an alternating k-star statistic and an alternating k-triangle statistic (in addition, they introduced an alternating independent
+two-paths statistic that we do not discuss here). In reality, these “statistics” aren’t quite statistics
+because they are based on parameters; however, Snijders et al. (2004) assume that these parameters are fixed and known. In this article, we relax this restriction and estimate these additional
+parameters.
+The alternating k-star and alternating k-triangle “statistics” of Snijders et al. (2004) are defined
+as
+u λ (y) = S2 (y) −
+
+S3 (y)
+Sn−1 (y)
++ · · · + (−1)n n−2
+λ
+λ
+
+and
+vγ (y) = 3T1 −
+
+Tn−2
+T2
++ · · · + (−1)n−1 n−3 ,
+γ
+γ
+
+respectively, where λ and γ are additional parameters. Snijders et al. (2004) consider an ERGM
+that includes statistics E (the number of edges), u λ , and vγ :
+P(Y = y) ∝ exp{θ1 E(y) + θ2 u λ (y) + θ3 vγ (y)}.
+10
+
+(24)
+
+Because we wish both λ and γ to be positive, we reparameterize, letting θ4 = log λ and
+θ5 = log γ . We may express the canonical parameter η of equation (1) in terms of θ1 , . . . , θ5
+by replacing Sk and Tk by the expressions in equations (18), (19), (20), and (21): The binomial
+theorem yields
+def
+
+u(y; θ4 ) =u λ (y) = e
+
+2θ4
+
+n−1 n
+X
+
+1 − e−θ4
+
+i
+
+o
+− 1 + ie−θ4 Di (y)
+
+(25)
+
+i=1
+
+and
+def
+
+v(y; θ5 ) =vγ (y) = e
+
+θ5
+
+n−2 n
+X
+
+1− 1−e
+
+
+−θ5 i
+
+o
+
+Pi (y).
+
+(26)
+
+i=1
+
+Equations (25) and (26) reveal that the coefficients of Di and Pi are roughly in geometric sequence.
+For this reason, we refer to θ4 and θ5 as the scale parameters of the geometrically weighted degree
+distribution and geometrically weighted shared partner distribution, respectively. The function
+η(θ ) relating the canonical parameter η to the parameter (θ1 , . . . , θ5 ) of model (24) is required by
+equations such as (8) and (9); it is summarized by
+
+θ1 i +θ2 ieθ4 − θ2 e2θ4 +
+θ2 e2θ4 (1 − e−θ4 )i
+
+ηi =
+θ3 eθ5 1 − (1 − e−θ5 )i
+
+if 1 ≤ i ≤ n − 1;
+if n ≤ i ≤ 2n − 3.
+
+(27)
+
+Model (24) subsumes a number of simpler models. When θ2 = θ3 = 0, the resulting model
+P(Y = y) ∝ exp{θ1 E(y)} is the simplistic Bernoulli graph (also known as an Erd˝os-R´enyi graph)
+in which each edge occurs independently with probability eθ1 /(1 + eθ1 ). When θ3 = θ4 = 0,
+equation (27) reduces to ηi = i(θ1 + θ2 ) − θ2 for 1 ≤ i ≤ n − 1, which gives P(Y = y) ∝
+exp{(θ1 + θ2 )E(y) + θ2 D0 (y)}. This model contains a “Bernoulli” term and one additional term
+that governs the propensity for a node to remain unconnected to the rest of the graph. Similarly,
+when θ2 = θ5 = 0, the model reduces to P(Y = y) ∝ exp{(θ1 + θ3 )E(y) − θ3 P0 (y)}, which
+contains an additional term that governs how likely neighboring nodes are to resist having any
+shared neighbors. It is important to note that if θ2 = 0 (or θ3 = 0), there is an identifiability
+problem because in that case the value of θ4 (or θ5 ) is arbitrary. In practical terms, this means that
+we should not attempt to interpret the value of θ4 (or θ5 ) unless the hypothesis θ2 = 0 (or θ3 = 0)
+can be rejected.
+5. LIKELIHOOD RATIO TESTING
+Since 2ˆrm [η(θ˜ ), η(θ 0 )] is an estimate of the likelihood ratio statistic 2r [η(θ˜ ), η(θ 0 )] = 2`[η(θ˜ )]−
+2`[η(θ 0 )] for testing the null hypothesis θ = θ 0 , it might seem that likelihood ratio testing is
+straightforward in this framework. Unfortunately, this is not quite the case: The approximation 2ˆrm [η(θ ), η(θ 0 )] ≈ 2r [η(θ ), η(θ 0 )] becomes worse as θ gets farther from θ 0 . To estimate
+11
+
+r [η(θ˜ ), η(θ 0 )] accurately necessitates methods to try to lessen the impact of the MCMC error. We
+do not make any claims here about the distribution of 2r [η(θ˜ ), η(θ 0 )]; we concern ourselves in this
+section only with how best to approximate it using MCMC.
+0
+˜
+The problem reduces to the problem of estimating the ratio of normalizing constants c(θ)/c(θ
+),
+which is a problem that has received quite a bit of attention in the statistics literature in the past
+decade. Indeed, in presenting some of the history of this problem, Gelman and Meng (1998) point
+out that it had been studied by physicists before it came to the notice of statisticians, and quite a
+bit of reinventing the wheel was done by the statistics community. The basic idea of path sampling
+(Gelman and Meng, 1998) is as follows. Define a smooth mapping θ : [0, 1] → R q such that
+θ (0) = θ 0 and θ (1) = θ˜ . Then
+
+
+d
+d X
+E θ (u)
+log p[Y |θ (u)] =
+p[y|θ (u)] = 0,
+(28)
+du
+du y
+where
+def
+
+p(y|θ ) = exp{[η(θ)]t Z (y) − ψ[η(θ )]}
+
+(29)
+
+is the probability mass function. Combining equations (28) and (29) gives
+
+
+d
+d
+t
+ψ{η[θ(u)]} = E θ (u)
+{η[θ (u)]} Z (Y ) ,
+du
+du
+which may be integrated to give
+Z 1
+d
+d
+0
+˜
+ψ[η(θ )] − ψ[η(θ )] =
+E θ (u)
+{η[θ (u)}t Z (Y ) du = E
+{η[θ (U )]}t Z (Y ).
+du
+dU
+0
+
+(30)
+
+The last expectation in equation (30) is taken with respect to the joint distribution of U and Y ,
+where U is uniform (0,1) and Y |U is distributed according to θ(U ).
+Equation (30) suggests that `[η(θ˜ )] − `[η(θ 0 )] = ψ[η(θ˜ )] − ψ[η(θ 0 )] could be estimated by
+drawing a sample (U1 , Y1 ), . . . , (U K , Y K ) from the joint distribution of U and Y , then calculating
+the sample average
+K
+1 X
+[∇θ(Ui )]{∇η[θ(Ui )]}Z (Yi ),
+K
+i=1
+
+where ∇θ (u) is the 1 × q vector of derivatives of θ (u) with respect to u. We may allow the Ui to be
+sampled from some density on (0,1), say q(u), other than uniform; each summand in the sample
+mean above should then be divided by q(Ui ). However, the function q(u) may be absorbed into
+the path map θ(u), so no generality is lost by assuming that U is uniformly distributed.
+On the other hand, it is not hard to generalize the argument leading to equation (30) to allow
+for the possibility that U has finite support on [0, 1]. In fact, U need not even be random: Suppose
+12
+
+that 0 = u 0 < u 1 < . . . < u J = 1 are given and for each j, 0 ≤ j ≤ J , we draw a random sample
+U j1 , . . . , U j K from the distribution defined by θ (u j ). The new estimator of `[η(θ˜ )] − `[η(θ 0 )] is
+j
+
+Kj
+J X
+X
+1
+[∇θ (U ji )]{∇η[θ(U ji )]}Z (Y ji ).
+Kj
+
+(31)
+
+j=1 i=1
+
+This idea is a simple form of a technique called bridge sampling by Meng and Wong (1996). In the
+implementation of bridge sampling carried out in Section 6, the path between θ 0 and θ˜ is simply
+the linear map θ (u) = (1 − u)θ 0 + u θ˜ .
+6. EXAMPLE: COLLABORATION WITHIN A LAW FIRM
+As an application of these ideas, we consider the collaborative working relations between 36
+partners in a New England law firm. The sociometric relationship is one of many considered by
+Lazega (2001), Lazega and Pattison (1999) and Snijders et al. (2004) (whom we follow). Specifically, a tie is said to exist between two partners if, and only if, both indicate that they collaborate
+with the other. As noted in Snijders et al. (2004), the degrees of the nodes range from 0 to 16,
+with an average of 6.4. The data include covariates collected on each partner. Here we consider
+seniority (rank number of entry into the firm), gender, office (there were three offices in different
+cities), and practice (there are two possible values, litigation=0 and corporate law=1).
+Our objective is to explain the observed structural pattern of collaborative ties as a function
+of network statistics, both exogenous and endogenous. The purely endogenous statistics (i.e.,
+those that are true functions of the graph matrix Y ) we consider are the number of edges and the
+alternating k-triangle statistic v(y; θ ) of section 4. We have not included the alternating k-star
+statistic u(y; θ ), both to simplify the presentation and because our results and those of Snijders et
+al. (2004) indicate that including that statistic does not appreciably alter the fit of the model.
+The statistics involving exogenous data that we consider are all of the form
+X
+Z (y) =
+yi j f (Xi , X j )
+
+(32)
+
+1≤i< j≤n
+
+for some function f of the nodal covariate vectors Xi and X j . In expression (32), yi j is the indicator
+of an edge between nodes i and j, so f (Xi , X j ) may be thought of as simply an entry in the
+change statistic vector 1(Z(y))i j of equation (7). Following Snijders et al. (2004), we first consider
+the “main effects” of both seniority and practice, for which f (Xi , X j ) = seniorityi + seniority j
+and f (Xi , X j ) = practicei + practice j , respectively. We also consider the “similarity effects”
+of practice, gender, and office. The similarity effect for, say, practice defines f (Xi , X j ) to be
+I {practicei = practice j }. Setting θ2 = θ4 = 0 and adding the covariates, model (24) becomes
+P(Y = y) ∝ exp{θ1 E(y) + θ3 v(y; θ5 ) + β T Z(y)},
+13
+
+(33)
+
+where Z(y) is the 5-dimensional vector of graph statistics containing the two main effects (seniority
+and practice) and three similarity effects (practice, gender, and office) described above. Essentially,
+this model allows us to estimate the effects of the covariates on collaboration while controlling for
+the network density (as measured by E(y)) and a structural transitivity effect (as measured by
+v(y; θ5 )).
+Here we briefly discuss some aspects of implementing the inferential procedures given in Sections 2 and 3. To monitor the statistical properties of the MCMC algorithm, we use the R package
+coda. Figure 2 depicts the trace and density plots for a run of sample size 240,000 where only
+every 1000th step of the Markov chain is sampled (and 50,000 burnin steps were performed). Each
+row corresponds to a statistic in the model. The values are measured as deviations from the observed value of the statistic. The left column has the trace plots of the sample and the right column
+has the density plots. Visually the sampler appears to be mixing and the densities are centered about
+the observed statistics. This visual impression is supported by numerical diagnostics (Raftery and
+Lewis 1996, Gelman 1996), which indicate that the 240,000 values are more than sufficient. The
+initial value of θ 0 was the maximum pseudolikelihood estimate. (The pseudolikelihood function is
+the “likelihood” obtained by considering all edges yi j to be independent, with probabilities given
+by equation (7); thus, the maximum pseudolikelihood estimate may be obtained by logistic regression.) For the application in this article, only two recalculations of θ 0 as described in Section 3
+were necessary.
+Table 1 reports the estimates for two models. Model 1 fixes the value of θ5 at log(3) = 1.10,
+the value chosen by Snijders et al. (2004). With θ5 fixed the model is a regular (i.e., non-curved)
+exponential family. These values replicate those in Snijders et al. (2004), Table 1, Model 2. For
+compatibility with that paper, we have calculated the estimates conditional on the total number of
+ties. This conditioning, in which the number of edges is held constant at 115, removes the edges
+statistic from the model. The unconditional estimates are essentially identical, indicating that the
+density of collaboration is approximately ancillary to the other statistics.
+The β coefficients can be interpreted as conditional log-odds ratios (Snijders et al. (2004)).
+There is also a relative risk interpretation that is often simpler. For example, exp(β3 ) is the relative
+risk of collaboration between two partners from the same practice compared to two partners from
+different practices with the same values of the other covariates and structural effects. The probabilities involved are conditional on these other covariates and structural effects. The interpretation for
+non-binary and multiple covariates is similar: exp(β1) is the relative risk of collaboration between
+two partners compared to two partners with vector of covariates differing by 1 (and with the same
+values of the structural effects).
+The standard errors of Table 1 are obtained from the Iˆ matrix of equation (12), evaluated at
+θ˜ (the MCMC standard errors obtained from equation (17) are much smaller; if they weren’t, a
+14
+
+Model 1
+Parameter
+est.
+s.e.
+Alternating k-triangles, (θ3 ) 0.612 0.091
+Rate of transitivity (θ5 )
+1.099
+–
+Seniority main effect (β1 )
+0.024 0.006
+Practice main effect (β2 )
+0.352 0.113
+Same practice (β3 )
+0.708 0.194
+Same gender (β4 )
+0.621 0.257
+Same office (β5 )
+1.151 0.195
+
+Model 2
+est.
+s.e.
+0.878 0.279
+0.814 0.196
+0.023 0.006
+0.390 0.117
+0.757 0.194
+0.688 0.248
+1.123 0.194
+
+Table 1: MCMC parameter estimates for the collaboration network. The edge parameter θ1 has
+been eliminated from model (33) by conditioning.
+
+larger sample would have been taken). The usual assessments of significance are based on the
+approximation of the distributions of the t-ratios by standard Gaussian distributions. To assess
+the accuracy of this approximation, we also applied MCMC p-value tests (Besag and Clifford
+1989; Besag 2000). For example, consider evaluating the statistical significance of the main effect
+of seniority. We use the MCMC procedure to simulate seniority statistics from the model, only
+allowing steps in the Markov chain that keep all the other statistics fixed, and with β1 = 0. This
+produces a null distribution for the seniority statistic, from which a p−value for the observed
+seniority statistic may be obtained. Using this procedure we were able to validate the Gaussian
+approximation to the t-ratios. Thus the t-ratios can be used as an informal guide, even though the
+MCMC p-values are to be preferred for formal testing.
+Model 2 fits the curved exponential family model estimating θ5 . The interpretation of the other
+parameters is similar to Model 1: Collaboration is strongly enhanced by seniority and by working
+in the same office, and slightly less by having the same practice or gender. Collaboration is also
+enhanced by practicing corporate law, but at a lower level. The large positive values of θ3 and θ5
+indicate the presence of complex transitive structure that enhances collaboration beyond the effect
+that would be expected based on the individual and pairwise partner attributes alone. The scale
+parameter θ5 controls the nature of this transitivity: Larger values of θ5 correspond to increased
+weight on the higher numbers of shared partners, whereas small positive values correspond to very
+localized transitive effects (recall the interpretation of the case θ2 = θ5 = 0 following equation
+(27)).
+It is of interest to test if the value of the scaling parameter θ5 is statistically significantly different from that specified in Snijders et al. (2004). To do this we can conduct likelihood ratio tests
+using bridge sampling as given in Section 5 with J = 20 and K j = 200, 000, j = 0, . . . , J, and a
+sampling interval of 1,000. Table 2 provides the deviance values for a number of models.
+The p−values in Table 2 are calculated by the MCMC procedure given above; further expla15
+
+Model
+NULL
+Covariates only
+Model 1
+Model 2
+
+Residual Deviance
+598.78
+501.80
+457.65
+456.21
+
+Deviance
+–
+96.98
+44.15
+1.44
+
+Residual d.f.
+–
+5
+1
+1
+
+p−value
+–
+0.000
+0.000
+0.176
+
+Table 2: Deviances for the collaboration network among lawyers.
+
+nation of and justification for this procedure are given by Besag and Clifford (1989) and Besag
+(2000). The usual χ12 approximation gives a p−value for comparing Model 2 to Model 1 of 0.231.
+These results indicate that the covariates substantially improve the model fit, as does the inclusion of the transitivity term (Model 1). Allowing the scale of the transitivity to be estimated
+does not improve the fit significantly from the value specified in Snijders et al. (2004), which is
+not surprising because that value was chosen by subjective comparison of alternative values. Naturally, however, data-driven estimation of θ5 is to be preferred unless θ5 can be pre-set based on
+theoretical considerations.
+7. DISCUSSION
+This article gives a fairly comprehensive treatment of maximum likelihood estimation in a
+particular type of network modeling problem: Beginning from first principles originally set forth by
+Geyer and Thompson (1992), we discuss estimation and testing based on approximations derived
+from a Markov chain Monte Carlo scheme. We extend these ideas to curved exponential family
+models, then discuss particular ERGM specifications due to Snijders et al. (2004) that exploit this
+extension. Finally, we fit these models to data. Although some of the ideas in this article are about
+ten years old, the curved exponential family machinery and its application to the particular ERGMs
+we discuss here are novel.
+In our implementation of the Markov chain sampler, we chose to separate our sampled values
+by a large number of Markov chain iterations, namely 1000. This 1000-step interval is vastly longer
+than the interval used in several examples mentioned by Geyer and Thompson (1992). The reason
+we chose such a large separation between sampled values has to do with the tradeoff, mentioned
+by Geyer and Thompson (1992), between the price paid for more iterations and the price paid for
+storing and using sampled values. In our implementation, additional iterations are extremely fast.
+Therefore, we are willing to pay the price (more iterations) for sampled points that are closer to
+independent than could be expected of points separated by only a few iterations. Additionally,
+the slow mixing often exhibited by Markov chains of this type makes very long runs (much longer
+than the sample size we can easily store and use) worthwhile from an exploratory perspective. This
+
+16
+
+computational tradeoff will vary from application to application.
+We have relied in this article on two distinct asymptotic arguments. On one hand, we discussed
+in depth how the MCMC sample size m contributes to the uncertainty in estimating the true MLE
+θˆ by the MCMCMLE θ˜ . On the other hand, we have said relatively little about how the number of
+ˆ even though we have relied on well-known asympnodes n influences the quality of the estimate θ,
+totic results about the MLE such as the use of Fisher information in approximating its covariance
+matrix or the implicit assumption that it is approximately normally distributed. However, n is not
+quite the same as a traditional sample size. What might be given as a sort of “effective sample size”
+for a graph of size n? Presumably any answer to such a question would have to be model-specific:
+
+Note for instance that when edges are independent, the true sample size is n2 . There is the further
+complication that many parameters do not have interpretations that are independent of n; a network
+might have a totally different MLE from another network twice as large but with qualitatively similar features. Resolving such challenging issues, well beyond the scope of the current article, is of
+real importance in establishing a cohesive framework of statistical network analysis.
+
+References
+Barndorff-Nielsen, O. E. (1978), Information and Exponential Families in Statistical Theory New
+York: Wiley.
+Besag, J. (1974), Spatial interaction and the statistical analysis of lattice systems, Journal of the
+Royal Statistical Society, series B, 36: 192–225.
+Besag, J. (2000), Markov Chain Monte Carlo for Statistical Inference, Working Paper no. 9, Center
+for Statistics and the Social Sciences, University of Washington. Available from
+http://www.csss.washington.edu/Papers/
+Besag, J. and Clifford, P. (1989), Generalized Monte Carlo significance tests, Biometrika, 36, 633–
+642.
+Corander, J., Dahmstr¨om, K., and Dahmstr¨om, P. (1998), Maximum likelihood estimation for
+Markov graphs, Research Report 1998:8, Department of Statistics, University of Stockholm.
+Crouch, B. Wasserman, Stanley and Trachtenberg, F. (1998), Markov Chain Monte Carlo Maximum Likelihood Estimation for p ∗ Social Network Models, Paper presented at the XVIII
+International Sunbelt Social Network Conference in Sitga, Spain.
+Dahmstr¨om, K., and Dahmstr¨om, P. (1993), ML-estimation of the clustering parameter in a Markov
+graph model, Stockholm: Research report, Department of Statistics.
+Efron, B. (1975), Defining the curvature of a statistical problem (with applications to second order
+efficiency) (with discussion), Annals of Statistics, 3: 1189–1242.
+Efron, B. (1978), The geometry of exponential families, Annals of Statistics, 6: 362–376.
+17
+
+Frank, O. (1991), Statistical analysis of change in networks, Statistica Neerlandica, 45: 283–293.
+Frank, O. and D. Strauss (1986), Markov graphs, Journal of the American Statistical Association,
+81: 832–842.
+Gelman, A. and X.-L. Meng (1998), Simulating Normalizing Constants: From Importance Sampling to Bridge Sampling to Path Sampling, Statistical Science, 13: 163–185.
+Geyer, C. J. (1994), On the convergence of Monte Carlo maximum likelihood calculations, Journal
+of the Royal Statistical Society, Series B, 56: 261–274.
+Geyer, C. J. and E. Thompson (1992), Constrained Monte Carlo maximum likelihood for dependent data, Journal of the Royal Statistical Society, Series B, 54: 657–699.
+Handcock, M. S. (2002) Statistical Models for Social Networks: Inference and Degeneracy. Pp.
+229 – 240 in Dynamic Social Network Modeling and Analysis: Workshop Summary and Papers, edited by Ronald Breiger, Kathleen Carley, and Philippa E. Pattison. National Research
+Council of the National Academies. Washington, DC: The National Academies Press.
+Handcock, M. S. (2003), Assessing degeneracy in statistical models of social networks, Working
+Paper no. 39, Center for Statistics and the Social Sciences, University of Washington. Available
+from http://www.csss.washington.edu/Papers/
+Holland, P. W. and S. Leinhardt (1981), An exponential family of probability distributions for
+directed graphs, Journal of the American Statistical Association, 76: 33-50.
+Lazega, E. (2001), The Collegial Phenomenon : The Social Mechanisms of Cooperation Among
+Peers in a Corporate Law Partnership, Oxford: Oxford University Press.
+Lazega, E. and P. E. Pattison (1999), Multiplexity, generalized exchange and cooperation in organizations: a case study. Social Networks, 21: 67–90.
+Lehmann, E. L. (1983), Theory of Point Estimation, New York: Wiley.
+Meng, X.-L. and W. H. Wong (1996), Simulating ratios of normalizing constants via a simple
+identity: A theoretical exploration, Statistica Sinica, 6: 831–860.
+Meyn, S. P. and R. L. Tweedie (1993), Markov Chains and Stochastic Stability, London: SpringerVerlag.
+Snijders, T. A. B. (2002), Markov Chain Monte Carlo estimation of exponential random graph
+models, Journal of Social Structure, 3. Available at
+www.cmu.edu/joss/content/articles/volume3/Snijders.pdf
+Snijders, T. A. B., P. E. Pattison, G. L. Robins, and M. S. Handcock (2004), New specifications for
+exponential random graph models, Center for Statistics and the Social Sciences working paper
+no. 42, University of Washington. Available from
+http://www.csss.washington.edu/Papers/
+18
+
+Strauss, D. and M. Ikeda (1990), Pseudolikelihood estimation for social networks, Journal of the
+American Statistical Association, 85: 204–212.
+Wasserman, S. and K. Faust (1994), Social Network Analysis: Methods and Applications, Cambridge, UK: Cambridge University Press.
+Wasserman, S. and P. E. Pattison (1996), Logit models and logistic regression for social networks:
+I. An introduction to Markov graphs and p∗, Psychometrika, 61: 401–425.
+
+19
+
+Figure 2: MCMC Diagnostics for the collaboration data. The left-hand side are the trace plots
+of three statistics, and the right are density estimates (centered on the observed values the actual
+network).
+
+20
+
+

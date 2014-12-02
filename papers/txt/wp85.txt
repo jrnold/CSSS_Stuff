@@ -1,0 +1,6685 @@
+Demographic Consequences of HIV Epidemics and
+Effects of Different Male Circumcision Intervention
+Designs: Suggestive Findings from Microsimulation
+
+Samuel J. Clark, Jeffrey W. Eaton
+Michelle M. Elmquist, Natalie R. Ottenweiller and Jenna K. Snavely
+Department of Sociology
+University of Washington, Seattle
+
+Working Paper no. 85
+Center for Statistics and the Social Sciences
+University of Washington
+March 14, 2008
+
+-i-
+
+Demographic Consequences of HIV Epidemics and
+Effects of Different Male Circumcision Intervention
+Designs: Suggestive Findings from Microsimulation
+Samuel J. Clark*, Jeffrey W. Eaton†
+with
+Michelle M. Elmquist , Natalie R. Ottenweiller† and Jenna K. Snavely†.
+†
+
+2008-03-10
+
+Abstract
+Over the past two decades observational studies have suggested that male circumcision may reduce female-to-male
+transmission of a number of sexually transmitted infections including HIV. Three randomized controlled trials recently
+conducted in South Africa, Kenya and Uganda have confirmed this with respect to HIV and measured the magnitude of
+the protective effect – an incidence rate ratio of roughly 0.5 comparing circumcised to uncircumcised men. This work
+investigates the population-level effects of different male circumcision intervention designs by simulating populations of
+individual people infected with HIV through time. Sixteen different male circumcision interventions are applied to these
+virtual populations and the time-sex-age-specific effects of the interventions are assessed and compared: 1) to better
+understand how disease and demographic processes work together to create and shape an HIV epidemic, 2) to begin
+characterizing the relationship between coverage and effectiveness of a male circumcision intervention, 3) to investigate
+the relationship between age at circumcision and intervention outcomes, and to identify the age group(s) in which male
+circumcision interventions are most likely to be effective, and 4) to demonstrate approximate equity in outcomes for both
+sexes resulting from male circumcisions that directly affect only males. The results broadly confirm that male circumcision
+can reduce the incidence and prevalence of HIV, but that eradication of an HIV epidemic through male circumcision alone
+is unlikely. The overall time course and equilibrium magnitude of the population-level effects is sensitively dependent on
+intervention design. The best results are obtained when the majority of uncircumcised men are circumcised at young
+ages, preferably before sexual debut. A ‘mixed’ intervention that combines infant and young adult circumcision until the
+first cohort of infants are young adults and circumcises only infants thereafter obtains the best outcomes in terms of
+timing, magnitude and long-term sustainability. Finally, age rather than sex appears to be the dimension along which
+there is substantial potential for inequities in intervention effect.
+(313 words)
+
+Key Words
+male circumcision, microsimulation, model, HIV, AIDS, intervention, evaluation, disease, Africa.
+
+*
+
+Department of Sociology, University of Washington; Institute of Behavioral Science (IBS), University of Colorado at Boulder; MRC/Wits Rural Public
+Health and Health Transitions Research Unit (Agincourt), School of Public Health, University of the Witwatersrand, South Africa and School of
+Computational and Applied Mathematics, University of the Witwatersrand, South Africa. Corresponding Addresses: samclark@u.washington.edu.
+†
+Students in the Department of Sociology, University of Washington.
+
+- ii -
+
+Table of Contents
+1  Background and Motivation ................................................................................................................................1 
+2  Aims & Specific Hypotheses ...............................................................................................................................3 
+3  Methods .................................................................................................................................................................5 
+3.1  Simulator .........................................................................................................................................................7 
+3.1.1  Population – Epidemic Model ..................................................................................................................8 
+3.1.2  Demographic Events ...............................................................................................................................8 
+3.1.3  Effects of HIV ...........................................................................................................................................8 
+3.1.4  Parameters ..............................................................................................................................................9 
+3.1.5  Running .................................................................................................................................................10 
+3.2  Male Circumcision Intervention Scenarios ....................................................................................................10 
+3.2.1  Scenario 0: Reference Population – No Intervention ............................................................................11 
+3.2.2  Scenario 1: At Birth Intervention ............................................................................................................11 
+3.2.3  Scenario 2: Teenage Intervention .........................................................................................................11 
+3.2.4  Scenario 3: Young Adult Intervention ....................................................................................................11 
+3.2.5  Scenario 4: Mixed Age Intervention.......................................................................................................12 
+3.3  Simulations ....................................................................................................................................................12 
+4  Demographic impacts of HIV ............................................................................................................................12 
+5  Intervention Results ...........................................................................................................................................16 
+5.1  Target Age and Coverage of Circumcision Intervention ...............................................................................17 
+5.2  Impact of Male Circumcision on Female HIV Epidemic ................................................................................19 
+5.3  Age-Specific HIV Prevalence Reductions .....................................................................................................19 
+6  Discussion ..........................................................................................................................................................21 
+7  Acknowledgements ............................................................................................................................................23 
+8  Appendix: The Structured Population Event History Simulator (SPEHS) ....................................................24 
+8.1  Simulation Model...........................................................................................................................................24 
+8.2  Entities and Structure of SPEHS ..................................................................................................................24 
+8.3  Events and Transition Probabilities ...............................................................................................................26 
+8.4  Running SPEHS............................................................................................................................................43 
+9  References ..........................................................................................................................................................44 
+
+- iii -
+
+1 Background and Motivation
+During 2007 roughly 2.5 million people were infected with HIV and just over two million died from AIDS, bringing the
+estimated total living with HIV around the globe to around 33 million (UNAIDS, 2007a). Two thirds of those infected live in
+sub-Saharan Africa where adult prevalence is roughly five percent. Successful efforts to control the epidemics in subSaharan Africa and elsewhere have utilized interventions that combine both prevention and treatment through behavioral
+change, condom use and antiretroviral drug therapies (UNAIDS, 2006). Prevention methods being developed and
+considered now include HIV vaccines, microbicides, herpes suppression, pre-exposure prophylaxis with antiretrovirals,
+cervical barriers and male circumcision (Global HIV Prevention Working Group, 2006). Following three successful
+randomized controlled trials conducted in South Africa, Kenya and Uganda (Auvert et al., 2005; Bailey et al., 2007; Gray
+et al., 2007a) male circumcision has become one of the most promising potential new interventions. All three of these
+well designed and conducted trials measured incidence rate ratios on the order of 0.5 comparing circumcised to
+uncircumcised young men in widely different populations in east and southern Africa; that is a roughly 60 percent
+reduction in risk of infection for circumcised men. The convincing results of these trials confirm and support a large
+number of observational, meta-analytical and biomedical studies1 conducted over the past 15-20 years that have
+suggested that male circumcision is associated with significant reductions in female-to-male transmission of a number of
+sexually transmitted infections, including HIV and other infections that may facilitate infection with HIV (see for example:
+Donoval et al., 2006; McCoombe and Short, 2006; Moses et al., 1994; Siegfried et al., 2005; Van Howe, 1999; Weiss et
+al., 2000; Weiss et al., 2006).
+As an intervention, male circumcision is attractive because it is comparatively cheap and only has to be applied once to
+each ‘user’ (Buve et al., 2007), after which it continuously confers some protection against infection by a number of
+sexually transmitted infections (Buve, 2006). The once-off nature of male circumcision reduces much of the cost and
+ongoing complexity of delivering the intervention and guarantees that all users are ‘utilizing’ the method correctly in all
+sexual encounters. The most significant disadvantage is the fact that male circumcision is a non-reversible surgical
+procedure that must be conducted by medical professionals in sanitary conditions and is occasionally associated with
+significant side effects. Additional important disadvantages include, but are not limited to:
+•
+
+the fact that even modest behavioral disinhibition associated with being circumcised may negate the possible
+positive effects of an intervention (Auvert et al., 2006; Bailey et al., 1999; Gray et al., 2007b),
+
+•
+
+male circumcision interventions will have large effects only when the majority of males in a population are not
+circumcised, and this may not be the case for some populations with high HIV prevalence,
+
+•
+
+male circumcision is already widely practiced (or not) for a variety of reasons including cultural and religious
+beliefs and customs, and in those settings a male circumcision intervention would necessarily confront the
+existing beliefs and practices and possibly have to contend with resistance (Aggleton, 2007; Muula, 2007),
+
+•
+
+it is possible that communities will resist male circumcision for a number of other reasons not directly associated
+with current practices (Westercamp and Bailey, 2007), such as interference with sexual pleasure (Kigozi et al.,
+2008) and fear of death or pain and cost (UNAIDS, 2007b),
+
+•
+
+the costs and complexities of delivering such a novel (surgery-based) intervention may pose insurmountable
+practical barriers to large scale male circumcision interventions in the developing world settings where they could
+have the largest impact (Buve et al., 2007),
+
+•
+
+advocacy of male circumcision may lead to confusion about the benefits of circumcision in general and thereby
+to increases in female circumcision, a practice that has no medical benefits whatsoever and in most cases is
+very damaging (Hankins, 2007),
+
+•
+
+if newly circumcised HIV positive males resume sexual activity before healing completely, they may be far more
+
+1
+
+There is evidence from a number of studies and sources that the inner mucosal surface of the male foreskin contains a high concentration of HIV
+target cells that reside close to the surface and are therefore unusually accessible to HIV in fluids introduced to those surfaces during sexual
+intercourse. Removal of the foreskin eliminates a portion of this collection of concentrated and unusually accessible HIV target cells, thereby partially
+‘closing the door’ to infection.
+
+-1-
+
+likely to infect their female partners (Altman, 2008),
+•
+
+the details of the male circumcision procedure may affect effectiveness, especially in the case of partial
+circumcision or circumcision performed using traditional methods (for discussion and preliminary results see:
+Muula, 2007; Shaffer et al., 2007),
+
+•
+
+a range of ethical concerns may argue against large scale circumcision interventions, some of these related to
+equity and the allocation of scarce resources to an intervention that directly affects males only, leaving out
+females and (in some intervention designs) very young children of both sexes who are infected by their mothers
+(Hankins, 2007; Rennie et al., 2007), and finally
+
+•
+
+it is not immediately obvious that a significant but not overwhelming reduction in individual-level risk of infection
+(60 percent) will translate into a substantial reduction in population-level incidence and prevalence (Garenne,
+2006).
+
+In spite of these important concerns, the encouraging results of the three recent clinical trials lead to the possibility of
+delivering male circumcision interventions that could significantly reduce HIV incidence in parts of the world where male
+circumcision is not common and heterosexual HIV transmission is high, including large parts of sub-Saharan Africa.
+There is now widespread strong support for serious consideration of male circumcision interventions to prevent
+transmission of sexually transmitted infections and HIV in particular (for thoughtful reviews see: Quinn, 2007; Sawires et
+al., 2007). After meeting with a diverse group of international experts and stakeholders during early 2007, the considered
+recommendation of the WHO and UNAIDS concerning male circumcision and HIV prevention is:
+Male circumcision should always be considered as part of a comprehensive HIV prevention package, which includes the provision
+of HIV testing and counselling services; treatment for sexually transmitted infections; the promotion of safer sex practices; and the
+provision of male and female condoms and promotion of their correct and consistent use (WHO and UNAIDS, 2007).
+
+The WHO and UNAIDS recommend that circumcision should be offered safely and at low cost to any man requesting it.
+The public health benefit from male circumcision intervention programs is likely to be maximized if programs go beyond
+offering low-cost circumcisions to those who voluntarily request them to providing circumcisions free of charge and
+publicly encouraging or incentivizing men to become circumcised, or expectant mothers to have their newborn male
+children circumcised. It is likely that national and private HIV control programs will consider this approach. Ethical
+considerations aside, in resource limited settings such as much of sub-Saharan Africa, large scale population based
+interventions must be carefully targeted to maximize the benefit for the amount of resource allocated. This is especially
+important when money is not the only limiting factor, when human capital and health care infrastructure are also scarce
+and fully utilized already (Rennie et al., 2007).
+Modeling results imply that male circumcision could be a highly cost effective intervention (Gray et al., 2007b; Kahn et al.,
+2006), but it is essential that circumcisions be offered in a safe and sterile clinical setting by a certified medical
+professional in order to minimize adverse events (UNAIDS, 2007b) which will require resources that are scarce in most of
+sub-Saharan Africa. While the WHO/UNAIDS recommendation that circumcision be made cheaply available to any man
+requesting it on a voluntary basis should be followed, broader interventions are likely to be most effective if designed
+carefully to target males in specific age groups at different times during the intervention.
+The overall aim of the work presented here is to investigate the relationship between reductions in individual-level femaleto-male transmission of HIV at different ages and population-level indicators of an HIV epidemic, incidence and
+prevalence. We feel strongly that without an understanding of the relationship between age-specific individual-level risk
+reduction and population-level epidemic control in this specific case, it is premature to begin serious work to address the
+many serious remaining concerns or to begin designing or testing realistic male circumcision interventions. Only if there
+is a high likelihood of obtaining significant reduction in incidence and prevalence within a reasonable time, resulting from
+realistically attainable coverage of male circumcision, would it be justifiable to initiate expensive, resource intensive
+design, testing and roll-out activities for male circumcision interventions. Fortunately mathematical modeling provides a
+comparatively cheap, efficient and rapid way to begin developing such an understanding. A number of mathematical
+models have already begun to illuminate different aspects of the population-level costs and effects of male circumcision.
+Orroth and colleagues use the STDSIM model that has been previously applied in a number of investigations of HIV
+transmission dynamics (van der Ploeg et al., 1998) to carefully model the relationship between risk behaviors, the fraction
+of men who are circumcised and the prevalence of other sexually transmitted infections and the prevalence of HIV in the
+-2-
+
+Four Cities study populations(Carael and Holmes, 2001) to test the hypothesis that the joint variation in these three
+predictors largely explains the observed differences in HIV prevalence across the Four Cities (Orroth et al., 2007). The
+results of this impressive modeling exercise strongly suggest that by lowering the likelihood of female-to-male
+transmission, and simultaneously reducing the incidence and prevalence of ulcerative sexually transmitted infections that
+facilitate infection with HIV, male circumcision can result in significant reductions in HIV transmission, and hence in the
+prevalence of HIV. While this study does not speak directly to the possible effects of large scale male circumcision
+interventions, the results clearly support the notion that increasing the proportion of men who are circumcised can lead to
+reductions in the prevalence of a number of sexually transmitted infections, and perhaps a synergistic effect that
+combines and builds on the benefits of lowering the prevalence of ulcerative sexually transmitted infections and reducing
+the likelihood of female-to-male transmission of HIV.
+Williams and colleagues (2006) use a dynamical compartmental simulation model to investigate the impact of male
+circumcision interventions of varying coverage on the HIV epidemic in sub-Saharan Africa. In agreement with
+expectations, their results demonstrate that high-coverage male circumcision interventions that reduce female-to-male
+transmission by 60 percent can significantly reduce incidence and prevalence of HIV and AIDS-related deaths, and that
+such an intervention would be equivalent to an intervention, such as a vaccine, that reduces transmission in both
+directions (female-to-male and male-to-female) by about 37 percent. The Williams et al. model is not age-stratified,
+collapses males and females into one group and does not simulate or compare different intervention designs that attempt
+to balance cost and complexity against short and long-term effectiveness.
+Podder and colleagues (2007) and Nagelkerke and colleagues (2007) have built mathematical models of HIV epidemics
+that address fundamental properties of the epidemic process in a general sense and the potential effects of male
+circumcision interventions in different contexts, respectively. The results of Podder et al. suggest that it will not be
+possible to extinguish an HIV epidemic using male circumcision alone, but that such an outcome could result from very
+effective combinations of male circumcision and other interventions. Nagelkerke et al. use two dynamical models with
+contrasting sexual mixing patterns to demonstrate that high coverage male circumcision interventions have substantial
+effects on HIV prevalence in both cases. Women in their models do not benefit as much as men but do nonetheless
+enjoy significant reductions in prevalence.
+Finally, modeling work by Gray and colleagues (2007b) and Kahn and colleagues (2006) address, among other things,
+the cost effectiveness of male circumcision interventions. The stochastic simulation model of Gray et al. is the only one to
+explicitly investigate the possible effect of behavioral disinhibition –an increase in risk taking behavior following
+circumcision resulting from the incorrect belief that circumcision is highly effective in preventing infection for individual
+men. Their results confirm those of the other models, to the effect that male circumcision can significantly reduce HIV
+prevalence, adding that this may be achieved in a cost-effective way. Gray et al. caution that behavioral disinhibition
+could largely counteract these positive effects of the intervention and that additional work should be undertaken to
+develop a more predictive understanding of the possible effects of behavioral disinhibition. Kahn et al. use a relatively
+simple model to draw the conclusion that even low coverage male circumcision interventions could have significant
+effects at an acceptable cost in populations with moderate to high HIV prevalence. They point out that the potential costs
+are more than offset by savings on medical care for HIV and AIDS care.
+Together these models support the empirical evidence and demonstrate at the population level the potential for male
+circumcision to significantly diminish the HIV epidemics affecting sub-Saharan Africa in a cost-effective and reasonably
+equitable way, with caution raised around the issue of behavioral disinhibition and the fact that male circumcision alone is
+not likely to extinguish an HIV epidemic. Missing is a detailed understanding of how male circumcision affects people of
+either sex at different ages, and critically, how different male circumcision intervention designs affect the outcomes.
+
+2 Aims & Specific Hypotheses
+This investigation uses a modeling approach:
+1. To better understand how disease and demographic processes work together to create and shape an HIV
+epidemic. This is necessary in order to fully understand what the net effects of interventions are.
+2. To begin characterizing the relationship between coverage of a male circumcision intervention (percent
+-3-
+
+uncircumcised men who are circumcised) and the effectiveness of male circumcision interventions.
+3. To investigate the relationship between age at circumcision and intervention outcome, and to identify the age
+group(s) in which male circumcision interventions are most likely to be effective in reducing the burden of HIV in
+the population.
+4. To demonstrate approximate equity in outcomes for both sexes and all ages resulting from male circumcisions
+that directly affect only men of certain ages.
+There is strong empirical evidence that HIV has a severe impact on standard demographic processes such as increasing
+mortality in young adults, an otherwise healthy age group, and adversely affecting fertility (for example: Garenne et al.,
+2007; Gregson et al., 2007; Hunter et al., 2003; Kahn et al., 2007; Lewis et al., 2004; Nyirenda et al., 2007; Terceira et al.,
+2003; Zaba and Gregson, 1998; Zaba et al., 2007). However, directly measuring the population-level demographic
+impacts of the HIV epidemic using empirical data is challenging because the influence of HIV cannot be easily
+disentangled from a host of other exogenous and endogenous changes that have been occurring in areas experiencing
+HIV epidemics. Some circumstances that can mask the impacts of HIV to various degrees include civil war, famine,
+family planning programs, and changes in healthcare infrastructure. Using a model it is possible to hold everything else
+constant and simulate only the influence of an HIV epidemic on a population. While it will never be true that HIV is the
+only force of change affecting a population, understanding how HIV alone changes the demography of a population is an
+important first step necessary to plan for the possible impacts of interventions. Understanding how an HIV epidemic
+affects a population by itself makes it possible to compare how interventions affect both the epidemiology of the epidemic
+and the demography of the population.
+Another important factor affecting the outcome of male circumcision intervention scenarios is the proportion of the
+uncircumcised male population that participates in the intervention. Acceptability studies (UNAIDS, 2007b; Westercamp
+and Bailey, 2007) conducted in a number of African countries suggest that a substantial proportion of uncircumcised men
+would consider becoming circumcised if it would reduce the likelihood of HIV infection. The actual coverage of male
+circumcision intervention programs is likely to exhibit substantial regional variability according to variation in cultural
+norms, resources, and healthcare infrastructure. Obviously the number of new infections averted will increase as the
+proportion of circumcised men increases, but beyond this simple assertion, the complex dynamic nature of HIV epidemics
+makes it hard to predict exactly how intervention coverage is related to HIV incidence and prevalence. The relationship is
+not likely to be linear, for example increasing the proportion of uncircumcised men who get circumcisions from 10 to 20
+percent is not likely to have the same effects as increasing the coverage from 80 to 90 percent.
+Age at circumcision is known to affect the extent to which circumcision limits HIV acquisition among men and boys. For
+example, Kelly et al. (1999) find a significant difference in the HIV prevalence among rural Ugandan men circumcised
+prepubertally versus those circumcised postpubertally. In that situation circumcision before onset of sexual activity was
+clearly more effective in reducing HIV acquisition. Although these and similar findings are important, we have chosen to
+wait for more evidence before incorporating age-specific effectiveness into our model. Instead, we explore the more
+fundamental and fully general question of how age at circumcision affects the timing (lag) and magnitude of the effects at
+different ages, assuming an age-constant effectiveness of male circumcision.
+It has been suggested that using resources on an intervention that has only been shown to directly reduce male
+susceptibility to HIV and may create significant new risks for women (Hankins, 2007) is unjustified in Africa where both the
+individual and population level effects of HIV are often worse for women. The general age profile of incidence and
+prevalence for women is younger and more concentrated, and this has important implications for the demography of an
+affected population. Together these features of the female epidemic deprive women as a group of more years of life and
+prevent many of them from surviving through their reproductive careers, or from fulfilling their reproductive potential during
+the years they do live. This in turn can have a sizable effect on fertility which leads to further changes in the age structure
+and growth rate of the population. For these and many other reasons it is critical to understand how a male circumcision
+intervention affects women. Epidemiologically, it is clear that any intervention that prevents a man from becoming
+infected will also protect his future sexual partners, but precisely how this plays for women of various ages at different
+times during the epidemic and the intervention and for the population as a whole can and should be demonstrated
+through modeling.
+
+-4-
+
+The specific hypotheses that will be investigated with respect to male circumcision intervention design are:
+1. As the coverage – the proportion of uncircumcised males who are circumcised as part of the intervention – of a
+male circumcision intervention increases, the magnitude of the effect will increase in a non-linear way such that
+substantial effects are only obtained with high coverage rates (nearly all men circumcised).
+2. The age at which males are circumcised will affect both the eventual overall magnitude of the population-level
+reductions in HIV incidence and prevalence and the duration of the lag between intervention and detectable
+effect. At-birth through pre-adolescent age interventions will have the greatest impact with a longer lag as the
+circumcision age is made younger. The best result in terms of short lag, greatest impact, cheapest cost and
+simplest logistics over the long term will be obtained through a sequenced intervention that simultaneously
+circumcises infants and young men until the first cohort of infants are young men, at which time the ‘young man’
+circumcisions can stop.
+3. In the absence of increased unsafe sexual practices (such as sex before circumcisions have fully healed),
+females benefit to roughly the same extent as males with a negligible lag.
+
+3 Methods
+A population affected by HIV and further impacted by interventions designed to ameliorate the effects of HIV is a very
+complex system. Part of this complexity results from the fact that HIV simultaneously affects both mortality and
+reproduction. Heterosexual intercourse – the primary mode of transmission in the sub-Saharan African settings that
+concern us – is also the mode of conception, with the result that disease transmission and population reproduction are
+tightly coupled, and interventions aimed at disrupting disease transmission can also interfere with fecundability and vice
+versa. Moreover, the excess mortality wrought by HIV also affects reproduction by preventing women from living all the
+way through their reproductive years. Together these factors alter the growth rate, the age structure, the pairing
+(marriage and non-marital union) market, and other fundamental characteristics of the population, with the consequence
+that the raw numbers of individuals eligible for or susceptible to various events change significantly as an epidemic
+progresses, or as an intervention is implemented. When heterogeneity with respect to age, sexual activity, susceptibility
+to infection and other factors is added to the system, the outcomes become even more complex as subpopulations
+defined along these dimensions move through the HIV epidemic more or less quickly, again changing their overall
+numbers and the fraction of the total population they comprise.
+Acknowledging the significant complexity of the system we want to examine, we adopt an investigative strategy that is
+primarily concerned with developing a more accurate understanding of how the system works as a whole – how all its
+parts react together to different changes – rather than attempting to develop detailed, precise knowledge of one or two
+components of the system in isolation. Critically, with this approach the goal is not to create an accurate reflection of
+reality that can be used to predict or forecast what will happen to a specific population. Rather, the aim is to develop a
+more general understanding of how systems (epidemics) of this type work; an understanding that can be applied to a
+range of similar systems to guide thinking and reduce the likelihood that simplistic intuitions are used when more
+sophisticated knowledge is necessary. In short, we create a heuristic device whose primary function is to replace vague
+(and often incorrect) intuition in understanding how complex multidimensional systems of this type function. Our aim is
+contribute to creating theory rather than to produce a perfect description of a single system.
+Applying this epistemological approach to the problem at hand, we use a stochastic individual-level microsimulator to
+guide our thinking about the hypotheses and to produce suggestive results. A model of this type is posed at the level of
+individual people, allowing ‘virtual’ people to interact with each other subject to rules embodied in a set of state transition
+probabilities that govern to whom and when various events occur. In keeping with our philosophy, this structure allows us
+to represent the main features of all the processes that interest us in a way that captures the important relationships and
+influences in an internally consistent fashion. For example, women searching for partners will only be successful if there
+exist potential males with whom to form a partnership, and the success of each individual woman’s search will depend on
+the availability of males of various types. Likewise, males searching for partners will face the same constraints, and the
+final partnership formation dynamic will take into account, and results from, the joint preferences of the individual females
+and males in the search and the number of females and males who are available to pair. Another example relates to
+divorce or separation, modeling women, men and unions as separate entities allows us to apply a probability of divorce or
+-5-
+
+separation to unions between existing women and men, confident that such a mechanism affects the unit that it should –
+the union – without forcing either component of that unit – individual women or men – to do anything inconsistent.
+We alluded above to the tightly coupled nature of a sexually transmitted disease such as HIV and the vital dynamics of a
+population. A fundamental reason for choosing the microsimulation approach to modeling this system is to take
+advantage of its ability to accurately represent and maintain the internal consistency of the system; in this case to properly
+represent the dynamic link between the sexually transmitted infection and the sexually reproducing population in a fully
+internally consistent way. Microsimulation is the only way to do this without making strong simplifying assumptions or
+forcing the structure of the model to be very different from the reality it seeks to reflect – for example, collapsing the two
+sexes into one, or forcing males to accommodate to female behavioral preferences or vice versa.
+A further defining feature of microsimulation models is the fact that they are stochastic. Virtual people are stepped
+through time, and at the beginning of each time step the eligibility of each person, union or other entity for each event that
+might affect them is assessed, and all eligible entities are then exposed to the risk of that event occurring. This ‘exposure’
+is accomplished by drawing a random number in the range 0 to 1 and comparing that to a predefined probability of
+occurrence (that varies according to the specific attributes of the relevant entity) for that event; when the random number
+falls below the value of the probability, the event ‘occurs’. Perhaps taking some liberty with terminology, we refer to these
+event-occurrence probabilities as hazards because they are all defined with reference to the duration2 of the time step on
+which the model operates, in our case one month. Because individual people (and unions) move between states based
+on the results of these repeated random experiments, the model produces a different result every time the model is run.
+In this way microsimulationmodels are inherently different from deterministic compartmental models such as that used in
+the analysis by Williams et al. (2006) and others discussed above.
+Deterministic compartmental models typically treat aggregate groups of people as the fundamental entities in the model
+and use differential equations or discrete matrix approximations to transition individuals between states (Caswell, 2001),
+producing the same result each time the model is run with a given set of parameter values. Models of this type are
+constructed of a number of ‘compartments’ that contain homogenous groups of people in different states. For example,
+one compartment may hold all people between the ages of ten and fifteen who are susceptible to HIV but not yet infected.
+The movement of people between these compartments (states) is then governed by rates of movement that can depend
+on many things including the numbers of people in various compartments and complex parametric functions – typically
+expressed as differential equations with reference to time. Because of the aggregation of individuals into compartments,
+links between specific individuals can no longer be represented, and this makes models of this type poor at reflecting the
+complex dynamics of sexually transmitted diseases that depend entirely on modeling time-evolving links between specific
+individuals. Moreover because women and men in such a model typically have their own rates of transitioning to the
+married or paired state, the model can easily become inconsistent as the number of married or paired women or men is
+not naturally constrained by the availability of partners of the opposite sex – an example of the issue of internal
+consistency that we mentioned earlier.
+Despite these potential shortcomings, deterministic models have many properties to recommend them. Perhaps most
+important, they are typically parsimonious and conceptually straightforward. This makes them relatively easy to construct
+and operate and most importantly minimizes the need for specific parameter values. This makes is possible, and in most
+cases relatively easy, to calibrate or fit these models to real populations – a very significant advantage if one needs to
+accurately reflect reality and make predictions. For these reasons deterministic models have enjoyed widespread use in
+both demography for population projection (for an introduction to standard population projection models: Preston et al.,
+2001)and epidemiology for modeling the spread of infectious disease epidemics (a definitive discussion available from:
+Anderson and May, 1991).
+In contrast microsimulation models often require a large number of parameters, very significant computational resources
+to run and can be very difficult or nearly impossible to calibrate and/or fit. Microsimulation has had limited but increasing
+usage in epidemiological applications, including HIV and sexually transmitted infection research(for example: Auvert,
+2
+
+The term ‘hazard’ has many definitions, depending on the field in which it is used, ranging from ‘the escape rate’ or ‘rate of transition out of the
+current state’ to ‘instantaneous failure rate’ or ‘instantaneous failure probability’, if one is working in a Cox regression framework. Typically a hazard
+rate is defined with respect to a diminishingly brief instant of time, rather than to an appreciable duration like one month. The universal aspect of
+these definitions appears to be that a hazard is a probability of occurrence referenced to time, and in some cases to specific durations of time that
+relate to the degree of exposure to the risk of occurrence of the event in question. Consequently, we believe hazard is an appropriate term to use in
+describing our work, and we are careful to define appropriate time references.
+
+-6-
+
+1991; Auvert et al., 2000; Clark, 2001c; Gray et al., 2007b; Orroth et al., 2007; van der Ploeg et al., 1998), and with the
+advent of supercomputing power microsimulation has been applied to model the entire 300+ million person population of
+the United States in high profile investigations of control strategies for an H5N1 influenza outbreak (Ferguson et al., 2006;
+Germann et al., 2006). In demographic applications, microsimulation has been utilized less, likely because of the large
+quantity of data required to parameterize the models and the difficulty interpreting the results of a stochastic simulation
+that produces different results each time it is run. In economics microsimulation has been used in significant ways to
+investigate the consequences of changes with respect to social welfare programs (for example, Citro and Hanushek,
+1991a; Citro and Hanushek, 1991b).
+Van Imhoff and Post (1998) present a general discussion of the use of microsimulation models for population projections
+and a comparison with the standard deterministic modeling approach. For the task at hand microsimulation offers several
+advantages.
+Foremost, microsimulation allows for complex heterogeneities between individuals and interactions between demographic
+and disease events. For example, using microsimulation we are easily able to allow for the likelihood of HIV transmission
+to vary smoothly with the duration since the transmitting partner has been infected, reflecting the acute, latent, and AIDS
+phases of infection. Furthermore, duration of HIV infection is allowed to influence a number of other individual and social
+characteristics, such as decreasing fecundability and affecting the likelihood of forming a new union. Heterogeneities in
+sexual propensity are easily modeled as are specific age structures of union formation.
+Measuring nuanced demographic results such as HIV-induced changes in population age structure, fertility trends or
+orphanhood rates requires accurately modeling each of these and possibly other complex relationships such as
+concurrency of sexual partnerships(for a discussion of the issue: Kretzschmar and Morris, 1996; Morris et al., 2006;
+Morris and Kretzschmar, 1997). While it is theoretically possible to account for these interactions with deterministic type
+models, the state-space quickly becomes very large and the task of parameterizing the model with aggregate group level
+behavior is intractable and unintuitive. Specifying parameters in microsimulation requires only stipulating a hazard rate for
+individual behavior, often a much more intuitive task.
+Another significant advantage of microsimulation is the richness of the output. Because individuals are the fundamental
+entity in the model, the output from the model is similar to a standard longitudinal dataset with detailed demographic and
+kinship structures, along with disease or other outcomes specified in the model, stratified by time, sex, age and every
+other characteristic defined in the model. Accordingly model output can be analyzed using standard demographic and
+epidemiological measures, such as life expectancy, total fertility rate, age-specific rates, incidence, prevalence, etc.
+Producing these common measures creates transparency in understanding the implications of the model and comparing
+the results to empirical data.
+Finally, the microsimulation approach is well suited to modeling complex intervention scenarios because the actual
+mechanisms through which an intervention acts can be modeled explicitly. Indeed this has been their principle application
+in the epidemiological and economic literature (Citro and Hanushek, 1991a, b; Ferguson et al., 2006; Germann et al.,
+2006). The mechanistic approach toward interventions and detailed population structure lends itself to comparing
+different implementations of an intervention and combining intervention strategies for maximal effect, be it control of an
+epidemic or establishing equity in a welfare program.
+
+3.1 Simulator
+The Structured Population Event History Simulator (SPEHS) (Clark, 2001c, 2006) is used to evaluate the hypotheses
+presented above. SPEHS is an individual-level, two-sex, polygynous union-capable, age-structured, stochastic
+population microsimulation model with a one-month time step. Following is an intuitive description of the demographic
+and disease processes represented by SPEHS. An exhaustive, detailed description of the simulator with mathematical
+expressions, parameter values and technical specifics is provided in the appendix (Section 8)and the authors can be
+contacted directly to address further questions. The simulator and all of the simulated data presented below are available
+on request.
+
+-7-
+
+3.1.1
+
+Population – Epidemic Model3
+
+The simulator contains entities corresponding to individual people, individual unions (both marital and extra-marital)
+between men and women, fertility histories for women, and pregnancies for women. Together with the union-mediated
+links between spouses or partners and between parents and children, this is sufficient to model all the important dynamics
+of a whole population.
+Simulated time is incremented in units of one month, and during each month, every entity is exposed to the risk of the
+events for which it is eligible. Event hazards governing the monthly probability of occurrence of each event are compared
+to random numbers to decide which events occur during a given month. These occurrences and their repercussions are
+recorded – often changing the eligibility of the effected entities for future events – and the process is repeated until the
+desired number of months have been simulated.
+
+3.1.2
+
+Demographic Events
+
+Here is a brief intuitive description of how each demographic event is modeled. The mathematical equations that yield the
+actual event hazards used in the model are presented in the appendix, section 8.3. Mortality is modeled by exposing
+each individual to a monthly risk of dying that varies by age and sex. For HIV positive individuals, the risk of dying also
+varies with the duration since the individual was infected, accounting for the long latent period of HIV infection and the
+relatively shorter period of AIDS morbidity and increased mortality. Fertility is modeled through the inter-birth interval
+model of fertililty presented by Bongaarts and Potter (1983). At any time a fecund female can be identified as waiting for
+conception, pregnant, recovering from a birth or recovering from a miscarriage. A woman’s risk of conceiving varies
+depending on her current ‘waiting’ state (above), her age, time since infection if she is HIV positive and the number of
+sexual intercourse events she experiences in the month, which is calculated as a function of the number and types of her
+unions. The risk of miscarrying increases as time since infection for HIV positive women.
+Nuptiality is modeled to allow polygynous marriage structures, and consequently each month every male and every
+unmarried female are at risk of becoming married. Males and unmarried females mix homogenously within female agemale age- male marriage parity-specific classes. The hazard of wedding (forming a marital union) for randomly selected
+female-male pairs within these classes varies according to female age, male age and male marriage parity4, and is further
+modified by the HIV status of the individual women and men. As HIV positive individuals approach and enter the AIDS
+phase of their illness their propensity to form new unions diminishes. The monthly hazard of divorce for current unions
+depends on the duration of the union, the number of children produced within the union, and each partner’s age and
+duration of HIV infection. Non-marital unions allow intercourse to occur between unmarried individuals and outside of
+marriage and are feasible between any female and any male regardless of current union status, a fact that allows varying
+levels of concurrency to develop in the pairing dynamic. The risk of forming a non-marital union varies with each partner’s
+age and ‘sexual propensity’. Sexual propensity is a normally distributed variable assigned to individuals at birth intended
+to recognize heterogeneity in sexual propensity, that some individuals have a greater preference for sex than others, and
+to allow assortative mixing on this dimension. All non-marital unions have a fixed monthly hazard of termination.
+Within both types of union the partners are at risk of sexual intercourse. Each union is subjected to a daily hazard of
+intercourse over the roughly 26 non-menstruating days of the month. This hazard is modulated by union type and the HIV
+status of both partners, with ‘sicker’ people less likely to have sex. For each individual woman, the total number of
+intercourse events from all unions during a month is used together with her age and HIV status to calculate a probability
+of conception, again older women and women who have been infected for a longer time are less likely to conceive. Very
+importantly, these same intercourse events are used to calculate a monthly probability of transmission from infected to
+uninfected partner for HIV discordant couples. This insures that the transmission and conception dynamics are linked in a
+realistic way.
+
+3.1.3
+
+Effects of HIV
+
+An HIV disease progression (DP) indicator is used to govern the progress of an infected individual’s HIV infection. The
+3
+
+Parts of the following general description of the simulator’s components are quoted from Clark, S.J. 2006. "Demographic Impacts of the HIV
+Epidemic and Consequences of Population-wide Treatment of HIV for the Elderly: Results from Microsimulation." in Aging in Sub-Sahara Africa:
+Recommendations for Furthering Research, Panel on Policy Research and Data Needs to Meet the Challenge of Aging in Africa. Edited by B. Cohen
+and J. Menken. Washington, DC: The National Academy Press.
+4
+‘Male marriage parity’ refers to the number of wives a male has.
+
+-8-
+
+DP indicator consists of a time series of values that correspond loosely to an infected individual’s HIV viral load as the
+disease progresses. The shape of this indicator with time is different for children and adults, reflecting the different pace
+of the disease in children and adults. The shape of the DP indicator with time is that of a lop-sided “U” with the initial
+value being small, relating to the acute infection period, but rapidly decreasing to a very small value that persists for some
+time, modeling the long latent period of HIV, and then increases very slowly as viral load increases and onset of AIDS.
+For children the rapid increase begins at about eighteen months after infection, and for adults the DP indicator begins to
+increase steadily from about 80 months, reaching substantial levels at about 120 months.
+Transmission of HIV between adults occurs only through heterosexual sexual intercourse from an infected individual to
+their partner with an average per intercourse probability of transmission of roughly 10-3 over the course of an HIV infected
+individual’s disease. Individuals can be infected more than once, but their DP indicator starts at the date of their first
+infection; that is re-infection has no impact on the disease process. The actual transmission probability applied to each
+intercourse event is scaled by the DP indicator of the infected individual allowing the transmission probability to change as
+the disease progresses and roughly reflect the infected individual’s viral load, and hence their potential to transmit.
+Infected mothers transmit the HI virus to their newborns at birth with an average transmission probability of about 0.3 over
+the course of an infected woman’s disease. Again, the specific transmission probability applied to a given birth is scaled
+by the mother’s DP indicator allowing her transmission probability to track the progress of her disease and reflect her viral
+load, and hence her potential to transmit at each time following her own infection.
+Infection with HIV has a number of other effects whose details will not be discussed here beyond mentioning that they are
+implemented; see Clark (Clark, 2001c) for details on these effects. Being HIV positive:
+•
+
+increases the probability that a conception will lead to a miscarriage,
+
+•
+
+decreases the fecundity of an infected female,
+
+•
+
+reduces the daily hazard of intercourse between a male and female if one or both are infected,
+
+•
+
+creates a non-zero probability of transmitting the HI virus from an infected to an uninfected individual through
+sexual intercourse,
+
+•
+
+creates a non-zero probability of transmitting the HI virus from an infected woman to her newborn child through
+the birth process,
+
+•
+
+reduces the probability that a possible couple with one or both possible partners infected will form a union,
+
+•
+
+increases the probability that a union will dissolve if one or both of the partners is (are) infected, and
+
+•
+
+increases the probability that an infected individual dies.
+
+3.1.4
+
+Parameters
+
+Demographic parameters for SPEHS are calculated from 38 years of demographic surveillance data collected by
+anthropologists amongst a sample of about 15,000 members of the Tonga tribe of the Gwembe Valley in Southern
+Zambia between 1957 and 1995 (see for example: Clark, 2001b; Clark et al., 1995; Colson, 1960, 1971; Scudder, 1962;
+Scudder and Colson, 1980). The demography of the Gwembe Tonga is fairly typical of a high fertility, high mortality subSaharan African population. Model parameters directly estimated from the Gwembe Tonga dataset (Clark, 2001b)
+include baseline mortality and marital union formation and dissolution. The estimated mortality parameters yield an
+average life expectancy of approximately 50 years for men and 52 years for before the introduction of HIV into the
+population. The actual values of these parameters can be found in the tables in section8.3.
+Parameters controlling the frequency of sexual intercourse and likelihood of conception are back-calculated using the
+non-contracepting inter-birth intervals (Bongaarts and Potter, 1983)and the M & m model (Coale and Trussell, 1974) such
+that the modeled fertility patterns reproduce observed fertility in the Gwembe Tonga data. The result is the model output
+total fertility rate is approximately 6.9 births per woman prior to the introduction of HIV into the population. Together with
+the mortality pattern described above, prior to the introduction of HIV, the model yields an annual crude growth rate of
+approximately 3.8 percent.
+Unfortunately, much less information has been available about the formation, duration or dissolution of non-marital
+unions, although it is accepted that HIV transmission within less formal often overlapping unions is an important factor
+-9-
+
+contributing to the HIV epidemic (Kretzschmar and Morris, 1996; Morris and Kretzschmar, 1997). In SPEHS non-marital
+unions are formed such that on average the males are 7.5 years older than the females (SD – 3.0 years), an average age
+differential supported by empirical data from Zimbabwe(Hallett et al., 2007). The monthly hazard for dissolving is 0.45 for
+all non-marital unions. The aggregate frequency of forming non-marital unions is set at a level such that enough HIV
+transmission is induced to create a moderately severe HIV epidemic. Recall that the individual frequency of non-marital
+unions depends on age, sex and sexual propensity. This approach is not satisfying, but until very recently data about
+sexual behavior in sub-Saharan Africa has been sparse and unreliable. A number of recently completed and current
+studies have sought to improve knowledge in this area(for example, Gregson et al., 2002), and we anticipate that this is
+an area where HIV models, including ours, will improve in the future.
+HIV related parameters are collected and estimated from a variety of sources in the literature. As noted in the previous
+section, HIV transmission, along with HIV mortality and other behavioral responses to HIV, depends on the duration of
+time since initial infection. The DP indicatorcurve roughly models viral load over the course of HIV infection, such that
+transmissibility is very high during a two to three month acute infection stage, then very low for a five to eight year latent
+phase and increasing over the final years of AIDS until death. The actual parameter values for the disease progression
+indicator curve can be found in Table 7. Averaged over this entire period from acute HIV infection until death,
+transmission is approximately nine per thousand sexual intercourses for male to female transmission and six per
+thousand for female to male transmission, similar to that reported by Wawer et al. in Uganda(2005). The likelihood of
+mother to child transmission is estimated to be one out of every three births to an HIV positive mother (for Africa and
+similar settings in Latin America: Newell, 2003; Newell et al., 2004; Orio et al., 2007)
+The DP indicator curve also informs HIV mortality, such that the risk of dying increases as the disease progresses to
+AIDS. For this purpose a separate curve is used for pediatric HIV infections. The average duration from infection to
+death for adults twenty and older is 8.3 years for females and 8.1 years for males. The influence of HIV on other
+behavioral processes such as union formation and frequency of sexual intercourse is adjusted to roughly model additional
+morbidity as the disease progresses.
+
+3.1.5
+
+Running
+
+To run the simulator we first begin with a small population of fifteen males and fifteen females and run the model without
+introducing HIV into the population until a stable population is created. This occurs after approximately 1,500 months of
+simulated time with a population of roughly 4,400 individuals. At this point HIV is introduced into the population through a
+random monthly incidence of fifteen infections per 10,000 adults aged 15 to 49 per month. This level of random incidence
+remains throughout the epidemic, although after the epidemic has taken hold it contributes very little to the total number of
+new infections.
+Because the model is stochastic the realization of each simulation is different, and while the general shape of the
+epidemic is similar every time, there can be a great deal of variation in the initial rate at which the epidemic grows and the
+time scale over which the epidemic reaches its peak. This results from the fact that the assortative sexual mixing on age
+and sexual propensity can create variability in the number of secondary infections created by those randomly chosen to
+seed the epidemic. In addition when the number of infected individuals is small early in an epidemic, the randomness of
+exactly which individuals are infected and what they do can cause epidemics to grow slowly or quickly with significant
+variability. As a result of these stochastic processes, the model must be run many times to generate stable and reliable
+results. The results and figures presented below are aggregated over 100 simulations of each scenario.
+
+3.2 Male Circumcision Intervention Scenarios
+The principle purpose of this investigation is to understand the potential epidemiological and demographic outcomes of
+different male circumcision intervention strategies. To illuminate these we construct sixteen different interventions by
+varying the age at circumcision and coverage of the circumcision program. Roughly speaking the ages are ‘at-birth’,
+‘teenage’, ‘young adult’ and ‘mixed’, and coverage levels include 10, 25, 50 and 75 percent of the uncircumcised male
+population. This results in sixteen different intervention strategies whose outcomes can be compared. All interventions
+are introduced 30 years after the initial introduction of HIV into the population, approximately the current ‘age’ of most HIV
+epidemics in Africa now.
+The individual-level reduction in susceptibility to HIV infection conferred by circumcision is taken from the South African
+- 10 -
+
+trial (Auvert et al., 2005)5. The HIV incidence rate ratio reported by that trial, controlling for various behavioral factors, is
+0.39 comparing circumcised to uncircumcised men. To reflect this in the simulator, the monthly probability of HIV
+infection is multiplied by 0.4 if the male partner is circumcised. Recall that the monthly probability of infection is calculated
+on a per couple basis and depends on the HIV status of the partner, their duration of infection and how many times the
+two have sex during the month, which in turn depends on the type of union they have, their ages and HIV status.
+It is important to note that in this model male circumcision status does not affect any behavioral or biological processes
+other than the risk of heterosexual male HIV acquisition. In particular male circumcision does not affect fertility, the risk of
+male to female HIV transmission, or short or long term changes in sexual behavior. These additional concerns and
+complexities can be built into future models.
+
+3.2.1
+
+Scenario 0: Reference Population – No Intervention
+
+The reference population is created by simulating an HIV epidemic without interventions. This population experiences
+only the low, steady rate of circumcision that can be considered ‘normal’. In order not to overstate the impact of
+interventions, a random 25 percent of the male population is circumcised at birth, this proportion being slightly above the
+median circumcision rate for sub-Saharan African countries with severe HIV epidemics (UNAIDS, 2007b; Williams et al.,
+2006). Accordingly, the coverage of interventions relates to the remaining 75 percent of males who are not routinely
+circumcised at birth; for example, a 25 percent coverage intervention circumcises 25 percent of the uncircumcised males,
+that is 18.75 percent of the total male population.
+
+3.2.2
+
+Scenario 1: At Birth Intervention
+
+The first intervention scenario is designed to explore the results of circumcising males at birth. This is perhaps the easiest
+and most cost-effective intervention strategy because a large fraction of infant males are already in contact with a medical
+facility at the time of birth and the medical infrastructure necessary to facilitate pregnancy and birth already exists. This
+scenario circumcises additional (beyond the 25 percent routinely circumcised) males at birth. Randomly selected males
+are circumcised at birth with the specified level of coverage. Because selection is entirely at random and all male infants
+are eligible, infants who are already HIV positive are not prevented from participating in the intervention.
+
+3.2.3
+
+Scenario 2: Teenage Intervention
+
+Providing protection from infection before young men become sexually active is likely to be the most effective because it
+has the potential to prevent the greatest number of new infections. This strategy will also be more efficient if HIV status is
+not a criterion for treatment because it will ensure that all circumcisions are performed on HIV negative males. An
+intervention that targets school-age males could also utilize the school system to disseminate information and attract
+participants, thus reducing cost and complexity. In the teenage intervention scenario, males who were not routinely
+circumcised at birth are eligible to be circumcised between the ages of ten and thirteen years (a period of 48 months). A
+monthly probability of circumcision is defined such that a male’s probability of being circumcised as he lives through this
+age range is equal to the coverage level of the specific intervention. For the 10, 25, 50 and 75 percent coverage
+interventions, these monthly probabilities of circumcision are: 0.00219, 0.00598, 0.01434 and 0.02847.Again the
+intervention does not select males based on any risk factors and does not discriminate amongst males that are already
+HIV positive.
+
+3.2.4
+
+Scenario 3: Young Adult Intervention
+
+Targeting sexually active young men is likely to produce appreciable results in the shortest period of time because this is
+the age group that is most actively transmitting the disease. From an intervention design point of view, this may also be
+the most responsive age group, but may also be the hardest to identify and recruit, a significant potential drawback. The
+most important limitation of targeting this age group, however, is the fact that many of them will already be HIV positive,
+and in that case without HIV status as a criteria, some circumcisions will be wasted and additionally have the potential to
+create even more new infections in female partners if newly circumcised HIV positive men do not allow their wound to
+heal completely before resuming sex. In the young adult intervention scenario, uncircumcised males between the ages of
+18 and 24 are eligible to be circumcised. As in the teenage scenario the likelihood that males who survive the entire 84
+5
+
+The South African trial was the only one to have reported final results when this work was done. The additional trials conducted in Uganda and
+Kenya produced very similar results, so this level of effect is appropriate.
+
+- 11 -
+
+month period uncircumcised matches the target intervention level. The monthly probabilities of circumcision in this case
+are: 0.00125, 0.00342, 0.00822 and 0.01637 for the 10, 25, 50 and 75 percent coverage interventions. As before, HIV
+positive males are eligible, a situation that could adversely affect the outcome of this intervention because some HIV
+positive men may resume sexual activity before their wounds have healed completely, thus putting their female partner at
+much higher risk of infection.
+
+3.2.5
+
+Scenario 4: Mixed Age Intervention
+
+This final scenario considers a combination of ‘young adult’ and ‘at birth’ intervention scenarios. Young adults aged 15 to
+24 are circumcised in the same scheme and target level as described above for the first fifteen years of the intervention,
+and infants are also circumcised from the start of the intervention for the duration of the epidemic. This joint scenario is
+designed to address the largest concerns with both the ‘at birth’ scenario, that the intervention will not have any impact
+until infants reach ages of sexual maturity, and the ‘young adult’ scenario, that the intervention does not reach men until
+after they have already become sexually active, and hence have already been exposed to the risk of being infected with
+HIV. The objective is to combine the best of the two interventions keeping cost, complexity and acceptability in mind.
+The young adult intervention will have an immediate impact because that age group is just beginning to be highly sexually
+active, but this intervention is relatively complex and requires attracting adult men to the idea of being circumcised and
+then to an actual facility where it can be done – both possibly limiting the coverage that could be attained. In contrast the
+at birth intervention is comparatively simple and can be done in conjunction with the birth while the mother and infant are
+still in close contact with the medical system, something that a majority of women are to one extent or another around the
+time of birth. The obvious drawback is that the infants must age to sexual maturity before the intervention can take effect.
+The price for this optimization is a resource-intensive startup as twice as many circumcisions are performed during the
+first fifteen years while both age groups are eligible.
+
+3.3 Simulations
+To evaluate the impact of each of these intervention scenarios at each level of coverage we first simulate a ‘control’ HIV
+epidemic for 80 years in order to observe the natural course of the epidemic without intervention. Each of the sixteen
+interventions is implemented 30 years into the epidemic by rolling back the control epidemic to its state at the end of year
+30, implementing the intervention strategy and simulating forward for 50 years. The control epidemic and each of the
+sixteen intervention scenarios are simulated 100 times, and the results presented below are averages over those 100
+simulations.
+A number of epidemiological and demographic outcomes are computed from the aggregate set of 100 simulations for
+each scenario. Section 4presents the demographic impacts of the HIV epidemic on the control population: HIV
+prevalence and incidence over the course of the epidemic, population pyramids at time points in the epidemic, changes in
+the total fertility rate as the result of HIV, changes in life expectancy, changes in the crude growth rate and changes in the
+crude death rate. Section 5 focuses on the results of the male circumcision intervention scenarios. Indicators presented
+are male and female HIV prevalence, male age-specific HIV prevalence, and the percentage of new infections averted by
+each intervention, calculated by subtracting from one the ratio of HIV incidence in the intervention scenario to HIV
+incidence in the control scenario.
+
+4 Demographic impacts of HIV
+This section focuses on the demographic changes that result from a moderately severe HIV epidemic with no
+intervention. Figure 1 shows the population-level HIV prevalence and incidence for females and males in the epidemic
+created by the parameterization of SPEHS described in section 3.1.4. Female HIV prevalence peaks around 27 percent
+about 29 years into the HIV epidemic and male prevalence peaks around 21 percent about 38 years into the epidemic.
+These all-age HIV prevalence rates are higher than any empirical national epidemics, and are in line with some of the
+most severe local epidemics that have been observed such as urban Botswana or KwaZulu-Natal province in South
+Africa. The trend of male HIV prevalence growing more slowly and being several percentage points lower than female
+HIV prevalence is consistent with most observed HIV epidemics in southern and eastern Africa(Stover, 2004), and is a
+direct result of fact that women are consistently paired with older men(Garnett and Anderson, 1993).
+- 12 -
+
+Figure 1: Simulated HIV Prevalence & Incidence – No Intervention
+
+Figure 2 shows population pyramids before the introduction of HIV and at fifteen-year intervals during the HIV epidemic.
+The initial broad-based population pyramid is characteristic of a high fertility, high mortality population that is growing
+rapidly, consistent with the parameter values used to run the simulator. After fifteen years HIV has had little noticeable
+impact on the age-structure of the population, but after 30 years HIV has severely affected both mortality and fertility.
+Because of the reduction in fertility and increase in child mortality, a smaller proportion of the population is aged zero to
+four, and concurrently as adults age through their 20s and 30s and become infected and die, the proportion of adults 50
+and older diminishes very sharply. Together these changes lead to a pinching in at the base of the population pyramid
+and a dramatic thinning at older ages. Perhaps ironically the age group with the largest share of the population is the
+young adult and child ages, roughly 30 and younger. As the epidemic stabilizes the proportion of older adults increases
+slightly as the proportion of younger adults falls. Noteworthy is the substantially greater proportion of males than females
+between the ages of 20 and 50. This differential, again resulting from the average age difference between women and
+men in unions, has the potential to cause many problems in the marriage market, household structure and other
+organizational structures of the society that rely on near equal numbers of women and men.
+Figure 3 shows the aggregate impact of HIV on expectation of life at birth and the annual crude death rate. The decline in
+life expectancy is dramatic, declining from about 52 years to 21 years for females and from about 49 years to 24 years for
+men. The enormous decline is attributable to a substantial increase in under-five mortality from about 40 per 1,000 to 81
+per 1,000, a change to which life expectancy is particularly sensitive, and to the unusual and severe burden of mortality in
+the young adult age group, roughly 30 to 40. The decrease in life expectancy may be overstated by the model even in an
+epidemic as large as this because of the high mother to child transmission rate (one per three births to HIV positive
+mothers) and the short life expectancy for infants born with HIV (all die before the age of five). Currently in real HIV
+epidemics widespread availability of AZT and Nevirapine reduces mother-to-child transmission several fold.
+Nevertheless, even after removing the effect of pediatric HIV the impact of HIV on life expectancy is still dramatic. As
+noted above, in the full HIV epidemic simulation life expectancy for females is less than that of males because of the age
+profile of incidence and prevalence with women being infected and hence dying earlier at younger ages, see Figure 5.
+Again, this is due to the age differential in partnerships that we have highlighted several times already.
+
+- 13 -
+
+Figure 2: Population Py
+yramids during an HIV ep
+pidemic
+
+Figu
+ure 4 shows the
+t change in
+n total fertility rate and the overall
+o
+chang
+ge in the popu
+ulation annuall crude growth
+h rate. Total
+fertility rate decrreases from approximately
+a
+y 6.8 to around 3.9 childrren per woma
+an as result of the HIV epidemic and
+ounds to sligh
+htly above 4 after
+a
+the epidemic has pea
+aked and reacched equilibriu
+um. Note tha
+at the change in TFR only
+rebo
+cap
+ptures loss of births due to HIV associatted infecundityy and morbidity, and does not account for loss of birrths resulting
+from
+m increased mortality
+m
+to child-bearing
+c
+a
+aged
+women. Loss of birth from both
+h sources, ass well as losss of life from
+morrtality is captu
+ured by the ca
+atastrophic de
+ecline in the annual crude growth
+g
+rate, which
+w
+decreasses from 40 pe
+er 1,000 to a
+net loss of 5 per 1,000 as a result of the HIV
+V epidemic.
+
+- 14 -
+
+Figure 3: Liffe Expectanc
+cy at Birth an
+nd Crude Dea
+ath Rate
+
+Figure 4: Crude
+C
+Growtth Rate and Total
+T
+Fertility
+y Rate
+
+- 15 -
+
+Figure 5: Change in Average
+A
+Age
+e of HIV Infec
+ction
+
+ure 5 shows the
+t average age
+a of infectio
+on with HIV th
+hrough the epidemic. At the start of the epidemic whe
+en the entire
+Figu
+pop
+pulation is sussceptible, infec
+ction is sprea
+ad across the sexually activve population creating an average
+a
+age of
+o infection of
+around 27 years for females and
+a 33 years for males (th
+he now familia
+ar age differen
+nce). Howeve
+er, after the epidemic
+e
+has
+t population
+n and saturate
+ed the higher--risk adult pop
+pulation, new infections be
+ecome concen
+ntrated in the
+movved through the
+you
+unger population as they begin
+b
+sexual activity,
+a
+and th
+he average age
+a of infectio
+on decreases to around 19
+9 for females
+and
+d 24 for maless. The epidem
+miological sign
+nificance of th
+his dynamic iss demonstrate
+ed in the age-specific preva
+alence below
+in Figure
+F
+8. In general,
+g
+the diistribution of age
+a at infectio
+on will be a prroduct of two attributes of the
+t population
+n: the sexual
+beh
+havior of the population
+p
+and in particula
+ar the age of sexual
+s
+debut and sexual mixing
+m
+pattern
+ns, and the se
+everity of the
+HIV
+V epidemic. In the populattion modeled by the simula
+ator, sexual activity
+a
+beginss at a young age, women tend to take
+parttners several years older than themselves and the epidemic is severe,
+s
+increa
+asing the exp
+posure to HIV
+V for sexually
+active individualss, and hence creating
+c
+the young
+y
+average
+e age of infecction. This is exacerbated
+e
+b the fact tha
+by
+at the initially
+ecome infecte
+ed and die ea
+arly in the epidemic and are subsequen
+ntly not replacced because
+at-rrisk adults at older ages be
+you
+unger at-risk individuals who
+w
+would ag
+ge into those older age groups are inffected and die at younge
+er ages. The
+imp
+portance of the distribution of age at infe
+fection and the
+e way it shiftss as the epide
+emic progressses for underrstanding the
+dem
+mographic ch
+hanges wroug
+ght by an HIV
+H
+epidemicc and for pla
+anning effectiive interventiion programss cannot be
+ove
+erstated.
+
+5 Interve
+ention Results
+R
+The
+e following de
+escribes results of the male
+e circumcision
+n HIV intervention scenario
+o simulations described in section 3.2.
+Gen
+nerally, the model
+m
+results show
+s
+that with
+h broad coverrage male cirrcumcision intervention may substantiallyy reduce the
+burd
+den of a seve
+ere HIV epidemic, but alone
+e male circum
+mcision is not likely to be th
+he ‘silver bulle
+et’ that ends th
+he epidemic.
+Figu
+ure 6 shows the
+t change in male all-age HIV prevalen
+nce as a result of each inte
+ervention scen
+nario. Figure 7 shows the
+perccentage reduction in HIV in
+ncidence for females
+f
+and males
+m
+in each
+h intervention scenario at different
+d
+stage
+es in the HIV
+epid
+demic. Figurre 8 shows male
+m
+age-spe
+ecific HIV pre
+evalence to demonstrate
+d
+how the benefit of the intervention is
+disttributed across age.
+
+- 16 -
+
+Figure 6: Male HIV pre
+evalence in Male
+M
+Circum
+mcision Interv
+vention Scen
+narios
+
+5.1
+1 Targett Age and
+d Coverag
+ge of Circcumcision Intervention
+Figu
+ure 6 shows the change in
+i male all-ag
+ge HIV prevalence in each
+h of the intervvention scena
+arios. As an
+nticipated the
+reduction in prevvalence varies
+s substantiallyy based on th
+he proportion of males who
+o become circcumcised, from
+m as little as
+a
+redu
+uction of one half
+h of one pe
+ercent when ciircumcising 10
+0 percent of the uncircumccised males to
+o as much as
+an absolute
+thre
+ee to six perccentage points
+s when circum
+mcising 75 pe
+ercent of the uncircumcised males. Cle
+early there is a non-linear
+rela
+ationship betw
+ween coverage
+e and prevale
+ence while the
+ere appears to
+o be little relattionship betw
+ween coverage
+e and the lag
+betw
+ween the starrt of the interve
+ention and on
+nset of its effect on prevalen
+nce.
+The
+e age group to
+o target depen
+nds on the goals of the inte
+ervention. Forr creating an immediate red
+duction in HIV
+V prevalence,
+inte
+erventions targ
+geting young males betwe
+een the ages of 18 and 24
+2 are the mo
+ost effective. However, ovver time this
+inte
+ervention perfo
+orms significa
+antly worse th
+han other interventions beccause some of
+o these young
+g men have already
+a
+been
+infe
+ected before they
+t
+become eligible for th
+he intervention
+n. In contrast, the interven
+ntion targeting
+g newborn inffants has no
+imp
+pact at all unttil 15 to 17 years
+y
+after the
+e intervention
+n is introduced
+d, but after 50
+5 years this intervention has
+h reduced
+prevvalence as much
+m
+as the teenage and mixed
+m
+interventtions, and mo
+ore than the adult interventiion, hence be
+eing the most
+effe
+ective in the lo
+ong run. The
+e intervention targeting young teenage boys
+b
+(age 10-13) is a middle ground bettween these,
+havving a less imm
+mediate reduc
+ction in prevalence, but havving a greaterr reduction ovver time. The mixed interve
+ention, which
+circcumcises both
+h young adultts for the first fifteen years and infants for
+f the duratio
+on of these in
+ntervention, combines
+c
+the
+possitive aspects of each of th
+he interventio
+ons and has the best overall positive im
+mpact on ma
+ale HIV preva
+alence. This
+com
+mprehensivelyy ideal result comes
+c
+at the cost
+c
+of rolling out an interve
+ention that inittially requires roughly twice
+e the number
+of circumcisions
+c
+as the others because it ta
+argets two age
+e groups.
+The
+ese findings are
+a further illus
+strated in Figure 7, showin
+ng the percen
+ntage reductio
+on in male and
+d female HIV incidence in
+eacch intervention
+n scenario. To see the differential
+d
+impact of the in
+nterventions at
+a different tim
+mes in the epidemic, the
+reduction in incid
+dence associa
+ated with each intervention
+n is calculated
+d for the first five
+f
+years of the epidemic,, the next 10
+ars, then yearss 15 through 29
+2 and finally years 30 thro
+ough 49.
+yea
+- 17 -
+
+Figure 7: Percentag
+ge Reduction
+n in HIV Fem
+male and Male
+e HIV Inciden
+nce
+
+ure 7 shows that
+t
+in years 30
+3 to 49 of th
+he intervention
+n the most efffective strateg
+gies reduces male HIV inciidence by as
+Figu
+mucch as 25 perccent when cirrcumcising 75
+5 percent of the
+t uncircumccised men, while
+w
+there is a 15 percent reduction in
+malle incidence when
+w
+circumciision reaches 50 percent off the eligible male
+m
+populatio
+on. Circumcissing 25 percent only leads
+to a 7 percent reduction in incidence, an
+nd circumcisiing 10 percent reduces in
+ncidence by around 3 pe
+ercent. This
+com
+mparison dem
+monstrates som
+me of the nonlinearity that makes
+m
+it difficult to predict the
+t impact tha
+at an interventtion will have
+with
+hout careful modeling.
+m
+Thiss figure also illustrates tha
+at some of the
+e intervention
+ns perform be
+etter than othe
+ers at differen
+nt stages in th
+he epidemic,
+and
+d in particular that interventtions targeting
+g males at birtth cause no re
+eduction in HIIV incidence for
+f the first 15
+5 years of the
+inte
+ervention, and
+d do not reac
+ch their full prrotective effecct until years 30 to 49 of the
+t interventio
+on. While it is easiest to
+eva
+aluate the merrits of an interrvention base
+ed on its equilibrium behaviior, this is nott necessarily the
+t most relevvant quantity
+for planning the intervention. Ethically, the
+e goal must be
+b to control the
+t epidemic as quickly ass possible, and hence it is
+o important to
+o weigh the short
+s
+term co
+onsequences of an intervention. Indeed
+d, the only in
+ntervention strategies that
+also
+sho
+ow an appreciable reduction in incidence
+e in the first 5 years of the epidemic are those that ta
+arget young ad
+dults. Five to
+fifte
+een years afte
+er the start of the intervention, though, the
+t teenage in
+nterventions have
+h
+reduced
+d incidence byy roughly the
+sam
+me amount ass the young adult
+a
+interventtion, and by 30
+3 to 49 yearrs after the start of the inte
+ervention, the reduction in
+incidence from th
+he young adullt intervention is much less than that in th
+he other scen
+narios.
+F
+5 that the average age
+a of HIV inffection for ma
+ales is 23 after the epidemiic has spread
+d through the
+Reccalling from Figure
+pop
+pulation (when
+n these interventions are beginning), it iss clear that th
+he reason the young adult intervention ta
+argeting men
+age
+ed 18 to 24 is less effective
+e is simply be
+ecause some men become
+e infected with
+h HIV before they
+t
+become circumcised.
+Thiss sensitivity to
+o the age at in
+nfection highlig
+ghts the impo
+ortance of und
+derstanding th
+he transmissio
+on dynamics that fuel local
+epid
+demics when planning inte
+ervention prog
+grams in speccific communities. If only a fixed numb
+ber of procedu
+ures may be
+- 18 -
+
+performed, screening patients for HIV and only circumcising HIV negative young men should optimize the epidemiological
+benefit from the intervention, but additional costs associated with screening, counseling, and treatment for HIV positive
+patients must also be considered as a part of such an intervention.
+Finally the degree to which the choice of target age group matters depends on the coverage of the intervention. For
+example, compare the percentage reduction in male HIV incidence in years 30 to 49 across the different targeted age
+groups when circumcising only 10 percent of uncircumcised males. Each of the interventions reduces incidence by
+between two and three percent, fairly similar results. However, when circumcising larger proportions of the population,
+the young adult intervention performs considerably worse than the others.
+
+5.2 Impact of Male Circumcision on Female HIV Epidemic
+As hypothesized, Figure 7 shows that male circumcision intervention programs substantially reduce female HIV incidence
+even though the model does not include any direct protective benefit for females. Overall, at most time points and in most
+scenarios, the reduction in female HIV incidence lags a few percentage points behind the reduction in male HIV
+incidence. However, this is not an absolute rule and it is not possible to quantify a relationship between reduction in male
+incidence and female incidence. If any generalization is to be made, it is that as the coverage of the intervention
+increases, the gap between the reduction of incidence for males and females decreases (proportionally, not in absolute
+terms). For example, considering the teenage intervention from 15 to 29 years, when circumcising 10 percent of males,
+the reduction in incidence is 36 percent less for females than males, when circumcising 25 percent, the reduction is 19
+percent less for females, when circumcising 50 percent the reduction is 14 percent less for females, and when
+circumcising 75 percent the reduction is only 9 percent less for females than males. Just from observing Figure 7, this
+relationship does not hold for all intervention scenarios at all time points.
+One interesting finding is that the reduction in female incidence is much closer to the reduction in male incidence for the
+young adult intervention than in the other scenarios, sometimes the reduction for females being greater than that for
+males. This should not be confused to mean that the young adult intervention reduces incidence in females more than
+the other interventions, as this is clearly not the case, only that the reduction is more similar to that of males at the same
+intervention level. This trend is not easily explained, but is likely tied to nuanced trends in the sexual mixing and partner
+change dynamics, as well as the stage of the male and female epidemics. Our current hypothesis is that while the young
+adult intervention is less successful at protecting the average male, the intervention does prevent or delay infection of
+some highly sexually active men and prevent secondary infections caused by those men.
+
+5.3 Age-Specific HIV Prevalence Reductions
+Figure 8 shows the age-specific male HIV prevalence for five-year age groups between ages 15 and 45 comparing the
+benefits of the different age-targeted interventions, all with a coverage level of 50 percent. Absent consideration of the
+interventions, observing how the age-specific prevalences changes over time in the control epidemic sheds important light
+on how the epidemic spreads through the population. The time evolution of these age-specific prevalence curves reveals
+that the simple epidemic prevalence trend with a roughly exponential increase for 25 years, followed by a peak, a small
+decrease and then a steady state or equilibrium plateau is not sufficient to summarize the complexities of HIV
+transmission. Initially when the population is naive to HIV, prevalence increases most rapidly amongst the older age
+groups, but after the at-risk population has been saturated and HIV mortality sets in, prevalence decreases rapidly in older
+age groups, especially ages 35 to 40 and 40 to 45. From that point on, the perpetuation of the epidemic relies on
+replenishing the at-risk individuals from younger age groups as they become sexually active. In these young age groups,
+the epidemic grows more gradually, but does not peak and decline, rather itplateaus and maintains an equilibrium level of
+HIV prevalence. At equilibrium everyone who will be infected is infected relatively young and consequently dies
+comparatively young leaving few susceptible to infection at older ages, as was the case when the epidemic started. One
+can think of the epidemic as a filter operating at young adult ages that removes susceptible individuals from the stream of
+aging people; when the epidemic starts some susceptibles have already passed the age at which the filter operates so
+they become infected and die at older ages, but as the epidemic ages this older susceptible population diminishes and is
+not replaced because all the young people aging into those age groups have to come through the epidemic filter and are
+infected and die in the process. In sum, the burden of disease shifts from older to younger age groups as the epidemic
+progresses, and layered on top of this is the female/male age differential in the effects that we have pointed out many
+times already.
+- 19 -
+
+Figure 8: Change in Male
+M
+Age Spe
+ecific Prevale
+ence Circumcising 50 pe
+ercent of Unc
+circumcised Males
+
+The
+ese observatio
+onsare importtant for anticip
+pating the burrden of HIV on
+n healthcare and
+a welfare systems
+s
+and more
+m
+broadly
+on social
+s
+and ecconomic institu
+utions such as family strucctures and lab
+bor markets, not
+n to mention
+n planning both direct and
+indirect HIV interrvention and support
+s
+progrrams. Furtherrmore, simplyy understandin
+ng the transitiion in age-spe
+ecific burden
+d
+can he
+elp predict oth
+herwise comp
+plex interventio
+on outcomes.
+of disease
+Non
+ne of the inte
+erventions ha
+ave importantt impacts for males at ag
+ges greater than about 35
+5 because, as
+a described
+imm
+mediately abo
+ove, these age
+e groups exp
+perience a na
+atural decline in incidence as the epidemic matures. Looking at
+you
+unger ages, th
+he largest reductions in male
+m
+prevalen
+nce are in the
+e 20-24 age range with similar
+s
+but slig
+ghtly smaller
+reductions in the
+e 15-19 and 25-29
+2
+age grroups. The la
+ag between in
+nitiation of inttervention and noticeable effect varies
+nsiderably with
+h the targeted
+d age group, and reflects the
+t general pa
+attern describ
+bed in section 5.1 above. The ‘at birth’
+con
+inte
+ervention prod
+duces the max
+ximum effect, but with a sig
+gnificant lag; th
+he ‘young adu
+ult’ interventio
+on produces an
+a immediate
+effe
+ect but never reaches the maximum
+m
+imp
+pact, even in the
+t steady sta
+ate (at least in
+n the young age
+a groups where there is
+mucch of an effecct at all); the ‘teenage’ interrvention kickss in quickly an
+nd produces the
+t maximum level of effecct; and finally
+the ‘mixed’ age ta
+argeted interv
+vention performs best with an
+a immediate
+e effect that re
+eaches the ma
+aximum possible level.
+
+- 20 -
+
+6 Discussion
+Taken as a whole the results presented here support the notion that male circumcision can affect the course of an HIV
+epidemic to reduce incidence and prevalence. The maximum change in prevalence observed in our simulations is about
+30 percent when 75 percent of uncircumcised males are circumcised (about a six percentage point reduction in
+prevalence from about twenty percent to about thirteen percent). Although this is far from eradicating the epidemic, it is a
+substantial change and warrants further investigation.
+Realistic interventions will have to balance cost with effect and choose how to both target and time circumcisions. The
+simulation scenarios we investigated provide some information to guide future work on these issues by exploring the
+relationship between coverage and magnitude of effect, age-targeting and timing of effect, and in a general sense, the
+equity of results with respect to sex and age.
+In all of the intervention scenarios we investigated coverage of male circumcision is strongly related to the magnitude of
+the effects on incidence and prevalence. As expected the relationship is positive and also appears non-linear such that
+additional coverage when coverage is already high yields a greater additional benefit. The best results are obtained when
+nearly all men are circumcised.
+Results from the four age-targeted intervention scenarios demonstrate that both the eventual magnitude and the timing of
+the effects of male circumcision are sensitive to the ages at which males are circumcised. Circumcising males at birth
+produces results with a large effect that is equal to the best of the other scenarios, but changes in incidence and
+prevalence only begin to appear after the first cohort of circumcised infants has aged to sexual maturity (about fifteen
+years) and the maximum effect is only apparent after about 60 years! This result clearly draws into question the utility of
+only conducting at-birth circumcisions. Other alternatives include circumcising young boys before they reach
+adolescence, circumcising young men as they become sexually active and circumcising adult men. There is an obvious
+advantage to circumcising young males before they have extensive exposure to infection, and consequently we pursued
+two intervention scenarios that circumcised teenagers and young men. Results of the teen intervention that circumcises
+boys aged ten to thirteen indicate that the effects are felt with a relatively short lag of five to ten years and that the final
+magnitude of the effects is equal to the largest produced by any of the other scenarios. This is a good intervention that
+leads to large reductions in incidence and prevalence in a relatively short period of time. The adult intervention scenario
+targeted men aged 18 to 24. This intervention reduced HIV incidence and prevalence immediately, but in the long term
+these reductions were substantially less than for any of the other intervention scenarios – a little over half the total
+reduction in prevalence compared to the others. Finally, the ‘mixed’ intervention designed to have both an immediate
+effect and produce large effects in the long term worked well. Infant males were circumcised throughout this intervention,
+and young adult males 15 to 24 were circumcised for the first fifteen years of the intervention. This produced the strong
+effects associated with the infant scenario over the long term, and while the population was waiting for that, the young
+adult circumcisions produced an immediate effect.
+In all of the intervention scenarios HIV incidence and prevalence were reduced for both males and females, and as a
+result of those reductions for females, the incidence and prevalence in young children was also reduced. The benefit for
+females is typically slightly less than that for males, by a few percent in each case, although there are scenarios for which
+the female benefit is equal to or even slightly greater than the male (early during the adult scenario).
+Examining the effects on prevalence by age for each scenario at 50 percent coverage revealed that changes in
+prevalence are strongly differentiated by age. Age groups for which the epidemic has already peaked by the time the
+intervention is initiated benefit the least, while age groups for which the epidemic either does not peak or has not yet
+peaked benefit significantly. In terms of equity, it appears that age rather than sex is the real dimension along which there
+is likely to be significant inequity with male circumcision interventions.
+The model results presented here suggest that for optimal epidemiological outcomes, interventions should focus on two
+components: circumcising populations currently at risk of HIV infection, and in the long term focusing on circumcising
+boys before they begin sexual activity. In this context the average age at infection becomes an extremely important
+feature of the epidemic system. Maximally effective male circumcision interventions must affect a near majority of males
+before they become sexually active and are infected. Combined with the overall incidence rate, the average age at first
+intercourse has a strong effect on the age structure of prevalence and the pace with which different age groups go
+through the epidemic. This affects the timing of the peak of the epidemic in each age group, and hence affects which age
+- 21 -
+
+groups will benefit significantly from a male circumcision intervention when it is rolled out at different times during the
+growth and stabilization of an epidemic.
+The average age at infection is even more important in another way. The dominant impact of male circumcision
+interventions is to delay infection rather than to prevent it(Garenne, 2006), and through this delay to reduce the number of
+secondary infections and hence the overall transmission of the disease. This effectively slows the epidemic, reduces
+equilibrium incidence and prevalence, and crucially, shifts the average age at infection to older ages. This allows women
+to advance further through their reproductive careers before they are affected by HIV, and thereby reduces some of the
+most important effects of an HIV epidemic on the population by allowing fertility to rebound, which in turn affects the
+population growth rate, age structure, etc. in positive ways. The insight to be gained here is that male circumcision
+interventions will have the greatest demographic impact (including effects on fertility, growth and age structure) in
+populations that have the lowest average ages of infection; as the average age at infection increases, the overall impact
+of the intervention will decrease. This finding is again relevant when considering combined interventions that include
+male circumcision and other interventions that delay infection.
+Our results should be interesting to the community of demographers, epidemiologists, economists and politicians who
+participate in deciding if and how to roll out male circumcision interventions. In keeping with our theory-building approach
+to this investigation, our results do not relate to any specific population and should not be used directly in decision
+making. They do, however, strongly support the notion that male circumcision interventions can be very helpful in
+reducing the spread of HIV and motivate additional investigation in a number of areas.
+The simulator used to produce the results presented here can be improved in many ways. The current simulator’s ability
+to represent and manipulate a detailed representation of reality is both a strength and a weakness. Used in the way
+described above, the detail allows us to illuminate complex relationships and dynamics in the epidemic system but does
+not allow detailed representation or prediction for a specific population because the simulator has not been fit or calibrated
+completely to a given population. Moreover, given the high degree of freedom and large number of parameters that
+govern the simulator, any parameterization is necessarily very specific and possibly not representative of any real
+population. Our primary aim for the near future is to work on methods that will allow us to reduce the degrees of freedom
+and number of parameters, and most importantly, calibrate and/or fit the simulator to real populations of various sizes.
+We are interested in developing measures of uncertainty in model outputs, and it appears possible to address both aims
+using Bayesian melding methods(Poole and Raftery, 2000). We have had preliminary success adapting these methods
+to other models(Alkema et al., 2007) and are hopeful that they will be useful in this context as well.
+More specific to the questions addressed here, the HIV epidemic that is generated by the current parameterization of the
+simulator is very young, fast and severe. This results mainly from the specifics of the pairing dynamic in the non marital
+pairing market, and we must examine and understand this better and bring to bear new findings in the literature that may
+shed light on key parameter values that govern non-marital mixing in the African settings that concern us. Acknowledging
+that, the present findings remind us that the specific character of an HIV epidemic can strongly affect the ability of a given
+intervention to modify the epidemic, and cautions that one-size-fits-all solutions are almost certainly not going to work well
+in the specific contexts where they are applied. Consequently, using a modeling approach like this to test an intervention
+design in a specific population is essential.
+Beyond methodological development and model improvement, we hope to continue using an improved version of the
+simulator to examine the impact of individual-level behavioral disinhibition on the population-level effectiveness of male
+circumcision interventions and transmission-targeted interventions in general. Where male circumcision is concerned, we
+have continuing interest in better modeling the precise mechanism of protection (protects 60 percent of those circumcised
+completely or all of those circumcised 60 percent of the time; any effects on male-to-female transmission; etc.) and
+different types of circumcision (partial, traditional, medical). Given the simulator’s natural ability to model and accurately
+reflect the possibly interacting effects of multiple simultaneous interventions, we are also interested in exploring more
+complex intervention scenarios that combine different types of interventions at different times during an epidemic.
+Related to that we hope to add important additional sexually transmitted infections to the model, especially those that
+might affect the transmission of HIV, including HSV, ulcerative STIs, etc. (Wasserheit, 1992).
+
+- 22 -
+
+7 Acknowledgements
+This work has been supported, in part, by NIA grants R37 AG10168, 3 R37 AG10168-09S2, 30 AG17248 and 2 P30
+AG17248-03 and NICHD grant 1 R01 HD054511 01 A1. For their generous support at the University of Washington we
+wish to thank the Mary Gates Endowment for Students, the Center for Studies in Demography and Ecology, and the
+Student Technology Fee. This work is solely the responsibility of the authors and does not necessarily represent the
+official views of the funders and supporters of this work. Special appreciation is due to the population of the Gwembe
+Valley, Zambia for their patient and long term participation in the field study that produced the bulk of the demographic
+parameter values used in this study, and to Clarissa Surek-Clark for her continuous support of this work over a long
+period of time.
+
+- 23 -
+
+8 Appendix: The Structured
+Simulator (SPEHS)
+
+Population
+
+Event
+
+History
+
+SPEHS is a heuristic tool designed to provide insight into the behavior of an HIV epidemic. The structure of the
+model captures the main time-sex-age-dependent dynamics of a polygynous, reproducing population engaging in
+some non-marital sexual contacts and infected with HIV. The parameters that govern the dynamics of the model
+are taken from a variety of sources because no one source can provide all of them, although all of the demographic
+parameters are taken from or adapted from a high fertility, high mortality, population in Southern Zambia that was
+observed for nearly 40 years (Clark, 2001b). Consequently the simulator does not model or reflect any one real
+population, but rather reflects populations of the general type on which the parameters were measured. The
+results it produces illuminate how a population-disease system of this type works and how changing one or more of
+its parameters or components affects the whole system. Its primary advantage is an ability to assess the
+population-level effects of making individual-level changes, and it does this in a fully two-sex, dynamic framework in
+which fertility and the transmission of sexually transmitted disease, and effects of interventions on either or both,
+are properly linked through intercourse events occurring to pairs of individual males and females.
+SPEHS was developed as part of Samuel Clark’s PhD dissertation (2001a) and is described in exhaustive detail
+there; the dissertation can be downloaded as a Portable Document Format (PDF)™ document from
+www.samclark.net.
+
+8.1
+
+Simulation Model
+
+SPEHS is a simple state transition machine. At the beginning of each month of simulated time each entity’s
+eligibility to experience events that can affect it is assessed, and if the entity is eligible, it is exposed to the risk of
+that event occurring. The entities are described below in section 8.2. The probability of occurrence for each type of
+event is determined by a set of parameters and may vary depending on the specific attributes and current state of
+the entity at risk for the event. These parameters and the relationships that transform them into probabilities of
+occurrence are described below in section8.3. This straightforward approach has the advantage of simplicity in
+that it avoids the logical complexity of scheduling and rescheduling events when conditions change. The
+disadvantage is an increase in computation required to run the simulator, but with careful attention to optimizing
+algorithms the overall computational load is manageable.
+SPEHS is implemented using the Microsoft Access 97™ (Access) relational database management system and
+the programming languages and tools associated with it6. The data generated by SPEHS are stored and
+manipulated in a relational database managed by Access. The logic of SPEHS is implemented using the
+Structured Query Language (SQL) and Microsoft Visual Basic™ for applications (VBA).
+
+8.2
+
+Entities and Structure of SPEHS
+
+SPEHS models the interactions of four entities: 1) lives that correspond to individual people, 2) unions that
+correspond to relationships between men and women that are of either type union or affair, 3) fertility events that
+are events that mark transitions in a woman’s reproductive life (conception, birth, miscarriage, recovery after
+miscarriage, recovery after birth), and 4) pregnancies. Each of these entities has a corresponding table in a
+SPEHS database – tblALives, tblAUnions, tblAFertilityEvents and tblAPregnancies – that contains (or describes)
+individual instances of the relevant entity. There is one additional table tblALnkLivesUnions that mediates a manyto-many link between tblALives and tblAUnions which allows the database to keep track of who the partners are for
+each union. Except for fertility events, the entities have ‘start’ and a ‘stop’ dates that mark their beginning and end,
+and consequently provide the temporal information necessary to record the dynamics of the simulated population.
+Naturally, fertility events simply have a date that marks when the event occurred. Months are numbered
+6
+
+This unusual choice of technology is the result of the lead author’s extensive experience with relational databases for managing data
+collected at demographic surveillance system sites and the fact that work on the original simulator began in the late 1990s while he was a
+graduate student without easy access to more sophisticated and/or powerful technologies.
+
+- 24 -
+
+consecutively so that dates take the form of an integer number.
+Figure 9 displays an entity relationship diagram for SPEHS. The diagram indicates how the tables and attributes
+(fields) of each table are related to each other. The lines connecting the tables represent relationships between the
+tables in which the primary key (PK) attribute of a parent table is related to the foreign key (FK) attribute of a child
+table. The FK attribute of the child table can only contain values that exist in the PK attribute of the parent table.
+Arrowheads point to the parent table. For example the line connecting tblALives to tblALnkLivesUnions indicates
+that each life can be linked to many life-union links through the values of the PK in tblALives (lngID) and values of
+the FK in tblALnkLivesUnions (lngLifeID), but that each life-union link can be linked to only one life.
+Figure 9: Entity Relationship Diagram for SPEHS7
+
+Each table in SPEHS defines a number of attributes and each record (row) in a table contains a combination of
+attribute values that together describe a unique instance of the entity to which the table corresponds. The tables
+and their attributes are defined below.
+Table 1:
+
+tblAFertilityEvents: Contains Fertility Events Occurring to Women
+
+Attribute Name
+lngID
+lngUnionID
+lngFemaleID
+bytEvent
+lngDOE
+
+7
+
+Description
+Unique ID for each fertility event
+Unique ID of the union associated with this event
+Unique ID of the female associate with this event
+Fertility event type: 0=birth, 1=miscarriage, 2=conception birth, 3=conception miscarriage, 4=end breastfeeding,
+5=recovered after miscarriage, 7=woman born (still a child and not yet reproducing)
+Date of this event
+
+The prefixes to attribute names, ‘lng’, ‘byt’ etc, indicate the datatype used to store values of the attribute; ‘lng’ refers to a long number, etc.
+
+- 25 -
+
+Table 2:
+
+tblALives: Contains Individual People
+
+Attribute Name
+lngID
+bytSex
+lngPregnancyID
+lngDOB
+lngDOD
+lngDOI
+lngInfectedByID
+
+Table 3:
+
+Description
+Unique ID for each life
+Sex: 0=female, 1=male
+Unique ID for the pregnancy that gave rise to this life
+Date of birth
+Date of death: null=still alive
+Date of infection with HIV: null=uninfected
+Unique ID of the life from which HIV most recently acquired
+
+tblALnkLivesUnions: Contains Links between People and Unions
+
+Attribute Name
+lngID
+lngLifeID
+lngUnionID
+
+Description
+Unique ID for each life-union link
+Unique ID for the life associated with this link
+Unique ID for the union associated with this link
+
+Table 4:
+
+tblAPregnancies: Contains Pregnancies
+
+Attribute Name
+lngID
+lngUnionID
+lngFemaleID
+lngEndEventID
+lngDOC
+lngDOE
+bytEndType
+
+Table 5:
+
+Description
+Unique ID for each pregnancy
+Unique ID of the union associated with this pregnancy
+Unique ID of female to which this pregnancy belongs
+Unique ID of the fertility event that ends this pregnancy
+Date of conception
+Date of end
+End event type: 0=miscarriage, 1=birth, 2=pregnant
+
+tblAUnions
+
+Attribute Name
+lngID
+bytType
+lngDOU
+lngDOS
+bytEndEvent
+
+8.3
+
+Description
+Unique ID for each union
+Union type: 0=marriage, 1=affair
+Date of union
+Date of separation
+End event type: 0=separation, 1=death, 2=end affair
+
+Events and Transition Probabilities
+
+Table 6 displays the 17 events that SPEHS models. Along with each event is a brief description of the entities that
+are eligible for each event, and in what condition they must be to be eligible for each event. The probability that
+each event occurs is described by an expression, and the timescale over which the probability is defined and the
+values of the parameters that it requires are also defined.
+When unions are formed, mixing is random within male marriage-parity, male-age, female-age classes. Forming
+affairs is a two stage process involving first becoming eligible to enter into an affair and then seeking a partner for
+the affair. When affairs are formed between eligible males and females, mixing is random within male-age, femaleage
+classes.
+
+- 26 -
+
+Table 6:
+ID
+
+Transition Probabilities
+
+Event
+
+Eligible
+
+(
+
+DASPR = 1 − (1 − U DASP ) ⋅ 1 − (VR )
+
+1
+
+Death
+
+Everyone who
+is alive
+
+Timescale
+
+Probability
+Hm
+
+Parameter Values
+
+)
+
+D:
+U:
+A:
+S:
+H:
+P:
+R:
+VR :
+
+monthly probability of death
+signifies underlying probability of death
+age (months)
+sex
+HIV status
+period
+duration since infection with HIV
+viral load at duration R since infection, V0 = 0
+
+Hm:
+
+modifies effect of being HIV+ on mortality
+
+U
+
+month
+
+D ASP :
+
+Table 8 for all P
+
+VR :
+
+Table 7
+
+Hm:
+
+3.0
+
+M:
+n:
+VR :
+
+26
+determined by events 4 and 5
+Table 7
+
+FAREP = F ⋅ Fa ⋅ Fh ⋅ Fc
+⎡
+( M − n) ⋅ ( M − n − 1) ⎤
+F = 0.3 ⋅ ⎢1 −
+⎥
+M2 − M
+⎣⎢
+⎦⎥
+Fa = 2.174 ⋅ N A ⋅ e(
+Fh = 1 − (VR )
+
+2
+
+Conception
+
+Fecund
+females who
+are having sex
+
+mP ⋅WA )
+
+Hf
+
+Fc = 1 − EP
+F: monthly probability of conception - fecundability
+M: number of days during month when intercourse can happen
+n: number of intercourse events during the month
+R: duration since infection with HIV
+VR : viral load at duration R since infection, V0 = 0
+Hf:
+EP:
+NA :
+
+modifies effect of viral load on fecundability
+effectiveness of contraception
+scale factor for age-specific modification of fecundability
+
+WA :
+
+underlying schedule of age-specific modifications to fecundability
+
+mP :
+
+P:
+
+coefficient to scale WA values
+period
+
+- 27 -
+
+month
+
+Hf:
+NA :
+
+WA :
+
+EP:
+
+0.5
+Table 9
+Table 9
+0.0 for all P
+
+Table 6:
+ID
+
+3
+
+Transition Probabilities
+
+Event
+
+Miscarriage
+
+Eligible
+
+All women
+who have
+conceived
+
+⎛ kP ⎞ ⎛
+kP ⎞
+Hk
+GRP = ⎜
+⎟ + ⎜1 −
+⎟ ⋅ (VR )
+1 + kP ⎠
+⎝ 1 + kP ⎠ ⎝
+G: probability that a conception leads to a miscarriage
+kp: ratio of conceptions that lead to a miscarriage to conceptions that lead to a birth;
+average number of miscarriages per birth
+R: duration since infection with HIV
+P: period
+VR : viral load at duration R since infection, V0 = 0
+Hk:
+
+4
+
+Married
+couples
+
+U
+
+(
+
+( )
+
+X Am Af ⋅ 1 − VRm
+
+5
+
+Couples
+engaged in an
+affair
+
+Hn
+
+0.33 for all P
+Table 7
+
+Hk:
+
+0.75
+
+Hn
+
+Rf
+
+probability of intercourse
+signifies underlying probability of intercourse
+age
+male
+female
+duration since infection with HIV
+viral load at duration R since infection, V0 = 0
+
+Hn:
+
+modifies effect of being HIV+ on probability of intercourse
+
+U
+
+day
+
+(
+
+)(
+
+Hn
+⎛
+⎞
+⎛ I + If − 2 ⎞
+⋅ 1 − VRf
+X Am Af ImIf RmRf = ⎜ U X Am Af + 1 − U X Am Af ⋅ ⎜ m
+⎟ ⋅ α P ⎟ ⋅ 1 − VRm
+2
+⋅
+−
+2
+β
+⎝
+⎠
+⎝
+⎠
+X: probability of intercourse
+U: signifies underlying probability of intercourse
+A: age
+P: period
+male
+m:
+female
+f:
+I: sexual activity propensity category
+α: sexual activity slope (maximum of addition due to affair status of union)
+β: number of sexual activity categories
+R: duration since infection with HIV
+VR : viral load at duration R since infection, V0 = 0
+
+Hn:
+
+kp:
+month
+
+VR :
+
+) ⋅ (1 − (V ) )
+
+X:
+U:
+A:
+m:
+f:
+R:
+VR :
+
+(
+
+Intercourse
+within affairs
+
+Parameter Values
+
+modifies effect of being HIV+ on probability of miscarriage
+
+X Am Af RmRf =
+Intercourse
+within
+marriage
+
+Timescale
+
+Probability
+
+)
+
+( )
+
+modifies effect of being HIV+ on probability of intercourse
+
+- 28 -
+
+( )
+
+Hn
+
+X AmAf :
+
+Table 11 for all P
+
+VR :
+
+Table 7
+
+Hn:
+
+0.8
+
+)
+U
+
+month
+
+X AmAf :
+
+Table 11
+
+VR :
+
+Table 7
+
+Hn:
+I:
+αP:
+β:
+
+0.8
+quintiles of N(3,1.2)
+0.2 for all P
+5
+
+Table 6:
+ID
+
+Transition Probabilities
+
+Event
+
+Eligible
+HRf =
+
+6
+
+Vertical
+transmission
+of HIV
+
+Newborns
+born to HIV+
+mothers
+
+U
+
+f:
+Hv:
+
+female
+modifies effect of being HIV+ on probability of vertical transmission
+
+T
+
+F → M Rf P
+
+7
+
+T:
+R:
+VR :
+:
+:
+bP:
+P:
+m
+f
+
+8
+
+Random
+transmission
+of HIV
+
+Adults aged
+15-49
+
+H :
+
+U
+
+0.2
+
+VR :
+
+Table 7
+
+Hv:
+
+0.75
+
+Tm :
+
+0.9 (Wawer et al., 2005)
+
+birth
+
+= VRm ⋅ UTm ⋅ (1 − bP )
+
+= VRf ⋅ UTf ⋅ (1 − bP )
+
+probability of transmitting the HIV virus during an intercourse event
+duration since infection with HIV
+viral load at duration R since infection, V0 = 0
+
+U
+
+intercourse
+
+:
+UTf
+
+0.6 (Wawer et al., 2005)
+
+VR :
+
+Table 7
+
+male
+female
+effectiveness of barrier to transmission
+period
+
+J = 0.00015 , for all periods
+J:
+
+Parameter Values
+
+Hv
+
+probability of transmitting the HI virus from mother to child during childbirth
+signifies underlying probability of transmitting
+duration since infection with HIV
+viral load at duration R since infection, V0 = 0
+
+T
+
+Horizontal
+transmission
+of HIV
+
+( )
+
+H + (1 − U H ) ⋅ VRf
+
+H:
+U:
+R:
+VR :
+
+M → F RmP
+
+partner in
+intercourse
+event with
+HIV+ person
+
+Timescale
+
+Probability
+
+random probability of acquiring HIV “from the outside”
+
+bP:
+
+0 for all P
+
+GP:
+I:
+β:
+γP:
+
+0.2 for all P
+quintiles of N(3,1.2)
+5
+2.5 for all P
+
+month
+
+γP
+
+G =
+
+9
+
+Become
+eligible to
+enter into an
+affair
+
+Adults aged
+10-79, male
+and female
+
+max
+
+G:
+I:
+β:
+maxG:
+γ:
+P:
+
+⎛ I −1⎞
+GP ⋅ ⎜
+⎟
+⎝ β −1⎠
+probability of being eligible for entering into an affair
+sexual activity propensity category
+number of sexual activity categories
+maximum probability of being eligible to enter into an affair
+modifies the factor that diminishes the maximum probability of being eligible to
+enter into an affair
+period
+
+- 29 -
+
+max
+
+month
+
+Table 6:
+ID
+
+Transition Probabilities
+
+Event
+
+Eligible
+
+Timescale
+
+Probability
+
+Parameter Values
+
+AP = AAε P ⋅ IAλP
+AA =
+max
+
+NLAP BAPσ
+
+AP
+
+Am Af
+
+=
+
+Δ LABA Am Af =
+
+ω
+
+10
+
+Enter into an
+affair
+
+Adults aged
+10-79 who
+have become
+eligible to
+enter into an
+affair
+
+Af =
+
+max AAP
+⋅ NLABAσ Am Af
+AP
+NLABAσ AP Am Af
+
+(
+
+1
+
+σ
+
+2π
+
+AP
+
+(( A −
+f
+
+e
+
+⎛
+⎜ Δ LAP BAP Am Af
+⎜−
+2σ AP 2
+⎜
+⎝
+
+)
+
+2
+
+⎞
+⎟
+⎟
+⎟
+⎠
+
+Af ) − ( Am − ( LAP ⋅ ω Af + BAP ) )
+
+2
+
+2
+
+ω
+
+)
+
+0.5
+
+LAP ⋅ ( Am − BAP ) + Af
+1 + LAP
+
+IA =
+
+IAP
+⋅ NLI BIσ ImIf
+IP
+NLI BIσ ImIf
+
+max
+max
+
+IP
+
+month
+NLIP BIPσ IP ImIf =
+
+Δ LIP BIP ImIf =
+
+ω If =
+
+(
+
+1
+
+σ
+
+2π
+
+IP
+
+(( I
+
+e
+
+⎛
+⎜ Δ LIP BIP Im If
+⎜−
+2σ 2
+⎜
+IP
+⎝
+
+)
+
+⎞
+⎟
+⎟
+⎟
+⎠
+
+)
+
+2 0.5
+
+− ω If ) − ( Im − ( LIP ⋅ ω If + BIP ) )
+2
+
+f
+
+2
+
+LIP ⋅ ( Im − BIP ) + If
+1 + LIP
+
+Each associativity component is distrubuted as a normal distribution about a line defined by
+
+( male value) = B + M ⋅ ( female value) ; the axis of the normal distribution is perpendicular
+to the line, and the distance from any point ( female value, male value) to the line is the
+value at which the normal probability is calculated. Both normal distributions have mean 0
+and variance given by σ.
+A: probability of entering into an affair
+AA: age-associative component of the probability of entering into an affair
+IA: sexual activity-associative component of the probability of entering into an affair
+ε: exponent modifying the contribution of AA to A
+λ: exponent modifying the contribution of IA to A
+
+- 30 -
+
+εP:
+λP:
+L AP :
+
+1.0
+0.5
+1.0 for all P
+
+B AP :
+
+7.5 for all P
+
+σ AP :
+
+3.0 for all P
+
+:
+max AAP
+
+1.0 for all P
+
+LIP :
+
+1.0 for all P
+
+BIP :
+
+7.5 for all P
+
+σ IP :
+
+3.0 for all P
+
+:
+max IAP
+
+1.0 for all P
+
+Table 6:
+ID
+
+Transition Probabilities
+
+Event
+
+Eligible
+A:
+P:
+I:
+L:
+B:
+σ:
+ω:
+
+11
+
+Becoming
+male
+
+All births
+
+12
+
+End an affair
+
+All affairs
+
+Q:
+P:
+
+13
+
+Females
+whose last
+fertility event
+is a
+miscarriage
+
+ΩdP =
+Ω:
+mρP:
+m
+
+d:
+t :
+P:
+
+m 0P
+
+b
+
+14
+
+Become
+fecund again
+following a
+birth
+
+Females
+whose last
+fertility event
+is a birth
+
+at birth
+
+probability that a birth is male
+period
+
+WP = 0.45 , for all P
+
+W:
+P:
+
+Ωδ P =
+
+Parameter Values
+
+age
+period
+sexual activity propensity category
+slope of maximum associativity, change in maximum associativity with age or
+sexual activity propensity
+offset of maximum associativity, non age or sexual activity propensity dependent
+offset in age or sexual activity propensity that yields greatest probability of forming
+an affair
+variance in normal distribution around line of maximum associativity
+denotes value of female age of sexual activity that is closest to the line of
+maximum associativity
+
+QP = 0.5122 , for all P
+
+m
+
+Become
+fecund again
+following a
+miscarriage
+
+Timescale
+
+Probability
+
+month
+
+probability that an affair ends
+period
+
+1
+(− m ρp ⋅(d − m t0 P ))
+
+1+e
+probability of becoming fecund after a miscarriage, recovering
+“rate constant” of logistic defining probability of recovery, higher ρ means less
+variance in the duration from miscarriage to recovery
+duration since miscarriage
+mean duration of recovery
+period
+
+month
+
+ρ :
+t :
+
+1.5 for all P
+4 for all P
+
+ρ :
+t :
+
+1.5 for all P
+12 for all P
+
+m P
+m 0P
+
+1
+(− b ρp ⋅(d − b t0 P ))
+
+1+e
+probability of becoming fecund after a birth, recovering
+“rate constant” of logistic defining probability of recovery, higher ρ means less
+variance in the duration from birth to recovery
+d: duration since birth
+mean duration of recovery after a birth
+bt0P:
+P: period
+Ω:
+bρP:
+b
+
+- 31 -
+
+month
+
+b P
+b 0P
+
+Table 6:
+ID
+
+Transition Probabilities
+
+Event
+
+Eligible
+
+(
+
+SAmAf CDPRmRf = OtoP PtoO
+
+15
+
+End union
+
+All unions
+
+S:
+U:
+A:
+P:
+m:
+f:
+T:
+OtoP:
+PtoO:
+D:
+C:
+R:
+VR :
+Hs:
+
+(
+
+U
+
+17
+
+Form union
+
+Circumcision
+
+Uncircumcised
+males in
+specific age
+range(s)
+
+)
+
+)
+
+(
+
+)
+
+) ⎞⎟ ⋅ (V ) + (V )
+⎟⎟ (
+Hs
+
+Rm
+
+Parameter Values
+
+H
+
+Rf
+
+⎠
+
+probability of separating
+signifies underlying probability of death
+age
+period
+male
+female
+odds ratio modifying underlying probability of separating associated with duration
+D of union
+odds ratio to probability conversion
+probability to odds ratio conversion
+duration of union
+number of children born within the union
+duration since infection with HIV
+viral load at duration R since infection, V0 = 0
+
+U
+
+SAmAf ΔΓP :
+
+month
+
+TD :
+
+Table 15,
+Table 16 and
+Table 17 for all P
+Table 10 for all P
+
+VR :
+
+Table 7
+
+Hs:
+
+0.75
+
+modifies the effect of being HIV+ on the probability of separating
+
+(
+
+16
+
+(
+
+⎛ 1 − OtoP PtoO S
+U Am Af CP ⋅ TD
+SAm Af CP ⋅ TD + ⎜
+⎜⎜
+2
+⎝
+
+( )
+
+Y Am AfWPRmRf = UYAm AfWP ⋅ 1 − VRm
+
+All males and
+unmarried
+females
+
+Timescale
+
+Probability
+
+Hu
+
+) ⋅ (1 − (V ) )
+Hu
+
+Rf
+
+Y:
+U:
+A:
+P:
+m:
+f:
+W:
+R:
+VR :
+
+probability of forming a union
+signifies underlying probability of death
+age
+period
+male
+female
+number of wives the man already has
+duration since infection with HIV
+viral load at duration R since infection, V0 = 0
+
+Hu:
+
+modifies the effect of being HIV+ on the probability of forming a union
+
+Y
+
+U AmAfWP
+
+:
+
+Table 12,
+
+VR :
+
+Table 13 and
+Table 14 for all P
+Table 7
+
+Hu:
+
+0.75
+
+month
+
+C L,E = 1 − (1 − L )
+
+1/min(1, E )
+
+C: monthly probability of becoming circumcised during intervention
+L: Target level of circumcision intervention
+E: Duration of exposure period for intervention
+
+- 32 -
+
+month
+
+C:
+
+Section 3.2
+
+Table 7:
+
+Disease Progression Indicator
+
+Table 8:
+
+DP Indicator
+Months Since Infection
+
+Child
+
+Adult
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+
+0.4418
+0.3992
+0.3646
+0.3367
+0.3144
+0.2969
+0.2834
+0.2736
+0.2671
+0.2636
+0.2633
+0.2662
+0.2727
+0.2832
+0.2986
+0.3199
+0.3484
+0.3860
+0.4351
+0.4988
+0.5811
+0.6874
+0.8241
+1.0000
+
+0.1159
+0.0189
+0.0174
+0.0176
+0.0179
+0.0181
+0.0184
+0.0187
+0.0190
+0.0193
+0.0196
+0.0200
+0.0203
+0.0206
+0.0210
+0.0214
+0.0218
+0.0222
+0.0226
+0.0230
+0.0234
+0.0239
+0.0244
+0.0248
+0.0253
+0.0259
+0.0264
+0.0270
+0.0275
+0.0281
+0.0287
+0.0294
+0.0300
+0.0307
+0.0314
+0.0321
+0.0329
+0.0337
+0.0345
+0.0353
+0.0362
+0.0371
+0.0380
+0.0389
+0.0399
+0.0409
+0.0420
+0.0430
+0.0442
+0.0453
+0.0465
+0.0478
+0.0490
+0.0504
+0.0517
+0.0531
+0.0546
+0.0561
+0.0577
+0.0593
+0.0610
+0.0627
+0.0645
+0.0663
+0.0682
+0.0702
+0.0722
+0.0744
+
+Monthly Probability of Dying
+
+Age
+
+Female
+
+Male
+
+0
+1-4
+5-9
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110-114
+115+
+
+0.009975
+0.001884
+0.000683
+0.000414
+0.000329
+0.000308
+0.000324
+0.000368
+0.000444
+0.000562
+0.000736
+0.000993
+0.001370
+0.001926
+0.002747
+0.003962
+0.005759
+0.008407
+0.012274
+0.017840
+0.025671
+0.036349
+0.050338
+0.067830
+0.088649
+
+0.011362
+0.002163
+0.000785
+0.000475
+0.000378
+0.000354
+0.000372
+0.000423
+0.000511
+0.000646
+0.000846
+0.001141
+0.001573
+0.002210
+0.003150
+0.004538
+0.006585
+0.009589
+0.013952
+0.020183
+0.028860
+0.040540
+0.055614
+0.074163
+0.095896
+
+Source: Clark (2001a)
+
+Table 9:
+
+Fecundability Age Modification
+Parameters
+
+Age
+
+NA
+
+WA
+
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+
+0.460
+0.431
+0.395
+0.322
+0.167
+0.024
+
+0.000
+-0.279
+-0.667
+-1.042
+-1.414
+-1.671
+
+Source NA: Coale and Trussell (1974)
+
+Table 10:
+
+Years
+0
+1-4
+5-9
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45+
+
+Duration-specific Odds Ratios Modifying
+Probability of Separation
+
+No Children
+1.0000
+1.0000
+0.5788
+0.3439
+0.2070
+0.2135
+0.2657
+0.3546
+0.3546
+0.3546
+0.3546
+
+One or Two
+Children
+1.0000
+1.0000
+0.6673
+0.4003
+0.2612
+0.1680
+0.2202
+0.1944
+0.2577
+0.2577
+0.2577
+
+Source: Clark (2001a)
+
+- 33 -
+
+3+ Children
+1.0000
+1.0000
+0.4319
+0.2220
+0.2385
+0.1816
+0.1502
+0.1577
+0.2134
+0.2262
+0.2139
+
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+
+0.0765
+0.0788
+0.0811
+0.0835
+0.0860
+0.0886
+0.0913
+0.0940
+0.0969
+0.0998
+0.1029
+0.1060
+0.1093
+0.1126
+0.1161
+0.1197
+0.1234
+0.1273
+0.1312
+0.1353
+0.1396
+0.1440
+0.1485
+0.1532
+0.1581
+0.1631
+0.1683
+0.1736
+0.1792
+0.1849
+0.1909
+0.1970
+0.2033
+0.2099
+0.2167
+0.2237
+0.2309
+0.2384
+0.2461
+0.2541
+0.2624
+0.2710
+0.2798
+0.2890
+0.2984
+0.3082
+0.3183
+0.3287
+0.3395
+0.3507
+0.3623
+0.3742
+0.3865
+0.3993
+0.4125
+0.4261
+0.4403
+0.4548
+0.4699
+0.4855
+0.5016
+0.5183
+0.5355
+0.5533
+0.5717
+0.5908
+0.6105
+0.6308
+0.6519
+0.6736
+0.6961
+0.7194
+0.7434
+
+- 34 -
+
+142
+143
+144
+145
+146
+147
+148
+149
+150
+
+0.7683
+0.7940
+0.8205
+0.8480
+0.8764
+0.9058
+0.9362
+0.9675
+1.0000
+Source: Clark (2001a)
+
+- 35 -
+
+Table 11:
+
+Daily Probability of Coitus for Married Couples, per 1,000
+Male Age
+
+Female Age
+
+10-14
+
+15-19
+
+20-24
+
+25-29
+
+30-34
+
+35-39
+
+40-44
+
+45-49
+
+50-54
+
+55-59
+
+60-64
+
+65-69
+
+70-74
+
+75-79
+
+80-84
+
+85-89
+
+90-94
+
+95-99
+
+100-104
+
+105-109
+
+110-114
+
+115+
+
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110-114
+115+
+
+0.2690
+0.2572
+0.1921
+0.1136
+0.0458
+0.0227
+0.0115
+0.0094
+0.0077
+0.0063
+0.0052
+0.0042
+0.0035
+0.0028
+0.0023
+0.0019
+0.0016
+0.0013
+0.0010
+0.0009
+0.0007
+0.0006
+
+0.2826
+0.3086
+0.2786
+0.2076
+0.1427
+0.0904
+0.0585
+0.0421
+0.0323
+0.0252
+0.0206
+0.0169
+0.0138
+0.0113
+0.0093
+0.0076
+0.0062
+0.0051
+0.0042
+0.0034
+0.0028
+0.0022
+
+0.2718
+0.3307
+0.3252
+0.2824
+0.2152
+0.1502
+0.1057
+0.0764
+0.0559
+0.0442
+0.0363
+0.0295
+0.0239
+0.0193
+0.0158
+0.0129
+0.0106
+0.0087
+0.0071
+0.0058
+0.0048
+0.0040
+
+0.2495
+0.3182
+0.3430
+0.3084
+0.2479
+0.1872
+0.1381
+0.1008
+0.0763
+0.0603
+0.0495
+0.0402
+0.0316
+0.0251
+0.0201
+0.0165
+0.0135
+0.0111
+0.0091
+0.0074
+0.0061
+0.0052
+
+0.2250
+0.2862
+0.3215
+0.2978
+0.2464
+0.1941
+0.1484
+0.1131
+0.0875
+0.0701
+0.0573
+0.0465
+0.0370
+0.0284
+0.0226
+0.0183
+0.0150
+0.0123
+0.0102
+0.0085
+0.0070
+0.0053
+
+0.1965
+0.2452
+0.2734
+0.2680
+0.2303
+0.1867
+0.1472
+0.1151
+0.0909
+0.0734
+0.0601
+0.0493
+0.0396
+0.0314
+0.0246
+0.0197
+0.0159
+0.0133
+0.0113
+0.0096
+0.0081
+0.0070
+
+0.1533
+0.1988
+0.2290
+0.2305
+0.2064
+0.1718
+0.1385
+0.1102
+0.0884
+0.0723
+0.0600
+0.0498
+0.0409
+0.0331
+0.0266
+0.0211
+0.0169
+0.0138
+0.0117
+0.0100
+0.0085
+0.0077
+
+0.0973
+0.1519
+0.1882
+0.1954
+0.1805
+0.1549
+0.1281
+0.1037
+0.0840
+0.0693
+0.0582
+0.0488
+0.0405
+0.0333
+0.0272
+0.0219
+0.0173
+0.0137
+0.0111
+0.0094
+0.0081
+0.0067
+
+0.0438
+0.1131
+0.1520
+0.1646
+0.1582
+0.1412
+0.1205
+0.0994
+0.0811
+0.0670
+0.0564
+0.0475
+0.0395
+0.0326
+0.0269
+0.0220
+0.0175
+0.0137
+0.0108
+0.0090
+0.0078
+0.0065
+
+0.0153
+0.0837
+0.1233
+0.1394
+0.1404
+0.1310
+0.1156
+0.0973
+0.0799
+0.0659
+0.0551
+0.0462
+0.0383
+0.0315
+0.0260
+0.0215
+0.0172
+0.0135
+0.0107
+0.0089
+0.0076
+0.0068
+
+0.0063
+0.0627
+0.0996
+0.1183
+0.1250
+0.1217
+0.1108
+0.0950
+0.0785
+0.0645
+0.0537
+0.0447
+0.0368
+0.0300
+0.0247
+0.0202
+0.0163
+0.0126
+0.0099
+0.0081
+0.0068
+0.0059
+
+0.0040
+0.0462
+0.0785
+0.1003
+0.1106
+0.1113
+0.1038
+0.0903
+0.0750
+0.0615
+0.0508
+0.0421
+0.0345
+0.0279
+0.0226
+0.0183
+0.0145
+0.0112
+0.0086
+0.0070
+0.0058
+0.0043
+
+0.0031
+0.0304
+0.0613
+0.0849
+0.0971
+0.0997
+0.0943
+0.0827
+0.0688
+0.0563
+0.0463
+0.0381
+0.0309
+0.0249
+0.0199
+0.0158
+0.0122
+0.0092
+0.0073
+0.0058
+0.0048
+0.0042
+
+0.0018
+0.0208
+0.0471
+0.0707
+0.0829
+0.0861
+0.0819
+0.0720
+0.0599
+0.0489
+0.0399
+0.0325
+0.0262
+0.0209
+0.0166
+0.0128
+0.0096
+0.0071
+0.0055
+0.0044
+0.0036
+0.0027
+
+0.0013
+0.0153
+0.0362
+0.0559
+0.0667
+0.0698
+0.0666
+0.0587
+0.0489
+0.0398
+0.0323
+0.0261
+0.0208
+0.0165
+0.0129
+0.0097
+0.0071
+0.0051
+0.0039
+0.0031
+0.0025
+0.0020
+
+0.0010
+0.0111
+0.0262
+0.0407
+0.0496
+0.0526
+0.0506
+0.0446
+0.0371
+0.0301
+0.0243
+0.0194
+0.0154
+0.0120
+0.0092
+0.0067
+0.0049
+0.0037
+0.0028
+0.0023
+0.0019
+0.0015
+
+0.0007
+0.0077
+0.0177
+0.0279
+0.0347
+0.0381
+0.0370
+0.0324
+0.0267
+0.0216
+0.0173
+0.0136
+0.0107
+0.0082
+0.0057
+0.0043
+0.0033
+0.0026
+0.0021
+0.0017
+0.0014
+0.0011
+
+0.0005
+0.0052
+0.0116
+0.0189
+0.0246
+0.0276
+0.0271
+0.0236
+0.0192
+0.0154
+0.0119
+0.0093
+0.0071
+0.0050
+0.0037
+0.0028
+0.0023
+0.0019
+0.0015
+0.0013
+0.0010
+0.0008
+
+0.0004
+0.0036
+0.0081
+0.0134
+0.0179
+0.0202
+0.0197
+0.0172
+0.0140
+0.0107
+0.0082
+0.0058
+0.0043
+0.0033
+0.0025
+0.0021
+0.0017
+0.0014
+0.0011
+0.0009
+0.0008
+0.0006
+
+0.0003
+0.0027
+0.0060
+0.0098
+0.0129
+0.0139
+0.0133
+0.0114
+0.0092
+0.0072
+0.0050
+0.0037
+0.0028
+0.0023
+0.0019
+0.0015
+0.0013
+0.0010
+0.0008
+0.0007
+0.0006
+0.0004
+
+0.0002
+0.0020
+0.0044
+0.0072
+0.0091
+0.0093
+0.0081
+0.0068
+0.0055
+0.0043
+0.0033
+0.0025
+0.0021
+0.0017
+0.0014
+0.0011
+0.0009
+0.0008
+0.0006
+0.0005
+0.0004
+0.0003
+
+0.0002
+0.0012
+0.0031
+0.0054
+0.0068
+0.0066
+0.0050
+0.0041
+0.0033
+0.0027
+0.0022
+0.0018
+0.0015
+0.0012
+0.0010
+0.0008
+0.0007
+0.0005
+0.0004
+0.0004
+0.0003
+0.0002
+
+Source: Clark (2001a)
+
+- 36 -
+
+Table 12:
+
+Monthly Probability of Union Formation for Couples whose Male Member is not Married, per 1,000
+Male Age
+
+Female Age
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110-114
+115+
+
+10-14
+
+15-19
+
+20-24
+
+25-29
+
+30-34
+
+35-39
+
+40-44
+
+45-49
+
+50-54
+
+55-59
+
+60-64
+
+65-69
+
+70-74
+
+75-79
+
+80-84
+
+85-89
+
+90-94
+
+95-99
+
+1.2601
+6.9981 10.5183
+9.3525
+4.4742
+2.6871 1.3529 0.7115 0.3518 0.0634 0.0026 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+1.6454 16.0307 59.1912 38.1234 14.4844
+6.6721 4.2361 2.5845 1.1012 0.1343 0.0109 0.0033 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+1.5201 10.0149 34.7435 39.9519 19.8630 11.1167 7.0864 4.8703 1.6341 0.3603 0.1609 0.0839 0.0065 0.0005 0.0000 0.0000 0.0000 0.0000
+0.6002
+3.9290
+8.9836 16.4355 16.4668 12.1145 9.1894 5.2192 2.8563 1.7269 1.2090 0.6479 0.3636 0.2040 0.1145 0.0643 0.0361 0.0202
+0.3641
+1.3652
+3.7736
+7.1308 10.8162 10.0830 7.8645 6.4737 4.8178 4.2365 3.0290 1.2422 0.6952 0.3891 0.2178 0.1219 0.0682 0.0382
+0.2887
+1.0207
+2.0696
+3.5502
+4.4025
+5.6693 5.5923 7.0434 6.7674 3.9201 3.5192 1.2725 0.5664 0.2521 0.1122 0.0499 0.0222 0.0099
+0.2798
+0.9240
+1.5825
+1.3285
+1.6645
+2.6305 5.1051 4.4105 3.7573 3.9758 1.8604 0.7610 0.6923 0.6297 0.5728 0.5210 0.4740 0.4311
+0.2639
+0.8722
+1.2915
+1.2941
+1.0599
+2.3002 2.3616 2.0006 1.9775 2.2943 1.1369 0.1884 0.1787 0.1695 0.1607 0.1525 0.1446 0.1372
+0.1997
+0.6571
+1.0483
+0.6729
+0.7962
+1.0393 1.0001 1.2768 0.9435 0.6587 0.5223 0.0786 0.0349 0.0155 0.0069 0.0030 0.0014 0.0006
+0.1703
+0.4748
+0.5102
+0.4172
+0.4094
+0.4373 0.6566 0.4173 0.3642 0.1100 0.0539 0.0261 0.0007 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0918
+0.3642
+0.5540
+0.2031
+0.1990
+0.5178 0.2064 0.0746 0.0363 0.0191 0.0029 0.0011 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0072
+0.0403
+0.0243
+0.0435
+0.0419
+0.0417 0.0929 0.0256 0.0119 0.0017 0.0001 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0006
+0.0045
+0.0011
+0.0093
+0.0088
+0.0034 0.0418 0.0088 0.0039 0.0002 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000
+0.0005
+0.0000
+0.0020
+0.0019
+0.0003 0.0188 0.0030 0.0013 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000
+0.0001
+0.0000
+0.0004
+0.0004
+0.0000 0.0085 0.0010 0.0004 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000
+0.0000
+0.0000
+0.0001
+0.0001
+0.0000 0.0038 0.0004 0.0001 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000 0.0017 0.0001 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000 0.0008 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000 0.0003 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000 0.0002 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000 0.0001 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+
+Source: Clark (2001a)
+
+- 37 -
+
+100-104 105-109 110-114
+0.0000
+0.0000
+0.0000
+0.0114
+0.0214
+0.0044
+0.3922
+0.1301
+0.0003
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0000
+0.0000
+0.0064
+0.0120
+0.0020
+0.3567
+0.1234
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0000
+0.0000
+0.0036
+0.0067
+0.0009
+0.3245
+0.1170
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+115+
+0.0000
+0.0000
+0.0000
+0.0020
+0.0037
+0.0004
+0.2952
+0.1110
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+Table 13:
+
+Monthly Probability of Union Formation for Couples whose Male Member is Married with One Wife, per 1,000
+Male Age
+
+Female Age
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110-114
+115+
+
+10-14
+
+15-19
+
+20-24
+
+25-29
+
+30-34
+
+35-39
+
+40-44
+
+45-49
+
+50-54
+
+55-59
+
+60-64
+
+65-69
+
+70-74
+
+75-79
+
+80-84
+
+85-89
+
+90-94
+
+95-99
+
+0.1508
+0.2380
+0.2091
+0.1550
+0.1010
+0.0995
+0.0975
+0.0963
+0.0957
+0.0845
+0.0525
+0.0017
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+2.0450
+2.9289
+2.8888
+1.2457
+0.7987
+0.7083
+0.6346
+0.6182
+0.6154
+0.5927
+0.3874
+0.0795
+0.0163
+0.0034
+0.0007
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+3.8902
+20.3337
+11.5952
+3.7204
+2.5043
+1.3438
+0.9609
+0.8746
+0.8386
+0.8032
+0.5679
+0.1336
+0.0314
+0.0074
+0.0017
+0.0004
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+3.4658
+14.2712
+14.5505
+8.2208
+4.2014
+2.3645
+1.4669
+0.8114
+0.6740
+0.5954
+0.3874
+0.0806
+0.0168
+0.0035
+0.0007
+0.0002
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+1.9351
+6.6793
+10.6349
+6.4271
+5.7841
+4.0990
+2.3464
+1.2398
+0.2329
+0.0928
+0.0541
+0.0021
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+1.8919
+4.7785
+6.9031
+7.3832
+6.2091
+5.4166
+4.1005
+1.6658
+0.2894
+0.0727
+0.0577
+0.0009
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+1.3677
+2.9986
+4.3676
+5.2513
+5.7464
+5.9052
+4.1249
+2.5128
+0.5260
+0.6362
+0.5446
+0.0499
+0.0046
+0.0004
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.8158
+1.5600
+2.3071
+3.3799
+4.7193
+5.3899
+4.9273
+3.0095
+1.7897
+1.5408
+1.3725
+0.2309
+0.0388
+0.0065
+0.0011
+0.0002
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.3498
+0.7000
+1.1206
+1.8811
+3.9895
+5.3496
+4.7375
+3.2059
+2.3369
+2.1483
+1.1920
+0.8831
+0.6542
+0.4846
+0.3590
+0.2660
+0.1970
+0.1460
+0.1081
+0.0801
+0.0593
+0.0440
+
+0.0492
+0.1015
+0.1937
+0.8299
+2.7697
+4.2629
+3.4923
+2.7546
+2.7079
+2.7871
+1.5326
+0.5638
+0.2074
+0.0763
+0.0281
+0.0103
+0.0038
+0.0014
+0.0005
+0.0002
+0.0001
+0.0000
+
+0.0021
+0.0051
+0.0360
+0.2355
+1.3456
+1.5545
+1.6967
+2.4452
+3.2049
+3.0989
+1.8215
+0.6701
+0.2465
+0.0907
+0.0334
+0.0123
+0.0045
+0.0017
+0.0006
+0.0002
+0.0001
+0.0000
+
+0.0000
+0.0004
+0.0047
+0.0712
+0.1415
+0.2124
+0.3657
+2.0327
+3.1175
+2.7639
+1.0262
+0.0069
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0000
+0.0001
+0.0117
+0.1175
+0.1582
+0.2747
+0.8385
+0.2724
+0.9261
+0.8161
+0.0897
+0.0099
+0.0011
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0000
+0.0000
+0.0019
+0.0976
+0.1179
+0.2064
+0.3459
+0.0238
+0.3103
+0.6490
+0.2199
+0.0745
+0.0252
+0.0085
+0.0029
+0.0010
+0.0003
+0.0001
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0000
+0.0000
+0.0003
+0.0811
+0.0878
+0.1551
+0.1427
+0.0021
+0.1040
+0.5162
+0.2128
+0.0877
+0.0361
+0.0149
+0.0061
+0.0025
+0.0010
+0.0004
+0.0002
+0.0001
+0.0000
+
+0.0000
+0.0000
+0.0000
+0.0001
+0.0673
+0.0655
+0.1165
+0.0588
+0.0002
+0.0348
+0.4105
+0.1542
+0.0579
+0.0218
+0.0082
+0.0031
+0.0012
+0.0004
+0.0002
+0.0001
+0.0000
+0.0000
+
+0.0000
+0.0000
+0.0000
+0.0000
+0.0559
+0.0488
+0.0875
+0.0243
+0.0000
+0.0117
+0.3264
+0.1028
+0.0323
+0.0102
+0.0032
+0.0010
+0.0003
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0000
+0.0000
+0.0000
+0.0464
+0.0363
+0.0658
+0.0100
+0.0000
+0.0039
+0.2596
+0.0664
+0.0170
+0.0043
+0.0011
+0.0003
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+Source: Clark (2001a)
+
+- 38 -
+
+100-104
+0.0000
+0.0000
+0.0000
+0.0000
+0.0386
+0.0271
+0.0494
+0.0041
+0.0000
+0.0013
+0.2065
+0.0424
+0.0087
+0.0018
+0.0004
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+105-109
+0.0000
+0.0000
+0.0000
+0.0000
+0.0320
+0.0202
+0.0371
+0.0017
+0.0000
+0.0004
+0.1642
+0.0269
+0.0044
+0.0007
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+110-114
+0.0000
+0.0000
+0.0000
+0.0000
+0.0266
+0.0150
+0.0279
+0.0007
+0.0000
+0.0001
+0.1306
+0.0170
+0.0022
+0.0003
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+115+
+0.0000
+0.0000
+0.0000
+0.0000
+0.0221
+0.0112
+0.0209
+0.0003
+0.0000
+0.0000
+0.1039
+0.0108
+0.0011
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+Table 14:
+
+Monthly Probability of Union Formation for Couples whose Male Member is Married with Two or More Wives, per 1,000
+Male Age
+
+Female Age
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110-114
+115+
+
+10-14
+
+15-19
+
+20-24
+
+25-29
+
+30-34
+
+35-39
+
+40-44
+
+45-49
+
+50-54
+
+55-59
+
+60-64
+
+65-69
+
+0.1465
+0.2208
+0.1627
+0.0970
+0.0343
+0.0339
+0.0340
+0.0300
+0.0222
+0.0131
+0.0052
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+1.6665 3.4168 8.7284 4.7795 5.0931 3.3263 1.9732 1.6880 1.5675 1.0926 0.8604 0.1997 0.0464 0.0108 0.0025 0.0006 0.0001
+1.9745 12.9314 12.1498 15.6442 10.7600 6.0094 4.9408 3.5948 2.4192 2.7874 0.9874 0.2312 0.0541 0.0127 0.0030 0.0007 0.0002
+1.9429 5.7266 19.3232 15.5571 13.1123 8.3011 5.5632 5.1073 3.0247 1.3867 0.9343 0.2188 0.0512 0.0120 0.0028 0.0007 0.0002
+0.6908 4.2097 11.0412 14.4341 9.3499 7.4035 6.8708 5.4316 2.8063 1.3968 0.4053 0.0949 0.0222 0.0052 0.0012 0.0003 0.0001
+0.5819 3.5501 7.6283 8.2551 6.5485 5.8604 6.1619 5.1966 4.9165 2.7798 1.6062 0.3761 0.0881 0.0206 0.0048 0.0011 0.0003
+0.5991 3.2278 5.9458 5.5605 4.9392 5.5863 7.4057 7.0450 6.8407 8.4079 4.1835 0.9796 0.2294 0.0537 0.0126 0.0029 0.0007
+0.5875 3.0835 5.3262 4.7545 4.1913 5.6773 7.5449 10.3895 13.0299 11.7675 7.8667 1.8420 0.4313 0.1010 0.0236 0.0055 0.0013
+0.5190 2.9126 5.0123 4.2967 3.3432 3.4745 5.0729 10.4113 15.6114 11.4707 4.6267 1.0833 0.2537 0.0594 0.0139 0.0033 0.0008
+0.3877 2.0252 3.9395 2.8779 2.0817 1.4255 2.6116 7.0655 8.4296 5.7600 2.0536 0.4809 0.1126 0.0264 0.0062 0.0014 0.0003
+0.1997 1.0249 1.2736 1.4278 0.6915 0.5972 1.1653 2.1035 2.3329 1.5228 0.4957 0.1161 0.0272 0.0064 0.0015 0.0003 0.0001
+0.0692 0.1404 0.2245 0.1931 0.1509 0.1177 0.1940 0.2790 0.2885 0.1899 0.0758 0.0087 0.0010 0.0001 0.0000 0.0000 0.0000
+0.0090 0.0190 0.0304 0.0261 0.0204 0.0159 0.0262 0.0377 0.0390 0.0257 0.0103 0.0009 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0012 0.0026 0.0041 0.0035 0.0028 0.0022 0.0035 0.0051 0.0053 0.0035 0.0014 0.0001 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0002 0.0003 0.0006 0.0005 0.0004 0.0003 0.0005 0.0007 0.0007 0.0005 0.0002 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000 0.0000 0.0001 0.0001 0.0001 0.0000 0.0001 0.0001 0.0001 0.0001 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+
+Source: Clark (2001a)
+
+- 39 -
+
+70-74
+
+75-79
+
+80-84
+
+85-89
+
+90-94
+
+95-99
+
+100-104 105-109 110-114
+0.0000
+0.0000
+0.0000
+0.0000
+0.0001
+0.0002
+0.0003
+0.0002
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+115+
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+Table 15:
+
+Monthly Probability of Separation for Couples with No Children, per 1,000
+Male Age
+
+Female Age 10-14
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110-114
+115+
+
+4.8640
+6.9813
+6.4553
+3.1451
+1.0278
+0.1324
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+15-19
+
+20-24
+
+25-29
+
+30-34
+
+35-39
+
+40-44
+
+45-49
+
+50-54
+
+55-59
+
+60-64
+
+11.9495
+21.8029
+19.4019
+11.4283
+4.0209
+1.2908
+0.5914
+0.2425
+0.0518
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+19.6445
+38.3107
+41.8820
+27.5985
+15.4298
+9.1163
+4.8969
+1.6561
+0.2592
+0.0518
+0.0173
+0.0006
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+21.7634
+49.5150
+60.9334
+55.8700
+44.2783
+31.8141
+15.4363
+4.4273
+1.1764
+0.4146
+0.0518
+0.0188
+0.0068
+0.0025
+0.0009
+0.0003
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+22.2397 17.2825 12.6332
+5.3521
+1.7739
+0.3264
+0.0456 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+48.7013 49.7730 35.0336 20.0365
+7.2059
+2.0382
+0.3363 0.0612 0.0168 0.0046 0.0013 0.0004 0.0001 0.0000
+77.4859 82.6047 77.0527 46.6730 22.7737
+8.0472
+3.1024 0.9211 0.4223 0.1936 0.0887 0.0407 0.0187 0.0086
+86.0012 113.5373 105.9634 83.3551 48.2920 29.2415 15.6094 6.7682 0.7655 0.0866 0.0098 0.0011 0.0001 0.0000
+85.3366 104.0665 111.6146 94.7054 87.7344 69.8536 48.6448 27.8240 1.3364 0.0642 0.0031 0.0001 0.0000 0.0000
+57.8428 70.8230 82.6276 101.5697 108.8649 120.2012 107.4666 57.0986 1.1336 0.0225 0.0004 0.0000 0.0000 0.0000
+25.7536 35.8824 53.9494 88.6467 130.1641 158.9759 148.1869 79.5954 1.1604 0.0169 0.0002 0.0000 0.0000 0.0000
+9.1767 16.8549 33.6206 75.0273 128.1329 164.0586 146.3599 74.4824 1.0362 0.0144 0.0002 0.0000 0.0000 0.0000
+3.5430
+6.9361 21.3688 54.8911 98.0601 123.1217 101.8236 51.2411 1.0130 0.0200 0.0004 0.0000 0.0000 0.0000
+0.8509
+2.6182 10.7969 29.9575 50.4677 59.9844 47.1539 24.7528 1.1050 0.0493 0.0022 0.0001 0.0000 0.0000
+0.1037
+0.7266
+3.8755
+8.9907 14.8589 16.0133 13.1546 6.6462 1.0212 0.1569 0.0241 0.0037 0.0006 0.0001
+0.0775
+0.3841
+0.5599
+0.4288
+0.4173
+0.3642
+0.3869 0.3671 0.0856 0.0169 0.0005 0.0000 0.0000 0.0000
+0.0579
+0.2031
+0.0809
+0.0205
+0.0117
+0.0083
+0.0114 0.0203 0.0072 0.0018 0.0000 0.0000 0.0000 0.0000
+0.0433
+0.1073
+0.0117
+0.0010
+0.0003
+0.0002
+0.0003 0.0011 0.0006 0.0002 0.0000 0.0000 0.0000 0.0000
+0.0323
+0.0567
+0.0017
+0.0000
+0.0000
+0.0000
+0.0000 0.0001 0.0001 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0241
+0.0300
+0.0002
+0.0000
+0.0000
+0.0000
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0180
+0.0159
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0135
+0.0084
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0101
+0.0044
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0075
+0.0023
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0056
+0.0012
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+0.0042
+0.0007
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000 0.0000
+
+Source: Clark (2001a)
+
+- 40 -
+
+65-69
+
+70-74 75-79 80-84 85-89 90-94 95-99 100-104 105-109 110-114 115+
+0.0000
+0.0000
+0.0039
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0000
+0.0018
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0000
+0.0008
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0000
+0.0004
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+Table 16:
+
+Monthly Probability of Separation for Couples with One or Two Children, per 1,000
+Male Age
+
+Female Age
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110-114
+115+
+
+10-14
+
+15-19
+
+20-24
+
+25-29
+
+30-34
+
+35-39
+
+40-44
+
+45-49
+
+50-54
+
+0.4195
+0.6407
+0.5589
+0.3498
+0.1394
+0.0432
+0.0108
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+1.6562
+2.5977
+2.5905
+1.7459
+0.8650
+0.3232
+0.0666
+0.0061
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+3.4323 4.5777 4.3008 3.0381 1.9701 1.2341 0.8706
+6.1439 9.0060 9.2869 8.0048 6.2077 5.1353 3.9794
+6.6721 11.2431 13.7985 13.9103 13.4957 11.8221 10.8170
+5.1362 10.1167 14.7534 18.2415 19.4471 19.6664 18.4308
+2.9387 6.5944 11.7846 16.9745 21.2421 23.5741 23.5156
+1.1649 3.1905 6.7141 11.6729 17.2169 22.7428 25.3295
+0.3172 1.0661 2.8051 5.7394 10.6854 18.2499 23.9380
+0.0516 0.2597 0.7747 2.0292 5.3717 11.3510 16.8416
+0.0071 0.0327 0.1260 0.5752 1.9610 4.7019 8.0100
+0.0000 0.0000 0.0164 0.1007 0.3888 1.1184 1.9887
+0.0000 0.0000 0.0000 0.0000 0.0224 0.0897 0.1925
+0.0000 0.0000 0.0000 0.0000 0.0082 0.0872 0.1072
+0.0000 0.0000 0.0000 0.0000 0.0030 0.0848 0.0597
+0.0000 0.0000 0.0000 0.0000 0.0011 0.0824 0.0332
+0.0000 0.0000 0.0000 0.0000 0.0004 0.0801 0.0185
+0.0000 0.0000 0.0000 0.0000 0.0001 0.0779 0.0103
+0.0000 0.0000 0.0000 0.0000 0.0001 0.0757 0.0057
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0736 0.0032
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0716 0.0018
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0696 0.0010
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0676 0.0006
+0.0000 0.0000 0.0000 0.0000 0.0000 0.0657 0.0003
+
+55-59
+
+60-64
+
+65-69
+
+70-74
+
+75-79
+
+80-84
+
+85-89
+
+90-94
+
+95-99
+
+0.5402
+3.3267
+9.1304
+15.6520
+19.6362
+21.3213
+20.9253
+17.1649
+8.5681
+2.3951
+0.2504
+0.1168
+0.0544
+0.0254
+0.0118
+0.0055
+0.0026
+0.0012
+0.0006
+0.0003
+0.0001
+0.0001
+
+0.3765
+2.2315
+6.2089
+10.2209
+12.1703
+12.3768
+12.2505
+10.0185
+5.9688
+1.7910
+0.2186
+0.1390
+0.0884
+0.0562
+0.0358
+0.0227
+0.0145
+0.0092
+0.0059
+0.0037
+0.0024
+0.0015
+
+0.1807
+1.0759
+2.6414
+4.1479
+4.6990
+4.5708
+4.1342
+3.4084
+2.0870
+0.8364
+0.1158
+0.0835
+0.0601
+0.0433
+0.0312
+0.0225
+0.0162
+0.0117
+0.0084
+0.0061
+0.0044
+0.0032
+
+0.0354
+0.3958
+0.7404
+0.6830
+0.6289
+0.5856
+0.5094
+0.5156
+0.5376
+0.3077
+0.0119
+0.0035
+0.0010
+0.0003
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0069
+0.1456
+0.2075
+0.1125
+0.0842
+0.0750
+0.0628
+0.0780
+0.1385
+0.1132
+0.0012
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0014
+0.0536
+0.0582
+0.0185
+0.0113
+0.0096
+0.0077
+0.0118
+0.0357
+0.0416
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0003
+0.0197
+0.0163
+0.0030
+0.0015
+0.0012
+0.0010
+0.0018
+0.0092
+0.0153
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0001
+0.0072
+0.0046
+0.0005
+0.0002
+0.0002
+0.0001
+0.0003
+0.0024
+0.0056
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0027
+0.0013
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0006
+0.0021
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+Source: Clark (2001a)
+
+- 41 -
+
+100-104 105-109 110-114
+0.0000
+0.0010
+0.0004
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0002
+0.0008
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0004
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0003
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+115+
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+Table 17:
+
+Monthly Probability of Separation for Couples with Three or More Children, per 1,000
+Male Age
+
+Female Age
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110-114
+115+
+
+10-14
+
+15-19
+
+20-24
+
+25-29
+
+30-34
+
+35-39
+
+40-44
+
+45-49
+
+50-54
+
+55-59
+
+0.0631
+0.1893
+0.3785
+0.4416
+0.3785
+0.1893
+0.0631
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.2414 0.5351 0.8781 1.5735 2.2507 2.7288 2.1565 1.2746 0.3904
+1.2921 3.2518 5.3252 6.9839 9.4715 10.3889 9.4737 5.4418 2.3409
+2.5843 8.2620 14.1862 18.0000 21.2057 25.7466 23.3056 16.1001 6.7144
+3.3935 10.5535 20.4257 27.2293 33.6889 41.4260 42.5398 28.8399 14.2357
+2.5843 8.4953 16.1237 25.3149 38.5682 51.7807 53.0647 39.4534 21.1457
+1.2921 3.5537 7.6858 16.1123 31.1739 48.3538 53.1120 43.2245 26.4033
+0.2414 0.7406 2.3981 7.3952 19.2295 35.4408 47.3189 44.8315 32.6456
+0.0000 0.0821 0.5496 2.7661 9.9354 24.6899 39.6344 46.6790 41.5883
+0.0000 0.0136 0.0854 0.9663 5.6472 15.9991 30.1730 40.8498 44.0641
+0.0000 0.0000 0.0000 0.4815 2.9443 8.9521 16.5398 25.8042 32.1681
+0.0000 0.0000 0.0000 0.2058 1.2560 2.9680 5.7673 9.9076 15.9979
+0.0000 0.0000 0.0000 0.0567 0.7439 0.4960 0.5354 0.6232 0.9893
+0.0000 0.0000 0.0000 0.0156 0.4406 0.0829 0.0497 0.0392 0.0612
+0.0000 0.0000 0.0000 0.0043 0.2610 0.0139 0.0046 0.0025 0.0038
+0.0000 0.0000 0.0000 0.0012 0.1546 0.0023 0.0004 0.0002 0.0002
+0.0000 0.0000 0.0000 0.0003 0.0916 0.0004 0.0000 0.0000 0.0000
+0.0000 0.0000 0.0000 0.0001 0.0542 0.0001 0.0000 0.0000 0.0000
+0.0000 0.0000 0.0000 0.0000 0.0321 0.0000 0.0000 0.0000 0.0000
+0.0000 0.0000 0.0000 0.0000 0.0190 0.0000 0.0000 0.0000 0.0000
+0.0000 0.0000 0.0000 0.0000 0.0113 0.0000 0.0000 0.0000 0.0000
+0.0000 0.0000 0.0000 0.0000 0.0067 0.0000 0.0000 0.0000 0.0000
+0.0000 0.0000 0.0000 0.0000 0.0040 0.0000 0.0000 0.0000 0.0000
+
+60-64
+
+65-69
+
+70-74
+
+75-79
+
+80-84
+
+85-89
+
+90-94
+
+95-99
+
+0.0890
+0.4944
+2.0596
+4.8665
+8.4323
+12.0496
+18.4232
+27.0556
+33.7383
+31.5665
+16.1116
+1.0425
+0.0675
+0.0044
+0.0003
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0791
+0.3817
+1.1358
+2.1275
+3.8554
+6.6868
+11.6579
+16.6457
+16.4878
+10.9211
+1.9619
+0.3524
+0.0633
+0.0114
+0.0020
+0.0004
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0329
+0.2275
+0.3044
+0.3374
+0.4705
+0.5697
+0.7571
+0.9738
+1.0934
+2.1041
+0.7740
+0.2848
+0.1048
+0.0385
+0.0142
+0.0052
+0.0019
+0.0007
+0.0003
+0.0001
+0.0000
+
+0.0000
+0.0136
+0.1356
+0.0816
+0.0535
+0.0574
+0.0485
+0.0492
+0.0570
+0.0725
+0.4054
+0.1349
+0.0449
+0.0149
+0.0050
+0.0017
+0.0006
+0.0002
+0.0001
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0057
+0.0808
+0.0219
+0.0085
+0.0070
+0.0041
+0.0032
+0.0033
+0.0048
+0.0781
+0.0057
+0.0004
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0024
+0.0482
+0.0059
+0.0013
+0.0009
+0.0004
+0.0002
+0.0002
+0.0003
+0.0150
+0.0002
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0010
+0.0287
+0.0016
+0.0002
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0029
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0004
+0.0171
+0.0004
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0006
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+Source: Clark (2001a)
+
+- 42 -
+
+100-104 105-109 110-114
+0.0000
+0.0002
+0.0102
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0001
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0001
+0.0061
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+0.0000
+0.0000
+0.0036
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+115+
+0.0000
+0.0000
+0.0022
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+0.0000
+
+8.4
+
+Running SPEHS
+
+SPEHS is run from an initial population of roughly 30 young individuals, evenly split between males and females,
+for about 150 years to create a stable population of several thousand individuals. This stable population is used as
+P0 for all simulation scenarios. SPEHS creates data to populate the tables displayed in Figure 9. These describe
+the time-evolving dynamics of the entire simulated population, allowing flexible analysis of dynamic indicators.
+Generational links between parents and children are maintained as well as time-dependent, union-mediated links
+between men and women. Together this information provides an opportunity for a wide variety of investigations, a
+small subset of which are presented above.
+
+- 43 -
+
+9 References
+Aggleton, P. 2007. ""Just a snip"?: A social history of male
+circumcision." Reproductive Health Matters, 15(29):15-21.
+
+Clark, S.J. 2001a. An Investigation into the Impact of HIV on
+Population Dynamics in Africa. Ph.D. dissertation in
+Demography. Philadelphia, Pennsylvania: University of
+Pennsylvania.
+
+Alkema, L., A.E. Raftery and S.J. Clark. 2007. "Probabilistic
+Projections of HIV Prevalence Using Bayesian Melding." The
+Annals of Applied Statistics, 1(1):229-48.
+
+Clark, S.J. 2001b. "Part 2: The Demography of the Gwembe Tonga."
+Pp. 55-195 in An Investigation into the Impact of HIV on
+Population Dynamics in Africa. Philadelphia, Pennsylvania:
+University of Pennsylvania.
+
+Altman, L.K. 2008. "Male Circumcision No Aid to Women in Study."
+New York Times, February 4, 2008.
+Anderson, R.M. and R.M. May. 1991. Infectious Diseases of
+Humans: Dynamics and Control Oxford: Oxford University Press.
+
+Clark, S.J. 2001c. "Part 3: A Two-Sex Stochastic Microsimulation of
+a Population with HIV." Pp. 196-355 in An Investigation into the
+Impact of HIV on Population Dynamics in Africa. Philadelphia,
+Pennsylvania: University of Pennsylvania.
+
+Auvert, B. 1991. "The Auvert Approach: A Stochastic Model for the
+Heterosexual Spread of the Human Immunodeficiency Virus."
+Pp. 77-83 in The AIDS epidemic and its demographic
+consequences. Proceedings of the United Nations/World Health
+Organization Workshop on Modelling the Demographic Impact of
+the AIDS Epidemic in Pattern II Countries: Progress to Date and
+Policies for the Future, New York, 13-15 December 1989. New
+York, New York/Geneva, Switzerland: United Nations.
+Department of International Economic and Social Affairs.
+
+Clark, S.J. 2006. "Demographic Impacts of the HIV Epidemic and
+Consequences of Population-wide Treatment of HIV for the
+Elderly: Results from Microsimulation." in Aging in Sub-Sahara
+Africa: Recommendations for Furthering Research, Panel on
+Policy Research and Data Needs to Meet the Challenge of Aging
+in Africa. Edited by B. Cohen and J. Menken. Washington, DC:
+The National Academy Press.
+
+Auvert, B., G. Buonamico, E. Lagarde and B. Williams. 2000. "Sexual
+behavior, heterosexual transmission, and the spread of HIV in
+sub-Saharan Africa: A simulation study." Computers and
+Biomedical Research, 33(1):84-96.
+
+Clark, S.J., E. Colson, J. Lee and T. Scudder. 1995. "Ten Thousand
+Tonga: A Longitudinal Anthropological Study from Southern
+Zambia: 1956-1991." Population Studies, 49:91-109.
+
+Auvert, B., D. Taljaard, E. Lagarde, J. Sobngwi-Tambekou, R. Sitta
+and A. Puren. 2005. "Randomized, controlled intervention trial of
+male circumcision for reduction of HIV infection risk: the ANRS
+1265 Trial." PLoS Med, 2(11):e298.
+<http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&d
+b=PubMed&dopt=Citation&list_uids=16231970>.
+
+Coale, A.J. and T.J. Trussell. 1974. "Model Fertility Schedules:
+Variations in The Age Structure of Childbearing in Human
+Populations." Population Index., 40(2):185-258.
+Colson, E. 1960. Social Organization of the Gwembe Tonga.
+Manchester: Manchester University Press.
+Colson, E. 1971. The Social Consequences of Resettlement: The
+Impact of the Kariba Resettlement upon the Gwembe Tonga.
+Manchester: University of Manchester Press.
+
+Auvert, B., D. Taljaard, E. Lagarde, J. Sobngwi-Tambekou, R. Sitta
+and A. Puren. 2006. "Randomized, controlled intervention trial of
+male circumcision for reduction of HIV infection risk: The ANRS
+1265 trial (vol 2, art. no e298, 2006)." Plos Medicine, 3(5):705-.
+
+Donoval, B.A., A.L. Landay, S. Moses, K. Agot, J.O. Ndinya-Achola,
+E.A. Nyagaya, I. MacLean and R.C. Bailey. 2006. "HIV-1 target
+cells in foreskins of African men with varying histories of sexually
+transmitted infections." American Journal of Clinical Pathology,
+125(3):386-91.
+
+Bailey, R.C., S. Moses, C.B. Parker, K. Agot, I. Maclean, J.N.
+Krieger, C.F.M. Williams, R.T. Campbell and J.O. Ninya-Achola.
+2007. "Male circumcision for HIV prevention in young men in
+Kisumu, Kenya: a randomised controlled trial." Lancet,
+369(9562):643-56.
+
+Ferguson, N.M., D.A.T. Cummings, C. Fraser, J.C. Cajka, P.C.
+Cooley and D.S. Burke. 2006. "Strategies for mitigating an
+influenza pandemic." Nature, 442(7101):448-52.
+
+Bailey, R.C., S. Neema and R. Othieno. 1999. "Sexual Behaviors
+and Other HIV Risk Factors in Circumcised and Uncircumcised
+Men in Uganda."294.
+
+Garenne, M. 2006. "Male Circumcision and HIV Control in Africa."
+Plos Medicine, 3(1).
+<http://dx.doi.org/10.1371/journal.pmed.0030078>.
+
+Bongaarts, J. and R.G. Potter. 1983. Fertility, Biology, and Behavior:
+An Analysis of the Proximate Determinants. San Diego:
+Academic Press.
+
+Garenne, M.L., S.M. Tollman, M.A. Collinson and K. Kahn. 2007.
+"Fertility trends and net reproduction in Agincourt, rural South
+Africa, 1992-2004." Scandinavian Journal of Public Health,
+35:68-76.
+
+Buve, A. 2006. "Male circumcision and risk of syphilis, chancroid,
+and genital herpes: a systematic review and meta-analysis Commentary." Sexually Transmitted Infections, 82(2):110-.
+
+Garnett, G.P. and R.M. Anderson. 1993. "Factors Controlling the
+Spread of HIV in Heterosexual Communities in Developing
+Countries: Patterns of Mixing between Different Age and Sexual
+Activity Classes." Philosophical Transactions: Biological
+Sciences, 342(1300):137-59.
+
+Buve, A., T. Delvaux and B. Criel. 2007. "Delivery of male
+circumcision services: "Festina lente"." Reproductive Health
+Matters, 15(29):57-61.
+Carael, M. and K.K. Holmes. 2001. "Dynamics of HIV epidemics in
+sub-Saharan Africa: introduction." Aids, 15 Suppl 4:S1-4.
+<http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&d
+b=PubMed&dopt=Citation&list_uids=11686458>.
+
+Germann, T.C., K. Kadau, I.M. Longini and C.A. Macken. 2006.
+"Mitigation strategies for pandemic influenza in the United
+States." Proceedings of the National Academy of Sciences of the
+United States of America, 103(15):5935-40.
+
+Caswell, H. 2001. Matrix Population Models, Second Edition, 2nd ed.
+Sunderland, Massachusetts: Sinauer Associates, Inc.
+
+Global HIV Prevention Working Group. 2006. "New Approaches to
+HIV Prevention Accelerating Research and Ensuring Future
+Access." Report, Bill & Melinda Gates Foundation and the Henry
+J. Kaiser Family Foundation.
+<http://www.globalhivprevention.org/pdfs/New%20Prevention%2
+0Approaches.pdf>.
+
+Citro, C.F. and E.A. Hanushek, Editors. 1991a. Improving Information
+for Social Policy Decisions: The Use of Microsimulation
+Modeling. Review and Recommendations, vol. I. Washington,
+D.C.: National Academy Press.
+Citro, C.F. and E.A. Hanushek, Editors. 1991b. Improving Information
+for Social Policy Decisions: The Use of Microsimulation
+Modeling. Technical Papers, vol. II. Washington, D.C.: National
+Academy Press.
+
+Gray, R.H., G. Kigozi, D. Serwadda, F. Makumbi, S. Watya, F.
+Nalugoda, N. Kiwanuka, L.H. Moulton, M.A. Chaudhary, M.Z.
+Chen, et al. 2007a. "Male circumcision for HIV prevention in men
+
+- 44 -
+
+Moses, S., F.A. Plummer, J.E. Bradley, J.O. Ndinya-Achola, N.J.
+Nagelkerke and A.R. Ronald. 1994. "The association between
+lack of male circumcision and risk for HIV infection: a review of
+the epidemiological data." Sex Transm Dis, 21(4):201-10.
+
+in Rakai, Uganda: a randomised trial." Lancet, 369(9562):657-66.
+Gray, R.H., X.B. Li, G. Kigozi, D. Serwadda, F. Nalugoda, S. Watya,
+S.J. Reynolds and M. Wawer. 2007b. "The impact of male
+circumcision on HIV incidence and cost per infection prevented:
+a stochastic simulation model from Rakai, Uganda." Aids,
+21(7):845-50.
+
+Muula, A.S. 2007. "Male circumcision to prevent HIV transmission
+and acquisition: What else do we need to know?" Aids and
+Behavior, 11(3):357-63.
+
+Gregson, S., C. Nyamukapa, B. Lopman, P. Mushati, G.P. Garnett,
+S.K. Chandiwana and R.M. Anderson. 2007. "Critique of early
+models of the demographic impact of HIV/AIDS in sub-Saharan
+Africa based on contemporary empirical data from Zimbabwe."
+Proceedings of the National Academy of Sciences of the United
+States of America, 104(37):14586-91.
+
+Nagelkerke, N.J.D., S. Moses, S.J. de Vlas and R.C. Bailey. 2007.
+"Modelling the public health impact of male circumcision for HIV
+prevention in high prevalence areas in Africa." Bmc Infectious
+Diseases, 7:15.
+Newell, M.L. 2003. "Reducing childhood mortality in poor countries Antenatal and perinatal strategies to prevent mother-to-child
+transmission of HIV infection." Transactions of the Royal Society
+of Tropical Medicine and Hygiene, 97(1):22-4.
+
+Gregson, S., C.A. Nyamukapa, G.P. Garnett, P.R. Mason, T.
+Zhuwau, M. Carael, S.K. Chandiwana and R.M. Anderson. 2002.
+"Sexual mixing patterns and sex-differentials in teenage
+exposure to HIV infection in rural Zimbabwe." The Lancet,
+359(9321):1896-903.
+<http://www.sciencedirect.com/science/article/B6T1B-460395B9/2/2dd4a48278731c78a6ba4842154d9cad>.
+
+Newell, M.L., H. Coovadia, M. Cortina-Borja, N. Rollins, P. Gaillard,
+F. Dabis and Ias. 2004. "Mortality of infected and uninfected
+infants born to HIV-infected mothers in Africa: a pooled analysis."
+Lancet, 364(9441):1236-43.
+
+Hallett, T.B., S. Gregson, J.J.C. Lewis, B.A. Lopman and G.P.
+Garnett. 2007. "Behaviour change in generalised HIV epidemics:
+impact of reducing cross-generational sex and delaying age at
+sexual debut." Sexually Transmitted Infections, 83:I50-I4. <<Go
+to ISI>://000248432900008 >.
+
+Nyirenda, M., V. Hosegood, T. Bdrnighausen and M.L. Newell. 2007.
+"Mortality levels and trends by HIV serostatus in rural South
+Africa." Aids, 21:S73-S9.
+Orio, M., J.M. Pena, M.T. Rives, M. Sanz, I. Bates, R. Madero and
+M.I. de Jose. 2007. "Changes in vertical HIV transmission:
+comparison between 1994 and 2004." Medicina Clinica,
+1258(9):321-4.
+
+Hankins, C. 2007. "Male circumcision: Implications for women as
+sexual partners and parents." Reproductive Health Matters,
+15(29):62-7.
+
+Orroth, K.K., E.E. Freeman, R. Bakker, A. Buve, J.R. Glynn, M.C.
+Boily, R.G. White, J.D.F. Habbema and R.J. Hayes. 2007.
+"Understanding the differences between contrasting HIV
+epidemics in east and west Africa: results from a simulation
+model of the Four Cities Study." Sexually Transmitted Infections,
+83:I5-I16.
+
+Hunter, S.C., R. Isingo, J.T. Boerma, M. Urassa, G.M.P. Mwaluko
+and B. Zaba. 2003. "The association between HIV and fertility in
+a cohort study in rural Tanzania." Journal of Biosocial Science,
+35(2):189-99.
+Kahn, J.G., E. Marseille and B. Auvert. 2006. "Cost-effectiveness of
+male circumcision for HIV prevention in a South African setting."
+Plos Medicine, 3(12):2349-58.
+
+Poddera, C.N., O. Sharomia, A.B. Gumela and S. Mosesb. 2007. "To
+cut or not to cut: A modeling approach for assessing the role of
+male circumcision in HIV control." Bulletin of Mathematical
+Biology, 69(8):2447-66.
+
+Kahn, K., S.M. Tollman, M.A. Collinson, S.J. Clark, R. Twine, B.D.
+Clark, M. Shabangu, F.X. Gomez-Olive, O. Mokoena and M.L.
+Garenne. 2007. "Research into health, population and social
+transitions in rural South Africa: Data and methods of the
+agincourt health and demographic surveillance system."
+Scandinavian Journal of Public Health, 35:8-20.
+
+Poole, D. and A.E. Raftery. 2000. "Inference for deterministic
+simulation models: The Bayesian melding approach." Journal of
+the American Statistical Association, 95(452):1244-55. <<Go to
+ISI>://000165470300026 >.
+
+Kelly, R., N. Kiwanuka, M.J. Wawer, D. Serwadda, N.K.
+Sewankambo, F. Wabwire-Mangen, C. Li, J.K. Konde-Lule, T.
+Lutalo, F. Makumbi, et al. 1999. "Age of male circumcision and
+risk of prevalent HIV infection in rural Uganda." Aids, 13(3):399405.
+<http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&d
+b=PubMed&dopt=Citation&list_uids=10199231>.
+
+Preston, S.H., P. Heuveline and M. Guillot. 2001. "Chapter 6:
+Population Projection." Pp. 1-20 in Demography: Measuring and
+Modeling Population Processes. Oxford, UK: Blackwell.
+Quinn, T.C. 2007. "Circumcision and HIV transmission." Current
+Opinion in Infectious Diseases, 20(1):33-8.
+Rennie, S., A.S. Muula and D. Westreich. 2007. "Male circumcision
+and HIV prevention: ethical, medical and public health tradeoffs
+in low-income countries." Journal of Medical Ethics, 33(6):35761.
+
+Kigozi, G., S. Watya, C.B. Polis, D. Buwembo, V. Kiggundu, M.J.
+Wawer, D. Serwadda, F. Nalugoda, N. Kiwanuka, M.C. Bacon, et
+al. 2008. "The effect of male circumcision on sexual satisfaction
+and function, results from a randomized trial of male circumcision
+for human immunodeficiency virus prevention, Rakai, Uganda."
+Bju International, 101(1):65-70.
+
+Sawires, S.R., S.L. Dworkin, A. Fiamma, D. Peacock, G. Szekeres
+and T.J. Coates. 2007. "Male circumcision and HIV/AIDS:
+challenges and opportunities." Lancet, 369(9562):708-13.
+Scudder, T. 1962. Ecology of the Gwembe Tonga. Manchester:
+Manchester University Press.
+
+Kretzschmar, M. and M. Morris. 1996. "Measures of concurrency in
+networks and the spread of infectious disease." Mathematical
+Biosciences, 133(2):165-95.
+
+Scudder, T. and E. Colson. 1980. Secondary Education and the
+Formation of an Elite: The Impact of Education on Gwembe
+District, Zambia. New York: Academic Press.
+
+Lewis, J.J.C., C. Ronsmans, A. Ezeh and S. Gregson. 2004. "The
+population impact of HIV on fertility in sub-Saharan Africa." Aids,
+18:S35-S43.
+
+Shaffer, D.N., C.T. Bautista, W.B. Sateren, F.K. Sawe, S.C.
+Kiplangat, A.O. Miruka, P.O. Renzullo, P.T. Scott, M.L. Robb,
+N.L. Michael, et al. 2007. "The protective effect of circumcision
+on HIV incidence in rural low-risk men circumcised predominantly
+by traditional circumcisers in Kenya - Two-year follow-up of the
+Kericho HIV Cohort Study." Jaids-Journal of Acquired Immune
+Deficiency Syndromes, 45(4):371-9.
+
+McCoombe, S.G. and R.V. Short. 2006. "Potential HIV-1 target cells
+in the human penis." Aids, 20(11):1491-5.
+Morris, M., M.S. Handcock, W.C. Miller, C.A. Ford, J.L. Schmitz,
+M.M. Hobbs, M.S. Cohen, K.M. Harris and J.R. Udry. 2006.
+"Prevalence of HIV infection among young adults in the United
+States: Results from the Add Health Study." American Journal of
+Public Health, 96(6):1091-7.
+
+Siegfried, N., M. Muller, J. Deeks, J. Volmink, M. Egger, N. Low, S.
+Walker and P. Williamson. 2005. "HIV and male circumcision - a
+systematic review with assessment of the quality of studies."
+Lancet Infectious Diseases, 5(3):165-73.
+
+Morris, M. and M. Kretzschmar. 1997. "Concurrent partnerships and
+the spread of HIV." Aids, 11(5):641-8.
+
+- 45 -
+
+Stover, J. 2004. "Projecting the demographic consequences of adult
+HIV prevalence trends: the Spectrum Projection Package."
+Sexually Transmitted Infections, 80. <<Go to
+ISI>://000222462800004 >.
+Terceira, N., S. Gregson, B. Zaba and P.R. Mason. 2003. "The
+contribution of HIV to fertility decline in rural Zimbabwe, 19852000." Population Studies-a Journal of Demography, 57(2):14964.
+UNAIDS. 2006. "2006 Report on the global AIDS epidemic: A
+UNAIDS 10th anniversary special edition." Report, UNAIDS,
+Gevena.
+UNAIDS. 2007a. "AIDS epidemic update: December 2007." Report,
+UNAIDS, Gevena.
+UNAIDS. 2007b. "Male Circumcision: Global Trends and
+Determinants of Prevalence, Safety and Acceptability." Report,
+UNAIDS, Gevena.
+van der Ploeg, C.P., C. van Vliet, S.J. De Vlas, J.O. Ndinya-Achola,
+L. Fransen, G.J. Van Oortmarssen and J.D. Habbema. 1998.
+"STDSIM: a microsimulation model for decision support in STD
+control." Interfaces., 28(3):84-100.
+Van Howe, R.S. 1999. "Circumcision and HIV infection: review of the
+literature and meta-analysis." Int J STD AIDS, 10(1):8-16.
+<http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&d
+b=PubMed&dopt=Citation&list_uids=10215123>.
+van Imhoff, E. and W. Post. 1998. "Microsimulation Methods for
+Population Projection." Population: An English Selection,
+10(1):97-138. <http://links.jstor.org/sici?sici=11691018%281998%292%3A10%3A1%3C97%3AMMFPP%3E2.0.C
+O%3B2-D>.
+Wasserheit, J.N. 1992. "EPIDEMIOLOGIC SYNERGY INTERRELATIONSHIPS BETWEEN HUMANIMMUNODEFICIENCY-VIRUS INFECTION AND OTHER
+SEXUALLY-TRANSMITTED DISEASES - (REPRINTED FROM
+AIDS AND WOMENS REPRODUCTIVE HEALTH, CH 5, 1992)."
+Sexually Transmitted Diseases, 19(2):61-77. <<Go to
+ISI>://A1992HK77400001 >.
+Wawer, M.J., R.H. Gray, N.K. Sewankambo, D. Serwadda, X.B. Li,
+O. Laeyendecker, N. Kiwanuka, G. Kigozi, M. Kiddugavu, T.
+Lutalo, et al. 2005. "Rates of HIV-1 transmission per coital act, by
+stage of HIV-1 infection, in Rakai, Uganda." Journal of Infectious
+Diseases, 191(9):1403-9.
+Weiss, H.A., M.A. Quigley and R.J. Hayes. 2000. "Male circumcision
+and risk of HIV infection in sub-Saharan Africa: a systematic
+review and meta-analysis." Aids, 14(15):2361-70.
+<http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&d
+b=PubMed&dopt=Citation&list_uids=11089625>.
+Weiss, H.A., S.L. Thomas, S.K. Munabi and R.J. Hayes. 2006. "Male
+circumcision and risk of syphilis, chancroid, and genital herpes: a
+systematic review and meta-analysis." Sexually Transmitted
+Infections, 82(2):101-9.
+Westercamp, N. and R.C. Bailey. 2007. "Acceptability of male
+circumcision for prevention of HIV/AIDS in sub-Saharan Africa: A
+review." Aids and Behavior, 11(3):341-55.
+WHO and UNAIDS. 2007. "WHO and UNAIDS announce
+recommendations from expert consultation on male circumcision
+for HIV prevention." UNAIDS Web Site.
+Williams, B.G., J.O. Lloyd-Smith, E. Gouws, C. Hankins, W.M. Getz,
+J. Hargrove, I. de Zoysa, C. Dye and B. Auvert. 2006. "The
+potential impact of male circumcision on HIV in sub-Saharan
+Africa." Plos Medicine, 3(7):1032-40.
+Zaba, B. and S. Gregson. 1998. "Measuring the impact of HIV on
+fertility in Africa." Aids, 12:S41-S50.
+Zaba, B., M. Marston, A.C. Crampin, R. Isingo, S. Biraro, T.
+Barnighausen, B. Lopman, T. Lutalo, J.R. Glynn and J. Todd.
+2007. "Age-specific mortality patterns in HIV-infected individuals:
+a comparative analysis of African community study data." Aids,
+21:S87-S96.
+
+- 46 -
+
+

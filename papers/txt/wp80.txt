@@ -1,0 +1,2607 @@
+Unraveling the Fortunes of the Fortunate:
+An Iterative Bayesian Model Averaging (IBMA) Approach*
+Theo S. Eicher
+Department of Economics, University of Washington
+Ifo Institute of Economic Research at the University of Munich
+Chris Papageorgiou
+Research Department, International Monetary Fund
+Department of Economics, Louisiana State University
+Oliver Roehn
+Ifo Institute for Economic Research at the University of Munich
+Department of Economics, University of Munich
+Working Paper no. 80
+Center for Statistics and the Social Sciences
+University of Washington
+February 10, 2007
+
+Unraveling the Fortunes of the Fortunate:
+An Iterative Bayesian Model Averaging (IBMA) Approach*
+Theo S. Eicher
+Department of Economics, University of Washington
+Ifo Institute for Economic Research at the University of Munich
+Chris Papageorgiou
+Research Department, International Monetary Fund
+Department of Economics, Louisiana State University
+Oliver Roehn
+Ifo Institute for Economic Research at the University of Munich
+
+Abstract
+We investigate country heterogeneity in cross-country growth regressions. In contrast to the previous literature
+that focuses on low-income countries, this study also highlights growth determinants in high-income (OECD)
+countries. We introduce Iterative Bayesian Model Averaging (IBMA) to address not only potential parameter
+heterogeneity, but also the model uncertainty inherent in growth regressions. IBMA is essential to our
+estimation because the simultaneous consideration of model uncertainty and parameter heterogeneity in standard
+growth regressions increases the number of candidate regressors beyond the processing capacity of ordinary
+BMA algorithms.
+Our analysis generates three results that strongly support different dimensions of parameter heterogeneity. First,
+while a large number of regressors can be identified as growth determinants in Non-OECD countries, the same
+regressors are irrelevant for OECD countries. Second, Non-OECD countries and the global sample feature only
+a handful of common growth determinants. Third, and most devastatingly, the long list of variables included in
+popular cross-country datasets does not contain regressors that begin to satisfactorily characterize the basic
+growth determinants in OECD countries.
+
+JEL Classification: O40, O47, 051, 052
+Keywords: Growth regressions, growth determinants of OECD countries, parameter heterogeneity,
+model uncertainty, Iterative Bayesian Model Averaging.
+* We thank a referee for very valuable comments. We also thank Adrian Raftery for directing us to his work on
+iterative BMA, Andreas Leukert for early discussions on the topic, and Amanda Cox and Drew Creal for
+excellent research assistance.
+
+1. Introduction
+Over the last two decades there has been a massive effort to use cross-country datasets to
+identify key determinants of economic growth. Much of this empirical investigation has been
+based on the implicit assumption of homogeneity across countries, which led to a search for
+global determinants of growth. However, the assumption of homogeneity in cross-country
+growth regressions has been criticized repeatedly (see e.g. Temple, 2000; and Durlauf,
+Johnson and Temple, 2005). In general, this objection applies to any socioeconomic dataset
+but the assumption of a common underlying data generating process seems particularly
+inappropriate when analyzing such complex entities as countries (Brock and Durlauf, 2001).
+The mounting evidence against “country homogeneity” has given rise to a literature
+investigating growth patterns in groups of countries that share common characteristics. This
+branch of research focuses either on particular variables (e.g., initial GDP) or particular
+regions (Africa, Latin America) that distinguish subsamples.1 In this paper we revisit the
+issue of country heterogeneity but from a perspective that has been largely ignored by the
+empirical growth literature. We focus on identifying growth determinants in high-income
+(OECD) countries, to understand the structures that drive the riches in industrialized
+countries that developing nations attempt to emulate. In essence, our goal is to understand the
+driving forces behind sustained economic success, with the assumption that such successful
+growth paths are determined by a unique set of variables. Eicher and Leukert (2006)
+previously explored parameter heterogeneity among OECD and Non-OECD countries, but
+did not account for model uncertainty or a large number of potential regressors.
+Our estimation approach includes both parameter heterogeneity, to allow countries to
+represent diverse objects, and model uncertainty, to account for the fact that economists do
+not know the single “true” growth model. More specifically, we utilize Bayesian Model
+Averaging (BMA) to address model uncertainty and expand the methodology to integrate
+structures that allow for the examination of parameter heterogeneity. Simultaneous
+consideration of model uncertainty and parameter heterogeneity has previously been
+computationally prohibitive, as it exceeded the computational limits of existing model
+averaging algorithms. This is due to the large numbers of candidate regressors that emerge
+from the long list of potential growth regressors and relevant interaction terms that are
+required to test for parameter heterogeneity. To resolve the computation limitations we
+employ an innovative modification of BMA called Iterative Bayesian Model Averaging
+
+1
+
+(IBMA) developed by Yeung, Baumgarner and Raftery (2005) for genomics applications.
+The key intuition of IBMA is that it applies traditional BMA iteratively on a reduced set of
+variables. Each iteration contains a set of variables that is sufficiently small to be processed
+by existing algorithms. Iterations continue until the complete set of candidate regressors has
+been processed at least once.
+We obtain three key results that highlight different dimensions of country
+heterogeneity. First, of the large number of regressors that are effective in the global sample,
+only about half are also effective in the Non-OECD sample. This is surprising, since the large
+number of countries in the Non-OECD sample were thought to be providing most of the
+explanatory power for the global results. Secondly, our analysis shows that in Non-OECD
+countries new regressors become highly effective that were ineffective in the global sample.
+Many of these newly effective variables are highly intuitive, for example the primary export
+share, black market premium, average population age. Third, the OECD subsample shares
+few regressors with the global sample (6 out of 20); this leads us to conclude that the
+particular dataset does not contain the variables that identify determinants of growth of the
+fortunate in the past 30 years. There are also stark difference between OECD and the NonOECD sample where only half of the variables overlap.
+The rest of the paper is organized as follows. Section 2 presents a summary of BMA
+and IBMA methodologies used in our econometric estimation. Section 3 discusses the crosscountry dataset used, and presents the benchmark regression specification based on which we
+perform IBMA. This section also presents and examines the estimation results. Section 4
+presents robustness analyses of our results to alternative modifications of the sampler used by
+IBMA. Section 5 concludes and offers directions for future research.
+
+2. Estimation Methodology
+The basic idea behind model averaging is to estimate the distribution of unknown parameters
+of interest across different models. The fundamental principle of model averaging is to treat
+models and related parameters as unobservable, and to estimate their distributions based on
+the observable data. In contrast to classical estimation, model averaging copes with model
+uncertainty by allowing for all possible models to be considered, which consequently reduces
+the biases of parameters.
+
+1
+
+See e.g. Easterly and Levine (1997), Brock and Durlauf (2001) and Masanjala and Papageorgiou (2007a,b).
+2
+
+Leamer (1978) first emphasized that the uncertainty inherent in competing theories
+should be accounted for in the empirical strategy. Levine and Renelt (1992) examine the
+robustness of cross-country growth determinants using Leamer’s (1983) extreme bounds
+analysis. They show that the conclusions as to which regressors represent robust growth
+determinants depends on the researcher’s test criteria. Extreme bound analysis has since been
+shown to be excessively strict, selecting too few “effective” regressors (see, Sala-i-Martin,
+1997 for a criticism of this approach relevant to growth regressions).
+An additional drawback of extreme bound analysis has been the absence of a formal
+structure to manage the large number of possible models. Levine and Renelt (1992) choose to
+reduce the set of models to be examined by always including Initial Income, Investment
+Rates, Secondary School Enrollment Rate, and Population Growth Rate in each regression.
+Sala-i-Martin (1997) used the same method, but he chose to always retain Initial Income,
+Investment Rates and Life Expectancy. Fixing the number of regressors that must appear in
+each regression has a direct effect on the size of the estimated coefficients (see LeonGonzalez and Montolio, 2003) and it limits the number of models that are explored.
+Since the first approaches to model uncertainty, a consensus has formed to apply
+Bayesian techniques to account for model uncertainty (see e.g. Fernandez, Ley and Steel
+2001a,b; Brock and Durlauf, 2001; Sala-i-Martin, Doppelhofer and Miller 2004; and
+Masanjala and Papageorgiou, 2007a,b). Model averaging strategies asks the researcher to
+specify candidate regressors that are clearly linked to distinct and specific theories. Bayesian
+Model Averaging then allows for any subset of regressors to appear in a given model. This
+technique was first developed by Moulton (1991), and Palm and Zellner (1992), but
+computational issues initially hampered its implementation.2 Since our methodology is based
+on BMA, we provide a brief overview of the method.
+2.1 Bayesian Model Averaging
+Bayesian Model Averaging (BMA) accounts for model uncertainty by averaging over
+all possible models, where each model’s weight is given by its posterior model probability.
+The statistical foundation for BMA is documented extensively in excellent introductions by
+Raftery (1995) and Hoeting et al. (1999). Raftery (1995) and Raftery, Madigan and Hoeting
+(1997), followed by many others, have shown that BMA provides improved out-of-sample
+predictive performance compared to predictions that are conditioned on any one model.
+2
+
+For further discussions on BMA and its potential uses see Draper (1995), Raftery, Madigan and Hoeting
+(1997) and Hoeting et al. (1999).
+3
+
+We restrict ourselves to highlighting the crucial intuition behind the methodology and
+then provide an explanation of the specific approach that we implemented together with the
+methodological innovations. In typical cross-country growth regressions, model uncertainty
+arises due to the fact that the researchers must choose between regressors that are associated
+with competing theories. With k possible variables in a linear regression model, BMA
+potentially considers the entire model space of 2 k regression models. The posterior
+
+probability that BMA assigns is simply the conditional probability after all relevant data has
+been taken into account. Posterior probabilities are calculated using Bayes' theorem, utilizing
+the researcher-specified prior probability and the likelihood function.
+Formally, consider n independent replications from a linear regression model where
+the dependent variable is per capita GDP growth, y, is regressed on an intercept, α , and
+candidate regressors chosen from a set of k variables in a design matrix Z of dimension n × k .
+Assume that the rank of the matrix of regressors is r (ιn : Z ) = k + 1 , where ιn is an ndimensional vector of ones. Further define β as the full k-dimensional vector of regression
+coefficients. Now suppose we have an n × k j submatrix of variables in Z denoted by Z j .
+
+Then denote by M j the model with regressors grouped in Z j , such that
+y = αιn + Z j β j + σε ,
+where β j ∈ ℜ
+
+kj
+
+(0 ≤ k
+
+j
+
+(1)
+
+≤ k ) groups regression coefficients corresponding to the submatrix
+
+Z j . The exclusion of any given regressor in a particular model implies that the corresponding
+element in β is zero. σ ∈ ℜ + is a scale parameter and ε follows an n-dimensional normal
+distribution with zero mean and identity covariance matrix.
+Since Bayesian Model Averaging allows for any subset of variables in Z to appear in
+any model M j , thus there are 2 k possible sampling models. BMA specifies that the posterior
+inclusion probability of any given parameter of interest is the weighted posterior distribution
+of that quantity under each of the models. The specific weights are provided by each model’s
+posterior model probability. The posterior inclusion probability can then be expressed as the
+weighted sum of the posterior probabilities of all models that contain the regressor of interest
+2k
+
+P∆| y = ∑ P∆| y , M j P( M j | y ) .
+
+(2)
+
+j =1
+
+4
+
+The posterior model probability itself is given by
+
+P( M j | y ) =
+
+l y (M j ) p j
+2k
+
+,
+
+(3)
+
+∑ l y ( M h ) ph
+
+h =1
+
+where l y ( M j ) , is the marginal likelihood of model M j that is given by
+
+l y ( M j ) = ∫ p( y | α , β j , σ , M j ) p(α , σ ) p( β j | α , σ , M j )dα dβ j dσ .
+
+(4)
+
+The sampled model corresponding to equation (1) is given by p( y | α , β j , σ , M j ) , and the
+priors for the intercept and the regressors are p(α , σ ) and p( β j | α , σ , M j ) , respectively.
+We will define the priors below.
+The implementation of Bayesian Model Averaging is subject to three challenges.
+First, the number of models that must be estimated increases with the number of regressors at
+the rate of 2 k . As a result, the number of summation entries in equations (2)-(3) can be
+enormous; a primary aim of BMA research has been to obtain efficient samplers that avoid
+exhaustive sampling. Such intensive calculations quickly become infeasible as 30 candidate
+variables imply over 1 billion candidate models. Second, the computation and evaluation of
+the integrals implicit in equation (4) may be difficult because they may not exist in closed
+form. In that case numerical solutions of the integral can further burden estimation efficiency.
+Third, the choice of the prior distribution specification is always contentious in Bayesian
+analysis. BMA requires the specification of two types of priors: a) prior model probabilities,
+p(M K ) , and b) prior parameter distribution p(θ K , M K ) .
+
+With respect to the prior model probabilities we follow the common practice in the
+literature and assume a uniform distribution over the model space, which expresses each
+model as equally likely. It follows that the prior model probability is 2-k, which renders the
+prior probability of including any given candidate regressor equal to 0.5 (see e.g., Raftery et
+al., 1997; and Fernandez, Ley and Steel, 2001a,b).3
+The decision on the prior structure for the individual regressors is a potentially
+divisive issue. BMA requires the researcher to inject priors into the analysis, however these
+prior can be so diffuse that clear parallels to frequentist inference can be established.
+3
+Mitchell and Beauchamp (1988) discuss the possibility of alternative model weights and Sala-i-Martin,
+Doppelhofer and Miller (2004) argue forcefully in favor of greater weights on smaller models. Brock, Durlauf
+and West (2003) suggest a tree structure to take into account similarities among regressors.
+
+5
+
+Extensive work has been conducted on the appropriate prior structure to obtain either data
+dependent priors (Raftery, Madigan and Hoeting, 1997), “automatic” priors (Fernandez, Ley
+and Steel, 2001b), or the Unit Information Prior (UIP). Eicher, Papageorgiou and Raftery
+(2007) systematically study the effects of model and regressor priors on predictive
+performance within a BMA framework to highlight the importance of a prior benchmark.
+Their
+
+software
+
+allows
+
+researchers
+
+to
+
+identify
+
+the
+
+appropriate
+
+prior
+
+structure
+
+for a given dataset.
+In our choice regarding the priors on the parameters space we follow Raftery (1995)
+and impose the diffuse UIP. The UIP can be derived from frequentist statistical principles
+(Kass and Wasserman 1995), and it is seen as a conservative prior that is sufficiently spread
+out over the relevant parameter values and reasonably flat over the area where the likelihood
+is substantial. Specifically, it is a multivariate normal prior with mean at the maximum
+likelihood estimate and variance equal to the expected information matrix for one observation
+(Raftery, 1999). It is also a special case of the preferred Fernandez, Ley and Steel (2001b)
+priors and it is closely related to the prior structure in Sala-i-Martin, Doppelhofer and Miller
+(2004). The advantage of the UIP is that it allows for a simple approximation of the marginal
+likelihood with the Bayesian Information Criterion (BIC). The BIC approximation is viewed
+as conservative fitness measure to evaluate model performance. If anything, BIC is biased
+against finding an effect of a given regressor (i.e. it favors the null hypothesis β=0).4
+The one crucial departure from previous applications of model averaging in
+economics is our sampling and estimation methodology. Fernandez, Ley and Steel (2001a,b)
+use the Markov Chain Monte Carlo Model Composition (MC3) sampling algorithm
+developed by Madian and York (1995) to search the model space, while Sala-i-Martin,
+Doppelhofer and Miller (2004) use a “stratified” Coinflip sampler. MC3 is a technique that
+allows for sampling of complex high dimensional distributions as it simulates a random walk
+across the search space to converge at a stationary posterior distribution. The MC3
+distribution of the sampled draws depends on the last value drawn. In contrast, the stratified
+Coinflip sampler samples one set of regressions using the prior probability sampling weights
+and then uses the approximate posterior inclusion probabilities calculated from those
+regressions for the subsequent sampling probabilities.
+
+4
+
+See e.g. Raftery (1995). For a more detailed discussion of the UIP and BIC, see Raftery (1999) and the
+discussion in Hoeting et al. (1999).
+6
+
+Given that MC3’s computational limit was no more than 60 candidate regressors,5 the
+Coinflip sampler had the advantage of handling more candidate regressors. However, the
+larger the search space the more difficult was for Coinflip sampler to converge. For example,
+in some BMA experiments we run with more than 70 candidate regressors there was no (or
+unacceptably slow) converge simply because the number of models becomes too large.
+Our method follows Raftery (1995) who established that the UIP allows for a Laplace
+approximation of the marginal likelihood and thus renders a search across the entire model
+space obsolete. To further simplify the computational demands Raftery (1995) suggest the
+Leaps And Bounds All Subsets Regression Algorithm of Furnival and Wilson (1974) to reduce
+the candidate model space further.6 The Leaps algorithm performs an exhaustive search for
+the best subsets of candidate variables for predicting the dependent variable in linear
+regression; it returns a specified number of best models for each model size.7 Generally, the
+qualitative differences based on the different samplers are small but not negligible.
+Computationally, the Leaps sampler is by far the most efficient. This efficiency is crucial to
+handle the large number of models as we tackle model uncertainty and parameter
+heterogeneity by interacting the global variables with regional dummies, which substantially
+increases the size of candidate regressors.
+2.3. Iterative Bayesian Model Averaging
+
+The computational limit of the Raftery and Volinsky (1996) BMA algorithm (bicreg)
+is 54 candidate regressors. To address parameter heterogeneity, the interaction of regressors
+increases the domain of regressors from 41 to a possible 82, which implies 4 septillion (100
+billion x 4 trillion) models. In addition, the simple act of interacting variables in a small
+dataset may lead the number of regressors to exceed the number of observation, such that the
+design matrix is no longer of full column rank.
+To overcome these problems we introduce the Iterative BMA (IBMA) algorithm to
+economics that was initially proposed for a genome application by Yeung, Baumgarner and
+Raftery (2005). Specifically, they introduced IBMA to select a small number of relevant
+genes for accurate medical diagnoses from a pool of about 5000(!) genes. Our application is
+simpler. After interacting our 41 regressors with an OECD treatment dummy and eliminating
+
+5
+
+At least until very recently. We have just discovered that the work of Ley and Steel (in this issue) extends the
+computational bound of MC3 to 104 regressors. We discuss this development in the end of this section.
+6
+See e.g. Raftery (1995) and Volinsky et al. (1997).
+7
+Software to implement the Raftery method has been freely available since 1994 at Statlib
+(http://lib.stat.cmu.edu).
+7
+
+interaction terms that are perfectly collinear or have less than 2 observations, this leaves us
+with 77 candidate regressors (see the data discussion below).
+The key intuition of IBMA is that it applies traditional BMA iteratively on a reduced
+set of variables, z, which is small enough to be processed by traditional BMA. We define z as
+the regressor window. For our application we choose a default size z = 41 and check for
+robustness below. After sorting the candidate regressors by their bivariate correlations with
+the dependent variable, they are added to the regressor window. After the first z regressors
+have been processed by the first BMA run, q variables whose posterior probabilities do not
+exceed a predetermined inclusion threshold (1 percent by default) are removed from the
+regressor window and q unprocessed candidate regressors are added. BMA is then applied
+again until all regressors have been considered.
+There are some caveats that must be highlighted as the set of candidate regressors
+expands. One limiting factor for IBMA is related to the regressor window size. While models
+of size n are theoretically possible, IBMA cannot evaluate posteriors for models that exceed
+size z. Hence the procedure cannot lay claim to having examined the entire model space –
+which introduces possible inaccuracies if high quality models happen to be larger than z. In
+our robustness section we find that variations in z in IBMA do not alter our qualitative results
+in the growth dataset.
+Although we provided this caveat, we can offer evidence that any concerns that z may
+not cover the relevant model size are unlikely to be applicable in cross-country growth
+regressions. Sala-i-Martin (1997) and Sala-i-Martin, Doppelhofer and Miller (2004) argue
+forcefully that the expected model size should not exceed 7 regressors. Prior work by Levine
+and Renelt (1992), Sala-i-Martin (1997), FLS and Sala-i-Martin, Doppelhofer and Miller
+(2004) never generated models with more than 18 potentially relevant regressors. Hence it is
+unlikely that high quality models in cross-country growth regressions contain more than 48
+regressors.
+New work by Ley and Steel (this issue) extends MC3 to potentially handle up to 104
+regressors without the iterating procedure employed in our algorithm. The advantage being
+that the entire model space, including models up to 104 regressors can actually be considered.
+This also implies that the prior model size increases to perhaps an implausibly large number
+of regressor, however. It remains to be seen how accurate and time intensive the new MC3
+method generates convergence.
+
+Previous work using MCMC methods, particularly in
+
+8
+
+applications with growth datasets, revealed that increasing the number of regressors (which
+of course increases the model space exponentially) resulted in considerable increase in
+computation time. Alternatively, IBMA is not limited to the number of candidate regressors
+and processes the data with stunning efficiency. It also allows the researcher to avoid having
+the prior model size increase linearly with the number of candidate regressors. Further
+research is necessary to examine how the three existing approaches to considering large
+model spaces (IBMA, modified MC3 and BACE) compete in terms of efficiency and
+predictive performance. The unique advantage of IBMA over the other two approaches, at
+least to date, is that it is capable of considering applications like ours where the number or
+observations happen to be less than the number of potential regressors.
+
+3. Estimation
+3.1 The Data
+
+For our analysis we adopt the FLS dataset. It is comprised of 41 variables and 72 countries of
+which 23 are OECD countries. In addition, we add a dummy variable to identify OECD
+countries. The dataset is a subset of the Sala-i-Martin (1997) dataset; it includes all variables
+that have previously been flagged as robustly related to growth and that do not entail a loss of
+observations. We choose the FLS dataset for several reasons. First, the dataset contains
+variables that proxy for a broad set of competing growth theories, such as human capital,
+institutional quality, religion, economic policy and geography. Hence, the dataset reflects the
+theory uncertainty inherent in growth econometrics that has been highlighted by Brock and
+Durlauf (2001). Second, the majority of the variables are measured at the beginning of the
+period or as close as possible to it, which reduces possible endogeneity problems that can
+potentially impact cross-country growth regression analyses. Finally, by choosing the same
+dataset as FLS we have a natural benchmark and reference point for our analysis.
+Table A1 in the appendix provides summary statistics for the global, OECD, and NonOECD samples. The high income OECD countries grew on average almost twice as fast as
+the rest of the world over the period 1960-1992 (3 percent versus 1.7 percent). A first look at
+the data reveals some major initial advantages OECD countries possessed over the rest of the
+world. In 1960, initial GDP was about four times greater, life expectancy was 16 years
+greater and primary schooling was 28 percent higher in the OECD sample as compared to the
+Non-OECD sample. OECD economies also had effectively better institutions scoring higher
+
+9
+
+on civil liberties, the rule of law and political rights8, while ethnolinguistic fractionalization
+was twice as high in Non-OECD countries.
+3.2
+
+Model Specification
+
+To examine the possibility of parameter heterogeneity, we examine whether the data
+generating process for the global sample is different from the data generating process of the
+OECD sample.9 To model parameter heterogeneity we follow the approach suggested by
+Brock and Durlauf (2001) and Brock, Durlauf and West (2003) and treat parameter
+heterogeneity as a variable inclusion problem. It follows then that we can understand
+parameter heterogeneity as a special case of model uncertainty. We therefore modify the
+global equation in (1) and estimate the standard interaction model in empirical work of the
+following form:
+y = αι n + Z j β1, j + I X j β 2, j + σε ,
+
+(5)
+
+where I is an indicator variable that equals 1 if the country is an OECD member and 0
+otherwise. Z is the n × k matrix of the regressors and X is a sub-matrix of Z that excludes all
+variables that are either perfectly collinear in the OECD sample10 or not relevant for the
+OECD sample due to negligible sub-sample variation.11 In our case with OECD interactions,
+the resulting model features 77 candidate regressors and 72 observations, which renders
+traditional BMA infeasible and leads us to implement the IBMA algorithm discussed above.
+The direct merit of the interaction model compared to subsample regressions is that the full
+information from the entire dataset is used to derive results.
+Regression equation (5) can be interpreted as providing estimates for the control
+group, β1i , which is in our case the sample of Non-OECD countries. It also provides the
+marginal effect experienced by the treatment group, β 2i , which are the OECD countries in
+our case. The actual impact of the X regressors for which we want to establish parameter
+heterogeneity can then be obtained by comparing the Non-OECD effect given by the
+8
+Note that Civil Liberties and Political Rights are measured “backwards,” i.e. larger values imply fewer civil
+liberties and political rights.
+9
+Theoretical underpinings for parameter heterogeneity are based on thresholds as in Azariadis and Drazen 1990,
+or on fully specified models of nonlinearities as in Galor and Weil (2000), Lucas (2002) and Galor and Moav
+(2002).
+10
+The presence of multicollinearity exacerbates the problem of distinguishing between interaction terms that
+represent parameter heterogeneity and terms that are simply feature highly correlated with important
+interactions. This problem is neither unique to our issue at hand (OECD interaction), or IBMA.
+11
+Excluded interactions are: Africa dummy, French Colony dummy, Fraction Hindu, Latin American dummy,
+Spanish Colony dummy, Fraction Confucian and Fraction Buddha.
+
+10
+
+posterior means of β1i with the effect in OECD countries that is given by the composite
+~
+~
+means of β i = β1i + β 2i .12 Note that the definition of the composite β i carries an important
+
+implication: If the Non-OECD effect, β1,i , is observed to be significantly different from zero
+and the OECD effect is found to be insignificant, it implies either that the marginal estimate
+of the treatment group, β 2i , is estimated with great noise (e.g., with a high variance) to wash
+out any significance of the composite, or that the treatment effect is indeed quite tightly
+~
+estimated, but of the opposite sign as, β1i , rendering the composite β i close to zero.
+At this point it is important that the basic iterative routine suggested by Yeung et al.
+(2005) must be modified to assure that, β1i and β 2i can appear in the same regression. Two
+cases are possible. In the first case, β1i is included in a regressor window but the interaction
+is not (perhaps because its initial bivariate correlation was low). The rotation of each variable
+that is not in the initial regressor window does assure that β1i and β 2i are in the final
+regressor window if they are both significant. In the second case, the initial regressor window
+includes β 2i but not β1i , and the interaction alone is not significant. In this case the
+interaction will be rotated out of the regressor window and β 2i will never have the chance to
+actually interact with β1i . This case requires a modification of the Yeung et al. (2005)
+procedure. In particular, we allow for two rotations in our version of IBMA. The first rotation
+(as suggested by Yeung et al. 2005) assures that all regressors that were not included in the
+initial regressor window will have a chance to be considered. The second rotation iterates all
+regressors that have been discarded from regressor windows in the first rotation (to make
+room for new regressors) once more through the window. This assures that even in the
+second case, an initially discarded interaction term will have the opportunity to eventually
+rejoin the global variable in a regressor window, if significant.13
+Further considerations to assure that variables have been given due chance to exhibit
+their true interaction significance in IBMA led us to examine the final regressor window to
+see how many global terms were observed without interaction terms. As a robustness
+
+(~ )
+
+The composite variance is given by var β i = var (β1i ) + var (β 2 i ) + 2cov(β1i , β 2i ) .
+13
+The Yeung et al. (2005) algorithm also suffers from the fact that it guarantees that the covariate with the
+lowest bivariate correlation is included in the final regressor window and hence in the final result. By adding
+regressors in the second rotation in inverse bivariate correlation order, we also improve on this design flaw.
+12
+
+11
+
+exercise, we executed final iterations that added interaction terms to match all significant
+global regressors whose interaction terms did not appear in the final regressor window. 14
+Our empirical strategy is to start by establishing the global BMA benchmark, in Table
+1. Here we initially examine the potential effectiveness of variables without any interactions
+specified in equation (5). Then we examine potential evidence for parameter heterogeneity.
+Finally we will examine robustness and compare different regressor window sizes in IBMA
+where we iterate until all covariates have been processed and the interaction terms are all
+included in the last iteration.
+3.3
+
+Results
+
+Table 1 presents our baseline results applying IBMA to examine model uncertainty
+and parameter heterogeneity in the FLS dataset. In particular, Table 1 presents the coefficient
+posterior means, posterior standard deviation and the ratio of the absolute value of the former
+to the later, for the Global and Interaction specifications. The value of the absolute value of
+the posterior mean to standard deviation ratio (post. mean/sd) is used as a measure for
+identifying variable effectiveness in our growth regression exercises. While the analysis of
+posterior inclusion probability speaks only to the probability of a candidate repressor’s
+inclusion in the most effective models, we chose to emphasize the post. mean/sd ratio to
+better tie economic and statistical significance. Raftery (1995) suggested that for a variable
+to be considered as effective the posterior inclusion probability must exceed 50 percent;
+which is roughly equivalent of requiring a ratio of mean/sd = 1, which implies in frequentist
+statistics that the regressors improves the power of the regression. Hence, while Raftery’s
+(1995) interpretation for BMA would imply a threshold value of the mean/sd ratio of about 1,
+we decided to be more stringent and set the threshold value equal to 1.3, which is roughly
+equivalent to a 90 percent confidence interval in frequentist hypothesis testing. We recognize
+that there is no consensus in the BMA literature about this threshold, but argue that our main
+results hold when this threshold is adjusted upwards or downwards.
+The results for the interaction model are obtained by using IBMA with a regressor
+window of size z = 41. The choice of the regressor window size is natural in that it is directly
+comparable to the specification used to establish the benchmark results for the global sample.
+In Section 4 we report robustness results that vary z.
+14
+
+In additional robustness analysis, we also added one global regressor that was associated with one highly
+significant interaction term (Standard Deviation of the Black Market Premium) into the regressor window. This
+
+12
+
+[Table 1 here]
+
+The dependent variable is growth 1960-1992 and the first column of Table 1 features
+all regressors that were found to be effective (post. mean/sd > 1.3) in the global, OECD, or
+the Non-OECD samples.15 Columns 2 and 3 report the coefficients for the global sample. For
+this sample no interaction terms are employed, hence the number of regressors is only 41,
+which allows the use of standard BMA algorithms. Of the 41 regressors considered, Table 1
+reports only the relevant 31 regressors with post. mean/sd > 1.3 to save space. All regressors
+excluded from the tables are ineffective in the global sample, in all subsample analyses, and
+in all robustness specifications.
+In the case of the global sample (columns 2, 3) no interaction terms are included,
+which implicitly assumes the absence of parameter heterogeneity. Here we replicate the
+results of the previous literature that assumes that OECD and Non-OECD countries are
+considered to have identical determinants of their growth performance, and that the
+magnitude of these determinants is also unchanged across subsamples. We find that in the
+global sample, 20 of the 41 candidate variables are effective to growth. The number and the
+type of regressors that we identify as effective is in line with the findings of the previous
+literature. For example, Equipment Investment, Dummies relating to the colonial history,
+Initial GDP, and specific country characteristics matter to growth as in Sala-i-Martin,
+Doppelhofer and Miller (2004); and FLS.
+In columns 4 and 5 of Table 1 we report the results generated by allowing for the
+possibility of parameter heterogeneity related to the OECD group of countries. The
+subsample results are classified into seven subsets. First we have 5 variables that are effective
+in the global sample and in both the OECD and Non-OECD countries. These variables are
+Initial GDP, Initial Life Expectancy, Equity Investment, Mining and Outward orientation.
+This is the extent to which global, OECD and Non-OECD results agree. Second we find a set
+of 4 variables that are effective in both the global and Non-OECD samples, but are
+ineffective in the OECD sample. Variables in this set are Initial Higher Education,
+Ethnolinguistic Fragmentation, Sub-Saharan Africa, and the Latin Dummy. None of these
+variables have an impact in OECD countries. Two of these variables, the Sub-Saharan and
+Latin American Dummy, are simply irrelevant for OECD countries. For the other two the
+variable was found to be important for OECD but not robust across different windows considered. Our
+remaining results were unaffected.
+15
+Posterior coefficient estimates in bold font represent those variables that pass the effectiveness threshold
+(post. mean/sd > 1.3).
+13
+
+marginal contribution, β 2 , in the interaction regression is highly significant and of the
+opposite sign as β1 , which renders the composite coefficient that indicates the OECD effect,
+~
+
+β , ineffective.
+The third subset of results summarized in columns 4 and 5 of Table 1 is a relatively
+large set of 10 variables that are highly effective in the global sample, but once we allow for
+parameter heterogeneity neither the OECD nor the Non-OECD samples can claim these
+variables as growth determinants. Indeed in the interaction IBMA runs several of these
+variables do not pass the 1 percent posterior probability threshold and are not even included
+in the final regressor window that identifies the 41 top regressors. These cases are indicated
+with “NA.”
+The fourth category consists of only one variable, Rule of Law, which is effective in
+the global and OECD samples but ineffective in the Non-OECD sample. The fifth category
+consists of 4 variables that are not effective in the global sample but highly effective in both
+the OECD and Non-OECD subsamples. The Fraction of Catholics and the Degree of
+Capitalism (EconOrg) both have a positive effect in the OECD and Non-OECD sample while
+the Black Market Premium and Primary Exports have a negative effect on growth in OECD
+and Non-OECD countries.
+The sixth category consists of 4 variables that are ineffective in the global sample, but
+effective only in Non-OECD countries. This result confirms that adding high-income
+countries to the global mix may drown out important effects in the developing country’s
+subsample. The Average Population Age, the Fraction Protestant, Buddha and the Fraction of
+the Foreign Speaking Population are highly effective in Non-OECD countries but not in the
+global or OECD samples. Parameter heterogeneity thus uncovers not only crucial information
+as to what are not important growth determinants in advanced countries, but also new and
+important growth determinants in Non-OECD countries. Note that three of the variables that
+share importance in Non-OECD countries indicate a higher coefficient for the Non-OECD
+sample compared to the global sample. For two of these variables, Fraction Protestant and the
+Fraction of the Foreign Speaking Population, the impact in OECD countries is even opposite
+albeit ineffective. This is additional evidence that the inclusion of OECD countries in the
+sample drives down the growth impact of a variable for developing countries and may render
+it ineffective in the global sample. The seventh category consists of all variables that are
+ineffective in either the global, OECD or Non-OECD countries.
+
+14
+
+4. Robustness
+The key innovation of IBMA is to apply the existing BMA structure iteratively to a
+computationally feasible subset of models, which we call the regressor window, z. In this
+section we examine the sensitivity of this novel aspect of IBMA analysis, as we vary the size
+of the regressor window. As indicated above, the previous growth literature established that
+between 4 and at most 18 variables matter in growth regressions, hence it would be surprising
+to obtain evidence from different window sizes that contradict our previous results. However,
+larger window sizes allow for more possible combinations of variables, some of which may
+not be able to attain the explanatory power unless they are placed in the models with a large
+number of regressors, yet others might not attain our threshold level of effectiveness unless
+they are jointly paired.
+
+The importance of such jointness has been emphasized by
+
+Doppelhofer and Weeks (2005) and Ley and Steel (this issue). Table 2 reports the results for
+the global and the interacted sample from successively increasing regressor the window size.
+The practical computational limit is reached at a window size of z = 48.
+[Table 2 here]
+
+To present the results most efficiently we have combined two columns in Table 1 to
+one individual column per window size that reports the global, OECD, and Non-OECD
+estimates for each relevant variable. Note that the Global estimate is only provided as a
+reference; it does not change throughout since the models for all 41 variables can be
+examined in BMA. Only the interaction that separates OECD and Non-OECD increases the
+number of regressors from 41 to 77, requiring the application of IBMA. Overall Table 2
+documents robust results, but there are important changes that we discuss in detail.
+Moving from z = 41 to z = 45 generates only a few differences in the results. For
+OECD countries we now find Mining to be ineffective while Non-Equipment Investment
+becomes effective. Additionally, we now find the Average Population Age, Fraction
+Protestant and the share of the Workforce to Total Population to be highly effective for
+OECD countries. For Non-OECD countries there are only two changes among the 41 growth
+determinants. The two additional variables that now register as marginally effective for NonOECD Countries are Non-Equipment Investment and the Fraction Hindu, but otherwise there
+is no difference in the results. Most convincing perhaps is that the coefficient estimates are
+just about unchanged.
+
+15
+
+As we increased the size of the regressors window past z = 45, we find slightly
+augmented results. For the computationally most demanding run, z = 48, we find that a
+greater number of variables matter in both the global and the Non-OECD sample. Allowing
+for a larger window size increased the explanatory power for the Non-OECD determinants
+initial Labor Force, the Hindu Dummy, the Spanish Dummy, the French Dummy, and NonEquipment Investment; every one of these variables was initially effective in the global
+sample, but ineffective in either subsample. In addition, the War Dummy and Property Rights
+are now also effective for Non-OECD, although they are not effective for the global sample.
+Two variables, the Fraction Catholic and Protestant now become ineffective. For OECD
+countries there are also a number of changes as 8 additional variables are added to the list of
+effective variables while 3 (Mining, Rule of Law and Fraction Catholic) are dropped from
+this list. On balance, however, the picture is unchanged as the evidence for parameter
+heterogeneity is overwhelming.
+The clear break that signifies a large increase in the variables that are effective is at
+
+z=45. After z = 45 (see example for z = 47) the results are all closer to z = 48 than to z = 41,
+that a effectively larger number of variables matters for growth in OECD and Non-OECD
+countries. However, we cannot identify a single variable that remains uniquely effective for
+OECD countries across the different window sizes. This is perhaps yet again more evidence
+that this dataset does not contain variables that are the unique growth determinants in this
+subset of countries.
+The conclusions that can be reached from our robustness exercise are twofold. First,
+most of our important benchmark results are quite robust to changes in the size of the
+regressor window. We caution though that these results have also revealed some fragility
+inherent in the regressor window approach inherent in the IBMA methodology. This should
+be kept in mind when one assigns particular interpretation to certain variables. Scrutinizing
+the causes for possible fragility of IBMA is beyond of the scope of this paper but we judge
+this as an important area for future research.
+
+5. Discussion
+In general our results suggest that the important determinants of long-term growth in NonOECD countries overlap only to some degree with the factors identified with the global
+samples. For OECD countries this overlap is even smaller. In addition, allowing for
+parameter heterogeneity unveiled a large number of new variables that matter to only Non-
+
+16
+
+OECD countries. However, allowing for parameter heterogeneity did not allow us to gain any
+meaningful insights into unique factors that determine growth in OECD countries.
+We provide a Summary Table 1a to collect the results. Overall we find that a number
+of purported growth determinants in the global sample are not effective for Non-OECD
+countries, and that most established growth determinants do not show explanatory power for
+OECD countries. Even for Non-OECD countries, 11 of the original 20 effective variables are
+no longer effective. Instead, an entirely new set of variables matters in Non-OECD Countries,
+where 8 variables that were ineffective in the global sample are now shown to matter. While
+it is surprising to see some of the key variables in the global sample, such as Civil Liberties,
+Fraction Confucius, and Primary Education, loose their significance, the newly effective
+variables are all very much in line with established key indicators of growth developing
+nations, such as the Degree of Capitalism, Primary Exports Share, and the Black Market
+Premium.
+[Table 1a here]
+For the OECD the results are even more stunning. Of all the original 20 effective
+variables in the global sample only 6 survive as effective. The only variables added as
+effective for OECD countries by allowing for parameter heterogeneity are the Fraction of
+Population that is Catholic, Primary Exports, the Degree of Capitalism, and the Black Market
+Premium. The evidence for parameter heterogeneity is therefore overwhelming. Most
+variables in the global dataset do not matter for OECD countries, and half of the variables
+that matter for Non-OECD countries also do not matter for OECD countries. Note that this
+implies (as per our discussion in section 3.2) that the OECD treatment effect is highly
+significant and of the opposite sign as the Non-OECD effect to render the composite
+~
+coefficient for the OECD, β , insignificant.
+The combined analysis of parameter heterogeneity and model uncertainty has lead not
+only to quantitative differences regarding the effect of growth determinants across
+subsamples, but it also generated important new qualitative implications. To our surprise the
+quantitative (economic) differences between subsamples were minimal, because so few
+regressors are common across subsamples. Qualitatively we find not only that regressors may
+have opposite impacts in the different subsamples, but that indeed an entirely different set of
+regressors matters in the global, Non-OECD and OECD samples. While the relevant
+regressors for the global and Non-OECD sample can be recovered, the dataset does not
+
+17
+
+contain the regressors necessary to explain the OECD growth performance. This is doubly
+tragic. First, policy recommendations to lower income countries can no longer be framed
+within the context that improvements in any of the variables in the dataset will actually lead
+to better growth outcomes. Hence we have no guidance as to what drives growth in high
+income countries. But even more disturbing, the growth performance in OECD countries was
+on average twice as high as in the Non-OECD samples, hence neither the determinants of the
+higher income levels, nor the higher income growth rates can be recovered given the current
+dataset. Two avenues can be explored to reconcile these findings. First we can collect data
+that has been linked specifically to growth in OECD countries (for example on regulation, see
+Nicoletti and Scarpetta et al 2003). However, hopes of expanding such a dataset to the global
+sample are perhaps unrealistic. Second, the notion of one size fits all – or that one theory or
+one approach to growth can address the growth determinants in disparate subsamples – might
+be too optimistic.
+
+6. Conclusion
+This paper extends the literature on country heterogeneity in two dimensions. First, a new
+model averaging method called Iterative Bayesian Model Averaging (IBMA) is used to
+handle the exhaustive computation required when we simultaneously consider model
+uncertainty and parameter heterogeneity in our estimation. Second, instead of investigating
+the sources of growth (or lack of it) in low-income countries, we take a fresh look at what
+determines growth performance in the high-income OECD countries.
+Our analysis suggests that IBMA is a powerful technique that makes it possible for
+researchers to consider a very large number of potential regressors. Our application of IBMA
+to growth empirics allows us to examine parameter heterogeneity and model uncertainty
+simultaneously in all regressor candidates. It reveals that a large number of regressors is
+highly effective for Non-OECD countries, but irrelevant for both, OECD countries and the
+global sample. Perhaps most surprising was our finding that the long list of growth
+determinants included in popular cross-country datasets does not contain variables that begin
+to identify the key determinants of growth in advanced countries. “Global” results that have
+been taken to represent some average coefficient estimate for all countries are now shown to
+provide little information about the growth determinants in two key subsamples. The Global
+results have been debunked as artefacts of the combination of two heterogeneous subsamples,
+and no longer as an expected impact that can identify effective growth determinants.
+
+18
+
+References
+Azariadis, C. and A. Drazen, 1990, "Threshold Externalities in Economic Development" Quarterly
+Journal of Economics, pp: 501-526.
+
+Brock, W. and S. Durlauf, 2001, “Growth Empirics and Reality,” The World Bank Economic
+Review, 15, pp. 229-272.
+Brock, W., S. Durlauf and K. West, 2003, “Policy Evaluation in Uncertain Economic
+Environments,” Brooking Papers on Economic Activity, 1, pp. 235-322.
+Doppelhofer, G and M. Weeks, 2005, “Jointness of Determinants of Economic Growth,”
+working paper, Cambridge University.
+Durlauf, S.N., P. Johnson and J. Temple, 2005, “Growth Econometrics,” in Handbook of
+Economic Growth, P. Aghion and S.N. Durlauf, eds., North Holland, Amsterdam.
+Draper, P., 1995, “Assessment and Propagation of Model Uncertainty,” (with discussion),
+Journal of the Royal Statistical Society B 57, pp. 45-97.
+Easterly, W. and R. Levine, 1997, “Africa’s Growth Tragedy: Policies and Ethnic Divisions,”
+Quarterly Journal of Economics, 112, pp.1203-1250.
+Eicher, T.S. and A. Leukert, 2006, “Institutions and Economic Performance: Endogeneity
+and Parameter Heterogeneity,” Munich discussion paper 2006-05.
+Eicher, T.S., C. Papageorgiou and A.E. Raftery, 2007, Evaluating the Impact of Priors in
+Economic Applications of Bayesian Model Averaging,” working paper, University of
+Washington.
+Fernandez, C., E. Ley and M. Steel, 2001a, “Model Uncertainty in Cross-Country Growth
+Regressions,” Journal of Applied Econometrics, 16, pp. 563-576.
+Fernandez C., E. Ley and M. Steel, 2001b, “Benchmark Priors for Bayesian Model
+Averaging,” Journal of Econometrics, 100, pp. 381-427.
+Furnival, G.M. and R.W. Wilson, 1974, “Regression by Leaps and Bounds” Techonometrics,
+16, pp. 499-511.
+Galor O. and D.N. Weil, 2000, "Population, Technology, and Growth: From the Malthusian
+Regime to the Demographic Transition and Beyond," American Economic Review, 90,
+806-828,
+Galor O. and O. Moav, 2002, “Natural Selection and the Origin of Economic Growth,”
+Quarterly Journal of Economics, 117, 1133-1192.
+Hoeting, J., D. Madigan, A.E. Raftery and C. Volinsky, 1999, “Bayesian Model Averaging:
+A Tutorial,” (with discussion), Statistical Science, 14, pp. 382-401.
+Kass, R.E. and L. Wasserman, (1995), “A Reference Bayesian Test for Nested Hypotheses
+and Its Relationship to the Schwarz Criterion,” Journal of the American Statistical
+Association, 90, pp. 928-934.
+Leon-Gonzalez, R. and D. Montolio, 2004, “Growth, Convergence and Public Investment. A
+Bayesian Model Averaging Approach,” Applied Economics, 36, pp. 1925-1936.
+Leamer, E.E., 1978, Specification Searches, Wiley, New York, NY.
+Leamer, E.E., 1983, “Let's Take the Con Out of Econometrics, American Economic Review
+73, pp. 31-43.
+Levine, R. and D. Renelt, 1992, “A Sensitivity Analysis of Cross-Country Growth
+Regressions,” American Economic Review, 82, pp. 942-963.
+Ley, E. and M. Steel, this issue, “Jointness in Variable Selection With Applications to
+Growth Regression,” Journal of Macroeconomics.
+
+19
+
+Lucas, R. E., 2002, “Lectures on Economic Growth” Cambridge: Harvard University Press
+Madigan, D. and J. York, 1995, “Bayesian Graphical Models for Discrete Data,”
+International Statistical Review, 63, pp. 215-232.
+Masanjala, W.H. and C. Papageorgiou, 2007a, “A Rough and Lonely Road to Prosperity: A
+Reexamination of Sources of Growth in Africa using Bayesian Model Averaging,”
+working paper, LSU.
+Masanjala, W.H. and C. Papageorgiou, 2007b, “Initial Conditions and Post-War Growth in
+sub-Saharan Africa,” working paper, LSU.
+Mitchell, T.J. and J.J. Beauchamp, 1988, “Bayesian Variable Selection in Linear
+Regression,” Journal of the American Statistical Association, 83, pp. 1023-1036.
+Multon, B.R., 1991, “A Bayesian Approach to Regression Selection and Estimation with
+Application to a Price Index for Radio Services,” Journal of Econometrics 49, pp.
+169-193.
+Nicoletti G.; and Stephan Scarpetta S., 2003, “Regulation, Productivity and Growth: OECD
+Evidence” Economic Policy, Volume 18, 1, pp. 9-72(64)
+Palm, F.C. and A. Zellner, 1992, “To Combine or not to Combinena Issues of Combining
+Forecasts,” Journal of Forecasting 11, pp. 687-701.
+Raftery, A.E., 1995, “Bayesian Model Selection for Social Research,” Sociological
+Methodology, 25, pp. 111-163.
+Raftery, A.E., 1999, “Bayes factors and BIC: Comment on Weakliem,” Sociological
+Methods and Research, 27, pp. 411-427.
+Raftery, A.E., D. Madigan and J.A. Hoeting, 1997, "Bayesian Model Averaging for Linear
+Regression Models," Journal of the American Statistical Association, 92, pp. 179-191
+Sala-i-Martin, X.G., 1997, “I Just Ran Two Million Regressions,” American Economic
+Review, Papers and Proceedings, 87, pp.178-183.
+Sala-i-Martin, X.,G., G. Doppelhofer and R. Miller, 2004, “Determinants of Long-Term
+Growth: A Bayesian Averaging of Classical Estimates (BACE) Approach,” American
+Economic Review, 94, pp. 813-835.
+Volinsky, C.T., D. Madigan, A.E. Raftery and R.A. Kronmal, 1997, “Bayesian Model
+Averaging in Proportional Hazard Models: Assessing the Risk of a Stroke,” Journal
+of Royal Statistical Society, 46, pp. 433-448.
+Yeung K.Y., R.E. Baumgarner and A.E. Raftery, 2005, “Bayesian Model Averaging:
+Development of an Improved Multi-Class, Gene Selection and Classification Tool for
+Microarray Data,” Bioinformatics, 21, pp. 2394-2402.
+Temple, J., 2000, “Growth Regressions and What the Textbooks Don’t Tell You,” Bulletin of
+Economic Research, 52, pp. 181-205.
+
+20
+
+Table 1: Effective Growth Determinants in Global and Interaction Models
+Global
+
+Intercept
+OECD
+GDP60
+Non-OECD
+OECD
+LifeExp60
+Non-OECD
+OECD
+EQINV
+Non-OECD
+OECD
+Mining
+Non-OECD
+OECD
+OutOrient
+Non-OECD
+OECD
+LatAmDum
+Non-OECD
+HighEd60
+Non-OECD
+OECD
+SubSahAfricaDum
+Non-OECD
+EthnoFrac
+Non-OECD
+OECD
+HinduFrac
+Non-OECD
+Lforce60
+Non-OECD
+SpainDum
+Non-OECD
+FrenchDum
+Non-OECD
+NonEqInv
+Non-OECD
+OECD
+ConfuciousFrac
+Non-OECD
+EngLangFrac
+Non-OECD
+PrimaryEd60
+Non-OECD
+Civlibb
+Non-OECD
+BritDum
+Non-OECD
+RuleLaw
+Non-OECD
+OECD
+BlackMktPrem
+Non-OECD
+OECD
+EconOrg
+Non-OECD
+OECD
+PrimExp70
+Non-OECD
+OECD
+CathFrac
+Non-OECD
+OECD
+AvgPopAge
+Non-OECD
+OECD
+ProtFrac
+Non-OECD
+OECD
+BuddhaFrac
+Non-OECD
+OthFracLang
+Non-OECD
+OECD
+
+Interaction
+
+Posterior
+mean
+
+Posterior
+s.d.
+
+0.076
+
+0.017
+
+Posterior
+mean/s.d.
+ratio
+4.385
+
+-0.018
+
+0.002
+
+8.122
+
+0.001
+
+0.148
+0.033
+
+-0.003
+
+0.000
+0.036
+0.012
+0.002
+
+2.823
+
+-0.121
+
+0.029
+
+4.093
+
+-0.022
+
+0.004
+
+5.143
+
+0.015
+
+0.004
+
+3.775
+
+-0.108
+
+0.020
+
+5.349
+
+0.000
+
+0.000
+
+4.924
+
+0.014
+
+0.005
+
+2.799
+
+0.011
+
+0.004
+
+2.71
+
+0.031
+
+0.021
+
+1.474
+
+0.074
+
+0.010
+
+7.225
+
+-0.007
+
+0.004
+
+1.507
+
+0.020
+
+0.009
+
+2.268
+
+-0.002
+
+0.001
+
+2.038
+
+0.007
+
+0.003
+
+2.394
+
+0.013
+
+0.004
+
+3.35
+
+0.000
+0.000
+0.000
+-0.001
+
+0.001
+0.001
+0.001
+0.000
+0.003
+
+0.017
+0.018
+
+-0.013
+-0.013
+
+0.002
+0.002
+
+5.717
+5.483
+
+0.001
+0.001
+
+0.000
+0.000
+
+7.616
+7.094
+
+0.156
+0.156
+
+0.033
+0.033
+
+4.786
+4.752
+
+0.046
+0.046
+
+0.010
+0.011
+
+4.44
+4.357
+
+-0.003
+-0.003
+
+0.002
+0.002
+
+1.358
+1.38
+
+-0.016
+
+0.003
+
+4.539
+
+-0.192
+-0.012
+
+0.044
+0.029
+
+4.375
+0.424
+
+-0.014
+
+0.003
+
+4.073
+
+0.020
+0.006
+
+0.005
+0.006
+
+3.64
+0.897
+
+-0.016
+
+0.019
+
+0.856
+
+0.000
+
+0.000
+
+0.607
+
+NA
+
+NA
+
+NA
+
+0.002
+
+0.003
+
+0.882
+
+0.012
+0.011
+
+0.016
+0.017
+
+0.753
+0.665
+
+NA
+
+NA
+
+NA
+
+0.000
+
+0.001
+
+0.144
+
+NA
+
+NA
+
+NA
+
+NA
+
+NA
+
+NA
+
+NA
+
+NA
+
+NA
+
+0.002
+-0.016
+
+0.004
+0.011
+
+0.47
+1.453
+
+-0.012
+-0.012
+
+0.002
+0.002
+
+5.042
+5
+
+0.003
+0.003
+
+0.001
+0.001
+
+4.235
+3.927
+
+-0.020
+-0.017
+
+0.004
+0.006
+
+5.014
+2.93
+
+0.013
+0.013
+
+0.004
+0.004
+
+3.295
+3.296
+
+0.000
+0.000
+
+0.000
+0.000
+
+2.982
+0.067
+
+-0.021
+0.004
+
+0.010
+0.005
+
+2.083
+0.723
+
+0.018
+
+0.005
+
+3.968
+
+0.013
+-0.005
+
+0.003
+0.004
+
+3.99
+1.193
+
+1.644
+2.756
+
+0.000
+
+0.038
+0.036
+
+Posterior
+mean/s.d.
+Ratio
+2.234
+2.014
+
+4.145
+
+0.005
+
+0.004
+
+Posterior
+s.d.
+
+4.829
+
+-0.013
+
+-0.004
+
+Posterior
+mean
+
+1.216
+0.567
+0.097
+0.208
+0.208
+0.224
+
+0.003
+
+0.004
+
+0.611
+
+0.000
+
+0.001
+
+0.108
+
+21
+
+Table 1a: Summary of Effective Growth Determinants
+BMA
+
+IBMA with Interactions
+
+y = αιn + Z j β j + σε ,
+
+y = αι n + Z j β1, j + I X j β 2, j + σε ,
+
+Global Sample
+
+Non-OECD
+
+OECD
+
+Effective Variables
+
+Effective Variables
+
+Effective Variables
+
+Posterior
+mean
+
+Post.
+s.d.
+
+Posterior
+mean
+
+Post.
+s.d.
+
+Posterior
+mean
+
+Post.
+s.d.
+
+0.007
+0.003
+BritDum
+-0.002
+0.001
+Civlibb
+0.074
+0.010
+ConfuciousFrac
+EngLangFrac
+-0.007
+0.004
+PrimaryEd60
+0.02
+0.009
+NonEqInv
+0.031
+0.021
+FrenchDum
+0.011
+0.004
+Lforce60
+0.000
+0.000
+HinduFrac
+-0.108
+0.020
+SpainDum
+0.014
+0.005
+LatAmDum
+-0.013
+0.005
+-0.016
+0.003
+FracEthno
+0.015
+0.004
+0.020
+0.005
+SubSahAfricaDum
+-0.014
+0.003
+-0.022
+0.004
+HighEd60
+-0.121
+0.029
+-0.192
+0.044
+EQInvest
+0.148
+0.036
+0.156
+0.033
+0.156
+0.033
+LifeExp60
+0.001
+0.000
+0.001
+0.000
+0.001
+0.000
+OutOrient
+-0.003
+0.002
+-0.003
+0.002
+-0.003
+0.002
+Mining
+0.033
+0.012
+0.046
+0.010
+0.046
+0.011
+GDP60
+-0.018
+0.002
+-0.013
+0.002
+-0.013
+0.002
+RuleLaw
+0.013
+0.004
+-0.016
+0.011
+CathDum
+0.013
+0.004
+0.013
+0.004
+PrimExp70
+-0.020
+0.004
+-0.017
+0.006
+BlackMktPrem
+-0.012
+0.002
+-0.012
+0.002
+EconOrg
+0.003
+0.001
+0.003
+0.001
+BuddhaDum
+0.018
+0.005
+AvgPopAge
+0.000
+0.000
+OthFracLang
+0.013
+0.003
+ProtFrac
+-0.021
+0.010
+Note: Column 4 reports composite means and the associated composite standards deviations. All variables that
+do not meet our effectiveness threshold (post. mean/sd <1.3) are not reported to save space.
+
+22
+
+Table 2: Robustness Using Different Window Sizes in IBMA
+Regressor Window Size 41
+Post. mean
+Post. s.d.
+Intercept
+OECD
+GDP60
+Non-OECD
+OECD
+LifeExp60
+Non-OECD
+OECD
+EQINV
+Non-OECD
+OECD
+Mining
+Non-OECD
+OECD
+OutOrient
+Non-OECD
+OECD
+LatAmDum
+Non-OECD
+HighEd60
+Non-OECD
+OECD
+SubSahAfrica
+Non-OECD
+EthnoFrac
+Non-OECD
+OECD
+HinduFrac
+Non-OECD
+Lforce60
+Non-OECD
+OECD
+SpainDum
+Non-OECD
+FrenchDum
+Non-OECD
+NonEqInv
+Non-OECD
+OECD
+EngLangFrac
+Non-OECD
+OECD
+Civlibb
+Non-OECD
+OECD
+BritDum
+Non-OECD
+OECD
+RuleLaw
+Non-OECD
+OECD
+BlkMktPrem
+Non-OECD
+OECD
+EconOrg
+Non-OECD
+OECD
+PrimExp70
+Non-OECD
+OECD
+CathFrac
+Non-OECD
+OECD
+AvgPopAge
+Non-OECD
+OECD
+ProtFrac
+Non-OECD
+OECD
+BuddhaFrac
+Non-OECD
+OthFracLang
+Non-OECD
+OECD
+PropRights
+Non-OECD
+OECD
+WarDum
+Non-OECD
+OECD
+Worker/Pop
+Non-OECD
+OECD
+
+0.038
+0.036
+-0.018
+-0.013
+-0.013
+0.001
+0.001
+0.001
+0.148
+0.156
+0.156
+0.033
+0.046
+0.046
+-0.003
+-0.003
+-0.003
+-0.013
+-0.016
+-0.121
+-0.192
+-0.012
+-0.022
+-0.014
+0.015
+0.02
+0.006
+-0.108
+-0.016
+0.000
+0.000
+NA
+0.014
+NA
+0.011
+0.002
+0.031
+0.012
+0.011
+-0.007
+0.000
+NA
+-0.002
+NA
+NA
+0.007
+NA
+NA
+0.013
+0.002
+-0.016
+-0.004
+-0.012
+-0.012
+0.000
+0.003
+0.003
+0.000
+-0.02
+-0.017
+0.000
+0.013
+0.013
+0.000
+0.000
+0.000
+-0.001
+-0.021
+0.004
+0.003
+0.018
+0.000
+0.013
+-0.005
+0.000
+NA
+NA
+0.000
+NA
+NA
+0.000
+NA
+NA
+
+0.017
+0.018
+0.002
+0.002
+0.002
+0.000
+0.000
+0.000
+0.036
+0.033
+0.033
+0.012
+0.010
+0.011
+0.002
+0.002
+0.002
+0.005
+0.003
+0.029
+0.044
+0.029
+0.004
+0.003
+0.004
+0.005
+0.006
+0.020
+0.019
+0.000
+0.000
+NA
+0.005
+NA
+0.004
+0.003
+0.021
+0.016
+0.017
+0.004
+0.001
+NA
+0.001
+NA
+NA
+0.003
+NA
+NA
+0.004
+0.004
+0.011
+0.004
+0.002
+0.002
+0.001
+0.001
+0.001
+0.001
+0.004
+0.006
+0.001
+0.004
+0.004
+0.000
+0.000
+0.000
+0.003
+0.010
+0.005
+0.004
+0.005
+0.001
+0.003
+0.004
+0.001
+NA
+NA
+0.001
+NA
+NA
+0.000
+NA
+NA
+
+Regressor Window Size 45
+Post. Mean
+Post. s.d.
+0.038
+0.035
+-0.018
+-0.012
+-0.013
+0.001
+0.001
+0.001
+0.148
+0.156
+0.156
+0.033
+0.041
+0.036
+-0.003
+-0.003
+-0.003
+-0.013
+-0.016
+-0.121
+-0.200
+-0.025
+-0.022
+-0.016
+0.015
+0.021
+-0.002
+-0.108
+-0.031
+0.000
+0.000
+NA
+0.014
+NA
+0.011
+0.002
+0.031
+0.027
+0.027
+-0.007
+NA
+NA
+-0.002
+NA
+NA
+0.007
+NA
+NA
+0.013
+0.006
+-0.037
+-0.004
+-0.011
+0.027
+0.000
+0.003
+0.003
+0.000
+-0.021
+-0.021
+0.000
+0.013
+0.013
+0.000
+0.000
+0.000
+-0.001
+-0.021
+0.009
+0.003
+0.018
+0.000
+0.012
+0.000
+0.000
+NA
+NA
+0.000
+NA
+NA
+0.000
+0.000
+-0.036
+
+0.017
+0.021
+0.002
+0.002
+0.002
+0.000
+0.000
+0.000
+0.036
+0.033
+0.033
+0.012
+0.011
+0.028
+0.002
+0.002
+0.002
+0.005
+0.004
+0.029
+0.047
+0.033
+0.004
+0.004
+0.004
+0.005
+0.006
+0.020
+0.020
+0.000
+0.000
+NA
+0.005
+NA
+0.004
+0.002
+0.021
+0.017
+0.017
+0.004
+NA
+NA
+0.001
+NA
+NA
+0.003
+NA
+NA
+0.004
+0.005
+0.013
+0.004
+0.002
+0.008
+0.001
+0.001
+0.001
+0.001
+0.004
+0.004
+0.001
+0.004
+0.004
+0.000
+0.000
+0.000
+0.003
+0.008
+0.005
+0.004
+0.005
+0.001
+0.003
+0.004
+0.001
+NA
+NA
+0.001
+NA
+NA
+0.000
+0.001
+0.009
+
+Regressor Window Size 47
+Post. mean
+Post. s.d.
+0.071
+0.077
+-0.018
+-0.015
+-0.015
+0.001
+0.001
+0.001
+0.148
+0.179
+0.052
+0.033
+0.029
+0.032
+-0.003
+-0.002
+-0.002
+-0.013
+-0.011
+-0.121
+-0.111
+0.038
+-0.022
+-0.016
+0.015
+0.017
+-0.003
+-0.108
+-0.083
+0.000
+0.000
+0.000
+0.014
+0.010
+0.011
+0.007
+0.031
+0.054
+-0.016
+-0.007
+-0.018
+-0.001
+-0.002
+0.000
+0.008
+0.007
+0.003
+NA
+0.013
+NA
+NA
+-0.004
+-0.005
+0.005
+0.000
+0.002
+0.002
+0.000
+-0.020
+-0.020
+0.000
+NA
+NA
+0.000
+0.000
+0.000
+-0.001
+-0.003
+-0.004
+0.003
+0.019
+0.000
+0.010
+-0.004
+0.000
+-0.002
+-0.003
+0.000
+-0.004
+-0.003
+0.000
+NA
+NA
+
+0.014
+0.026
+0.002
+0.002
+0.002
+0.000
+0.000
+0.000
+0.036
+0.032
+0.046
+0.012
+0.009
+0.020
+0.002
+0.001
+0.002
+0.005
+0.003
+0.029
+0.032
+0.028
+0.004
+0.002
+0.004
+0.004
+0.005
+0.020
+0.019
+0.000
+0.000
+0.000
+0.005
+0.003
+0.004
+0.003
+0.021
+0.014
+0.025
+0.004
+0.006
+0.004
+0.001
+0.001
+0.004
+0.003
+0.003
+NA
+0.004
+NA
+NA
+0.004
+0.002
+0.011
+0.001
+0.001
+0.001
+0.001
+0.003
+0.003
+0.001
+NA
+NA
+0.000
+0.000
+0.000
+0.003
+0.004
+0.004
+0.004
+0.004
+0.001
+0.002
+0.004
+0.001
+0.001
+0.004
+0.001
+0.001
+0.002
+0.000
+NA
+NA
+
+Regressor Window Size 48
+Post. mean
+Post. s.d.
+0.070
+0.059
+-0.018
+-0.015
+-0.014
+0.001
+0.001
+0.001
+0.148
+0.181
+0.091
+0.033
+0.027
+-0.016
+-0.003
+-0.003
+-0.003
+-0.013
+-0.013
+-0.121
+-0.120
+-0.119
+-0.022
+-0.017
+0.015
+0.017
+0.000
+-0.108
+-0.068
+0.000
+0.000
+0.000
+0.014
+0.009
+0.011
+0.005
+0.031
+0.054
+-0.050
+-0.007
+-0.010
+NA
+-0.002
+NA
+NA
+0.007
+0.000
+0.017
+0.013
+NA
+NA
+-0.004
+-0.006
+0.027
+0.000
+0.002
+0.002
+0.000
+-0.021
+-0.021
+0.000
+NA
+NA
+0.000
+0.000
+0.000
+-0.001
+-0.001
+0.001
+0.003
+0.015
+0.000
+0.010
+-0.005
+0.000
+-0.002
+-0.002
+0.000
+-0.003
+0.000
+0.000
+0.000
+-0.037
+
+0.015
+0.027
+0.002
+0.002
+0.002
+0.000
+0.000
+0.000
+0.036
+0.034
+0.063
+0.012
+0.010
+0.067
+0.002
+0.001
+0.002
+0.005
+0.003
+0.029
+0.029
+0.030
+0.004
+0.003
+0.004
+0.004
+0.006
+0.020
+0.013
+0.000
+0.000
+0.000
+0.005
+0.003
+0.004
+0.002
+0.021
+0.014
+0.029
+0.004
+0.004
+NA
+0.001
+NA
+NA
+0.003
+0.001
+0.004
+0.004
+NA
+NA
+0.004
+0.002
+0.007
+0.001
+0.000
+0.001
+0.001
+0.003
+0.003
+0.001
+NA
+NA
+0.000
+0.000
+0.000
+0.003
+0.004
+0.003
+0.004
+0.004
+0.001
+0.003
+0.003
+0.001
+0.001
+0.001
+0.001
+0.002
+0.005
+0.000
+0.000
+0.014
+
+Note: Posterior coefficient estimates in bold font represent variables that pass our effectiveness threshold (post. mean/sd > 1.3).
+23
+
+Appendix
+Table A1: Descriptive Statistics
+
+Variable
+Absolute Latitude
+Age
+Area (Scale Effect)
+Black Market Premium
+British Colony
+Civil Liberties
+Equipment Invest.
+Ethnolinguistic Fractionalization
+Fraction Catholic
+Fraction of Buddhist
+Fraction of Confucian
+Fraction of Foreign Speaking Pop.
+Fraction of Hindu
+Fraction of Jews
+Fraction of Mining to GDP
+Fraction of Muslim
+Fraction of Pop. speaking English
+Fraction of Protestants
+Fraction of years open
+French Colony
+GDP per capita 1960 (log)
+Growth Rate of Population
+Higher Education Enrolment, 1960
+Latin American Dummy
+Life Expectancy, 1960
+Non-Equipment Invest.
+Outward Orientation
+Per Capita GDP Growth 1960-1992
+Political Rights
+Pop.60* Worker 60 (Scale Effect)
+Primary Exports, 1970
+Primary School Enrolment, 1960
+Public Education Share
+Ratio of Worker to Pop (log)
+Real Exchange Rate Distortion
+Revolutions and Coups
+Rule of Law
+Spanish Colony
+Standard Deviation of BMP
+Sub-Saharan African Dummy
+Type of Econ. Organization
+War Dummy
+Number of obs.
+
+Global
+Mean
+Std. Dev.
+25.733
+23.708
+972.917
+0.157
+0.319
+3.466
+0.044
+0.371
+0.422
+0.056
+0.019
+0.374
+0.018
+0.013
+0.045
+0.148
+0.076
+0.173
+0.439
+0.125
+7.492
+0.020
+0.043
+0.278
+56.581
+0.149
+0.389
+0.021
+3.451
+9305.375
+0.673
+0.795
+0.025
+-0.954
+121.708
+0.182
+0.551
+0.222
+45.596
+0.208
+3.542
+0.403
+
+72
+
+17.250
+37.307
+2051.976
+0.291
+0.470
+1.712
+0.035
+0.296
+0.397
+0.184
+0.087
+0.422
+0.101
+0.097
+0.077
+0.295
+0.239
+0.252
+0.355
+0.333
+0.885
+0.010
+0.052
+0.451
+11.448
+0.055
+0.491
+0.018
+1.896
+24906.050
+0.299
+0.246
+0.009
+0.189
+41.001
+0.238
+0.335
+0.419
+95.802
+0.409
+1.266
+0.494
+
+OECD
+Mean
+Std. Dev.
+45.126
+39.043
+1467.130
+0.059
+0.174
+1.758
+0.072
+0.217
+0.427
+0.045
+0.026
+0.308
+0.000
+0.002
+0.017
+0.044
+0.181
+0.323
+0.737
+0.000
+8.399
+0.009
+0.087
+0.043
+67.948
+0.183
+0.435
+0.030
+1.589
+12814.540
+0.379
+0.971
+0.029
+-0.885
+105.783
+0.071
+0.899
+0.043
+3.190
+0.000
+4.217
+0.130
+
+23
+
+10.461
+41.877
+3036.055
+0.196
+0.388
+1.148
+0.024
+0.211
+0.392
+0.183
+0.125
+0.420
+0.000
+0.005
+0.018
+0.208
+0.357
+0.357
+0.203
+0.000
+0.622
+0.007
+0.061
+0.209
+5.986
+0.037
+0.507
+0.011
+0.993
+16980.030
+0.230
+0.066
+0.010
+0.132
+16.605
+0.122
+0.179
+0.209
+7.512
+0.000
+0.736
+0.344
+
+Non-OECD
+Mean Std. Dev.
+16.630
+16.510
+740.939
+0.203
+0.388
+4.268
+0.031
+0.443
+0.420
+0.061
+0.016
+0.406
+0.027
+0.018
+0.058
+0.196
+0.026
+0.103
+0.299
+0.184
+7.066
+0.026
+0.023
+0.388
+51.245
+0.134
+0.367
+0.017
+4.324
+7658.217
+0.811
+0.713
+0.022
+-0.986
+129.184
+0.235
+0.388
+0.306
+65.500
+0.306
+3.224
+0.531
+
+11.189
+33.006
+1353.317
+0.318
+0.492
+1.295
+0.031
+0.304
+0.403
+0.186
+0.064
+0.424
+0.122
+0.117
+0.090
+0.318
+0.136
+0.139
+0.325
+0.391
+0.633
+0.006
+0.030
+0.492
+9.298
+0.055
+0.487
+0.019
+1.558
+27869.810
+0.217
+0.256
+0.008
+0.204
+46.709
+0.261
+0.258
+0.466
+110.832
+0.466
+1.343
+0.504
+
+49
+
+Note: For Civil Liberties and Political Rights higher values imply lower civil liberties and political rights
+
+24
+
+

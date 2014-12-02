@@ -1,0 +1,2122 @@
+Latent space models for networks using
+Aggregated Relational Data1
+Tyler H. McCormick
+Department of Statistics
+Department of Sociology
+University of Washington
+Seattle, WA 98103
+
+Tian Zheng
+Department of Statistics
+Columbia University
+New York, NY 10027
+
+Working Paper no. 130
+Center for Statistics and the Social Sciences
+University of Washington
+2013
+
+1 The
+
+authors appreciate the support of the Columbia Applied Statistics Center and the
+Columbia Population Research Center. We also thank Peter Killworth, Russell Bernard, and
+Chris McCarty for sharing their survey data.
+
+Abstract
+Despite increasing interest across a range of scientific applications in modeling and understanding social network structure, collecting complete network data remains logistically and financially challenging, especially in the social sciences. This paper introduces
+a latent space representation of social network structure for partially observed network
+data. We derive a multivariate measure of expected (latent) distance between an observed actor and unobserved actors with given features. We also draw novel parallels
+between our work and dependent data in spatial and ecological statistics. An application
+using a random digit-dial telephone survey further demonstrates the contribution of our
+model.
+The latent space model for networks represents high dimensional network structure
+through a projection to a low-dimensional latent geometric space—encoding dependence
+as distance in the space. We develop a latent space model for cases when complete network data are unavailable. We focus specifically on Aggregated Relational Data (ARD)
+which measure network structure indirectly by asking respondents how many connections they have with members of a certain subpopulation (e.g. How many individuals
+living with HIV/AIDS do you know?) and are easily added to existing surveys. Instead
+of conditioning on the (latent) distance between two members of the network, the latent
+space model for ARD conditions on the expected distance between a survey respondent
+and the center of a subpopulation in the latent space. A spherical latent space facilitates
+tractable computation of this expectation. This model estimates relative homogeneity between groups in the population and variation in the propensity for interaction between
+respondents and group members. The model also estimates features of groups which
+are difficult to reach using standard surveys (the homeless, for example).
+KEY WORDS: Bayesian methods, density estimation, partially observed social network
+
+1
+
+Introduction
+
+Social network data consist of relationships (knowing, trusting, etc.) between individual actors, or egos, and another member of the network, known as the alter. Network
+data are increasingly common in the social and behavioral sciences and typically contain
+higher order dependence structure. This issue has given rise to a number of statistical
+models, with one recent attempt being the family of latent space models first proposed
+for networks in Hoff et al. (2002). The latent space model assumes that the actors in
+the network form ties independently given their (latent) position in some unobservable
+“social space.” Much like principle components or multidimensional scaling, the latent space model begins with a (likely) high-dimensional feature space and produces a
+multidimensional geometric representation. The propensity for two individuals to form
+a tie in the network is inversely related to the distance between the two in the latent
+space. The geometry of the latent space naturally captures dependence structure in the
+network. Transitivity (a friend of a friend is likely a friend), for example, is represented
+through the triangle inequality. That is, if respondent A has a latent position which is
+close to respondent B and B likewise has a position which is near respondent C, then
+the triangle inequality imposes an upper bound on the latent distance between C and A.
+In this way the choice of latent geometry and distance measure is not arbitrary. Rather,
+selecting characteristics of the latent space impose restrictions on tie formation in the
+network.
+Recent interest in understanding social network structure in various scientific contexts has lead to numerous applications of the latent space model. Despite increasing
+usage of this class of model, such current techniques are applicable only when the entire
+graph is observed. Collecting a complete graph is typically financially and logistically
+difficult, especially in the social sciences. From a scientific perspective, these data collections issues result in a generalized lack of knowledge about the nature of variation in
+the day-to-day interactions of individuals (DiPrete et al., 2011; McPherson et al., 2001).
+This paper derives a latent space model for partially observed or sampled network
+data. Our approach begins with a latent space model on the complete graph, then
+derives the form of the latent space for the sampled data. This approach as two key
+advantages (i) model choices can be made on the complete graph and (ii) the framework
+yields an explicit relationship between complete graph features and the sampled data,
+thus illuminating the impact sampling procedure. To facilitate interpreting the results
+of our model in terms of social structure, we also relate structure in the latent space
+to overdispersion. Overdispersion describes the variation in relative propensity for a
+respondent to form ties with members of a particular social group. Zheng et al. (2006)
+describe overdispersion as an indicator of the likelihood of having exactly one tie to a
+particular population group, or subopulation.
+We focus on data, known as Aggregated Relational Data (ARD), collected through
+standard surveys using questions of the form “How many X’s do you know?”. Here,
+X, represents a subpopulation of interest. These data often include two types of subpopulation. First, some a typical survey will ask about subpopulations where there
+i
+
+is reliable external information, such as first names (2006 GSS, McCarty et al. (2001)).
+These groups are necessary to estimate features of respondents’ networks, such as the
+degree (or personal network size) or rate of mixing between population groups. First
+names are particularly useful for learning about network structure in the U.S. population
+since many aggregate features of alters with a given name are available from the Census
+Bureau and Social Security Administration. In other contexts these groups include individuals with a certain occupation or living in certain geographic region. In the latent
+space model, these names mitigate difficulty of interpreting the axes of the latent space.
+Individuals named Robert, for example, are mostly older individuals. The second type
+of group typically included in ARD surveys are the groups of primary interest. There
+is typically little information available about the social networks of these individuals.
+The network positions and characteristics of populations with unknown demographic
+make-up (those who are homeless, for example) can then be interpreted in reference to
+the position of the population with known characteristics, such as Roberts.
+If respondents could recall perfectly from their network and had full knowledge of
+all of the group memberships of all other population members, then these data would be
+“equivalent” to asking a respondent if they know each member of a particular group of
+alters. If every Michael in the US population were standing in a room, for example, we
+could imagine asking the respondent if he/she has a tie with each person in the room.
+Rather than reporting these ties individually as in the complete network case, however,
+our data consist of only the total number of links the respondent has with Michaels.
+Recent work with these data demonstrates that features of network structure, such
+as homophily (the tendency for actors to form relationships with similar others), are
+distinguishable even after the aggregation described above (McCormick et al., 2010; McCormick and Zheng, 2012). These methods estimate specific network features and require detailed information about some or all of all of the subpopulation be known. The
+latent space model, in contrast, provides an overview of the dependence structure in
+the network and does not require detailed subpopulation information. Comparing the
+latent space model presented in this paper with the previous methods for ARD such
+as McCormick et al. (2010) or McCormick and Zheng (2012) is similar to comparing regression with principle components analysis (PCA). Regression requires model selection
+but gives coefficients associated with specific predictors. PCA, in contrast, requires less
+thought about feature selection but also produces a representation that is difficult to
+interpret in terms of a specific feature.
+Section 1.1 reviews the latent space model for complete graphs and discusses features
+of the latent space model for complete graphs that we will use to derive the latent space
+model for ARD. Next, Section 2 begins with the complete-network model presented
+in Section 1.1 and derives a latent space representation of ARD. Section 3 develops a
+formal latent space model for ARD, then discusses computation and model fitting issues.
+Section 4 presents results for this model on data from McCarty et al. (2001) consisting
+of a random digit dial of respondents in the United States. A discussion and conclusion
+are presented in Section 5.
+
+ii
+
+1.1
+
+Latent space models for complete graphs
+
+In this section, we begin by reviewing the latent space model for the completely observed network data. The latent space model for ARD is then derived from the complete
+network model. First, consider two actors i and j whose relationship is described by the
+n × n sociomatrix ∆ where δij = 1 if there is a link between i and j and 0 otherwise.
+We refer to i in this example as the ego and j as the alter. In the latent space model,
+the propensity to form ties (P(δij = 1)) between two actors i and j is proportional to
+the distance between i and j in the latent space. Further, these propensities are conditionally independent given the latent distance between i and j (see Hoff (2005) for a full
+discussion). In the generalized linear model framework, these conditions result in the
+following model formulation:
+θij = gi + g j + ηzi0 z j
+P(δij = 1|θij ) = h(θij )
+where h(·) is the link function, zi and z j are vectors giving the positions in the latent
+space of i and j, and η is a coefficient scaling the overall influence of the latent component. The gi and g j terms represent gregariousness, which refers to the popularity of
+an actor and is related to (though not equivalent to) an actors network size. Under this
+model the influence of the latent component represents additional variability explained
+by social structure in excess of a null model where the propensity for i and j to form a
+tie depends only on the popularity of i and j.
+
+2
+
+Latent space representation of overdispersion
+
+As described in Section 1, a simple conceptualization of “How many X’s do you know?”
+data involves asking a respondents if they know every member of a set of subpopulations then reporting only the aggregate number known in that subpopulation. We now
+explore the impact of this aggregation by deriving a latent space model for ARD. This
+process begins with the latent space model described in the previous section. Specifically, for respondent i and subpopulation Gk we observe yik = ∑ j∈Gk δij . Conditional on
+latent positions, (zi , z j∈Gk ), the δij terms for all i and j are independent Bernoulli random
+variables, each with a small probability of success. We can thus model yik as following
+(approximately) a Poisson distribution with rate
+λik =
+
+∑
+
+j∈ Gk
+
+P(δij = 1|zi , zj∈Gk )
+
+when the number of individuals in the subpopulation, Nk , is large. The key distinction
+between ARD and the complete network case is that the alters, j ∈ Gk , are unobserved.
+Without observing these alters, it is not possible to estimate the complete set of alter
+lateen positions and, thus, the Poisson rate described above. Instead, we approximate
+iii
+
+the rate by taking the expectation over the latent positions of individuals in group Gk .
+Specifically, we propose the approximation:
+λik ≈ Nk
+
+Z
+zj∈Gk
+
+P(δij = 1|zi , zj∈Gk )P(zj∈Gk )dzj∈Gk .
+
+(1)
+
+The approximation in Equation 1 has two key features. First, it means that the latent
+space model is no longer conditional on the distance between two individuals in the
+latent space but now conditions on the expected distance between a respondent and a
+subpopulation. Second, mathematically it introduces distributions on the alters in the
+latent space, P(z j∈Gk ), with integration over the surface of the latent space.
+The integration in Equation 1 is conceptually similar to techniques found in population studies in the ecology and spatial statistics literature. In Barber and Gelfand (2007),
+for example, a researcher had intensity measurements for animal sitings across a series
+of non-equally spaced points in a predetermined geographic region. The statistical goal
+was to estimate the density of animals across the entire region based on the observable
+(fixed) intensity measurements. To relate this situation to the latent space framework,
+consider the case where we have only one group in the latent space. Given the positions
+of observed respondents, zi , the number of alters each ego knows in the group of interest, Gk , represents an intensity measurement. We use this intensity measurement, as
+in the spatial statistics and ecology literature, to estimate a continuous density for the
+group of interest across the (latent) manifold. In our context, however, we estimate densities corresponding to multiple populations. More importantly, measurement locations
+are also random and need to be estimated.
+The implications of the additional uncertainty from estimating ego latent positions
+is both substantive and computational. Substantively, estimating ego latent positions facilitates representing network dependence structure parsimoniously. That is, the latent
+position of and individual with a given intensity measurement can be adjusted to best
+represent the association between an individual and a group of subpopulations. Computationally, the need to estimate both densities and ego latent positions is a major challenge. With fixed measurement locations, numerical approximations are feasible (Barber
+and Gelfand (2007) use quadrature, for example). In the case of the latent space model,
+however, the additional uncertainty about respondent latent positions makes numerical
+techniques extremely burdensome. The model we propose affords a computationally
+tractable form of the likelihood which avoids this issue.
+We now have the general framework necessary to develop at latent space model for
+ARD and can begin making model choices that move from Equation 1 to an estimable
+model. We begin with a log-linear model on the complete graph:
+E(δij | gi , g j , η, zi , z j ) = exp( gi + g j + ηzi0 z j ).
+
+(2)
+
+In Equation 2 we require only that the gregariousness parameters gi , g j have finite first
+and second moments. Specifically, define the gregariousness of an actor i as having distribution gi ∼ F(µ g , σg ). For any member, j, of subpopulation Gk we model
+iv
+
+g j∈Gk ∼ F(µ gG , σgG ). The group-specific gregariousness for members of group Gk rek
+k
+flects an association previously noted in the scientific domains where ARD are often
+used. Politicians or clergy members typically have larger than average networks, for
+example, while members of some heavily stigmatized or hard-to-reach groups tend to
+have smaller than average networks (Killworth et al., 1990).
+Turning now to the latent space, let S p be the p dimensional hypersphere. zi and z j
+are the latent position vectors of i, j on S p+1 , corresponding to a p dimensional latent
+space on the p + 1 dimensional hypersphere. We see the advantages of the spherical
+latent space immediately as we assume a uniform prior across the surface of a latent hypersphere on the actor’s latent position, zi . The self-closure property of the hypersphere
+facilitates this assumption and, as we will show, results in significant computational
+savings when we move to the latent space model for ARD. For alters j belonging to a
+subpopulation Gk , we assume a von-Mises Fisher distribution over the surface of the
+latent hypersphere, z j∈Gk ∼ M(υk , ηk ). Estimating the center, υk , and concentration, ηk ,
+of the von-Mises Fisher distribution for group Gk , then constitutes a density estimation
+problem on the surface of latent hypersphere. Higher values of ηk correspond to distributions with more mass concentrated around υk . We note further that the uniform
+distribution we assume for zi is equivalent to a von-Mises Fisher distribution with 0
+concentration. Our model could, thus, be thought of as having von-Mises Fisher prior
+distributions over both respondent and alter latent positions. The concentration of the
+von-Mises Fisher for respondents is diffuse across the sphere, however, since we assume
+respondents are sampled randomly from the population.
+With these model choices, we can now derive the main result of this paper: a latent
+space model for ARD. In deriving this result we let Nk be the number of members of
+subpopulation k and N be the total population size. Further, we define the number of
+individuals in subpopulation k known by respondent i be defined as yik . In this notation,
+our general approach is as follows. First, we begin by computing the expectation of
+yik . Using the conditional independence result from the latent space model, we then
+consider E(yik ) , λik where λik is the rate parameter of a Poisson distribution. Next, we
+further refine the form of λik such that it depends only on terms that are estimable and
+interpretable based on the respondents. This step entails representing the terms in λik
+as di , the degree or total network size of respondent i, and β k , the fraction of ties in the
+network that are with group k. The intensity can the be factored into a term consisting
+of the number known by respondent i, the overall frequency of ties consisting of group
+members k and a residual term related to the latent space. Our third step is to show that
+this residual term represents a distance measure similar to Mahalanobis distance which
+captures features not discernible with previous models for ARD.
+As described above, we begin by computing the expectation of our observed data,
+
+v
+
+yik , the number of people known by respondent i in subpopulation k,
+E(yik ) , λik =
+
+∑
+
+j∈ Gk
+
+P(δij = 1|zi , zj∈Gk )
+
+and from Equation 1,
+Z
+
+≈ Nk
+
+P(δij = 1|zi , zj∈Gk )P(z j∈Gk )dz j∈Gk
+
+z j∈ G
+
+k
+
+substituting from Equation 2,
+
+= Nk
+
+Z
+z j∈ G
+
+exp( gi + g j∈Gk + ηzi0 z j∈Gk ) P(z j∈Gk ) P( g j∈Gk )dz j∈Gk dg j∈Gk
+k
+
+= Nk exp( gi )Ek (exp( g j∈Gk ))
+
+Z
+z j∈ G
+
+exp(ηzi0 z j∈Gk )C p+1 (ηk ) exp(ηk υ0k z j∈Gk )dz j∈Gk
+
+k
+
+= Nk exp( gi )Ek (exp( g j∈Gk ))C p+1 (ηk )
+
+Z
+z j∈ G
+
+
+exp (ηzi + ηk υk )0 z j∈Gk dz j∈Gk
+
+k
+
+= Nk exp( gi )Ek (exp( g j∈Gk ))C p+1 (ηk )
+
+
+Z
+||ηzi + ηk υk ||
+0
+(ηzi + ηk υk ) z j∈Gk dz j∈Gk .
+exp
+×
+||
+ηz
++
+η
+υ
+||
+z j∈ G
+i
+k
+k
+k
+In this expression C p+1 (·) is the normalizing constant of the von-Mises Fisher distribution. Though this constant depends on the ratio of modified Bessel functions it is easily
+computed
+using standard software
+packages. The integral now contains the kernel of
+
+
+
+ηzi +ηk υk
+M ||ηzi + ηk υk ||, ||ηz
+. Since the latent space is a hypersphere, we can add the
+i + ηk υk ||
+appropriate normalizing constant and integrate the above von-Mises Fisher distribution
+across it’s entire support. This simplification yields
+
+
+λik = Nk exp( gi )Ek (exp( g j∈Gk ))
+
+C p +1 ( η k )
+C p+1 (||ηzi + ηk υk ||)
+
+
+.
+
+The above expression is the basis for the likelihood of a latent space model for ARD.
+The form of the expression is not ideal, however, since it remains in terms of the difficultto-conceptualize quantity of gregariousness. Further, it contains an expectation across
+alter gregariousness, meaning that one would need to specify a distribution on this
+quantity to obtain a numerical result. We reparameterize this expression to be in terms
+of degree (personal network size) and fractional subpopulation size. This reparameterization facilitates both computation and interpretation.
+We now present the steps necessary for reparameterization, starting first with the
+
+vi
+
+respondent degree, di :
+di , E(∑ δij ) =
+j
+
+∑ E(δij )
+j
+
+≈ N
+
+Z
+{z j ,g j }
+
+exp( gi + g j + ηzi0 z j ) P( g j ) P(z j )dg j dz j
+
+= N exp( gi )
+
+Z
+gj
+
+exp( g j ) P( g j )dg j
+
+= N exp( gi )E(exp( g j ))
+
+1
+
+Z
+
+A p +1
+
+zj
+
+Z
+zj
+
+exp(ηzi0 z j ) P(z j )dz j
+
+exp(ηzi0 z j )dz j
+
+Since exp(ηzi0 z j ) is the kernel of M(η, z j ) we have
+di = N exp( gi )E(exp( g j ))
+and using the limiting constant
+
+1
+A p +1
+
+1
+
+1
+
+A p +1 C p +1 ( η )
+
+.
+
+= C p +1 (0 ),
+
+
+di = N exp( gi )E(exp( g j ))
+
+C p +1 (0 )
+C p +1 ( η )
+
+
+.
+
+(3)
+
+We now move to the fractional subpopulation size. Recall that we define, β k as the
+fraction of ties in the network that are made with members of group k:
+βk ,
+
+∑i ∑ j∈Gk δij
+.
+∑ij δij
+
+(4)
+(5)
+
+Taking each component of Equation 4 in turn we begin by representing the numerator
+as:
+
+∑ δij
+ij
+
+= NE(∑ δij ) = NE(di )
+j
+
+= N
+
+Z
+i
+
+N exp( gi )E(exp( gi ))
+
+= N 2 (E(exp( gi ))2
+
+C p +1 (0 )
+.
+C p +1 ( η )
+
+vii
+
+C p +1 (0 )
+p( gi )dgi
+C p +1 ( η )
+
+The denominator then follows after further computation:
+
+∑∑
+
+δij =
+
+i j∈ Gk
+
+∑ Nk E(δij | j ∈ Gk )
+i
+
+=
+
+∑ Nk
+
+Z
+j∈ Gk
+
+i
+
+=
+
+exp( gi + g j∈Gk + ηzi0 z j∈Gk ) p( g j∈Gk ) p(z j∈Gk )dz j∈Gk dg j∈Gk
+
+∑ Nk Cp+1 (ηk ) exp( gi )Ek (exp( gj∈Gk ))
+i
+
+×
+
+Z
+j∈ Gk
+
+exp(ηk υ0k z j∈Gk + ηzi0 z j∈Gk )dz j∈Gk
+
+taking the expectation over i
+
+= NENk C p+1 (ηk ) exp( gi )Ek (exp( g j∈Gk ))
+×
+
+Z
+j∈ Gk
+
+exp(ηk υ0k z j∈Gk + ηzi0 z j∈Gk )dz j∈Gk
+
+= NNk C p+1 (ηk )E(exp( gi ))Ek (exp( g j∈Gk ))C p+1 (0)
+×
+
+Z Z
+i
+
+j∈ Gk
+
+exp(ηk υ0k z j∈Gk + ηzi0 z j∈Gk )dz j∈Gk dzi
+
+exchanging order of integration
+
+= NNk C p+1 (ηk )E(exp( gi ))Ek (exp( g j∈Gk ))C p+1 (0)
+
+Z
+Z
+0
+0
+exp(ηzi z j∈Gk )dzi dz j∈Gk
+exp(ηk υk z j∈Gk )
+×
+j∈ Gk
+
+i
+
+symmetry of inner product makes exp(ηzi0 z j∈Gk )the kernel of M(η, z j∈Gk )
+
+= NNk C p+1 (ηk )E(exp( gi ))Ek (exp( g j∈Gk ))
+C p +1 (0 ) Z
+×
+exp(ηk υ0k z j∈Gk )dz j∈Gk
+C p+1 (η ) j∈Gk
+where exp(ηk υ0k z j∈Gk )is kernel of M(ηk , υk )
+
+= NNk C p+1 (ηk )E(exp( gi ))Ek (exp( g j∈Gk ))
+= NNk E(exp( gi ))Ek (exp( g j∈Gk ))
+
+C p +1 (0 )
+C p +1 ( η ) C p +1 ( η k )
+
+C p +1 (0 )
+.
+C p +1 ( η )
+
+Combining the reparameterized numerator and denominator yields a new expression
+for β k :
+ 
+
+Ek (exp( g j∈Gk ))
+Nk
+.
+βk =
+N
+E(exp( gi ))
+
+viii
+
+We substitute
+
+C p +1 (0 )
+dβ
+C p +1 ( η ) i k
+
+= Nk exp( gi )Ek (exp( g j∈Gk )) to have
+
+
+λik = di β k
+Noting that ||ηzi + ηk υk || =
+
+λik = di β k 
+
+q
+
+C p +1 ( η ) C p +1 ( η k )
+C p+1 (0)C p+1 (||ηzi + ηk υk ||)
+
+
+.
+
+η 2 + ηk2 + 2ηηk cos(θ(zi ,υk ) ) we have
+
+
+C p +1 ( η ) C p +1 ( η k )
+.
+q
+2
+2
+C p+1 (0)C p+1 ( η + ηk + 2ηηk cos(θ(zi ,υk ) ))
+
+(6)
+
+The form of λik in Equation 6 completes our latent space representation for ARD. In
+the latent space model for the full network (see (2)), the latent space component (ηzi0 z j )
+increases the propensity for individuals who are more similar in the unobserved social
+space to interact, which corresponds to a form of non-random mixing. We refer to
+social structure in excess of the variation that would be expected by different degrees
+of respondent gregariousness as non-random mixing. If the η parameter were zero,
+however, we would be left with a model that accounts for varying gregariousness across
+actors but assumes random mixing across all other attributes.
+To better understand the role of the latent space, we compare the model above with
+the overdispersed model presented in Zheng et al. (2006). This model also assumes a
+Poisson distribution for yik with λik = di β k γik . Rather than estimating γik directly, Zheng
+et al. (2006) assign a Gamma prior distribution to γik with a mean of 1 and shape parameter 1/(ωk − 1). The γ’s can then be integrated out to yield a Negative Binomial
+distribution with overdispersion parameter ωk . This model provides a scalar representation for deviance from random mixing, where the amount of deviation is the same for
+all members of a given group.
+In the latent space model we can also conceptualize γik as controlling the relative
+propensity for i to form ties with group k. In the latent space model the form of γik
+remains individual-specific and is given by
+γik =
+
+C p +1 ( η ) C p +1 ( η k )
+q
+.
+C p+1 (0)C p+1 ( η 2 + ηk2 + 2ηηk cos(θ(zi ,υk ) ))
+
+(7)
+
+As discussed in further detail in the next section, the departure from what would be
+expected under random mixing now depends on the concentration of the population of
+interest and the distance between the individual and the population center in the latent
+space. This feature provides a substantially richer representation of network structure,
+which we demonstrate in practice in our results. Setting η = 0 in (7), we see have
+that γik = 1 and the model simplifies to the “null model” for random mixing presented
+in Zheng et al. (2006). Further, taking the expectation of λik and rearranging the resulting
+expression yields that γik has expectation 1. The variance of γik (and therefore overdisix
+
+persion) increases monotonically as the concentration of the subpopulation ηk increases
+relative to the general level of the population, η. This result can be verified through
+simulation (not shown).
+As mentioned above, given this expectation and when Nk is large, which is usually
+the case, yik follows the Poisson distribution with rate λik = ∑ j∈k P(δij = 1) ≈ Nk P(δij =
+1) since the individual latent positions of z j∈k are replaced by the normalized expectation, making our estimated P(δij = 1) the same for all j ∈ k. The relation between actor
+i and subpopulation k is now reduced to the rate of ties, λik , given the latent position zi
+and the latent distribution of subpopulation k. Combining the results from the previous
+sections, we have:
+
+
+
+C p +1 ( η ) C p +1 ( η k )
+
+q
+yik |di , β k , η, ηk , θ(zi ,υk ) ∼ Poisson di β k 
+2
+2
+C p+1 (0)C p+1 ( η + ηk + 2ηηk cos(θ(zi ,υk ) ))
+(8)
+Equation 8 forms the basis of the likelihood for the latent space model for ARD. This
+likelihood is computationally tractable, greatly facilitating model fitting and sampling in
+practice.
+
+3
+
+Latent space model and computation
+
+In this section we describe model fitting for our latent space model for ARD. We first
+contextualize the likelihood in terms of the generalized linear model and relate our measure of residual distance in the latent space to Mahalanobis distance. We next describe
+formally our model and prior structure and conclude by presenting our model fitting
+algorithm.
+
+3.1
+
+Interpretation and visualization
+
+The likelihood derived in the previous section can be thought of in terms of a generalized
+linear model with main effects di and β k and interaction term γik . As discussed in Zheng
+et al. (2006) and McCormick et al. (2010), the interaction term represents social structure
+in excess of a random mixing model. The random mixing model occurs when γik = 1 in
+(8), implying that the expected number of members of group k by a given respondent
+depends only on the number of individuals a respondent knows (di ) and the number of
+group members in the overall population (β k ). The joint distribution of the yik across all
+respondents is then a mixture of Poisson distributions where the mixture rate depends
+on the population degree distribution. Of the most common ARD questions, responses
+to first names are most likely to follow a random mixing model.
+A key advantage of the latent space model is its flexibility in representing the residual social structure captured by γik . Translating this structure into a multidimensional
+geometric space provides a visual representation of these more complicated aspects of
+
+x
+
+π
+
+social structure. As described in the previous section, the expectation operation performed during aggregation means that the latent space model is conditional on the
+expected (latent) distance between a respondent and a subpopulation. Mathematically,
+the distance defined by the latent space model is similar to Mahalanobis distance in
+Euclidean space. Figure 1 shows contours of the γik term in the likelihood for a given
+respondent with fixed degree and subpopulation size. The numbers represent the multiplicative effect (compared to the random mixing model) of having an angular distance
+θ from a population with concentration ηk . The impact of latent position on the expected
+
+3π 4
+
+.5
+
+θ
+
+π 2
+
+.75
+
+1
+
+π 4
+
+1.5
+
+0
+
+2
+
+1
+
+2
+
+3
+
+4
+
+5
+
+ηk η
+
+6
+
+7
+
+8
+
+9
+
+10
+
+Figure 1: Contours of the impact of latent position for a given respondent. The numbers
+represent the multiplicative effect (compared to the random mixing model) of having an
+angular distance θ from a population with concentration ηk . The figure indicates that the
+likelihood depends on both the latent position of the respondent and the concentration
+of the subpopulation, a measure similar to Mahalanobis distance.
+number known is weighted by the concentration of a subpopulation. The distance to
+the center of the subpopulation does matter (akin to to the distance between individuals in the complete-network case), but the impact of this distance is modulated by the
+concentration of the subpopulation. For diffuse subpopulations (left side of the figure),
+the angular distance between the respondent and the center of the subpopulation has
+a relatively linear impact on the expected number known, with a gradual increase as
+the respondent nears the center of the subpopulation. For highly concentrated groups,
+however, the impact is more extreme. Individuals who are close to the center of the
+subpopulation are expected to know many members while the expected number known
+drops precipitously as distance increases. This feature leads to a relationship between
+concentration of groups in the latent space and overdispersion.
+
+xi
+
+3.2
+
+Priors and posterior
+
+We give di and β k normal priors on the log scale. As described in the previous section
+zi has a uniform distribution across the hypersphere. Respondents in subpopulation k
+have latent subpopulations with priors z j∈Gk ∼ M(υk , ηk ). We assume υk has a uniform
+prior across the sphere.We propose Gamma priors for η and ηk with conjugate priors on
+the hyperparameters.
+!
+If λik = di β k
+
+C p +1 ( η ) C p +1 ( η k )
+q
+η 2 +ηk2 +2ηηk cos(θ(z
+
+C p +1 (0 ) C p +1 (
+
+, then the posterior is given by:
+
+))
+i ,υk )
+
+d, β, z, υ, η, ηk , γη , ψη , µηk , ση2k , µd , σd2 , µ β , σβ2 |y
+
+∝
+
+K
+
+N
+
+∏ ∏ exp(−λik )λikik
+y
+
+k =1 i =1
+N
+
+× ∏ Normal(log(di )|µd , σd2 )
+i =1
+K
+
+× ∏ Normal(log( β k )|µ β , σβ2 )
+k =1
+K
+
+× ∏ Normal(log(ηk )|µηk ,ση2 )
+k =1
+
+k
+
+×Gamma(η |γη , ψη )
+
+3.3
+
+Identifiability
+
+In this section we describe restrictions on the latent space and model parameters necessary to ensure identifiability. First, since di and β k enter the likelihood only through
+their product neither is identifiable without additional restrictions. We address this by
+constraining the total size of a subset of β k values based on the known sizes of some
+populations. A similar strategy was effective in Zheng et al. (2006).
+A second identifiability issue arises because the likelihood depends on the latent positions only through their inner product. A general approach to making such latent
+positions identifiable is to estimate an initial configuration of latent positions then rotate the proposals at each MCMC iteration to the nearest match to this configuration
+(see Hoff (2005), for example). In the latent space model for ARD we fix the centers of
+the distribution of certain subpopulations. Once the centers of enough subpopulations
+are fixed, the positions of the respondents can be identifiably estimated based on the set
+of distances to all fixed subpopulations centers. The remaining subpopulation centers
+are then identifiable based on their total set of distances to all of the respondents. The
+specific position where the groups are fixed will impact the resulting visual representation of the latent space. It does not, however, impact the relationships between positions
+of respondents and groups.
+Using a two dimensional latent space (corresponding to a three dimensional sphere),
+identifiability in the latent space is accomplished by fixing the centers of three groups.
+xii
+
+Fixing three groups corresponds to fixing the axes corresponding to revolutions around
+axes of roll, pitch and yaw. We fix populations corresponding to first names. Fixing first
+names is appealing since certain demographic characteristics of individuals with a given
+first name are available from the U.S. Social Security Administration. The characteristics
+of other groups with unknown characteristics can then be inferred from their positions
+relative to the populations of individuals with a particular first name. In the following
+section, for example, we present results which position the group of individuals who
+have AIDS close to the fixed center of the group named Christopher. Christopher is a
+name which is most common among younger males. AIDS is also known to be most
+commonly found among young males. In this way, we indirectly use prior information about members of groups with known demographic characteristics to translate the
+geometry of the latent space into a graphical representation of social structure in the
+network.
+Finally, the coefficient, η which modulates the impact of the latent features is identifiable because of the stipulation that the points lie on the sphere. This coefficient is
+initially in the Hoff et al. (2002) paper but drops out in the Handcock et al. (2007) paper
+because it creates an identifiability issue. Hoff et al. (2002) artificially normalize the inner
+products, while this feature is present naturally as a byproduct of the geometry of the
+sphere.
+
+3.4
+
+MCMC algorithm
+
+As previously mentioned, the members of the latent subpopulations are never observed
+directly. Instead, we make inferences about the expected latent distance from a respondent and a member of Gk using the expression obtained from the integration in the previous section. Though this expression involves the modified Bessel functions, it remains
+easily evaluated and can therefore be used for evaluating proposals in Metropolis steps.
+This approach is a significant computational savings over a Monte-Carlo approximation
+to the necessary expectation.
+Assume the subpopulations, k = 1, ..., K, is such that K ≥ p. We propose fitting the
+model as follows:
+(s)
+
+1. For a subset of the subpopulations, k(s) = 1, ..., K (s) , fix υk for identifiability. Number of subpopulations to fix depends on the dimension of the latent space. We will
+use these fixed positions to rotate the latent space back to a common orientation
+at each iteration using a Procrustes transformation (see Hoff et al. (2002) for the
+details).
+2. Repeat to convergence for m = 1, ..., M
+(a) For each i, update zi using a random walk Metropolis step with proposal zi∗ ∼
+( m −1)
+
+M(zi
+, jumping scale). One option is to simulate from these distributions
+at the same time using Hoff (2009). This method would loop over each k
+anyway, so we use the algorithm proposed by Wood (1994).
+xiii
+
+(b) Update υk using a Metropolis step with proposal
+( m −1)
+υ∗k ∼ M(υi
+, scale of jumping distribution).
+(c) Update di using a Metropolis step with
+log(di∗ ) ∼ N(log(di )(v−1) , (scale of jumping distribution)).
+(d) Update β using a Metropolis step with
+log( β∗ ) ∼ N(log( β)(v−1) , (scale of jumping distribution)).
+(e) Update ηk using a Metropolis step with
+( v −1)
+ηk∗ ∼ N(ηk
+, (scale of jumping distribution)).
+(f) Update η using a Metropolis step with
+η ∗ ∼ N(η (v−1) , (scale of jumping distribution)).
+(g) Update µ β ∼ N(µˆ β , σβ2 ) where µˆ β = ∑kK=1 β k /K.
+(h) Update σβ2 ∼ Inv-χ2 (K − 1, σˆβ2 ) where σˆβ2 =
+
+1
+K −1
+
+∑kK=1 ( β k − µ β )2 .
+
+(i) Update µηk ∼ N(µˆ ηk , ση2k ) where µˆ ηk = ∑kK=1 ηk /K.
+(j) Update ση2k ∼ Inv-χ2 (K − 1, σˆη2k ) where σˆη2k =
+
+1
+K −1
+
+∑kK=1 (ηk − µηk )2 .
+
+(k) Update µd ∼ N(µˆ d , σd2 ) where µˆ d = ∑in=1 di /n.
+n
+1
+2
+(l) Update σd2 ∼ Inv-χ2 (n − 1, σˆd2 ) where σˆd2 = n−
+1 ∑ i =1 ( d i − µ d ) .
+
+4
+
+Results
+
+We apply this method to data from a telephone survey conducted by McCarty et al.
+(2001) with 1375 respondents. We run three chains, each with 10,00 iterations of our
+sampler. We discard the first half of each chain. We find that the remaining chains
+mix well and acceptable convergence (max Rˆ ≤ 1.1, see Gelman et al. (2003)). We use
+a three-dimensional latent space, resulting in a sphere. We address the sensitivity of
+our method to the choice of latent dimension in Section 4.1. Fixing the center of the
+latent positions for the groups of individuals named “Robert,” “Christina,” “Christopher,” and “Jacqueline” addresses identifiability. As noted in Section 3.3 we need to fix
+three positions to ensure identifiability for this choice of dimension. We choose to fix
+one additional population, however, to preserve balance between genders and encourage additional interpretability. With multiple groups, this decision could make model
+fitting difficult, though this was not an issue in practice with our implementation. These
+names have known demographic profiles from the U.S. Social Security Administration.
+The population of Roberts is comprised mostly of older males, while the majority of
+Christinas are younger females. Figure 2 displays the density of the modal latent positions for the young, female respondents, with darker color indicating more density. The
+positions of the younger female respondents are closer to the fixed position of individuals named Christina than to Robert. In terms of the social network, these positions reveal
+homophily based on age and gender, with younger female respondents having a higher
+xiv
+
+Young females
+
+π
+
+Robert
+●
+
+3π 4
+π 2
+Christina
+
+π 4
+
+●
+
+0
+0
+
+π 2
+
+π
+
+3π 2
+
+2π
+
+Figure 2: Projection of smooth density of the mode of young female positions onto the plane.
+Darker color indicates more intensity. Overall, the positions of the younger female respondents
+are closer to the fixed position of individuals named Christina than to Robert. The name Christina
+is popular among younger women, while Roberts are mostly older men.
+
+xv
+
+Figure 3: Two views of a spherical latent space displaying latent positions of six subpopulations: homeless (red), AIDS (black), in prison (green), adopted children (purple),
+Jaycees (blue), and receiving kidney dialysis (aqua). Individuals in prison, homeless and
+with HIV have similar latent positions, though the distribution for homeless individuals
+is much more concentrated. Dots represent the posterior mode of latent group position
+and lines represent concentration.
+expected number of connections with a population made up of younger women than of
+older men.
+Figures 3 and 4 display a latent space with six subpopulations. The contours plotted
+are contours of the posterior predictive distributions of the latent subpopulation members (p(z j∈Gk |·) averaging over the center and concentration of the subpopulation). The
+visual representation provided by the latent space model uses the geometry of the latent space to represent the dependence structure of the network. The subpopulation of
+individuals who are homeless has a position similar to those who are incarcerated and
+those with AIDS but is more concentrated. From this we conclude that the network connectivity of individuals in these three subpopulations are more similar to one-another
+than they are to individuals who adopt children, but that the subpopulation of homeless
+individuals is more homogenous.
+The concentration of the subpopulations demonstrates the flexibility of the latent
+space model in representing various network features. The population of individuals
+who are Jaycees (a civic service organization for young professionals) and the population of homeless individuals have similar concentrations. This indicates that, for both
+groups, the propensity of knowing one member of the group is very low. Likewise,
+they have a comparable overall level of variation in excess of a random mixing model
+(overdispersion). The latent space model captures this feature, yet also reflects the diverse nature of individuals who are highly connected with these two groups by placing
+them on opposite sides of the sphere. Thus, an individual whose latent position is close
+to the center of the Jaycees will, in expectation, know many members of the Jaycees but
+is expected to know very few individuals who are homeless.
+Comparing with the Zheng et al. (2006) model, the importance of the additional flexibility of the latent space representation becomes clear. Recall that deviation from ranxvi
+
+0.2
+
+●
+
+1
+
+●
+
+●
+●
+●
+●●
+●●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●●
+●
+●
+●●
+●
+●
+●●
+●
+●
+●
+●
+●●
+●
+●
+●
+
+●
+●●
+●
+●●
+●
+●
+●
+●●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+
+●
+●●
+
+●
+●●
+●
+
+●●
+●
+●●
+●
+●
+●
+●●
+●●
+●
+●
+●●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●●
+●
+●
+●
+●
+●
+●
+●
+●
+●●
+●
+● ●●●
+● ●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●●
+●●
+●
+●
+●
+
+●
+●
+●
+
+●●●
+● ●
+●
+2
+●●●
+●
+● ●●
+● ●●
+●
+●
+●
+●
+●
+●●
+●
+●
+●●
+●
+●
+●
+●
+●
+●●
+●
+●●
+●
+●
+● ●●
+●
+●●● ●
+●
+●
+●●
+●
+1 ●●● ●●●
+●●
+● ●●●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+● ●
+● ●●●
+●
+●
+●
+●
+●●
+● ●
+●
+●
+●
+●
+●
+●
+● ●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●●
+● ●●
+●
+●● ●
+●
+● ●
+●
+●
+●
+●
+●
+●
+● ● ● ●●
+●●● ●
+●
+●
+●●
+●
+●
+●
+●
+●
+●
+●
+●
+●●
+●● ●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+● ●
+●●
+●●
+●
+●
+●
+●
+●●●
+●
+●●
+●
+
+1.2
+
+●
+●
+
+●
+
+●
+
+●● ●●0.4
+●
+●
+●●
+●
+● ●● ●●
+● ●
+●
+●●
+●●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●● ●● ●
+●
+●● ●
+●
+● ●●
+●
+●
+●● ●●
+●
+●●
+●
+●
+● ●●
+●● ●●
+●● 1 ●●
+●
+●
+●●
+●
+● ●
+●
+●
+●
+●
+●●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●●● ●
+●
+● ●
+●
+●
+●
+●
+●● ●
+●
+● ●●
+●
+●● ●
+●
+●
+●● ●
+●
+●
+●
+0.5
+●
+●
+
+●
+●
+
+adopt
+
+4●
+
+● ●
+●
+●
+●●
+●
+●
+●●● ●
+●●
+●
+●
+●●
+●
+● ●●
+●
+●
+●
+●
+●
+● ●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●●
+●
+● ●
+●
+●
+●
+●●
+●
+●● ●
+●●
+
+●
+●
+●
+● ●
+●●●
+●● ●●
+●
+●●
+●
+●
+
+●
+
+●
+
+Christina
+
+●
+●
+●
+
+●
+●
+●●
+
+●
+●
+
+●
+●
+●
+●● ●
+●
+●
+●
+●
+1 ● ●● ●
+●●
+●
+●
+●
+●
+●● ●
+● ●●
+●
+●
+● ●
+●
+●
+●
+●
+●● ●
+●
+●
+● ●●● ●●
+●
+●
+●
+●
+●
+●
+● ●
+●
+●
+●
+●
+●
+●
+● ●
+●
+●
+●
+●
+●
+● ●●
+● ●●
+●
+●
+●
+●
+●
+● ●
+●
+●
+● ●
+●
+●
+●
+●
+●
+●
+●
+●
+●● ●
+●
+●● ●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+● ●●
+●
+●
+●
+●●
+● ●●● ●
+●● ●
+●
+●●
+●
+●
+●
+●
+●
+●●
+●
+●
+●
+●
+● ●●
+●
+●● ●
+●● ●
+● ●●● ●●
+●
+●
+●
+● ●●
+●
+●●
+●
+●● ●●
+●
+●
+●
+
+homeless
+
+dialysis
+
+1.5
+
+π 4
+
+●
+●●
+●●
+●
+●
+●
+
+●
+●●
+
+●
+●
+●
+●
+●
+●●
+●
+●
+●● ●
+●●
+●
+● ●●
+●
+●● ●
+●
+●
+●
+●
+●
+●
+● ●●
+●
+●
+●
+●● ●●
+●
+●
+●
+●
+●
+● ●
+●
+●
+●●
+●
+●●
+●
+●
+
+0.8
+
+2
+2●
+●
+
+2
+
+●
+
+2
+
+π 2
+
+●
+
+●
+
+4
+
+●
+●
+●●
+●●
+●
+●
+● ●
+●
+●
+● ●
+●
+●●
+●
+●
+●
+●
+●
+●
+●
+●
+● ●●
+●
+●
+●
+●
+●
+●
+●
+●●
+●
+●●●
+●
+● ●●
+●
+●
+●
+●
+●
+●
+●●
+●
+● ●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●● ●
+●
+●
+●
+●
+●
+●●
+● ●
+●
+●
+●
+●
+●
+●●
+●
+● ●
+●
+● ●
+●
+●●
+●
+●
+●●
+●
+●
+
+Jaycee
+
+3
+
+●
+●
+●●
+●
+
+●
+●
+
+●
+
+●
+
+3
+
+●
+
+●
+●
+●
+●●
+●
+●
+●
+●
+●●
+●
+
+●
+●
+
+4
+
+3π 4
+
+●
+
+●
+
+●
+●
+
+3
+
+1.6
+
+1.4
+
+●
+
+prison
+
+1
+
+0.6
+
+Robert
+
+4
+
+π
+
+AIDS
+
+●
+
+●
+●
+●
+●
+●
+●
+●●●
+●
+●
+●
+●
+●●
+●
+●
+●●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●●
+●
+●●
+●●
+● ●
+●
+● ●●
+● ●
+●
+●
+●
+●
+●
+●●
+●
+● ●
+●
+●
+●●
+●
+●
+●● ●●●
+●
+●
+●●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+● ●
+●●●
+●
+●
+
+●
+●●
+●
+●●
+●
+
+●
+
+●
+●
+
+●
+
+0
+0
+
+π 2
+
+π
+
+3π 2
+
+2π
+
+Figure 4: Latent positions of five subpopulations: homeless, AIDS, in prison, adopted
+children, and receiving kidney dialysis. This figure displays all five groups. Blue dots
+are the posterior mode of male respondents’ latent positions and green dots are females.
+This figure contains the same information as Figure 3 but has been projected onto the
+plane. The contours plotted are contours of the posterior predictive distributions of the
+latent subpopulation members (p(z j∈Gk |·) averaging over the center and concentration
+on of the subpopulation).
+dom mixing in the Zheng et al. (2006) model is measured using a scalar overdispersion
+parameter for each population group. This parameter gives a one-dimensional interpretation of the quantity of excess variation. It does not represent, however, the way that
+this excess structure influences communication patterns in the network. Taking Jaycees
+and homeless individuals again as an example, both Zheng et al. (2006) and the latent
+space model estimate very high overdispersion. In Zheng et al. (2006), the overdispersion parameter is nearly identical for the two groups (see Figure 4 in Zheng et al. (2006)).
+The latent space model, however, produces similar estimated concentrations in the latent distribution but, as described above, positions the two groups on opposite sides of
+the latent space. This distinction can also be captured numerically as the latent space
+xvii
+
+model corresponds to approximately a thirty percent reduction in root mean-squared
+error compared to the Zheng et al. (2006) model.
+
+4.1
+
+Selecting the dimension of the latent space
+
+As with other latent space models, the model we derive here require the dimension of
+the latent space to be fixed in advance. In the analysis above, we present a model with a
+three-dimensional latent space. If the goal of analysis is understanding social structure
+through a parsimonious representation of high-dimensional network dependence, we
+suggest restricting the latent space to dimensions where direct visualization is possible.
+In this section, we explore additional approaches to selecting the dimension of the latent space that may be useful in other contexts. Our strategy is to fit multiple models
+with different latent dimensions, comparing the performance based on two metrics we
+describe below. As we increased the dimensionality of the latent space, our strategy for
+preserving identifiability works less well without fixing additional population centers,
+though this issue is less salient when visualization is not possible.
+A Bayesian approach to model selection, if one wishes to choose only one model, involves selecting the model with highest posterior model probability. Computing the posterior model probability involves the integral across all parameters in the model, which is
+challenging in latent space models (Gormley and Murphy, 2010; Handcock et al., 2007).
+We use AICM (Akaikes information criterion Monte (Carlo)), which is a simulationbased approximation to AIC (Akaikes information criterion) proposed by Raftery et al.
+(2007). AICM is easily computed from a posterior sample as
+AICM = 2(l¯ − s¯)
+where l¯ is the mean log likelihood of a posterior sample and s¯ is variance of the posterior
+sample. AICM has previously been successfully applied to select the dimensionality of
+a latent space (Gormley and Murphy, 2007; Raftery et al., 2007) and used in the context
+of latent space models for networks by Gormley and Murphy (2010). Table 1 presents
+the AICM estimates for various latent dimensions of our proposed model. Models with
+lower latent dimension tended to display better performance. The model with four latent
+dimensions does slightly better than the model with three latent dimensions, though
+this difference is likely outweighed in almost all contexts by the difference in visual
+interpretability of the models.
+The goal may also be prediction of the strength of a relationship between an individual and a certain group of alters. This may be the goal, for example, in a link tracing
+sampling design such as Respondent Driven Sampling (see for example Heckathorn
+(1997)). Respondent Driven Sampling (RDS) begins with a convenience sample of individuals that are members of a population that is difficult to reach using standard survey
+techniques. Participants then recruit others through connections in the social network
+(see Goel and Salganik (2010) for a discussion of the properties of RDS sampling), resulting in a network-dependent sampling process. A common concern in such studies is
+xviii
+
+that the sampling process will reach a “local mode” of homogenous, highly connected
+individuals. Since ARD provide information about broad connectivity patterns in the
+network, predictions about the associations between individuals and a given group of
+alters could be used to detect the position of a respondent in the network and, thus,
+altert researchers of a possible local mode.
+Dim.
+3
+4
+5
+10
+15
+25
+AICM -33719 -33540 -34014 -38111 -37569 -39836
+Table 1: Comparing the model with hyperspheres of multiple latent dimensions. Models
+with lower latent dimensions produce superior measures for the McCarty et al. (2001)
+data. The model with four latent dimensions is slightly preferred over the model with
+three dimensions, though it is much more difficult to visualize.
+We evaluate the predictive performance of our model using out-of-sample prediction on the McCarty et al. (2001) data. Specifically, for each simulation experiment, we
+randomly select twenty percent of the observations in the McCarty et al. (2001) dataset
+as our test set. Since the populations corresponding to names are used to orient the
+latent geometry, we do not hold out observations from these categories. We fit the algorithm described in the previous section and compute posterior predictive estimates of
+the missing values. We then computed the mean absolute difference between the estimated posterior medians and the held-out values. We also used the posterior mode and
+mean as estimates for the predicted values and found substantively similar results. The
+results for predictive performance are displayed in Figure 5. Fewer latent dimensions,
+in general, produced a lower MAE with predictive performance declining as the dimension of the latent hypersphere increased above around five. Since each additional latent
+dimension requires estimating an additional parameter for each individual and two for
+each subpopulation, the decrease in performance as the dimensionality increases is likely
+attributable to overfitting. The Zheng et al. boxplot in Figure 5 presents the results of the
+same simulation experiment using the Zheng et al. (2006) model to make predictions. As
+discussed in section 3, the latent space framework uses the latent geometry to more flexibly represent network structure in excess of random mixing. We describe how this additional flexibility provides improved interpretation and model fit in Section 4. Figure 5
+indicates that the additional structure captured by the latent space framework also leads
+to improved predictive performance, despite the additional parameters required by the
+latent space model. A two-sample t-test for the difference in means between the Zheng
+et al. (2006) and three-dimensional hypersphere results is significant at α < .001.
+
+5
+
+Discussion and conclusion
+
+This paper presents a latent space interpretation of overdispersion using “How many
+X’s do you know?” data. We begin with a latent space model for the full network, then
+aggregate across various subpopulations of interest. We show that, through the choice
+xix
+
+0.7
+
+0.8
+
+0.9
+
+1.0
+
+1.1
+
+1.2
+
+Prediction MAE
+
+●
+
+Zheng et al.
+
+3
+
+4
+
+5
+
+10
+
+15
+
+25
+
+Dimension of latent hypersphere
+
+Figure 5: Comparison of the performance for out-of-sample prediction. Each boxplot
+describes the MAE across 20 replicates of a simulation experiment using a randomly
+selected twenty percent of non-name subpopulation responses as hold-out data. Performance is best for three and four dimensional hyperspheres and becomes worse as the
+dimensionality increases, likely due to overfitting. The Zheng et al. boxplot displays
+results using the Zheng et al. (2006) model. As discussed in Section 3, the latent space
+model provides a more detailed picture of network structure, which results in improved
+predictive performance.
+of model and latent geometry, we can produce an interpretable, yet computationally
+efficient means of representing latent network structure, which we demonstrate is still
+present even in survey data. Sampling from the von-Mises Fisher distribution becomes
+challenging in higher dimensions, though we believe this issue will have minimal impact
+in practice since latent spaces with higher dimensions are difficult to visualize.
+In conceptualizing the mapping from the full network to “How many X’s do you
+know?” data we make assumptions about respondents’ abilities to recall their network.
+First, we assume that respondents recall accurately from their complete network. This
+assumption is typically not valid for moderate to large subpopulations, though some statistical models have been proposed for similar situations (McCormick and Zheng, 2007).
+We also assume that the respondent has accurate information about the group membership of each of their alters. This issue, known in sociology literature as transmission
+errors, is more common with some subpopulations than others (acquaintances of a diabetic may not know the person’s status, for example). In some cases it is possible to
+select subpopulation to minimize transmission errors, yet this remains an open problem
+in cases where subpopulations of interest are prone to transmission errors.
+The von-Mises Fisher distribution is computationally appealing, though simplistic in
+xx
+
+imposing symmetry and unimodality. Mixtures of von-Mises Fisher distributions would
+provide a more flexible representation of latent features and could provide additional
+insights into relationship between populations. Model-based clustering across respondents could also provide information about which individuals are most likely to interact
+with certain groups. More importantly, it would also produce interaction profiles which
+reveal general patterns in link formation. A statistics literature exists for model-based
+clustering in spherical data (see Doret-Bernadet and Wicker (2007), for example).
+
+References
+Barber, J. J. and Gelfand, A. E. (2007). Hierarchical spatial modeling for estimation of
+population size. Environmental and Ecological Statistics, 14(3):193–205.
+DiPrete, T. A., Gelman, A., McCormick, T., Teitler, J., and Zheng, T. (2011). Segregation
+in Social Networks Based on Acquaintanceship and Trust. The American Journal of
+Sociology, 116:1234–1283.
+Doret-Bernadet, J.-l. and Wicker, N. (2007). Model-based clustering on the unit sphere
+with an illustration using gene expression profiles. Biostatistics, 9:66–80.
+Gelman, A., Carlin, J. B., Stern, H. S., and Rubin, D. B. (2003). Bayesian Data Analysis,
+Second Edition. Chapman & Hall/CRC.
+Goel, S. and Salganik, M. J. (2010). Assessing respondent-driven sampling. Proceedings
+of the National Academy of Sciences of the United States of America, 107(15):6743–6747.
+Gormley, C. and Murphy, T. (2010). A mixture of experts latent position cluster model
+for social network data. Statistical Methodology, 7:385–405.
+Gormley, I. and Murphy, T. (2007). Discussion of Raftery et al. ‘estimating the integrated
+likelihood via posterior simulation using the harmonic mean identity’ . In Bernardo,
+J. M., Bayarri, M. J., Berger, J. O., Dawid, A. P., Heckerman, D., Smith, A. F. M., and
+West, M., editors, Bayesian Statistics, pages 38–40. Oxford University Press.
+Handcock, M., Raftery, A. E., and Tantrum, J. M. (2007). Model-based clustering for
+social networks. Journal of the Royal Statistical Society Series A, 170:301–354.
+Heckathorn, D. D. (1997). Respondent-driven sampling: A new approach to the study
+of hidden populations. Social Problems, 44(2):174–199.
+Hoff, P. (2009). Simulation of the Matrix Bingham–von Mises–Fisher distribution, with
+applications to multivariate and relational data. Journal of Computational and Graphical
+Statistics, 18:438–456.
+Hoff, P. D. (2005). Bilinear mixed-effects models for dyadic data. Journal of the American
+Statistical Association, 100:286–295.
+xxi
+
+Hoff, P. D., Raftery, A. E., and Handcock, M. S. (2002). Latent space approaches to social
+network analysis. Journal of the American Statistical Association, 97:1090–1098.
+Killworth, P. D., Johnsen, E. C., Bernard, H. R., Shelley, G. A., and McCarty, C. (1990).
+Estimating the size of personal networks. Social Networks, 12:289–312.
+McCarty, C., Killworth, P. D., Bernard, H. R., Johnsen, E. C., and Shelley, G. A. (2001).
+Comparing two methods for estimating network size. Human Organization, 60:28–39.
+McCormick, T. H., Salganik, M. J., and Zheng, T. (2010). How many people do you
+know?: Efficiently estimating personal network size. Journal of the American Statistical
+Association, 105:59–70.
+McCormick, T. H. and Zheng, T. (2007). Adjusting for recall bias in “How many X’s do
+you know?” surveys. In Proceedings of the Joint Statistical Meetings.
+McCormick, T. H. and Zheng, T. (2012). Latent demographic profile estimation in hardto-reach groups. Annals of Applied Statistics, (To appear).
+McPherson, M., Smith-Lovin, L., and Cook, J. M. (2001). Birds of a feather: homophily
+in social networks. Annual Review of Sociology, 27:415–444.
+Raftery, A. E., Newton, M. A., Satagopan, J. M., and Krivitsky, P. N. (2007). Estimating
+the Integrated Likelihood via Posterior Simulation Using the Harmonic Mean Identity.
+In Bernardo, J. M., Bayarri, M. J., Berger, J. O., Dawid, A. P., Heckerman, D., Smith, A.,
+and West, M., editors, Bayesian Statistics, pages 1–45. Oxford University Press.
+Wood, A. T. A. (1994). Simulation of the von mises fisher distribution. Communications
+in statistics-simulation and computation, 23:157–64.
+Zheng, T., Salganik, M. J., and Gelman, A. (2006). How many people do you know in
+prison?: Using overdispersion in count data to estimate social structure. Journal of the
+American Statistical Association, 101:409–423.
+
+xxii
+
+

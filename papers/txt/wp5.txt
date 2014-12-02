@@ -1,0 +1,1124 @@
+Location, Location, Location:
+An MCMC Approach to Modeling Spatial Context
+with Categorical Variables in the Study and
+Prediction of War1
+Michael D. Ward2
+
+Kristian Skrede Gleditsch3
+
+Working Paper no. 5
+Center for Statistics and the Social Sciences
+University of Washington
+15th March 2000
+
+1 Manuscript
+
+prepared for the conference on New Methodologies for the Social Sciences:
+The Development and Application of Spatial Analysis for Political Methodology held at
+the University of Colorado, Boulder, Colorado, USA, March 10-12, 2000. It was shamelessly recycled for the 2000 Meetings of the International Studies Association held in Los
+Angeles, March 14-18. We are grateful for comments or assistance from Andrew Enterline,
+Henry Teune, Elizabeth Hill, Fred Hu®er, Stuart Menzer, Ulrich Woitek, Patrick Heagerty,
+Tilmann Gneiting, Adrian Raftery, and Julian Besag. Data and programs for the analyses
+in this manuscript can be found at http://faculty.washington.edu/mdw/replicate
+2 Department of Political Science and Center for Statistics in the Social Sciences, University of Washington, Seattle, Washington, USA, 98195, email: mdw@u.washington.edu
+3 Faculty of Social Sciences, University of Glasgow, Glasgow G12 8RT, UK, email:
+K.Gleditsch@socsci.gla.ac.uk
+
+Abstract
+Prior work has shown the strong presence of regional and spatial context in linkages
+between regime characteristics and involvement in civil and international con°ict,
+but no adequate statistical model has explicitly captured these forces. Models that
+adequately re°ect the interdependence of actors and actions in world politics are faced
+with di±cult problems of estimation since the classical likelihood becomes intractable
+in the presence of the dependencies among observations. Most current solutions to
+this problem are based on approaches that were developed decades ago during a period
+of expensive computing. However, these approaches are no longer neither necessary
+nor appropriate. Using data from 1988, we use an autologistic formulation, estimated
+by Monte Carlo Markov Chain approximation, to extend our work exploring the link
+between authority structures and peace, one of the most salient present research topics
+in international relations. Our estimated model allows us to predict about half of the
+violent domestic and international con°icts that emerged in the subsequent decade.
+
+1 TRACKING THE ANALYSIS OF CONFLICT
+
+1
+
+2
+
+Tracking the analysis of con°ict
+
+The study of geography as a component of world politics has a checkered history.
+The term geopolitics was introduced by a Swedish scholar and politician, Rudolf
+Kjellen (1916) who applied Darwinian notions to the putative organic nature of states
+imbued with an innate propensity for growth. Kjellen's theories gained considerable
+in°uence and were instrumental in popularizing the term lebensraum which Friedrich
+Ratzel (1879) introduced into the political dialogue in Europe in 1899 (Glassner 1993).
+Kjellen's ideas were especially salient with a retired German general and university
+professor, the director of the Munich Institute of Geopolitics and editor of Zeitschrift
+fÄ
+ur Geopolitik, Karl Haushofer. One of Haushofer's most impressionable students was
+Rudolf Hess. Hess, Hitler, and Haushofer had many long discussions, and the rest,
+as they say, is history; Hitler's expansionist foreign policy was rationalized, if not
+based, on the geopolitics as introduced by Ratzel, Kjellen, and especially Haushofer.
+About this same time Sir Halford John Mackinder proposed a similar notion: the
+heartland concept.1 Mackinder's Heartland Theory, suggests that there was a pivotal
+area \in the closed heart-land of Euro-Asia" which was most likely to become the seat
+of world power, because of its inaccessibility. Nicholas Spykman, a political scientist
+who founded the Institute of International Studies at Yale, was an in°uential realist
+who emphasized the control of Eurasian coastal regions (Rimland).
+Despite its prominent place in the development of the ¯eld of world politics, the
+legacy of World War II and the end of the colonial area left geopolitics rather out
+of favor in policy circles. Though the geographical basis of military strategy has
+received some interest in the ¯eld of strategic studies, geopolitics in the classical sense
+has been con¯ned to political geographers.2 However, the idea that geography plays
+and important role in international politics need not be limited by the its political
+misuses.3 In fact, the analysis of the role of geography has gradually re-emerged, and
+is working its way back into the scienti¯c study of world politics and foreign policy.
+In this article we explore the properties of deadly con°icts from a spatial perspective to gain insight on how they have evolved grosso modo after the birth of modern
+Europe in 1876, using techniques developed to study similar phenomenon in other
+1
+mackinder's classic paper (1904) and his later summary (1919) have remained a more popular
+and politically correct summary of the notion that a territorial imperative is \stabilizing":
+
+Who rules East Europe commands the Heartland;
+Who rules the heartland commands the World Island;
+Who rules the World Island commands the World.
+The National Anthem of England, Land of Hope and Glory (better known by its tune, Elgar's Pomp
+and Circumstance March No. 1.), for example, extols the virtue of expansion in the following way:
+\Wider and still wider, shall thy bounds be set".
+2
+¶ Tuathail (1996); Glassner (1993); and Taylor and Flint (1999).
+For a broad discussion see O
+3
+If you think these notions are ignored in contemporary Eurasian politics visit the web site of
+Alexander Dugin at http://www.arctogaia.com.
+
+2 THE STATISTICAL ANALYSIS OF CONFLICT
+
+3
+
+arenas. Despite widespread recognition of the importance of geography, only recently
+have scholars begun to explore systematically international con°ict using a perspective that encourages understanding the context of con°ict from a spatial perspective.
+Most of this work has not bene¯tted from the breakthroughs that have occurred in
+the past three decades in the statistical analysis of spatial patterns. As yet, no published studies incorporate the most recent modeling and statistical frameworks for
+modeling spatial processes.
+
+2
+
+The statistical analysis of con°ict
+
+Although the causes of war and peace have long generated interest among social
+scientists, historians, and philosophers, the statistical analysis of war and peace is a
+relatively novel endeavor. In this section we review the development of the statistical
+analysis of con°ict and its relations to the spatial analysis of con°ict
+
+2.1
+
+Pioneers
+
+Somewhat surprisingly, the ¯rst scholars to undertake systematic attempts at collecting empirical data on con°ict were all from ¯elds other than international relations.
+Initial data development e®orts were carried out by an historian, Quincy Wright
+(1942), a sociologist, Pitrim Sorokin (1957), as well Lewis Fry Richardson (1960b), a
+physicist turned meteorologist who later developed an interest in psychology.
+Richardson went considerably further than the the other pioneers in terms of
+statistical analysis. Based on the data he compiled on deadly quarrels, de¯ned as
+events involving more than 35 casualties, Richardson analyzed whether the risk of
+con°ict seemed related to factors such as shared language, religion, relative wealth,
+poverty, and distance, and considered whether the distribution of outbreaks of con°ict
+displayed evidence of contagion over time.
+Richardson also took an interest in the spatial aspects of con°ict: He noted a
+strong relationship between a state's propensity for con°ict and its number of borders.
+He later expanded on this in an insightful theoretical essay on spatial topology and
+how the shape of territorial entities would in°uence the opportunities for con°ict
+(Richardson 1992).
+Richardson's work, though written in the 1930s and 1940s, was not widely available
+until the 1960s, and remained virtually unnoted by scholars of con°ict at the time.
+In the 1960s, mathematical psychologists such as Rashevsky (1949) and Rapoport
+(1963) revived Richardson's (1960a) model of action-reaction dynamics in armament
+processes, and this lead to somewhat of a resurgence in interest and appreciation
+of Richardson's work among statistically oriented scholars in international relations.
+However, as pointed out by Hess (1995) and Nicholson (1999), Richardson remains
+largely unknown among the mainstream of international relations. Political geographers and scholars of geopolitics appear to have ignored Richardson altogether.
+
+2 THE STATISTICAL ANALYSIS OF CONFLICT
+
+2.2
+
+4
+
+Settlers
+
+The second wave of interest in statistical analysis of con°ict in the 1960s followed in
+part ideas and suggestions found in the work of the pioneers. The behavioral revolution in political science led to a more prominent position for systematic empirical
+research and statistical analysis in international relations
+Most of the contemporary work on con°ict has been in°uenced by the Correlates
+of War project (commonly know as COW), founded at the University of Michigan by
+J. David Singer in the 1960s. (Singer 1979; Singer 1980). The COW project started
+collecting a comprehensive data set on armed con°ict (Singer and Small 1972; Small
+and Singer 1982), classi¯ed as either interstate con°ict between nation states, civil
+wars within states and extra-systemic imperial or colonial wars, where members of
+the international system engage in con°ict with actors that COW did not consider
+members of the international system.
+Despite the broad view of \deadly quarrels" that was taken initially, most of the
+subsequent empirical research has limited itself almost exclusively on interstate con°ict among nation states.4 Moreover, most of the extant research looks at con°ict,
+especially international con°ict, through a lens that is constructed somewhat arti¯cially. Most studies of con°ict view it from one of three perspectives. At a monadic
+level, either a country participates in a con°ict{or not{and has a duration, extent,
+and scope of involvement in that con°ict. At a dyadic level, pairs of countries are
+involved in a con°ict, with each node in the so-called dyad having certain con°ict
+speci¯c characteristics. At the systemic level, con°ict can be judged by whether war
+is taking place somewhere in system. Sometimes, the extent of con°ict is assessed by
+the share of countries or dyads that are deemed to be involved in con°ict. In this
+way, deadly quarrels have been ¯ltered, deconstructed, and reconstructed to match
+extant and (slowly) evolving databases and data-analysis strategies.
+The original research in the COW project was particularly interested in examining the relationships postulated in \classical international relations theory" linking
+con°ict to attributes of the international system itself - such as the number of poles
+or distribution of military capabilities. However, few, if any, robust generalities have
+between system attributes and con°ict have emerged.
+In recognition that war is a process or outcome of interaction among decisionmakers in states, one main thrust of current research is to focus on dyads or pairs of
+countries, and examine whether sets of covariates associated with theories of con°ict
+behavior seem to a®ect the observed likelihood of con°ict at the margin (Bremer and
+Cusack 1995; Most and Starr 1989).
+Even though the behavioral trust of the dyadic approach has been somewhat more
+successful strategy for empirical research, its track record is nonetheless rather mixed,
+with a large number of \non-¯ndings" or no strong systematic relationships. There
+seems, for example, to be no general, stable relationship between the distribution of
+4
+
+In Gleditsch and Ward (2000a) we address this issue more completely.
+
+3 TOWARD A NEW GEOPOLITICS OF DEADLY QUARRELS
+
+5
+
+power and the propensity of dyadic con°ict. Nor do arms race processes between
+states seem strongly associated with outbreaks of war. Many of the strongest empirical regularities obtain for historical or geographical covariates; Countries are more
+likely to ¯ght other proximate states, and con°icts are likely to spread geographically
+across borders or recur between parties over time.
+
+3
+
+Toward a new geopolitics of deadly quarrels
+
+We believe that a return to Richardson's notion of deadly quarrels and his focus on
+the spatial aspects of con°ict has much to o®er both in terms of improving theories
+of con°ict and furthering empirical research. In the following, we ¯rst discuss why
+we believe an exclusive focus on interstate con°ict as de¯ned by the COW project
+may be overly limiting. Based on our previous work on democratization and war, we
+then show how explicitly incorporating space can contribute to furthering empirical
+research on con°ict.
+
+3.1
+
+(Re-)de¯ning con°ict
+
+There is a strong tendency in international relations to assume that it is self-evident
+what would constitute violent con°ict and not. Most applied researchers tend to
+assume that the commonly used data probably by and large will accurately re°ect
+their theoretical concepts. To be sure, scholars generally acknowledge that there may
+be large amounts of measurement error. But such error would be merely random
+noise and essentially wash out in the aggregate, provided there are no systematic
+sources of bias and misleading attributions. The availability of the COW interstate
+war data has enabled researchers to proceed to analyze data on con°ict without too
+much concern about de¯ning the events of interest. In the following, we discuss some
+non-trivial problems indicating that measurement in the study of con°ict often seems
+out of touch with our general understanding of what the concept entails.
+The term con°ict denotes some form of incompatibility between parties. Most
+de¯nitions stress incompatibility which is explicitly perceived by the parties involved,
+rather than contrary goals based upon some form of objective function of the actors'
+interest or the structure of their relationship.5 Boulding (1963, 5), for example, de¯nes
+con°ict as \a situation of competition in which the parties{of which there are at least
+two {are aware of the incompatibility of potential future positions, and in which each
+party wishes to occupy a position that is incompatible with the wishes of the other."
+Although some degree of con°ict may be inherent in any social relation, researchers
+usually draw a fundamental distinction between violent and non-violent forms of
+con°ict, and focus on overt resort to violence and its absence. Violence is, of course,
+5
+
+Concepts such as structural violence (see H¿ivik and Galtung (1971) for an example) generated
+considerable interest in the 1960s and 1970s, but is not central in current research.
+
+3 TOWARD A NEW GEOPOLITICS OF DEADLY QUARRELS
+
+6
+
+by no means the only way of in°icting punitive measures, and ¯nal resort to violence
+is arguably the result of larger processes that may or may not lead to violence. It
+is thus desirable to distinguish between qualitatively di®erent forms of \no-war" in
+statistical analysis (Gleditsch 1999).
+Violent social con°ict must furthermore be distinguished from other interpersonal
+violence. The former encompasses hostile interactions between some reasonably wellde¯ned set of parties or actors that involve violence above some magnitude and which
+persist for some period of time. Domestic or urban violence may a®ect a larger number
+of persons directly than interstate con°ict, but would not be considered social con°ict
+as neither perpetrators nor victims constitute actors or parties in the sense of a uni¯ed
+group.6 To ensure tractability, most introduce some threshold of violence for something
+to constitute evidence of con°ict. For our purposes, the Correlates of War criterion
+of more than 1,000 battle deaths for something to constitute a \major war" provides
+a reasonable approach to delineating violent armed con°ict (Singer and Small 1982,
+1972).7
+Unlike much of other contemporary research, we ¯nd it limiting to restrict attention to con°ict between nation states only. Interstate con°ict is a relatively limited
+share of the armed con°ict involving nation states. According to Wallensteen and
+Sollenberg (1998), only six out of 103 armed con°icts in the period 1989-97 were
+strictly interstate con°icts (see also Holsti 1996: 22). Some argue that the relative
+share of \civil" versus \international" con°ict has increased over the 20th century.
+We have strong doubts about the accuracy of data on civil war (say, in Africa) at the
+beginning of the century. However, any increase in civil wars nonetheless seems to
+run counter to what one would expect from the proliferation of states over the period,
+which would suggest that civil wars might be converted to interstate wars.
+If our broader substantive interest as political scientists is understanding what
+conditions underlie the violence that aggravates and threatens the health and well
+being of millions of individuals, it is not obvious why we should restrict our focus
+exclusively to a small subset. Even at a time when many see the world approaching
+something akin to an end of international war, the extent of warfare in the international system and its consequences still seem substantial. The consequences of nuclear
+war might be catastrophic, yet, very simple weapons have claimed vastly more lives
+than than nuclear missiles. In our view, the most common justi¯cations for the exclusive focus on interstate con°ict in research on con°ict do not seem su±ciently
+substantiated.
+6
+
+Similarly, acts of \democide" or a government violence against its own population would generally not be considered social con°ict, because the victims do not constitute a group. Rummel (1995)
+estimates that democide have claimed ¯ve times more casualties than international wars in the 20th
+century.
+7
+We thus limit ourselves to the COW international and civil war data set rather than so-called
+militarized disputes which include events below this level of casualties. We ¯nd the so-called MID
+data problematic (Gleditsch 1999, ch. 4), moreover this data only includes disputes between states.
+
+3 TOWARD A NEW GEOPOLITICS OF DEADLY QUARRELS
+
+3.2
+
+7
+
+The internationalized nature of deadly quarrels
+
+That states constitute the principal actors is somewhat of an article of faith in the
+¯eld of international relations. Much of international relations theory holds relations
+between states to be fundamentally di®erent from relations within formally sovereign
+states given the condition of anarchy and absence of formal authority. Although the
+question is rarely addressed explicitly, researchers tend to be skeptical as to whether
+theories of international con°ict are applicable to con°ict within countries or transnational con°ict involving both state and non-state entities.
+A probably not fully intended side e®ect of the assumption of sovereignty is that
+most researchers simply assume that sovereignty is e®ective within nations, thereby
+making civil war qualitatively di®erent from interstate con°ict. Yet, sovereignty is
+obviously less than fully e®ective within many existing states, and similar problems of
+enforcement and contracting under anarchy could obtain within states as well. When
+relating \Warre" to anarchy, Hobbes had relations within states in mind, not the
+international system.
+Restricting analyzes to interstate wars is in practice more problematic than often
+assumed by practitioners in the sense that researchers seem unaware of what events
+become excluded. In the COW terminology, international wars encompass in addition
+to interstate wars also extra-systemic wars, in which system members engage in war
+with a political entity not considered to be a system member. Many armed con°icts in
+the postwar era, however, are classi¯ed as \civil wars" with outside intervention rather
+than interstate wars. Events regarded as internal or \civil" wars such as Afghanistan,
+Angola, Lebanon, and Bosnia-Herzegovina, nonetheless display obvious international
+dimensions.
+Whether something is judged to be an external or internal con°ict in retrospect is
+quite sensitive to legal and de¯nitional aspects in themselves unrelated to properties
+of the con°ict. The Vietnam war, for example, is regarded as an international war
+once the United States intervenes, having been previously classi¯ed as a civil war that
+grows out of an initial extra-systemic war involving France prior to independence.
+More generally, a con°ict becomes an international or civil war depending on how
+the con°ict and foreign intervention unfolds. As intervention often occurs in connection with attempts to replace the existing government, the outcome of interventions
+or which party is considered to be the legitimate government at the time of intervention can \determine" whether an intervention involves interstate war or constitutes
+international intervention in an ongoing civil con°ict. If the anticommunist Herat
+uprising in Afghanistan had succeeded in actually toppling the government, a Soviet intervention could conceivably have become an event marking the onset of an
+interstate war.8 Additional ambiguities arise as to whether con°icts revolving around
+the breakup of entities and the emergence of new states as seen as in the former
+Yugoslavia constitute wars between sovereign nations or \internal" wars.
+8
+
+The 1956 invasion of Hungary, for example, is considered an interstate war.
+
+3 TOWARD A NEW GEOPOLITICS OF DEADLY QUARRELS
+
+8
+
+Upon closer scrutiny, lists of interstate wars cover only a subset of what observers
+perceive as armed con°ict and war. Merely a cursory view indicate that many scholars
+seem unaware of these implications. Mans¯eld and Snyder's (1995) work on democratization and war, for example, repeatedly refers to con°icts in the former Soviet Union
+and the Balkans to illustrate their argument. However, neither Chechnya nor Bosnia
+are considered international wars, and are as such not included in the empirical data
+that they rely on. Mans¯eld and Snyder (1997) similarly cite Rwanda as evidence of
+how democratization leads to war, though this is a \civil war" not included in their
+empirical analysis limited to international wars. Our aim is not to single out particular research. However, these examples indicate that large discrepancies between
+theory and data are quite widespread in research on international con°ict.
+Our argument is not so much that the COW classi¯cations are \wrong" or that
+civil and extra-systemic wars are fully equivalent to interstate wars. However, this
+terminology might impose a distinction that is theoretically untenable. If this partition gained a great deal, such a tradeo® may be worth the cost. Our view is that
+the limitations far outweigh the gains. Civil wars carry a potential for di®usion and
+escalation to interstate wars, and are classi¯ed as one or the other based in part on
+whether they do or not. Such classi¯cation problems underscore why limiting con°ict
+to clear-cut cases of interstate war fails to fully correspond to the general phenomenon
+of interest. To understand regional formations of con°ict and peace, \civil" con°icts
+which contribute to regional insecurity cannot merely be excluded out of hand.
+The standard formal model of con°ict as interaction between two parties X and Y
+has come to be identi¯ed with states, and does not always translate easily to situations
+with constellations of other types of actors. However, a simpli¯cation or abstraction
+which we invoke in a modeling device is not necessarily an appropriate theoretical
+criteria for de¯ning con°ict or a suitable empirical case selection device.
+Taking a broader view of con°icts as violent events that have various degrees of
+international dimensions and implications, we relax the criterion that both of the
+principal opposing parties must be system members We consider all events in the
+Correlates of War international and civil war data as indicators of whether a country
+participates in violent con°ict. Although the original COW data are available only
+up to 1992, we have updated them to 1998 using information from Wallensteen and
+Sollenberg (1999).
+We identify outbreaks of new con°icts by the COW classi¯cations as to what constitutes separate con°icts. We recognize that it is di±cult to identify what constitutes
+a new con°ict and that successive events may not be entirely independent.
+3.2.1
+
+The meaning of y=1 in studies of con°ict
+
+The decisions above do not solve all the ambiguities in data on con°ict. Most notably,
+it is clear that the condition \state A is involved in war at time t" being true could
+mean a variety of di®erent things. Not all incidents of con°ict participation seem
+
+3 TOWARD A NEW GEOPOLITICS OF DEADLY QUARRELS
+
+9
+
+equivalent or symmetric between the parties.
+A given incident of con°ict which a country is involved in may take place either
+on (i) a country's own territory (or in the immediate proximity) or (ii) outside its
+own regional context. The consequences of con°ict and the element of threat to a
+state's vital security and territory di®er considerably with the speci¯c location.
+Consider the case of the Vietnam war, where the US becomes involved in a civil
+war between the two Vietnams growing out of a colonial war with France. However,
+the con°ict was fought entirely in Indochina, and a®ected North and South Vietnam
+in a very di®erent ways than the US. Although the US may de¯ne its security interest
+to encompass objectives beyond its regional context, it was spared most of the physical
+destruction and the risk of the con°ict spreading to the US territory or home turf
+was essentially minimal. Similarly, Cuba commits large number of troops in support
+of the MPLA government in the civil war in Angola, but no civil war is taking place
+on Cuba itself.
+These problems become more severe when we are interested in the spatial aspects
+of con°ict. The prospects for di®usion of con°ict are greater the closer a state is
+to the actual locus on con°ict. The recent events in Kosovo clearly involves a risk
+of violent con°ict in Macedonia. Spanish forces participating in UN operations in
+Kosovo, however, would not be expected to lead to di®usion to Morocco.
+The existing COW data tell us on what continents con°ict is waged. Ideally,
+however, our data on con°ict would include disaggregated information on extension
+and location of the various battles.
+
+3.3
+
+Di®usion of con°ict
+
+Many have hypothesized that con°icts may spread or di®use over time and among
+countries across space. Richardson examined whether outbreaks of war seemed to
+be randomly distributed events by comparing his data to a Poisson distribution.
+Richardson found that the distribution seemed within the range of variation that
+could be expected under a Poisson distribution, and concluded that con°icts seemed
+to be random over time. He also discarded other arguments about secular trends on
+the basis of similar probabilistic reasoning.
+However, it would be incorrect to conclude that Richardson considered con°icts
+entirely random phenomena. Richardson (1960b, 176-183, 288) observed a strong 0.7
+correlation between a country's number of borders and its extent of war involvement,
+which he attributed to the opportunities for contact. He further explored the relationship between contiguity and con°ict through mathematical models, and noted that
+existing political division of the world displayed several regularities or \remarkable
+political facts" not mandated by the geometry of closed polyhedra. Almost no countries are completely surrounded by another, and almost every vertex (or points where
+more than two entities meet) has the simplest possible structure, consisting either of
+three countries or two countries meeting water (1960b, 290-1). Though Richardson
+
+3 TOWARD A NEW GEOPOLITICS OF DEADLY QUARRELS
+
+10
+
+is not explicit on this point, he seems to recognize that this simplicity of structure
+is not incidental, but has resulted as the outcome of political processes. \Simple"
+territorial structures are generally more compact, and thus easier to defend or fortify
+than complex shaped territory.
+The later settlers ¯rst approached di®usion by examining whether the distribution of outbreaks of con°ict conformed to statistical distribution for independent
+events such as the Poisson distribution. Davis, Duncan, and Siverson (1978) examined di®usion of con°ict over time on the system level, or whether outbreaks of war
+tended to be followed by an increased likelihood of subsequent outbreaks of war. In
+general, however, most concorded with Richardson on that outbreaks seemed to be
+indistinguishable from a random process.
+The weak evidence for di®usion from this line of research seems at odds with
+casual evidence of di®usion. Most and Starr (1980) noted several di±culties with
+the \does-the-outbreaks-of-war-conform-to-a-Poisson-distribution?" approach. Such
+tests against a nil model of independence say little about the speci¯c form of dependence hypothesized to exist between observations if the model should be rejected.
+Most and Starr (1980, 933) delineated a series of possible positive and negative dependent relationship between war outbreak and participation over space and time.
+Di®usion may induce positive or negative reinforcement of con°ict involvement,
+making future war participation more likely, as suggested by the concept of\enduring
+rivalries", or less likely, as suggested by \weariness of war" hypotheses. However, wars
+may also di®use between nations so that an outbreak of war in one country increases
+(or decreases) the subsequent likelihood of outbreaks of wars in other countries. Most
+and Starr examined such positive and negative spatial di®usion by testing empirically
+whether new cases of war participation were more likely to occur in countries with
+warring border nations. Using a series of di®erent data sets on con°ict, they found
+that the presence of warring border nations indeed appeared to increase the likelihood
+of war.
+The di®usion through \war in bordering nations" research program has contributed to international relations research by clarifying some of the opportunities
+and constraints for interaction and the spatial dependence between units. It taught
+us that the spatial correlation of con°ict seems to be strong. Most and Starr (1980,
+936) pointed out that spatial non-dependence would have statistical consequences
+similar to serial correlation in time, and suggested that the lack of attention to spatial dependence or di®usion of con°ict could have lead to biased results and impeded
+progress in research on the causes of war. However, Most and Starr and later contributors did not provide adequate statistical models for dealing with the spatial
+correlation.
+
+4 DEMOCRACY, CONFLICT, AND PEACE
+
+3.4
+
+11
+
+Towards a geography of violent con°ict
+
+Later statistical research on di®usion and the spatial aspects of con°ict and cooperation was strongly in°uenced by approaches developed in regional science. The socalled spatial econometric approach surveyed by Anselin (1988) popularized introducing spatial context in statistical models through a matrix speci¯cation of dependence
+between entities and a \spatial lag" term that accounts for the spatial correlation
+of the dependent variable. This is based upon work now 25 years old (Besag and
+Moran 1975; Ord 1975) that demonstrates how the computational di±culties with
+the maximum likelihood estimator for autoregressive models for spatial interaction
+could be solved by a simpli¯ed computational scheme based on a trick involving the
+eigenvalues of the spatial weights matrix too arcane to discuss.
+These approaches have been used in several studies (O'Loughlin 1986; Kirby and
+Ward 1987; Ward and Kirby 1987; Shin and Ward 1999). However, the framework
+has a series of drawbacks for studies of con°ict. This class of models have been developed for continuous dependent variables, whereas most data on con°ict is categorical,
+typically binary.9 Even though models for spatially correlated categorical variables
+have been developed over the past three decades in the statistical analysis of spatial
+patterns (Besag 1972; Besag 1974), the work of con°ict has not bene¯tted from these
+breakthroughs that have occurred. Estimation has usually been based on computational methods that initially were introduced as convenient solutions for seemingly
+intractable problems, but no longer seem necessary.
+
+4
+
+Democracy, con°ict, and peace
+
+In this section we present a brief overview of the evolution in previous research of
+the model we propose to analyze. The seeming absence of war between democracies
+was ¯rst noted by Babst, but what has later become known as the democratic peace
+entered into the mainstream of empirical research on international con°ict through
+a series of articles by Rummell and the controversies it generated. The democratic
+peace has provided a boost to empirical research and generated interest in numerous
+related propositions.
+In a series of papers (Ward and Gleditsch 1998; Gleditsch and Ward 2000c), we
+have re-examined the controversy surrounding whether democratization is associated
+with improved prospects or greater risk of war as suggested by Mans¯eld and Snyder
+(1995).10 Mans¯eld and Snyder (1995) aggregated changes in authority structures
+over a ten-year period, and examined whether democratization seemed to be associated with incidents of con°ict in the subsequent ten years through Â2 tests of
+9
+
+We leave aside the question of whether con°ict is inherently discrete events or more continuous phenomena. Even if con°icts can di®er greatly in degree, most classi¯cation opt for coding
+presence/absence.
+10
+For other contributions, see Thompson and Tucker (1997) and Enterline (1998).
+
+5 A PARSIMONIOUS MODEL OF DEMOCRACY AND WAR
+
+12
+
+independence.
+In light of some of the problems in this tabular analysis approach, Ward and Gleditsch (1998) proposed examining the likelihood of con°ict as a function of changes in
+authority structures over a prior ten-year period. Instead of dichotomizing \change"
+versus \no-change," they proposed disaggregating changes into their direction or sign,
+magnitude of change, and variability of change or the variance in authority structure
+over the period. The results indicated that substantial democratization would reduce
+the likelihood of war, whereas smaller changes or transitions to democracy that are
+followed by reversals to autocracy could increase the risk of war.
+
+4.1
+
+War and peace in time and space
+
+Ward and Gleditsch (1998), essentially ignored any dependence between the pooled
+observations, both over time and across space. Gleditsch and Ward (2000c) and
+Gleditsch (1999) estimated revised versions of the original model to address these
+issues.
+Gleditsch and Ward (2000c) examined the duration dependence of war and peace
+over time as well as investigated the e®ects of democratization on outbreaks and continuation/termination of wars separately. In addition, the model was revised in an
+attempt to take into account dependence across units in space. First, we evaluated
+the extent of clustering of con°ict. If con°ict is distrubuted non-randomly in space,
+statistical models ignoring di®usion or the dependence of war and peace among countries could be ridden by serially correlated error terms. Second, we considered whether
+con°ict was related to the extent of democracy in neighboring countries. Gleditsch
+(1999) found that the likelihood of con°ict for a given country seemed more consistently related to the authority structures in the larger surrounding region than the
+attributes of each individual country.
+Space was treated as ¯xed in these studies, however, though the number of states
+in the system and their proximity and borders change quite considerable between 1875
+and the contemporary era. Gleditsch and Ward (2000c) tested explicitly whether the
+relationship of the continuous variables to the likelihood of the event occuring seemed
+linear in log odds through a Generalized Additive Model speci¯cation. Their results
+indicate that though many of the e®ects did not seem fully linear in the log odds,
+only the e®ects of democracy displayed monotonicity.
+In the next section we focus on two basic aspects of this model: the negative
+impact of high levels of democracy on con°ict propensity and the contagion e®ects of
+con°icts in surrounding regions.
+
+5
+
+A Parsimonious Model of Democracy and War
+
+The basic insight we propose herein is that state i's probability of con°ict is highly
+dependent upon the existence of con°ict in all other states ¡i. Curiously, such in-
+
+5 A PARSIMONIOUS MODEL OF DEMOCRACY AND WAR
+
+13
+
+terdependence is typically lacking in empirical models of international relations and
+world politics.
+Our basic model is an autologistic model of the likelihood that a state i will be
+involved in a con°ict at time t. We specify the dependencies between the N countries
+in our sample by a binary N £ N distance based connectivity matrix, where entries
+Wi;j acquire a value of 1 if states i and j are considered adjacent or \close". We
+generate the W matrix from a new data set on the minimum distances between
+polities in the international system (Gleditsch and Ward 2000b). Two independent
+covariates capture the level of democracy and the regional context of democracy: di;t
+the level of democracy at time t in country i for all countries (1; : : : ; n), ranging from
+¡10 for highly autocratic to +10 for highly democratic and d0i;t W s , the average level
+of democracy in contiguous countries, with W s denoting a connectivity matrix W
+that has been row standardized.
+A simple, linear statement of these independent aspects to which an intercept ®
+and a spatial covariate yi0 W are added is given as
+® + ¯1 di + ¯2 d0i W s + °yi0 W
+where yi0 W is the sum of neighbors in con°ict for a given de¯nition of neighbors
+contained in the contiguity matrix, W .
+Collecting into ´i the k exogenous terms in a k £ i matrix of exogenous variables
+Xi , and the associated parameters into a vector ¯~k , and de¯ning the neighborhood
+sum or spatial lag, yi0 W , as yei , yields
+´i = ® + X0i ¯~k + ° yei
+
+which permits a simple statement of the autologistic:
+P r[yi = 1jyei ] =
+
+e´i
+1 + e´i
+
+(1)
+
+If ° = 0 this is a standard logistic; if all ¯k are 0, this becomes the standard autologistic without covariates. The autologistic model is widely known in statistics and
+has been widely used for applications in ecology and natural science, but appears to
+have been completely ignored in the social sciences.
+It is widely know that this model has a likelihood function which is mathematically
+intractable since the yi are conditionally dependent upon each other (Besag 1974).
+Three computational methods have been proposed to solve this problem. Besag
+(1974) devised a coding method that reduced the dependencies to a few adjacencies,
+assuming all other observations are independent and exchangeable. The resulting
+scheme permits maximum likelihood estimation. This method is ine±cient and is
+little used in practice (e.g., Hu®er and Wu 1998). A maximum pseudolikelihood
+method was developed (Besag 1975) that uses a weighted average of di®erent coding
+methods, and its e±ciency examined (Hu®er and Wu 1998; Besag 1977; Besag and
+
+5 A PARSIMONIOUS MODEL OF DEMOCRACY AND WAR
+
+14
+
+Moran 1975). This has been found to be ine±cient, especially when spatial interaction
+is strong.
+The third class of estimation approaches is Markov Chain Monte Carlo (MCMC)
+methods. These approaches originate in statistical physics.11 These methods are computationally intensive and allow one to approximate maximum likelihood estimates
+for any family of distributions with probability densities known up to a constant of
+proportionality. This approach has been widely and recently used in image recognition/reconstruction (Hoeting, Leecaster and Bowden 1999) as well as parameter estimation (Gumpertz, Wu and Pye 1999; Gumpertz, Graham and Ristaino 1997; Gotway
+and Stroup 1997).
+In our earlier work, in particular Gleditsch and Ward (2000c), we employed a version of the pseudolikelihood approach to estimation. One major disadvantage of this
+approach is that it tends not to work in the situations which we are most interested
+in studying: strong spatial patterns. More recently, however, it has become possible to use simulation approaches {namely the Markov Chain Monte Carlo (MCMC)
+method{ to get approximations that are closer to the full likelihood function.
+The basic approach introduced in Geyer and Thompson (1992) is quite simple in
+conception and has been used by Wu and Hu®er (1998) as well as Hoeting, Leecaster,
+and Bowden (1999). If ~µ = (®; ¯~k ; °), then a probability measure of a random map
+generated from this model forms an exponential family de¯ned by the parameters ~µ
+and the su±cient statistics, ~s(y), given by
+~s(y) =
+
+µX
+n
+i=1
+
+yi ;
+
+n
+X
+
+Xi yi ;
+
+i=1
+
+¶
+
+n
+1X
+y~i :
+2 i=1
+
+For any chosen vector of parameters corresponding to µ, say Ã, a sample of maps
+containing simulated values for yi can be obtained. Typically, the pseudolikelihood
+estimates of the parameters are used for Ã. A Gibbs sampler (Geman and Geman
+1984) is then used for data augmentation generating a large set of samples based on Ã.
+These simulated samples are then used to derive a set of su±cient statistics. Using the
+su±cient statistics from these samples it is possible to determine an approximation
+to the likelihood function for µ based on the approximation found in the sample. The
+Markov Chain maximum likelihood, found through these approximations, is obtained
+by solving the score equation, typically by use of Newton-Raphson methods:
+Pm
+
+0
+^
+s(ym )e(µ¡Ã) ~s(ym )
+j=1 ~
+Pm
+0~
+^
+(µ¡Ã)
+s(ym )
+j=1 e
+
+= ~s(yobserved )
+
+(2)
+
+where m is the number of sampled simulated maps and ~s() is the vector of su±cient
+statistics.12
+11
+
+Alan Sokal (1996), of Social Text fame, has written a good overview of the foundations and
+algorithms with applications to physics. See Gelman et alia (1995) for an accessible introduction in
+the context of Bayesian methods.
+12
+Newton-Raphson methods are a crude, iterative way to minimize a function modulo a set of
+
+5 A PARSIMONIOUS MODEL OF DEMOCRACY AND WAR
+
+5.1
+
+15
+
+Empirical results
+
+We examine this simple model for data from 1988, taken from Polity 98 and a W
+matrix using a 475 km minimum distance threshold. Pseudolikelihood and MCMC
+estimates of the parameters can be found in Table 1. This is an exceedingly parsimonious model with only two covariates: the level of democracy in a country and the
+average level of democracy in the surrounding countries. We have kept the model
+quite simple to provide a di±cult test for the autologistic formulation. This should
+enable us to see how much information exists in the spatial distribution of con°ict
+itself and further enable us to examine its di®usion.
+^ are smaller than the corresponding pseudoIn general the MCMC estimates (µ)
+^
+likelihood estimates (Ã). MCMC standard errors are quite small for each estimate.
+As would be expected, democracy shows a strong negative e®ect on the probability
+of con°ict, while the spatial context of con°ict shows evidence of strong spatial correlation. The spatial context of democracy is very close to zero, with a fairly large
+standard error; by traditional standards this would not be seen to be a powerful
+covariate. In short, all other things being set aside as \controlled for," democracy
+in°uences a robust negative in°uence on the likelihood that a country will be involved
+in a domestic or international con°ict of substantial magnitude. At the same time,
+there is a stronger, independent (same scale) locational e®ect. Countries that are
+surrounded by con°ictual countries will also have a much higher likelihood of being
+involved in a con°ict, either civil or international.
+Table 1: MCMC and Pseudolikelihood Parameter Estimates
+Intercept
+Estimator
+®
+^
+MCMC Maximum Likelihood µ
+-1.712
+^
+Pseudolikelihood Ã
+-1.840
+MCMC ¾
+^
+0.0601
+
+Spatial Parameters
+Democracy Democracy Con°ict
+¯1
+¯2
+°
+-0.053
+-0.003
+0.261
+-0.020
+0.013
+0.298
+0.0061
+0.0099
+0.0133
+
+It has been noted that many studies of international con°ict have fairly low predictive capabilities. Beck, King and Zheng (2000) have argued that virtually no studies
+of international con°ict have predicted probabilities greater than the typical threshold used in many other ¯elds, ¼
+^ > :5. This is true for the pseudolikelihood estimates
+shown above. However, the MCMC estimates that we provide do in fact exceed this
+parameters µ. The basic iteration is given by: µi+1 = µ ¡ G¡1 (µi )g(µi ), with g(µi ) a vector of
+derivatives of f with respect to the µi and G(µi ) is the m £ m matrix of second derivatives of f .This
+method is very fast if it begins close to the minimum, but slow and thorny if it doesn't: G may
+in such cases become negative de¯nite. \May" means \does" in this context. Newton-Raphson
+algorithms also can produce exploding parameter vectors as well as cyclical results.
+
+5 A PARSIMONIOUS MODEL OF DEMOCRACY AND WAR
+
+16
+
+threshold (see Table 2) in 7 of the 138 cases, admittedly a small proportion, but
+certainly not an empty set. Moreover, of the seven con°icts that are postdicted, two
+of them are actual con°icts that did occur. Iraq and Syria both were involved in
+con°ict in 1988. Figure 1 presents the probability density for the estimates from the
+autologistic model.
+Table 2: Actual and Predicted Con°ict States
+Observed
+Predicted No Yes
+No
+109
+29
+Yes
+5
+2
+
+Density
+
+Figure 1: Density Function for Predicted Probability of Con°ict
+
+0.0
+
+0.1
+
+0.2
+
+0.3
+
+0.4
+
+0.5
+
+0.6
+
+Predicted Probability
+
+However such a comparison leaves unincorporated any errors that might be introduced by the model itself, and is therefore not an adequate re°ection of the model's
+predictive power. We conduct a simulation, using the estimate µ^ to produce estimates,
+but instead of using the observed data on con°ict (i.e., the data that were used in
+generating the estimates) we allow con°ict values to be produced by the model on the
+°y.13 This requires a starting value for con°ict. We use the current state of con°ict
+in 1988. The model is then simulated and con°ict is turned on or o® in each country
+based on the autologistic equation. Then the simulated current state of con°ict is
+13
+
+Based on Figure 1 we use 0:4 as a cut-o® value for predicting con°ict.
+
+5 A PARSIMONIOUS MODEL OF DEMOCRACY AND WAR
+
+17
+
+used as input values, and the process is repeated until it settles down, usually after
+several iterations. Table 3 shows that such a dynamic use of the estimate coe±cients,
+produces somewhat stronger results in addition to being more faithful to the autologistic formulation. In this instance, we are able to correctly predict eight con°icts,
+and have an equal number of false positives.
+Table 3: Actual and Predicted Con°ict States 1988
+Observed
+Predicted No Yes
+No
+99
+23
+Yes
+8
+8
+^ along with the data on
+Finally, we use the estimated parameters for 1988 (µ)
+democracy and the spatial lag of democracy for 1988 to predict the state of con°ict in
+the subsequent decade to 1998, using a cut-o® value of 0:35 obtained from inspecting
+the density function. We are basically predicting whether there will be a domestic or
+international con°ict in the next ten years, based on knowledge about the current state
+of con°ict in all countries, coupled with knowledge of whether they are democracies
+or autocracies in 1988.
+Table 4: Using 1988 Estimates to Predict Con°ict from 1988 through 1998
+Observed
+Predicted No Yes
+No
+73
+29
+Yes
+8
+26
+
+As shown in Table 4 there are twenty six successful predictions of con°ict (along
+with 73 successful predictions of no con°ict), tempered by eight false predicted con°icts and twenty nine missed con°icts. Stated di®erently, the simple autologistic
+model estimated on the 1988 data classi¯es about 75 percent of the annual observations in the subsequent year correctly. More interestingly, it successfully classi¯es
+almost 50 percent of the con°icts. The correctly classi¯ed con°icts are listed in Table 5.14
+14
+
+Our model misses cases of war participation for Afghanistan, Algeria, Angola, Cambodia,
+Canada, Colombia, Cuba, El Salvador, France, Guinea-Bissau, India, Italy, Liberia, Liberia, Morocco, Myanmar, Mozambique, Nicaragua, Peru, Philippines, Rumania, Russia, South Africa, Sierra
+Leone, Sri Lanka, United Kingdom, United States, Vietnam, Yugoslavia, Zimbabwe. In many of
+these cases (e.g., UK) con°ict was not actually waged on the state's own territory. Some countries
+involved in war in the period did not exist in 1988 (e.g., Bosnia), and are as such not part of the
+prediction set.
+
+5 A PARSIMONIOUS MODEL OF DEMOCRACY AND WAR
+
+18
+
+Table 5: Pro¯le of Correctly Predicted Con°icts
+Country
+Bahrain
+Burundi
+Chad
+Congo-Brazzaville
+Democratic Republic of Congo { Zaire
+Egypt
+Ethiopia
+Iran
+Iraq
+Israel
+Kuwait
+Lebanon
+Libya
+Nigeria
+Oman
+Qatar
+Rwanda
+Saudi-Arabia
+Somalia
+Sudan
+Syria
+Tanzania
+Turkey
+United Arab Emirates
+Uganda
+Yemen
+
+Type of War
+International
+Civil
+International
+Civil
+Civil
+International
+International
+International
+Civil, International
+Civil
+International
+Civil
+International
+Civil
+International
+International
+Civil
+International
+Civil
+Civil
+Civil, International
+Civil
+Civil
+International
+Civil
+Civil
+
+Date of Onset
+1991
+1988, 1991, 1998
+1997
+1997
+1991
+1998
+1991
+1991
+
+1992, 1994, 1996
+1991
+1991
+1990, 1998
+1991
+1995
+1991
+1991
+1991
+1994
+
+These results seem quite promising, but should not be cited as evidence of the
+ability to predict war and turmoil. The model is very preliminary, containing only
+one powerful covariate, ignoring many other forces that are known to be important.
+At the same time it fails to predict con°ict in the majority of cases where con°ict
+emerges. Wars are relatively rare events so that results could be quite erratic from
+one time period to another. In the longer run, the evolution of hostility and con°ict
+as well as appeasing factors must be incorporated explicitly in the model.
+Despite these limitations, to our knowledge this e®ort is unique in successfully
+bringing a strategic interaction perspective into a predictive mode for a large number
+of cases. Our results clearly demonstrate that a rejection of the notion that all international actors are sovereign and independent still permits considerable statistical
+investigation of the patterns of international con°ict. To our knowledge it is also
+
+6 CONCLUSION
+
+19
+
+unique in its success rate in predicting con°ict, ex post ante.
+
+6
+
+Conclusion
+
+International relations proclaims to study the interdependence of the forces in world
+politics, especially countries and organizations. However, virtually all scholarship
+that is statistically based has made the assumption that all countries are exchangeable
+(Ward 1988) and their data are statistically independent. This has blinded us to the
+substantial evidence of associative interactions in world politics.
+Anselin (1988) and LeSage (1999) so-called spatial econometrics, using the insights
+from Besag and Moran (1975) and Ord (1975) to circumvent the computing problems involved with complicated likelihood functions, was a fundamental breakthrough
+which allowed likelihood estimates to be computed without solving the Jacobian matrix for each observation for each iteration. A quarter of a century ago, Besag formulated the pseudolikelihood approach to estimating parameters for the autologistic
+formulation. This was necessary since the likelihood function of this speci¯cation was
+mathematically intractable, owing to the fact that everything is dependent on everything else. However, this pseudolikelihood approach for binary variables remained
+ignored in political science and geography until very recently.
+In the era of expensive computing both of these computational solutions made
+sense. Two things have happened in the nonce, however. First, computers are now
+surpassing the 1 GigaHertz speed marks. Computing and memory, as well as object
+oriented languages, have made computationally intensive methods very a®ordable
+and readily available. At the same time, the growth of MCMC approaches to solving di±cult likelihood functions has allowed researchers to undertake the analysis of
+problems that were previously too di±cult to tackle. As a result of these two trends,
+the old tricks are no longer relevant and may in fact serve to give us the wrong answers as well as point us in the wrong direction. The range of opportunities for a
+full-°edged spatial approach to deadly quarrels (and other discrete and continuous
+social phenomena) is clearly very wide and the potential bene¯ts seem substantial,
+judging from these simple steps.
+
+REFERENCES
+
+20
+
+References
+Anselin, Luc. 1988. Spatial Econometrics: Methods and Models. Dordrecht, the
+Netherlands: Kluwer.
+Beck, Neal, Gary King and Langche Zheng. 2000. \The Problem with Quantitative
+Studies of Con°ict: A Conjecture." American Political Science Review 94:in
+press.
+Besag, Julian E. 1972. \Nearest-neighbour Systems: A Lemma With Application to
+Bartlett's Global Solutions." Journal of Applied Probability 9:418.
+Besag, Julian E. 1974. \Spatial Interaction and the Statistical Analysis of Lattice
+Systems (with Discussion)." Journal of the Royal Statistical Society, Series B,
+Methodological 36:192{225.
+Besag, Julian E. 1975. \Statistical Analysis of Non-lattice Data." The Statistician
+24:179.
+Besag, Julian E. 1977. \E±ciency of Pseudolikelihood Estimation for Simple Gaussian
+Fields." Biometrika 64:616.
+Besag, Julian E. and Patrick A. P. Moran. 1975. \On the Estimation and Testing of
+Spatial Interaction in Gaussian Lattice Processes." Biometrika 62:555.
+Boulding, Kenneth E. 1963. Con°ict and Defense: A General Theory. New York:
+Harper and Row.
+Bremer, Stuart A. and Thomas R. Cusack. 1995. The Process of War: Advancing
+the Scienti¯c Study of War. Luxembourg and Philadelphia, PA: Gordon and
+Breach.
+Davis, William, George Duncan and Randolph M. Siverson. 1978. \The Dynamics of
+Warfare, 1816-1965." American Journal of Political Science 22:772{792.
+Enterline, Andrew J. 1998. \Regime Changes, Neighborhoods, and Interstate Con°ict, 1816-1992." Journal of Con°ict Resolution 42:804{29.
+Gelman, Andrew, John B. Carlin, Hal S. Stern and David B. Rubin. 1995. Bayesian
+Data Analysis. Chapman & Hall.
+Geman, Stuart and Donald Geman. 1984. \Stochastic Relaxation, Gibbs Distributions and the Bayesian Restoration of Images." IEEE Transactions on Pattern
+Analysis and Machine Intelligence 6:721{741gem.
+
+REFERENCES
+
+21
+
+Geyer, Charles J. and Elizabeth A. Thompson. 1992. \Constrained Monte Carlo
+Maximum Likelihood for Dependent Data, (with Discussion)." Journal of the
+Royal Statistical Society, Series B, Methodological 54:657{699.
+Glassner, Martin Ira. 1993. Political Geography. New York: John Wiley & Sons.
+Gleditsch, Kristian S. 1999. Peace Has Its Victories, No Less Renowned Than War:
+A Local Interaction Approach to Regional Con°ict, Integration, and Democratization Ph. D. thesis. University of Colorado Boulder, Colorado, USA.
+Gleditsch, Kristian S. and Michael D. Ward. 2000a. \Interstate System Membership:
+A Revised List of Independent States since 1816." International Interactions
+25:393{341.
+Gleditsch, Kristian S. and Michael D. Ward. 2000b. \The Role of Geography in World
+Politics: A Minimum Distance Database, 1875{Present." tba NA:NA.
+Gleditsch, Kristian S. and Michael D. Ward. 2000c. \War and Peace in Space and
+Time: The Role of Democratization." International Studies Quarterly 44:1{29.
+Gotway, Carol and Walter Stroup. 1997. \A Generalized Linear Model Approach to
+Spatial Data Analysis and Prediction." Journal of Agricultural, Biological, and
+Environmental Statistics 2:157{178.
+Gumpertz, Marcia L., Chi-tsung Wu and John M. Pye. 1999. Logistic Regression
+for Southern Pine Beetle Outbreaks with Spatial and Temporal Autocorrelation.
+Technical Report 2513 Institute of Statistics, North Carolina State University,
+Raleigh, NC.
+Gumpertz, Marcia L., Jonathan M. Graham and Jean B. Ristaino. 1997. \Autologistic
+Model of Spatial Pattern of Phytophthora Epidemic in Bell Pepper: E®ects
+of Soil Variables on Disease Presence." Journal of Agricultural, Biological, and
+Environmental Statistics 2:131{156.
+Hess, Gregory D. 1995. \An Introduction to Lewis Fry Richardson and His Mathematical Theory of War and Peace." Con°ict Management and Peace Science
+14:77{113.
+Hoeting, Jennifer A., Molly Leecaster and David Bowden. 1999. \An Improved Model
+for Spatially Correlated Binary Responses." Journal of Agricultural, Biological
+and Environmental Statistics 4.
+H¿ivik, Tord and Johan V. Galtung. 1971. \Structural Violence: A Note on Operationalization." Journal of Peace Research 7:73{76.
+
+REFERENCES
+
+22
+
+Hu®er, Fred W. and Hulin Wu. 1998. \Markov Chain Monte Carlo for Autologistic Regression Models with Application to the Distribution of Plant Species."
+Biometrics 54(2):509.
+Kirby, Andrew M. and Michael D. Ward. 1987. \The Spatial Analysis of Peace and
+War." Comparative Political Studies 20:293{313.
+Kjellen, Rudolf. 1916. Staten som Lifsform [The State as an Organism]. Stockholm:
+Hugo Geber.
+LeSage, James P. 1999.
+Spatial Econometrics using MATLAB.
+www.econ.utoledo.edu.
+
+The Web:
+
+Mackinder, Halford J. 1904. \The Geographical Pivot of History." The Geographical
+Journal 23:421{444. paper read to the Royal Geographical Society, April 1904.
+Mackinder, Halford J. 1919. Democratic Ideas and Reality: A Study in the Politics
+of Reconstruction. London: Constable.
+Mans¯eld, Edward and Jack Snyder. 1995. \Democratization and the Danger of
+War." International Security 20:5{38.
+Mans¯eld, Edward and Jack Snyder. 1997. \A Reply to Thompson and Tucker."
+Journal of Con°ict Resolution 41:457{461.
+Most, Benjamin A. and Harvey Starr. 1980. \Di®usion, Reinforcement, Geo-Politics
+and the Spread of War." American Political Science Review 74:932{946.
+Most, Benjamin A. and Harvey Starr. 1989. Inquiry, Logic, and International Politics.
+Columbia, SC: University of South Carolina Press.
+Nicholson, Michael. 1999. \Lewis Fry Richardson and the Study of the Causes of
+War." British Journal of Political Science 29:541{563.
+O'Loughlin, John V. 1986. \Spatial Models of International Con°ict: Extending
+Current Theories of War Behavior." Annals of the American Association of Geographers 76:60{83.
+Ord, J. Keith. 1975. \Estimation Methods for Models of Spatial Interactions." Journal
+of the American Statistical Association 70:120{126.
+¶ Tuathail, Gear¶oid. 1996. Critical Geopolitics. London: Routledge.
+O
+Rapoport, Anatol. 1963. Mathematical Models of Social Interaction. In Handbook
+of Mathematical Psychology, ed. R. Duncan Luce, Robert R. Bush and Eugene
+Galanter. New York: Wiley pp. 493{579.
+
+REFERENCES
+
+23
+
+Rashevski, Nicholai. 1949. Mathematical Theory of Human Relations. Bloomington:
+IN: Principia Press.
+Ratzel, Friedrich. 1879. Politische Geographie. Munich: Oldenburg.
+Richardson, Lewis F. 1960a. Arms and Insecurity. Chicago and Pittsburgh, PA:
+Quadrangle/Boxwood.
+Richardson, Lewis F. 1960b. Statistics of Deadly Quarrels. Chicago and Pittsburgh,
+PA: Quadrangle/Boxwood.
+Richardson, Lewis F. 1992. The Problem of Contiguity: An Appendix to Statistics
+of Deadly Quarrels. In Collected Papers of Lewis Fry Richardson, ed. Oliver M.
+Ashford, P.G. Drazin, J.C.R. Hunt, Paul Smoker and Ian Sutherland. Cambridge, New York: Cambridge University Press.
+Rummel, Rudolph J. 1995. Death by Government. New Brunswick, NJ: Transaction.
+Shin, Michael E. and Michael D. Ward. 1999. \Lost in Space: Political Geography
+and the Defense-Growth Trade-o®." Journal of Con°ict Resolution 43:793{816.
+Singer, J. David, ed. 1979. The Correlates of War I: Research Origins and Rationale.
+New York: Free Press.
+Singer, J. David, ed. 1980. The Correlates of War II: Testing Some Realpolitik Models.
+New York: Free Press.
+Singer, J. David and Melvin Small. 1972. The Wages of War, 1816-1965: A Statistical
+Handbook. New York: Wiley.
+Small, Melvin and J. David Singer. 1982. Resort to Arms: International and Civil
+Wars, 1816-1980. Beverly Hills, CA: Sage.
+Sokal, Alan D. 1996. Monte Carlo Methods in Statistical Mechanics: Foundations
+and New Algorithms: Lectures from the Cargese Summer School on \Functional
+Integratin: Basics and Applications". Technical report Department of Physics,
+New York University.
+Sorokin, Pitirim A. 1957. Social and Cultural Dynamics. London: Owen.
+Taylor, Peter and Colin Flint. 1999. Political Geography: World-Economy, NationState and Locality. London: Longman.
+Thompson, William R. and Richard M. Tucker. 1997. \A Tale of Two Democratic
+Peace Critiques." Journal of Con°ict Resolution 41:428{54.
+Wallensteen, Peter and Margareta Sollenberg. 1999. \Armed Con°ict, 1989-98." Journal of Peace Research 36:593{606.
+
+REFERENCES
+
+24
+
+Ward, Michael D. 1988. \Cargo Cult Social Science and Eight Fallacies of Comparative Political Research." International Studies Notes 13(1):75{77.
+Ward, Michael D. and Andrew M. Kirby. 1987. \Re-examining Spatial Models of International Con°ict." Annals of the American Association of Geographers 77:86{
+105.
+Ward, Michael D. and Kristian S. Gleditsch. 1998. \Democratizing for Peace." American Political Science Review 92(1):51{61.
+Wright, Quincy. 1942. A Study of War. Reprinted 1957 ed. Chicago: University of
+Chicago Press.
+
+

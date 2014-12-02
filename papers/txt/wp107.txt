@@ -1,0 +1,3938 @@
+Contemporary Model Life Tables
+for Developed Countries
+An Application of Model-based Clustering
+Samuel J. Clark and David J. Sharrow∗
+Department of Sociology
+University of Washington, Seattle
+
+Working Paper no. 107
+Center for Statistics and the Social Sciences
+University of Washington
+February 4, 2011
+
+Abstract
+Using the statistical technique Model-based Clustering (Fraley and Raftery, 2006)
+we identify five typical age patterns of mortality in 844 life tables from the Human
+Mortality Database (University of California, Berkeley and Max Planck Institute for
+Demographic Research, 2009). Time rather than geography is the most important
+dimension along which the Human Mortality Database life tables are clustered. Using
+each pattern as the basis for a ‘family’ in a traditional system of model life tables, we
+create a one-parameter model to generate ‘levels’ of mortality within each family. The
+result is a new effectively two-parameter system of model life tables for the countries
+and time periods included in the Human Mortality Database. We demonstrate the
+use of this model life table system to extrapolate full age patterns of mortality from
+age-restricted mortality indicators such as 5 q0 or 45 q15 . We conduct an out-of-sample
+validation using life tables from both the Human Mortality Database and the WHO
+life table database (World Health Organization, 2010). A friendly R package that
+implements the model life table system calibrated to the Human Mortality Database
+life tables is available by request.
+∗
+
+Department of Sociology, University of Washington, Seattle, WA, USA (Samuel J. Clark & David J.
+Sharrow); Institute of Behavioral Science (IBS), University of Colorado at Boulder, CO, USA (Samuel J.
+Clark); MRC/Wits Rural Public Health and Health Transitions Research Unit (Agincourt), School of Public
+Health, Faculty of Health Sciences, University of the Witwatersrand, Johannesburg, South Africa (Samuel
+J. Clark); Correspondence to Samuel J. Clark: work@samclark.net.
+
+i
+
+Contents
+1 Introduction
+1.1 Motivation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1.2 Existing Model Life Table Systems . . . . . . . . . . . . . . . . . . . . . . .
+
+1
+1
+1
+
+2 Data
+
+2
+
+3 Method
+3.1 Mortality Model . . . . . . . . . . . . . . . . . . . . .
+3.1.1 Motivation . . . . . . . . . . . . . . . . . . . .
+3.1.2 Model . . . . . . . . . . . . . . . . . . . . . .
+3.2 Identifying Similar Age Patterns of Mortality . . . . .
+3.3 Model Life Tables . . . . . . . . . . . . . . . . . . . .
+3.3.1 Life Table Families . . . . . . . . . . . . . . .
+3.3.2 Age-Varying Mortality Levels within a Family
+
+.
+.
+.
+.
+.
+.
+.
+
+4
+4
+4
+5
+6
+8
+8
+8
+
+.
+.
+.
+.
+
+9
+9
+10
+11
+11
+
+4 Results
+4.1 Mortality Patterns . . . . . . . . .
+4.2 Components of each Cluster/Family
+4.3 Family-specific Parameters . . . . .
+4.4 Evaluating System Performance . .
+
+.
+.
+.
+.
+
+5 Discussion
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+13
+
+ii
+
+1
+1.1
+
+Introduction
+Motivation
+
+Absent high quality vital registration systems that could accurately describe the age pattern
+of mortality, many countries must rely on indirect estimation by using systems of model
+life tables. Model life table systems represent typical age patterns of mortality that can be
+used for many purposes including to extrapolate complete age patterns from age-restricted
+indicators of mortality such as child (5 q0 ) or adult (45 q15 ) mortality.
+Existing model life table systems were generated using data from restricted geographical
+locations and time periods, with the newest model systems dating back some 30-50 years. In
+some instances, these systems are unable to reflect contemporary mortality experiences including extremely low childhood mortality observed in some contemporary developed world
+settings (Coale and Guo, 1989; Wilmoth et al., 2009) or elevated adult mortality resulting
+from unusual causes such as HIV.
+Building on earlier work (Clark, 2002; Clark et al., 2009), we aim to identify commonly
+observed age-patterns of mortality in the Human Mortality Database (University of California, Berkeley and Max Planck Institute for Demographic Research, 2009) and build an
+easy-to-use model life table system based on the observed mortality patterns. We identify
+typical age patterns by using a model-based clustering method. Using each pattern as the
+basis for a ‘family’ in a traditional system of model life tables, we create a one-parameter
+model to generate ‘levels’ of mortality within each family. The result is a new, effectively
+two-parameter system of model life tables for the countries and time periods included in the
+Human Mortality Database.
+We begin with a brief review of the use and structure of existing model life table systems,
+followed by a description of the Human Mortality Database. We then present a detailed description of the model, fitting method and resulting ‘families’. Finally, we discuss usage and
+validation of the system with an out-of-sample collection of empirical tables. We also include
+a discussion of future directions for this line of research including extending the method to
+empirical tables from the INDEPTH network of demographic surveillance sites, which include tables from Africa and high HIV prevalence settings.
+
+1.2
+
+Existing Model Life Table Systems
+
+All model life table systems, including the one presented in this paper, are generated from
+analysis of a large collection of historical mortality profiles. Unlike mathematical models
+such as Gompertz (1825) or the all-age model advanced by Heligman and Pollard (1980)
+that depict the shape of human mortality with relatively few parameters, empirical models
+like the Coale and Demeny (1966) model life tables, UN Model Life Tables for Developing
+Countries (1982), model by Wilmoth and colleagues (2009) and relational models like Brass
+(1971) and Murray et al. (2003) and the system described in this paper contain a larger
+1
+
+number of ‘true’ parameters but are able to reflect the detailed variation in human mortality
+with a very small number of ‘effective’ parameters. This is because most of the parameters
+become fixed leaving just one or two that vary to capture the variation in human mortality,
+often a measure of child mortality.
+Because model life table systems are generated from a collection of empirical tables, they
+can only reflect the extent of mortality variation contained in the empirical data used to generate the system. For instance, the widely used Coale and Demeny and UN model life tables
+for developing countries cannot generate schedules for which child mortality is extremely low
+because that kind of mortality profile did not exist at the time those systems were created
+(Coale and Guo, 1989; Wilmoth et al., 2009). Figure 1 plots the relationship between adult
+and child mortality for the HMD collection (each black circle represents one table) and the
+patterns produced by these two systems. These figures show that those mortality profiles
+with extremely low child mortality are not well represented by any of the patterns in these
+two widely used systems. This issue is poised to become increasingly important as child mortality continues to fall throughout the world. Additionally, although not well represented in
+the data used to generate our system, no system to date has included adequate data from
+Africa or data that could reflect the mortality profile characteristic of high HIV prevalence
+settings. Thus, there is little reason to believe any system can accurately represent these
+profiles generated under a very different set of demographic and epidemiological conditions.
+It is clear that creating a model life table system based on contemporary data that can
+reflect the current range of modern mortality experiences is an important improvement over
+current widely-used systems, but the work presented here has other advantages as well. Typically, the user must supply specific mortality measures like 5 q0 as input parameters. Our
+system allows the user greater flexibility in terms of the input parameters in that virtually
+any measure of mortality (1 q0 , 5 q0 , 45 q15 , e0 , etc.) can be employed to select into the appropriate ‘family’ and subsequently the single-parameter model for selecting the appropriate
+‘level’ ensures coverage of a wide range of mortality schedules.
+
+2
+
+Data
+
+We identify similar age patterns of mortality within a collection of 844 (for each sex) period life tables from the Human Mortality Database. This collection is a publicly available dataset maintained by the University of California, Berkley and Max Planc Institute
+(www.mortality.org). This dataset has many advantages for generating a model life table
+system including the high quality of the data itself along with the standardized age and time
+interval formats.
+The HMD contains mortality profiles from 37 mostly developed world regions with the
+earliest tables dating back to the mid 18th century and the most recent from 2007. All of
+these life tables have been computed from directly-observed deaths and population counts
+without adjustment except at older ages (Wilmoth et al., 2007) and each table covers a
+2
+
+C&D Pattern, Male
+
+45q15
+
+0.5
+
+C&D Pattern, Female
+
+W
+WN
+S
+WN E
+N SE
+W
+E
+N S
+W E
+N S
+W E
+N S
+E
+W
+NE S
+W
+S
+NE
+
+West
+North
+East
+South
+
+S
+
+WEN
+
+0.2
+
+W
+N
+E
+S
+
+0.50
+
+West
+North
+East
+South
+
+WN
+E
+
+0.20
+45q15
+
+W
+N
+E
+S
+
+WN
+
+0.10
+
+W
+
+S
+
+N
+E
+
+S
+N
+0.1
+
+S
+
+E
+W
+
+N
+0.05
+
+S
+
+W
+
+N
+0.005
+
+0.010
+
+0.020
+
+E
+W
+
+0.050
+
+0.100
+
+0.200
+
+0.500
+
+0.005
+
+0.010
+
+0.020S
+
+F
+
+F
+0.50
+
+F
+
+F
+C
+G
+45q15
+
+0.500
+
+F
+GC
+
+0.2
+
+S
+
+L
+
+Latin American
+Chilean
+South Asian
+Far East Asian
+General
+F
+
+GC
+L
+
+F
+GL
+C
+
+S
+
+GC L
+
+F
+
+C
+G
+GC L
+L
+GC
+S
+F
+GC L S
+L
+F
+S
+GC
+L S
+F
+GC
+L S
+GC
+F
+L S
+GC
+L S
+
+0.20
+
+S
+
+L
+
+L
+C
+S
+F
+G
+
+F
+
+F
+
+45q15
+
+F
+
+F
+
+0.10
+
+S
+S
+
+S
+G LC
+
+S
+F
+
+0.200
+
+F
+
+UN 1982 Female
+
+C
+G
+C
+G L
+C
+L
+G
+S
+F
+C L
+G
+S
+F
+C
+L
+G
+S
+C L S
+G
+L S
+C
+G
+S
+L
+F
+
+Latin American
+Chilean
+South Asian
+Far East Asian
+General
+
+0.1
+
+0.100
+
+(b) C&D female
+
+UN 1982 Male
+
+F
+
+0.050
+5q 0
+
+(a) C&D male
+
+0.5
+
+E
+
+5q 0
+
+L
+C
+S
+F
+G
+
+S
+S
+
+E
+S
+
+N
+WE
+
+W
+WNE
+S
+WNE
+N S
+W E
+N S
+W E
+N S
+W E
+N S
+W E
+N
+S
+E
+W
+N
+S
+E
+
+S
+
+C
+G L
+
+F
+
+S
+
+0.05
+
+G LC
+S
+
+0.005
+F
+
+C L
+0.010
+0.020
+G
+S
+
+0.050
+
+0.100
+
+0.200
+
+0.500
+
+0.005
+
+5q 0
+
+0.020
+
+0.050
+
+0.100
+
+0.200
+
+0.500
+
+5q 0
+
+(c) UN male
+
+Figure 1.
+
+0.010
+
+(d) UN female
+
+Relationship between child and adult mortality, observed HMD data (n=844)
+and Coale-Demeny and UN regional model life table patterns
+
+3
+
+5-year period. The life tables in this collection contain approximately 84 million male and
+female deaths and roughly 5 billion male and 5.5 billion female person years of observation.
+An important advantage of this dataset is that each table has an open age interval at 110+.
+This open interval means the system is able to produce complete sets of mortality rates with
+the same open interval, which exceeds that of other widely used systems.1 We identify similar age patterns of mortality in the log mortality rate schedules (n mx ), which are presented
+in figure 2.
+
+(a) HMD data male
+
+Figure 2.
+
+3
+
+(b) HMD data female
+
+Mortality Rate (n mx ) Schedules in the Human Mortality Database (log scale)
+
+Method
+
+We begin this section with a discussion of the mortality model that we use to calculate a
+complete mortality rate schedule. We then describe the components of the model in two
+broad steps that correspond to the two parameters of the system - identifying ‘families’ with
+cluster analysis and defining ‘levels’ within ‘family’ with a one-paramter model.
+
+3.1
+3.1.1
+
+Mortality Model
+Motivation
+
+The motivation for this model is two-fold. The model must represent mortality age patterns
+in a parsimonious way that helps identify regularities among possibly many empirical age
+1
+
+In the widely used current systems the open age interval is typically 80+ or 85+.
+
+4
+
+patterns, and it must be able to represent a range of model mortality patterns based on the
+common patterns that emerge from the empirical data.
+The general form of the model will be to represent a mortality age pattern as the weighted
+sum of two or more independent, age-varying components that represent the age-varying nature of the mortality schedule. To this we add a constant at each age to take into account
+the non-age-varying level of the mortality schedule. Any remaining differences between the
+modeled and observed age patterns are captured with a residual term.
+The independent, age-varying components necessary for this model can be easily derived
+from a Singular Value Decomposition (SVD) of the matrix of observed mortality schedules.
+The resulting left-singular vectors2 are the independent components we need, and they have
+the convenient property of encoding the bulk of the variance among the observed mortality
+schedules in a small number of components.
+3.1.2
+
+Model
+
+Assuming 24 age groups (0, 1-4, 5-9, 10-14,... 110+), a 24 x m matrix M composed of m
+column vectors of age-specific mortality rate schedules can be expressed as a weighted sum
+of a number of components whose shapes encode the fundamental age pattern of human
+mortality and a wide range of variations on that:
+M = SB + C + R
+
+(1)
+
+S is a 24 x n matrix whose columns are the n ‘components’ used in the model (derived from
+a SVD decomposition of all of the empirical mortality rate schedules). B is a n x m matrix
+whose columns are coefficients that multiply each component schedule contained in S to yield
+the age-varying component of each mortality schedule. C is a 24 x m matrix whose columns
+are constants that are added to the result of the multiplication to modify each mortality
+schedule in an age-constant way. Finally, R is a 24 x m matrix of residuals that account for
+the remaining difference between the modeled and empirical mortality schedules.
+
+
+m1,1
+
+m1,2
+
+ m
+ 2,1 m2,2
+M = 
+ ..
+..
+ .
+.
+m24,1 m24,2
+
+s1,1 s1,2 · · ·
+s
+ 2,1 s2,2 · · ·
+S = 
+ ..
+..
+..
+ .
+.
+.
+s24,1 s24,2 · · ·
+2
+
+···
+
+m1,m
+
+
+
+···
+
+m2,m 
+
+
+.. 
+...
+. 
+· · · m24,m
+
+s1,n
+s2,n 
+
+
+.. 
+. 
+s24,n
+
+(2)
+
+The left singular vectors are similar to the components derived from a principle components analysis.
+
+5
+
+
+
+
+B = 
+
+
+
+
+C = 
+
+
+b1,1 b1,2 · · · b1,m
+
+
+
+
+b2,1 b2,2 · · · b2,m 
+
+..
+.. . .
+.. 
+. . 
+.
+.
+bn,1 bn,2 · · · bn,m
+c
+
+· ,1
+
+c
+
+..
+.
+c
+
+· ,2
+
+..
+.
+
+· ,1
+
+c
+
+· ,2
+
+r1,1 r1,2
+ r
+ 2,1 r2,2
+R = 
+ ..
+..
+ .
+.
+r24,1 r24,2
+
+
+
+· · · c · ,m
+
+..
+.. 
+.
+. 
+· · · c · ,m
+
+· · · r1,m
+· · · r2,m 
+
+
+.. 
+..
+.
+. 
+· · · r24,m
+
+(3)
+
+Ignoring the residuals, SB + C represents the modeled mortality schedules. SB captures
+the age-varying component of the mortality schedules and C represents the non age-varying
+level of each mortality schedule.
+If only one mortality schedule is involved:
+
+
+
+
+
+
+s1,1
+
+
+
+
+
+s1,2
+
+
+
+
+
+s1,n
+
+  
+
+r1
+c
+
+
+s 
+s 
+s    
+
+ m2 
+ 2,1 
+ 2,2 
+ 2,n   c   r2 
+ + b2 · 
+ + · · · + bn · 
++ +
+
+
+ = b1 · 
+ ..   ..   .. 
+ .. 
+ .. 
+ .. 
+ . 
+ . 
+ . 
+ .  .  . 
+s24,1
+s24,2
+s24,n
+m24
+r24
+c
+m1
+
+
+
+(4)
+
+The component vectors s(·,·) can be thought of as a new basis in age-space with the special
+property that most of the variance in the data is represented by a small subset of the these.
+The weights b(·) determine a given point in this space, and then c adds a constant amount
+to the sum of the weighted components.
+The effective parameters in this model are the b’s, and as mentioned above, when only
+a small number of score vectors is necessary to account for the bulk of the variance in the
+empirical data set, then the number of b’s necessary is small, making the model effectively
+parsimonious. Of course in reality the model is much less parsimonious because the component vectors S are parameters themselves, albeit fixed. Provided the original data set from
+which they are calculated is highly varied, they will be capable of representing a wide range
+of age variation and can be thought of as permanently fixed.
+
+3.2
+
+Identifying Similar Age Patterns of Mortality
+
+We use a model-based clustering method to identify similar age patterns of mortality. Before
+the cluster analysis, we first reduce the dimensionality of the data using Singular Value
+6
+
+Decomposition of the empirical schedules of mortality. In order to maintain congruence
+of periods and locations between male and female schedules, we bind the male and female
+schedules and perform the SVD on the resulting 48 × 844 matrix. SVD decomposes a matrix
+into three smaller matrixes including one whose columns are orthogonal and point in the
+directions with most variation in the original space – the left singular vectors. These vectors
+concentrate the information in the original matrix into a smaller number of dimensions, and
+as a result the information in the original matrix can be represented by just the first few
+vectors. Thus, the dimensionality of the data can be reduced from 24 (or 48) age groups to
+just four or five component vectors. Figure 3 plots the first five component vectors from the
+SVD.
+
+HMD Score vector
+
+0.4
+
+1
+2
+3
+4
+5
+
+0.3
+0.2
+
+SVD score
+
+0.1
+0.0
+-0.1
+-0.2
+-0.3
+
+Male
+
+Female
+
+0
+1-4
+5-9
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110+
+0
+1-4
+5-9
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110+
+
+-0.4
+
+Age (years)
+
+Figure 3.
+
+First five component vectors (left singular vectors) from the SVD of the HMD
+mortality rate schedules
+
+This reduction in dimensionality is completed by regressing (simple OLS linear regression) each empirical mortality schedule on the first ten component vectors and storing the
+resulting coefficients and constants in a new data set. Keeping ten coefficients provides an
+opportunity to vary the number of components used in the clustering and choose the number
+that provides the best clustering.
+With this new reduced-dimension data set, we use the model-based clustering method
+described by Fraley and Raftery (2006) to identify robust clusters. This technique is a fully
+automated, robust clustering method that identifies the number and shape of clusters that
+maximizes the bayesian information criteria (BIC). Model-based clustering puts cluster analysis on solid statistical footing and answers questions concerning not only the number and
+shape of clusters, but is also able to quantify uncertainty about the results. This method
+7
+
+yields both the BIC values for different numbers of clusters and the classification of the data
+using the number of clusters with the greatest BIC value.
+A priori there is no objective way to choose how many of our new ‘reduced’ dimensions to
+include in the clustering, so clustering is performed on the reduced dimension data set using
+2-10 dimensions, and the clustering classification from each is saved in a new data set. The
+best clustering is chosen by calculating a new fit metric, the “total deviation from median”
+(TDM). This is the sum of the absolute differences between each mortality schedule and the
+median of all mortality schedules in the cluster to which it is assigned. Lower values of the
+TDM indicate less variation among mortality schedules in each cluster, and consequently,
+the best clustering has the lowest overall TDM value.
+
+3.3
+
+Model Life Tables
+
+Following the structure of existing systems, the one presented here is composed of ‘families’
+with different ‘levels’ of mortality in each. Each ‘family’ is based on one of the clusters
+identified using the procedure described above. The structure of the system is presented in
+equation 5.
+(underlying family-specific age pattern) + α ∗ (family-age-specific deviation)
+
+(5)
+
+where α varies to generate levels within a family.
+3.3.1
+
+Life Table Families
+
+The underlying-family-specific age pattern of mortality for each family is identified by first
+obtaining the median set of coefficients for each family (cluster) and inserting them into
+equation 1 to obtain a ‘family’ pattern. The resulting cluster-specific median mortality rate
+schedules are the underlying mortality age profiles on which the model life table families are
+based Mf , where f indexes the families.
+3.3.2
+
+Age-Varying Mortality Levels within a Family
+
+There is variation in the overall level of mortality within each of the clusters that underly
+the model life table families. We include this variation in equation 5 with the family-agespecific deviation. This quantity is a weighted average of variation from two sources. The
+first captures age-specific variation within the family as the difference between the 97.5th
+quantile for age group i and family f and the median value for age group i and family f
+when α is positive, and the difference between the 2.5th quantile for age group i and family
+f and the median value for age group i and family f when α is negative. The second source
+is the same as the first but represents age-specific variation within the entire HMD dataset.
+The calculation is the same except all of the HMD life tables are included. As α approaches
+an absolute value of 1 and the resulting age pattern moves farther from the family-specific
+underlying age pattern, more weight is given to the differences calculated from the the entire
+dataset. When α is 1 the balance is about half-half, and when α moves beyond 1 the ‘alltables’ age-specific deviation progressively dominates. Consequently, as the family-specific
+8
+
+level approaches the ‘edge’ of the data for each family, the cluster invariant (whole data set)
+age-specific deviation takes over. This produces smooth family-age-specific deviations for
+mortality levels approaching, at and beyond the levels represented by the data within each
+family, and as a result we are able to extrapolate reasonably to very low and high mortality
+levels within all of the families.
+The age-specific deviations are represented by our model in the following way. Within a
+group of life tables (either a family or the whole HMD data set), the age-specific change D
+below or above the median is represented by:
+below the median :
+above the median :
+
+Df− = Mf [median] − Mf [2.5th quantile]
+Df+ = Mf [97.5th quantile] − Mf [median]
+
+(6)
+(7)
+
+The final expression for a life table in family f at level α is:
+when α < 0 :
+when α = 0 :
+when α > 0 :
+
+
+Mf (α) = Mf + α · e−0.75·|α| · Df− + (1 − e−0.75·|α| ) · Dh−
+Mf (α) = Mf
+
+Mf (α) = Mf + α · e−0.75·|α| · Df+ + (1 − e−0.75·|α| ) · Dh+
+
+(8)
+(9)
+(10)
+
+where f indexes families and h is the whole HMD dataset. The minus sign in (f or h)−
+indicates age-specific deviations below the median, and the plus sign indicates age-specific
+deviations above the median. The value of -0.75 for the coefficient in the exponential weight
+is chosen so that when |α| = 1.0 there is approximately equal weight given to the familyspecific and all-HMD age-specific deviations.
+Similar to previous systems, we index the levels within each family on the expectation of
+life at birth. We use the optimize() function in the R statistical package (R Development
+Core Team, 2006) to find values of α such that the expectation of life at birth ranges from
+30 to 90 within each family.
+Users of the system can supply any of a variety of measures of child or adult mortality
+and discriminant analysis can be used to identify the family in which the supplied measure
+is most likely to fit.3 Then the user can select a level or desired life expectancy within the
+identified family.
+
+4
+
+Results
+
+4.1
+
+Mortality Patterns
+
+We identify five distinct mortality patterns for males and females. The underlying family
+patterns are presented in figure 4. The left panel of that figure shows that nearly all of the
+3
+
+The R package Mclust, which was used to perform the cluster analysis, contains functions to perform
+discriminant analysis where any portion of the age range or any summary measure like e0 can be used as
+the training data.
+
+9
+
+male patterns contain the expected young-adult mortality hump. Patterns 2 and 3 show
+similar levels of child mortality while diverging somewhat in adult mortality. The rest of the
+patterns show wide variation in both adult and child mortality for both males and females.
+
+1e-01
+
+1e-01
+
+n mx
+
+1e+00
+
+n mx
+
+1e+00
+
+1e-02
+
+1e-02
+
+1e-03
+
+1e-03
+Underlying Patterns, Male
+
+Underlying Patterns, Female
+
+1
+2
+3
+4
+5
+
+0
+1-4
+5-9
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110+
+
+1e-04
+
+0
+1-4
+5-9
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110+
+
+1e-04
+
+Age (years)
+
+Age (years)
+
+(a) HMD Family Patterns, male
+
+Figure 4.
+
+1
+2
+3
+4
+5
+
+(b) HMD Family Patterns, female
+
+HMD Cluster/Family Age-Patterns of Mortality (log scale)
+
+Figure 5 plots the relationship between adult mortality (45 q15 ) and child mortality (5 q0 )
+in the observed data (small circles) as well as the resulting relationships from each model
+family after varying α. This figure reveals that by varying α this system can cover a wide
+range of human mortality experiences. For example, patterns 2 and 4 cover cases of low child
+mortality at both high and low adult mortality respectively, while patterns 1 and 5 result
+from very high adult and child mortality regimes.
+
+4.2
+
+Components of each Cluster/Family
+
+Each cluster or family contains life tables from a wide range of geographic locations. In
+contrast, the life tables in each cluster tend to come from similar historical periods. For
+instance patterns 2 and 3 do not contain any life tables with start dates before 1945, while
+cluster 4 contains no life tables with start dates prior to 1970. Cluster 1 contains life tables in
+a middle range with start dates between 1890 and 1960, and cluster 5 contains life tables with
+the earliest start dates (1770, 1774). Appendix A contains lists of cluster/family membership
+for all the HMD life tables sorted by time and location within time, and Appendix B contains
+the same lists sorted by location and time within location.
+
+10
+
+5
+5
+5
+2
+
+0.5
+
+2
+
+15
+5
+
+2
+
+1
+5
+
+5
+
+5
+5
+
+0.50
+
+15
+
+2
+
+135
+15
+3
+2
+1
+4
+315
+2
+2
+3 51
+4
+3
+2
+4 3 1
+2
+4 3 3 1
+2
+1
+4 3
+4
+2
+3
+4
+Observed cluster classification, Male
+43
+1
+2
+4
+3
+
+2
+
+0.2
+
+0.1
+
+4
+0.005
+
+0.010
+
+0.020
+
+0.050
+
+0.100
+
+0.200
+
+2
+2 4
+
+4
+
+53
+1
+
+1
+
+513
+
+4
+
+0.500
+
+4
+
+13
+
+2
+13
+4 3
+2
+3
+1
+2 4 3
+2 44 3
+4 3
+
+Observed cluster classification, Female
+1
+2
+3
+4
+5
+
+43
+0.005
+
+0.010
+
+5
+1
+
+15
+3
+15
+
+4
+
+(a) male
+
+4.3
+
+2
+
+0.05
+
+5q 0
+
+Figure 5.
+
+2
+
+0.10
+
+4
+5
+
+4
+
+2
+
+0.20
+45q15
+
+45q15
+
+2
+
+1
+5
+
+5
+
+5
+1
+
+0.020
+
+0.050
+
+0.100
+
+0.200
+
+0.500
+
+5q 0
+
+(b) female
+
+Child versus Adult Mortality. Observed data (small colored circles) and
+implied relationships after varying α from -1 to 1 (black numbers correspond
+index families and both adult and child mortality displayed on log scale)
+
+Family-specific Parameters
+
+Below in Tables 8, 9, 10, 11, 12 and 13 in Appendix C are the component score vectors,
+median coefficients, and below-median and above-median deviations for males and females
+that when inserted into Equations 8 through 10 produce the model life table schedules.
+
+4.4
+
+Evaluating System Performance
+
+We assess the performance of the system in several ways, starting with how well it can
+classify an arbitrary mortality indicator into one of the families. Because users typically
+approach model life table systems with at least some information on the age pattern of
+mortality (e.g. 1 m0 , 5 q0 , 45 q15 ), we test the use of discriminant analysis to classify partial
+mortality schedules. Using the known classification from the cluster analysis as a training
+data set, we attempt to reclassify each schedule from the HMD using one of four child
+mortality indicators alone and combining them with 45 q15 as a second mortality measure
+to determine the appropriate family. We compare the known classification from the cluster
+analysis of the complete schedules with the classification of the mortality indicators resulting
+from discriminant analysis. The percentage of HMD schedules that were misclassified are
+presented in table 1. For all four child mortality measures alone, roughly 25-29 percent of
+schedules were misclassified, while the addition of 45 q15 reduces misclassification by roughly
+10-13 percentage points across all measures. When an observation is misclassified, it is
+typically misclassified into an adjacent cluster because when clusters are close or overlapping
+11
+
+classification uncertainty is greatest.
+Table 1.
+
+Percent misclassified HMD schedules when using one of four child mortality
+measures alone and combined with 45 q15
+
+1 m0
+5 m0
+1 q0
+5 q0
+
+without 45 q15
+Male Female
+28.8
+28.1
+26.9
+25.5
+28.9
+28.2
+26.5
+25.4
+
+with 45 q15
+Male Female
+15.2
+14.8
+14.8
+14.2
+14.9
+15.9
+14.5
+14.3
+
+We then assess how well the model reproduces known mortality schedules. First we
+compare the accuracy of estimation for the system described in this paper with a recent
+method advanced by Wilmoth et al. (2009). Wilmoth and colleagues report that their
+system performs similarly to the WHO system (Murray et al., 2003) and outperforms the
+widely used Coale and Demeny (1966) and United Nations (1982). Following the procedure
+described by Wilmoth et al. (2009) we use both Wilmoth’s and our systems to predict the
+WHO model life table database and compare the standard errors of the resulting residuals for
+three mortality indicators, e0 , 1 m0 and 45 q15 . Results are presented in table 2. The system by
+Wilmoth et al. (2009) allows the user to either use a single measure of child mortality (5 q0 )
+or child mortality combined with a measure of adult mortality (45 q15 ) as input parameters.
+We present both. Typically, our system (referred to as ‘Clark’ in the tables below), uses e0
+to determine the level, which is presented in the table, but for comparison we have also used
+45 q15 . To select the appropriate ‘family’ we use discriminant analysis with the first two age
+groups (0-1, 1-4) as the training set.
+Table 2.
+
+Standard deviations of estimation errors for e0 , 1 m0 ,
+(Predicting WHO using HMD fitted system)
+Female
+e0
+1 m0
+45 q15
+Clark (level: e0 )
+0.112 0.008 0.011
+Clark (level: 45 q15 )
+1.180 0.013 0.001
+Wilmoth (w/o 45 q15 ) 1.112 0.006 0.021
+Wilmoth (w/ 45 q15 ) 1.162 0.006 0.022
+
+45 q15
+
+Male
+e0
+1 m0
+45 q15
+0.093 0.009 0.013
+1.182 0.016 0.001
+1.685 0.006 0.040
+1.619 0.006 0.037
+
+Second, we conduct a more thorough validation by including life tables from the WHO
+life table database (World Health Organization, 2010). We combine the HMD and WHO
+life tables into a single data set and then conduct an out-of-sample validation using the
+combined data set. We take a random 50% sample from the combined dataset and fit this
+sample using both models (Wilmoth’s and ours) and then predict the remaining half of the
+life tables using the model ‘fits’ - i.e. both Wilmoth’s and our models calibrated to the
+50% random sample. To select the appropriate family in our system we use discriminant
+12
+
+Table 3.
+
+Mean absolute error for e0 , 1 m0 , 45 q15
+(Predicting WHO with HMD fitted system)
+Female
+e0
+1 m0
+45 q15
+Clark (level: e0 )
+0.010 0.009 0.010
+Clark (level: 45 q15 )
+1.155 0.010 0.000
+Wilmoth (w/o 45 q15 ) 1.349 0.002 0.020
+Wilmoth (w/ 45 q15 ) 1.343 0.002 0.020
+
+Male
+e0
+1 m0
+45 q15
+0.007 0.006 0.015
+1.237 0.010 0.000
+1.843 0.002 0.039
+1.839 0.002 0.039
+
+analysis with the first two age groups (0-1, 1-4) as the training set and then select the level
+by finding the value of α necessary to produce a life table whose life expectancy matches
+as closely as possible the observed life expectancy in the out-of-sample life table. We then
+calculate the standard deviations of the residuals for three mortality indicators e0 , 1 m0 and
+45 q15 , displayed in Table 4.
+Table 4.
+
+Standard deviations of absolute errors for e0 , 1 m0 , 45 q15
+(Predicting out-of-sample 50% HMD/WHO combined)
+Female
+e0
+1 m0
+45 q15
+Clark (level: e0 )
+0.099 0.009 0.013
+Clark (level: 45 q15 )
+1.478 0.017 0.000
+Wilmoth (w/o 45 q15 ) 1.100 0.007 0.024
+Wilmoth (w/ 45 q15 ) 1.112 0.007 0.024
+
+Male
+e0
+1 m0
+45 q15
+0.243 0.011 0.017
+1.722 0.027 0.000
+1.695 0.008 0.040
+1.574 0.008 0.036
+
+Both models were re-estimated with 50% in-sample half of HMD/WHO
+combined data set
+
+5
+
+Discussion
+
+We present a parsimonious, robust model of age-specific mortality and a method for identifying common age patterns of mortality. Together these allow us to create a traditional
+system of model life tables that includes a small number of families with varying levels of
+mortality within each family. We ‘calibrate’ this model using the life tables in the HMD
+life table database to produce a model life table system that describes the variation in agepatterns of mortality in the HMD life tables. We present various measures of goodness of fit
+and conduct an out-of-sample validation using life tables in both the HMD and WHO life
+table databases. Our new model life table system performs very well compared to the recent
+model proposed by Wilmoth et al. (2009) which itself outperforms the other commonly used
+existing model life table systems. Our new families include some with low child mortality
+and relatively high adult mortality that do not appear in any existing model life table systems - i.e. families 2 and 3.
+
+13
+
+Table 5.
+
+Mean absolute error for e0 , 1 m0 , 45 q15
+(Predicting out-of-sample 50% HMD/WHO combined)
+Female
+e0
+1 m0
+45 q15
+Clark (level: e0 )
+0.007 0.006 0.011
+Clark (level: 45 q15 )
+1.361 0.009 0.000
+Wilmoth (w/o 45 q15 ) 1.337 0.003 0.021
+Wilmoth (w/ 45 q15 ) 1.311 0.003 0.021
+
+Male
+e0
+1 m0
+45 q15
+0.027 0.007 0.015
+1.407 0.013 0.000
+1.892 0.003 0.041
+1.874 0.003 0.041
+
+Both models were re-estimated with 50% in-sample half of
+HMD/WHO combined set
+
+Missing from our calibrated model is mortality experience in the developing world or
+in populations with unusual demographic or epidemiological circumstances, e.g. war-time
+mortality or high HIV prevalence. We are addressing this limitation through a collaboration with the INDEPTH network (INDEPTH Network, 2011) of health and demographic
+surveillance system sites in Africa and Asia. INDEPTH has compiled a large collection of
+life tables from its member sites, and we are applying our model life table framework to the
+INDEPTH collection both with and without the HMD and WHO life tables. Many of the
+INDEPTH life tables describe mortality experience in populations with unusual demographic
+and epidemiological experiences – including very high HIV prevalence.
+Our model life table system maintains the attractive features of the traditional model
+life table systems – i.e. parsimony, intuitive interpretation and ease of use – while introducing a new fully automated and statistically valid method of construction. This removes
+any ‘analyst bias’ from the process of identifying the empirical regularities in a collection
+of life tables and produces reproducible classifications of life tables to families. Our model
+of age-specific mortality allows easy, flexible manipulation of mortality age-patterns which
+enables us to construct a simple model of mortality age-patterns within each family. As
+demonstrated by the out-of-sample validation, the overall modeling framework works well
+with different collections of model life tables which will allow us to rapidly incorporate the
+variation in age-patterns of mortality described by the INDEPTH life tables.
+Finally, we have created a package with a user-friendly graphical interface that implements the HMD-calibrated version of our model for the R statistical package (R Development
+Core Team, 2006). The package will be available from the CRAN archive soon and can be
+requested from the authors immediately.
+
+14
+
+Acknowledgements
+This project is supported by grants K01 HD057246 and R01 HD054511 from the National
+Institute of Child Health and Human Development (NICHD) of the National Institutes
+of Health (NIH). The authors are grateful to Adrian Raftery, Chris Fraley and members
+of the BayesPop Working Group, Center for Statistics and the Social Sciences, University
+of Washington for invaluable discussion during the preparation of this work, and to Hana
+ˇ c´ıkov´a for help with the user interface for the R package.
+Sevˇ
+
+15
+
+References
+Brass, W. 1971. “On the Scale of Mortality.” In Biological Aspects of Demography, edited
+by W. Brass, London: Taylor and Francis.
+Clark, S. J. 2002. “INDEPTH Mortality Patterns for Africa.” In Population and Health in
+Developing Countries, vol. 1, edited by INDEPTH network, Ottawa: IDRC Press.
+Clark, S. J., M. Jasseh, S. Punpuing, E. Zulu, O. S. Ayaga Bawah and INDEPTH Network
+Member Sites. 2009. “INDEPTH Model Life Tables 2.0.” Presented at the Annual Meeting
+for the Population Association of America.
+Coale, A. J. and P. Demeny. 1966. Regional Model Life Tables and Stable Populations.
+Princeton University Press.
+Coale, A. J. and G. Guo. 1989. “Revised regional model life tables at very low levels of
+mortality.” Population Index 55(4):613–643.
+Fraley, C. and A. Raftery. 2006. “Mclust version 3 for R: Normal mixture modeling and
+model-based clustering.” Tech. Rep. 504, Department of Statistics, University of Washington.
+Gompertz, B. 1825. “On the Nature of the Function Expressive of the Law of Human Mortality, and on a New Mode of Determining the Value of Life Contingencies.” Philosophical
+Transactions of the Royal Society of London 115:513–583.
+Heligman, L. and J. H. Pollard. 1980. “The Age Pattern of Mortality.” Journal of the Institute
+of Actuaries 107(434):49–80.
+INDEPTH Network. 2011. “INDEPTH Network – International Network for the Demographic Evaluation of Populations and Their Health in Developing Countries.” URL
+http://www.indepth-network.org.
+Murray, C., B. Ferguson, A. Lopez, M. Guillot, J. Salomon and O. Ahmad. 2003. “Modified
+Logit Life Table System: Principles, Empirical Validation, and Application.” Population
+Studies 57:165–182.
+R Development Core Team. 2006. R: A Language and Environment for Statistical Computing. R Foundation for Statistical Computing, Vienna, Austria. URL
+http://www.R-project.org, ISBN 3-900051-07-0.
+United Nations. 1982. “Model Life Tables for Developing Countries.” In Population Studies,
+77, New York: United Nations.
+University of California, Berkeley and Max Planck Institute for Demographic Research. 2009.
+“Human Mortality Database.” URL http://www.mortality.org.
+Wilmoth, J., K. Andreev, D. Jdanov and D. Glei. 2007. “Methods Protocol for the Human
+Mortality Database Version 5.” www.mortality.org/Public/Docs/MethodsProtocol.pdf.
+16
+
+Wilmoth, J., V. Canudas-Romo, S. Zureick, M. Inoue and C. Sawyer. 2009. “A Flexible TwoDimensional Mortality Model for Use in Indirect Estimation.” Presented at the Annual
+Meeting for the Population Association of America.
+World
+Health
+Organization.
+2010.
+“WHO
+Mortality
+http://www.who.int/healthinfo/morttables/en/index.html.
+
+17
+
+Database.”
+
+URL
+
+Appendix A - Cluster membership by period then location within period
+Table 6.
+Period
+1890-1894
+1895-1899
+1900-1904
+1905-1909
+1910-1914
+1915-1919
+1920-1924
+1921-1924
+1922-1924
+1925-1929
+
+1930-1934
+
+1933-1934
+1935-1939
+
+1940-1944
+
+1945-1949
+
+1947-1949
+1948-1949
+1950-1954
+1955-1959
+1960-1964
+
+Classified Period and Countries
+Country/Region
+
+Family 1
+New Zealand: Non-Maori Population
+New Zealand: Non-Maori Population
+New Zealand: Non-Maori Population
+New Zealand: Non-Maori Population
+Denmark, England & Wales, Iceland, New Zealand: Non-Maori Population, Sweden, Switzerland
+Denmark, England & Wales, New Zealand: Non-Maori Population,
+Scotland, Switzerland
+Belgium, Denmark, England & Wales, France, Netherlands, New
+Zealand: Non-Maori Population, Scotland, Sweden, Switzerland
+Australia, Canada
+Northern Ireland
+Australia, Belgium, Canada, Denmark, England & Wales, France,
+Netherlands, New Zealand: Non-Maori Population, Norway, Scotland,
+Sweden, Switzerland
+Australia, Belgium, Canada, Denmark, England & Wales, Finland,
+France, Netherlands, New Zealand: Non-Maori Population, Northern
+Ireland, Norway, Scotland, Spain, Sweden, Switzerland
+USA
+Australia, Belgium, Canada, Denmark, England & Wales, Finland,
+France, Iceland, Netherlands, New Zealand: Non-Maori Population,
+Northern Ireland, Norway, Scotland, Sweden, Switzerland, USA
+Australia, Belgium, Canada, Denmark, England & Wales, France, Iceland, Italy, Netherlands, New Zealand: Non-Maori Population, Northern Ireland, Norway, Portugal, Scotland, Spain, Sweden, Switzerland,
+USA
+Belgium, Canada, Denmark, England & Wales, Finland, France, Iceland, Netherlands, Northern Ireland, Norway, Portugal, Scotland,
+Spain, Sweden, Switzerland
+Austria, Japan
+New Zealand: National Population
+Bulgaria, Hungary, Ireland, Japan, Portugal, Slovak Republic, Spain
+Bulgaria, Japan, Portugal, Spain
+Portugal
+
+Continued on Next Page. . .
+18
+
+Period
+1945-1949
+1950-1954
+1955-1959
+1960-1964
+1965-1969
+1970-1974
+1975-1979
+1980-1984
+1985-1989
+1990-1994
+
+1995-1999
+2000-2003
+2000-2004
+2005-2006
+2005-2007
+
+1945-1949
+1950-1954
+
+1955-1959
+
+1956-1959
+1958-1959
+Continued
+
+Table 6 – Continued
+Country/Region
+Family 2
+USA
+USA
+New Zealand: Maori Population
+Belarus, Latvia, Lithuania, New Zealand: Maori Population, Russia,
+Ukraine
+Belarus, Estonia, Latvia, Lithuania, New Zealand: Maori Population,
+Russia, Ukraine, USA
+Belarus, Estonia, Latvia, Lithuania, New Zealand: Maori Population,
+Russia, Ukraine, USA
+Belarus, Canada, Estonia, Finland, Latvia, Lithuania, New Zealand:
+Maori Population, Russia, Taiwan, Ukraine, USA
+Belarus, Estonia, Finland, Hungary, Japan, Latvia, Lithuania, New
+Zealand: Maori Population, Russia, Taiwan, Ukraine, USA
+Belarus, Estonia, Finland, Hungary, Latvia, Lithuania, New Zealand:
+Maori Population, Russia, Taiwan, Ukraine, USA
+Belarus, Estonia, Germany: East, Hungary, Latvia, Lithuania,
+New Zealand: Maori Population, Poland, Russia, Slovenia, Taiwan,
+Ukraine, USA
+Belarus, Estonia, Hungary, Latvia, Lithuania, New Zealand: Maori
+Population, Poland, Russia, Slovenia, Taiwan, Ukraine
+New Zealand: Maori Population
+Belarus, Estonia, Hungary, Latvia, Lithuania, Poland, Russia, Slovenia, Ukraine
+Hungary, Poland, Russia, Ukraine
+Belarus, Estonia, Latvia, Lithuania
+Family 3
+Australia, New Zealand: Non-Maori Population
+Australia, Austria, Belgium, Canada, Czech Republic, Denmark, England & Wales, Finland, France, Iceland, Italy, Netherlands, New
+Zealand: Non-Maori Population, New Zealand: National Population,
+Northern Ireland, Norway, Scotland, Sweden, Switzerland
+Australia, Austria, Belgium, Canada, Czech Republic, Denmark, England & Wales, Finland, France, Hungary, Iceland, Ireland, Italy,
+Netherlands, New Zealand: Non-Maori Population, New Zealand: National Population, Northern Ireland, Norway, Slovak Republic, Scotland, Sweden, Switzerland, USA
+Germany: East, Germany: West
+Poland
+on Next Page. . .
+
+19
+
+Period
+1960-1964
+
+1965-1969
+
+1970-1974
+
+1975-1979
+
+1980-1984
+
+1983-1984
+1985-1989
+1990-1994
+1995-1999
+2000-2004
+2005-2006
+2005-2007
+
+Table 6 – Continued
+Country/Region
+Australia, Austria, Belgium, Bulgaria, Canada, Czech Republic, Denmark, England & Wales, Estonia, Finland, France, Germany: East,
+Germany: West, Hungary, Iceland, Ireland, Italy, Japan, Luxembourg,
+Netherlands, New Zealand: Non-Maori Population, New Zealand: National Population, Northern Ireland, Norway, Poland, Slovak Republic, Scotland, Spain, Sweden, Switzerland, USA
+Australia, Austria, Belgium, Bulgaria, Canada, Czech Republic, Denmark, England & Wales, Finland, France, Germany: East, Germany:
+West, Hungary, Iceland, Ireland, Italy, Japan, Luxembourg, Netherlands, New Zealand: Non-Maori Population, New Zealand: National
+Population, Northern Ireland, Norway, Poland, Portugal, Slovak Republic, Scotland, Spain, Sweden, Switzerland
+Australia, Austria, Belgium, Bulgaria, Canada, Czech Republic, Denmark, England & Wales, Finland, France, Germany: East, Germany:
+West, Hungary, Iceland, Ireland, Italy, Japan, Luxembourg, Netherlands, New Zealand: Non-Maori Population, New Zealand: National
+Population, Northern Ireland, Norway, Poland, Portugal, Slovak Republic, Scotland, Spain, Switzerland, Taiwan
+Australia, Austria, Belgium, Bulgaria, Czech Republic, Denmark,
+England & Wales, France, Germany: East, Germany: West, Hungary, Iceland, Ireland, Italy, Japan, Luxembourg, Netherlands, New
+Zealand: Non-Maori Population, New Zealand: National Population,
+Northern Ireland, Norway, Poland, Portugal, Slovak Republic, Scotland, Spain
+Austria, Bulgaria, Czech Republic, England & Wales, Germany: East,
+Germany: West, Ireland, Italy, Luxembourg, Northern Ireland, Norway, Poland, Portugal, Slovak Republic, Scotland, Spain
+Slovenia
+Austria, Bulgaria, Czech Republic, Germany: East, Poland, Portugal,
+Slovak Republic, Scotland, Slovenia
+Bulgaria, Czech Republic, Slovak Republic
+Bulgaria, Czech Republic, Slovak Republic
+Bulgaria, Slovak Republic
+Slovak Republic
+Bulgaria
+Family 4
+
+1970-1974 Sweden
+1975-1979 Sweden, Switzerland
+Continued on Next Page. . .
+
+20
+
+Period
+1980-1984
+
+1985-1989
+
+1990-1994
+
+1991-1994
+1992-1994
+1995-1999
+
+2000-2003
+2000-2004
+
+2005-2006
+
+2005-2007
+
+Table 6 – Continued
+Country/Region
+Australia, Belgium, Canada, Denmark, France, Iceland, Netherlands,
+New Zealand: Non-Maori Population, New Zealand: National Population, Sweden, Switzerland
+Australia, Belgium, Canada, Denmark, England & Wales, France,
+Germany: West, Iceland, Ireland, Italy, Japan, Luxembourg, Netherlands, New Zealand: Non-Maori Population, New Zealand: National
+Population, Northern Ireland, Norway, Spain, Sweden, Switzerland
+Australia, Austria, Belgium, Canada, Denmark, England & Wales,
+Finland, France, Germany: West, Iceland, Ireland, Italy, Japan, Luxembourg, Netherlands, New Zealand: Non-Maori Population, New
+Zealand: National Population, Northern Ireland, Norway, Portugal,
+Scotland, Spain, Sweden, Switzerland
+Germany
+Chile
+Australia, Austria, Belgium, Canada, Chile, Denmark, England
+& Wales, Finland, France, Germany, Germany: East, Germany:
+West, Iceland, Ireland, Italy, Japan, Luxembourg, Netherlands, New
+Zealand: Non-Maori Population, New Zealand: National Population, Northern Ireland, Norway, Portugal, Scotland, Spain, Sweden,
+Switzerland, USA
+New Zealand: Non-Maori Population, New Zealand: National Population
+Australia, Austria, Belgium, Canada, Chile, Czech Republic, Denmark, England & Wales, Finland, France, Germany, Germany: East,
+Germany: West, Iceland, Ireland, Italy, Japan, Luxembourg, Netherlands, Northern Ireland, Norway, Portugal, Scotland, Spain, Sweden,
+Switzerland, Taiwan, USA
+Belgium, Czech Republic, England & Wales, France, Germany, Germany: East, Germany: West, Ireland, Italy, Luxembourg, Netherlands, Northern Ireland, Scotland, Slovenia, Spain
+Denmark, Finland, Iceland, Japan, Norway, Portugal, Sweden,
+Switzerland, Taiwan
+Family 5
+
+1751-1754
+1755-1759
+1760-1764
+1765-1769
+1770-1774
+1775-1779
+1780-1784
+Continued
+
+Sweden
+Sweden
+Sweden
+Sweden
+Sweden
+Sweden
+Sweden
+on Next Page. . .
+21
+
+Period
+1785-1789
+1790-1794
+1795-1799
+1800-1804
+1805-1809
+1810-1814
+1815-1819
+1816-1819
+1820-1824
+1825-1829
+1830-1834
+1835-1839
+1838-1839
+1840-1844
+1841-1844
+1845-1849
+1846-1849
+1850-1854
+1855-1859
+1860-1864
+1865-1869
+1870-1874
+1872-1874
+1875-1879
+1876-1879
+1878-1879
+1880-1884
+
+1885-1889
+
+1890-1894
+Continued
+
+Table 6 – Continued
+Country/Region
+Sweden
+Sweden
+Sweden
+Sweden
+Sweden
+Sweden
+Sweden
+France
+France, Sweden
+France, Sweden
+France, Sweden
+Denmark, France, Sweden
+Iceland
+Denmark, France, Iceland, Sweden
+Belgium, England & Wales
+Belgium, Denmark, England & Wales, France, Iceland, Sweden
+Norway
+Belgium, Denmark, England & Wales, France, Iceland, Netherlands,
+Norway, Sweden
+Belgium, Denmark, England & Wales, France, Iceland, Netherlands,
+Norway, Scotland, Sweden
+Belgium, Denmark, England & Wales, France, Iceland, Netherlands,
+Norway, Scotland, Sweden
+Belgium, Denmark, England & Wales, France, Iceland, Netherlands,
+Norway, Scotland, Sweden
+Belgium, Denmark, England & Wales, France, Iceland, Netherlands,
+Norway, Scotland, Sweden
+Italy
+Belgium, Denmark, England & Wales, France, Iceland, Italy, Netherlands, Norway, Scotland, Sweden
+New Zealand: Non-Maori Population, Switzerland
+Finland
+Belgium, Denmark, England & Wales, Finland, France, Iceland, Italy,
+Netherlands, New Zealand: Non-Maori Population, Norway, Scotland,
+Sweden, Switzerland
+Belgium, Denmark, England & Wales, Finland, France, Iceland, Italy,
+Netherlands, New Zealand: Non-Maori Population, Norway, Scotland,
+Sweden, Switzerland
+Belgium, Denmark, England & Wales, Finland, France, Iceland, Italy,
+Netherlands, Norway, Scotland, Sweden, Switzerland
+on Next Page. . .
+
+22
+
+Period
+1895-1899
+1900-1904
+1905-1909
+1908-1909
+1910-1914
+1915-1919
+1920-1924
+1925-1929
+1930-1934
+1935-1939
+1937-1939
+1940-1944
+1945-1949
+1947-1949
+1950-1954
+
+Table 6 – Continued
+Country/Region
+Belgium, Denmark, England & Wales, Finland, France, Iceland, Italy,
+Netherlands, Norway, Scotland, Sweden, Switzerland
+Belgium, Denmark, England & Wales, Finland, France, Iceland, Italy,
+Netherlands, Norway, Scotland, Sweden, Switzerland
+Belgium, Denmark, England & Wales, Finland, France, Iceland, Italy,
+Netherlands, Norway, Scotland, Sweden, Switzerland
+Spain
+Belgium, Finland, France, Italy, Netherlands, Norway, Scotland, Spain
+Belgium, England & Wales, Finland, France, Iceland, Italy, Netherlands, Norway, Spain, Sweden
+Finland, Iceland, Italy, Norway, Spain
+Finland, Iceland, Italy, Northern Ireland, Spain
+Iceland, Italy
+Italy, Spain
+New Zealand: Maori Population
+Finland, New Zealand: Maori Population
+Italy, New Zealand: Maori Population
+Bulgaria
+New Zealand: Maori Population
+
+23
+
+Appendix B - Cluster membership by location then period within location
+Table 7.
+
+Classified Countries and Periods
+
+Country/Region
+Australia
+Austria
+Belgium
+Bulgaria
+Canada
+Denmark
+England & Wales
+Finland
+France
+Hungary
+Iceland
+Ireland
+Italy
+Japan
+Netherlands
+New Zealand: National Population
+New Zealand: Non-Maori Population
+
+Northern Ireland
+Norway
+Portugal
+Scotland
+Slovak Republic
+Continued on Next Page. . .
+
+Period
+Family 1
+1921-1924, 1925-1929, 1930-1934, 1935-1939, 19401944
+1947-1949
+1920-1924, 1925-1929, 1930-1934, 1935-1939, 19401944, 1945-1949
+1950-1954, 1955-1959
+1921-1924, 1925-1929, 1930-1934, 1935-1939, 19401944, 1945-1949
+1910-1914, 1915-1919, 1920-1924, 1925-1929, 19301934, 1935-1939, 1940-1944, 1945-1949
+1910-1914, 1915-1919, 1920-1924, 1925-1929, 19301934, 1935-1939, 1940-1944, 1945-1949
+1930-1934, 1935-1939, 1945-1949
+1920-1924, 1925-1929, 1930-1934, 1935-1939, 19401944, 1945-1949
+1950-1954
+1910-1914, 1935-1939, 1940-1944, 1945-1949
+1950-1954
+1940-1944
+1947-1949, 1950-1954, 1955-1959
+1920-1924, 1925-1929, 1930-1934, 1935-1939, 19401944, 1945-1949
+1948-1949
+1890-1894, 1895-1899, 1900-1904, 1905-1909, 19101914, 1915-1919, 1920-1924, 1925-1929, 1930-1934,
+1935-1939, 1940-1944
+1922-1924, 1930-1934, 1935-1939, 1940-1944, 19451949
+1925-1929, 1930-1934, 1935-1939, 1940-1944, 19451949
+1940-1944, 1945-1949, 1950-1954, 1955-1959, 19601964
+1915-1919, 1920-1924, 1925-1929, 1930-1934, 19351939, 1940-1944, 1945-1949
+1950-1954
+
+24
+
+Table 7 – Continued
+Country/Region
+Spain
+Sweden
+Switzerland
+USA
+
+Belarus
+
+Canada
+Estonia
+Finland
+Germany: East
+Hungary
+Japan
+Latvia
+
+Lithuania
+
+New Zealand: Maori Population
+
+Poland
+Russia
+
+Slovenia
+Taiwan
+Ukraine
+
+USA
+
+Period
+1930-1934, 1940-1944, 1945-1949, 1950-1954, 19551959
+1910-1914, 1920-1924, 1925-1929, 1930-1934, 19351939, 1940-1944, 1945-1949
+1910-1914, 1915-1919, 1920-1924, 1925-1929, 19301934, 1935-1939, 1940-1944, 1945-1949
+1933-1934, 1935-1939, 1940-1944
+Family 2
+1960-1964, 1965-1969, 1970-1974, 1975-1979, 19801984, 1985-1989, 1990-1994, 1995-1999, 2000-2004,
+2005-2007
+1975-1979
+1965-1969, 1970-1974, 1975-1979, 1980-1984, 19851989, 1990-1994, 1995-1999, 2000-2004, 2005-2007
+1975-1979, 1980-1984, 1985-1989
+1990-1994
+1980-1984, 1985-1989, 1990-1994, 1995-1999, 20002004, 2005-2006
+1980-1984
+1960-1964, 1965-1969, 1970-1974, 1975-1979, 19801984, 1985-1989, 1990-1994, 1995-1999, 2000-2004,
+2005-2007
+1960-1964, 1965-1969, 1970-1974, 1975-1979, 19801984, 1985-1989, 1990-1994, 1995-1999, 2000-2004,
+2005-2007
+1955-1959, 1960-1964, 1965-1969, 1970-1974, 19751979, 1980-1984, 1985-1989, 1990-1994, 1995-1999,
+2000-2003
+1990-1994, 1995-1999, 2000-2004, 2005-2006
+1960-1964, 1965-1969, 1970-1974, 1975-1979, 19801984, 1985-1989, 1990-1994, 1995-1999, 2000-2004,
+2005-2006
+1990-1994, 1995-1999, 2000-2004
+1975-1979, 1980-1984, 1985-1989, 1990-1994, 19951999
+1960-1964, 1965-1969, 1970-1974, 1975-1979, 19801984, 1985-1989, 1990-1994, 1995-1999, 2000-2004,
+2005-2006
+1945-1949, 1950-1954, 1965-1969, 1970-1974, 19751979, 1980-1984, 1985-1989, 1990-1994
+
+Continued on Next Page. . .
+25
+
+Table 7 – Continued
+Country/Region
+
+Australia
+Austria
+Belgium
+Bulgaria
+
+Canada
+Czech Republic
+
+Denmark
+England & Wales
+Estonia
+Finland
+France
+Germany: East
+Germany: West
+Hungary
+Iceland
+Ireland
+Italy
+Japan
+Luxembourg
+
+Period
+Family 3
+1945-1949, 1950-1954, 1955-1959, 1960-1964, 19651969, 1970-1974, 1975-1979
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974, 1975-1979, 1980-1984, 1985-1989
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974, 1975-1979
+1960-1964, 1965-1969, 1970-1974, 1975-1979, 19801984, 1985-1989, 1990-1994, 1995-1999, 2000-2004,
+2005-2007
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974, 1975-1979, 1980-1984, 1985-1989, 1990-1994,
+1995-1999
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974, 1975-1979
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974, 1975-1979, 1980-1984
+1960-1964
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974, 1975-1979
+1956-1959, 1960-1964, 1965-1969, 1970-1974, 19751979, 1980-1984, 1985-1989
+1956-1959, 1960-1964, 1965-1969, 1970-1974, 19751979, 1980-1984
+1955-1959, 1960-1964, 1965-1969, 1970-1974, 19751979
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974, 1975-1979
+1955-1959, 1960-1964, 1965-1969, 1970-1974, 19751979, 1980-1984
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974, 1975-1979, 1980-1984
+1960-1964, 1965-1969, 1970-1974, 1975-1979
+1960-1964, 1965-1969, 1970-1974, 1975-1979, 19801984
+
+Continued on Next Page. . .
+
+26
+
+Table 7 – Continued
+Country/Region
+Netherlands
+New Zealand: National Population
+New Zealand: Non-Maori Population
+Northern Ireland
+Norway
+Poland
+Portugal
+Scotland
+Slovak Republic
+
+Slovenia
+Spain
+Sweden
+Switzerland
+Taiwan
+USA
+
+Australia
+Austria
+Belgium
+Canada
+Chile
+Czech Republic
+Denmark
+
+Period
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974, 1975-1979
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974, 1975-1979
+1945-1949, 1950-1954, 1955-1959, 1960-1964, 19651969, 1970-1974, 1975-1979
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974, 1975-1979, 1980-1984
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974, 1975-1979, 1980-1984
+1958-1959, 1960-1964, 1965-1969, 1970-1974, 19751979, 1980-1984, 1985-1989
+1965-1969, 1970-1974, 1975-1979, 1980-1984, 19851989
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974, 1975-1979, 1980-1984, 1985-1989
+1955-1959, 1960-1964, 1965-1969, 1970-1974, 19751979, 1980-1984, 1985-1989, 1990-1994, 1995-1999,
+2000-2004, 2005-2006
+1983-1984, 1985-1989
+1960-1964, 1965-1969, 1970-1974, 1975-1979, 19801984
+1950-1954, 1955-1959, 1960-1964, 1965-1969
+1950-1954, 1955-1959, 1960-1964, 1965-1969, 19701974
+1970-1974
+1955-1959, 1960-1964
+Family 4
+1980-1984, 1985-1989, 1990-1994, 1995-1999, 20002004
+1990-1994, 1995-1999, 2000-2004
+1980-1984, 1985-1989, 1990-1994, 1995-1999, 20002004, 2005-2006
+1980-1984, 1985-1989, 1990-1994, 1995-1999, 20002004
+1992-1994, 1995-1999, 2000-2004
+2000-2004, 2005-2006
+1980-1984, 1985-1989, 1990-1994, 1995-1999, 20002004, 2005-2007
+
+Continued on Next Page. . .
+
+27
+
+Table 7 – Continued
+Country/Region
+England & Wales
+Finland
+France
+Germany
+Germany: East
+Germany: West
+Iceland
+Ireland
+Italy
+Japan
+Luxembourg
+Netherlands
+New Zealand: National Population
+New Zealand: Non-Maori Population
+Northern Ireland
+Norway
+Portugal
+Scotland
+Slovenia
+Spain
+Sweden
+Switzerland
+Taiwan
+USA
+
+Period
+1985-1989, 1990-1994, 1995-1999, 2000-2004, 20052006
+1990-1994, 1995-1999, 2000-2004, 2005-2007
+1980-1984, 1985-1989, 1990-1994, 1995-1999, 20002004, 2005-2006
+1991-1994, 1995-1999, 2000-2004, 2005-2006
+1995-1999, 2000-2004, 2005-2006
+1985-1989, 1990-1994, 1995-1999, 2000-2004, 20052006
+1980-1984, 1985-1989, 1990-1994, 1995-1999, 20002004, 2005-2007
+1985-1989, 1990-1994, 1995-1999, 2000-2004, 20052006
+1985-1989, 1990-1994, 1995-1999, 2000-2004, 20052006
+1985-1989, 1990-1994, 1995-1999, 2000-2004, 20052007
+1985-1989, 1990-1994, 1995-1999, 2000-2004, 20052006
+1980-1984, 1985-1989, 1990-1994, 1995-1999, 20002004, 2005-2006
+1980-1984, 1985-1989, 1990-1994, 1995-1999, 20002003
+1980-1984, 1985-1989, 1990-1994, 1995-1999, 20002003
+1985-1989, 1990-1994, 1995-1999, 2000-2004, 20052006
+1985-1989, 1990-1994, 1995-1999, 2000-2004, 20052007
+1990-1994, 1995-1999, 2000-2004, 2005-2007
+1990-1994, 1995-1999, 2000-2004, 2005-2006
+2005-2006
+1985-1989, 1990-1994, 1995-1999, 2000-2004, 20052006
+1970-1974, 1975-1979, 1980-1984, 1985-1989, 19901994, 1995-1999, 2000-2004, 2005-2007
+1975-1979, 1980-1984, 1985-1989, 1990-1994, 19951999, 2000-2004, 2005-2007
+2000-2004, 2005-2007
+1995-1999, 2000-2004
+
+Continued on Next Page. . .
+28
+
+Table 7 – Continued
+Country/Region
+Belgium
+
+Bulgaria
+Denmark
+
+England & Wales
+
+Finland
+
+France
+
+Iceland
+
+Italy
+
+Netherlands
+
+New Zealand: Maori Population
+New Zealand: Non-Maori Population
+Northern Ireland
+Continued on Next Page. . .
+
+Period
+Family 5
+1841-1844, 1845-1849, 1850-1854, 1855-1859, 18601864, 1865-1869, 1870-1874, 1875-1879, 1880-1884,
+1885-1889, 1890-1894, 1895-1899, 1900-1904, 19051909, 1910-1914, 1915-1919
+1947-1949
+1835-1839, 1840-1844, 1845-1849, 1850-1854, 18551859, 1860-1864, 1865-1869, 1870-1874, 1875-1879,
+1880-1884, 1885-1889, 1890-1894, 1895-1899, 19001904, 1905-1909
+1841-1844, 1845-1849, 1850-1854, 1855-1859, 18601864, 1865-1869, 1870-1874, 1875-1879, 1880-1884,
+1885-1889, 1890-1894, 1895-1899, 1900-1904, 19051909
+1878-1879, 1880-1884, 1885-1889, 1890-1894, 18951899, 1900-1904, 1905-1909, 1910-1914, 1915-1919,
+1920-1924, 1925-1929, 1940-1944
+1816-1819, 1820-1824, 1825-1829, 1830-1834, 18351839, 1840-1844, 1845-1849, 1850-1854, 1855-1859,
+1860-1864, 1865-1869, 1870-1874, 1875-1879, 18801884, 1885-1889, 1890-1894, 1895-1899, 1900-1904,
+1905-1909, 1910-1914, 1915-1919
+1838-1839, 1840-1844, 1845-1849, 1850-1854, 18551859, 1860-1864, 1865-1869, 1870-1874, 1875-1879,
+1880-1884, 1885-1889, 1890-1894, 1895-1899, 19001904, 1905-1909, 1915-1919, 1920-1924, 1925-1929,
+1930-1934
+1872-1874, 1875-1879, 1880-1884, 1885-1889, 18901894, 1895-1899, 1900-1904, 1905-1909, 1910-1914,
+1915-1919, 1920-1924, 1925-1929, 1930-1934, 19351939, 1945-1949
+1850-1854, 1855-1859, 1860-1864, 1865-1869, 18701874, 1875-1879, 1880-1884, 1885-1889, 1890-1894,
+1895-1899, 1900-1904, 1905-1909, 1910-1914, 19151919
+1937-1939, 1940-1944, 1945-1949, 1950-1954
+1876-1879, 1880-1884, 1885-1889
+1925-1929
+
+29
+
+Table 7 – Continued
+Country/Region
+Norway
+
+Scotland
+
+Spain
+Sweden
+
+Switzerland
+
+Period
+1846-1849, 1850-1854, 1855-1859, 1860-1864, 18651869, 1870-1874, 1875-1879, 1880-1884, 1885-1889,
+1890-1894, 1895-1899, 1900-1904, 1905-1909, 19101914, 1915-1919, 1920-1924
+1855-1859, 1860-1864, 1865-1869, 1870-1874, 18751879, 1880-1884, 1885-1889, 1890-1894, 1895-1899,
+1900-1904, 1905-1909, 1910-1914
+1908-1909, 1910-1914, 1915-1919, 1920-1924, 19251929, 1935-1939
+1751-1754, 1755-1759, 1760-1764, 1765-1769, 17701774, 1775-1779, 1780-1784, 1785-1789, 1790-1794,
+1795-1799, 1800-1804, 1805-1809, 1810-1814, 18151819, 1820-1824, 1825-1829, 1830-1834, 1835-1839,
+1840-1844, 1845-1849, 1850-1854, 1855-1859, 18601864, 1865-1869, 1870-1874, 1875-1879, 1880-1884,
+1885-1889, 1890-1894, 1895-1899, 1900-1904, 19051909, 1915-1919
+1876-1879, 1880-1884, 1885-1889, 1890-1894, 18951899, 1900-1904, 1905-1909
+
+30
+
+Appendix C - Fixed model parameters
+Table 8.
+Age
+0
+1-4
+5-9
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110+
+
+v1
+-0.10942
+-0.19268
+-0.22114
+-0.22648
+-0.20065
+-0.18876
+-0.18802
+-0.18420
+-0.17647
+-0.16598
+-0.15401
+-0.14137
+-0.12877
+-0.11538
+-0.10226
+-0.08846
+-0.07464
+-0.06118
+-0.04834
+-0.03706
+-0.02727
+-0.01941
+-0.01337
+-0.00954
+
+Component score vector values: S
+
+Male
+v2
+v3
+-0.36456 0.31976
+-0.37429 0.03399
+-0.13449 0.02214
+0.00536 -0.03961
+0.11199 -0.16963
+0.08125 -0.23927
+0.09426 -0.22089
+0.11459 -0.15548
+0.13395 -0.08794
+0.15950 -0.01295
+0.18246 0.04951
+0.19088 0.10486
+0.19452 0.14800
+0.17457 0.16354
+0.15357 0.16968
+0.12047 0.16837
+0.09262 0.15874
+0.07059 0.14972
+0.05471 0.14185
+0.04997 0.12906
+0.03711 0.11264
+0.03115 0.09599
+0.02670 0.07979
+0.02356 0.06866
+
+v4
+0.12879
+0.05867
+0.00020
+-0.04350
+-0.10127
+-0.08222
+0.01015
+0.07039
+0.13676
+0.15460
+0.16376
+0.15206
+0.13230
+0.12220
+0.08376
+0.04343
+0.00487
+-0.07238
+-0.14277
+-0.21531
+-0.24883
+-0.26567
+-0.26262
+-0.25294
+
+31
+
+v1
+-0.11662
+-0.19766
+-0.22922
+-0.23536
+-0.21898
+-0.21238
+-0.20783
+-0.20056
+-0.19109
+-0.18068
+-0.16953
+-0.15761
+-0.14562
+-0.13168
+-0.11710
+-0.10088
+-0.08460
+-0.06893
+-0.05434
+-0.04167
+-0.03042
+-0.02138
+-0.01446
+-0.01012
+
+Female
+v2
+-0.35830
+-0.40410
+-0.19411
+-0.09290
+-0.04539
+-0.07447
+-0.07266
+-0.03784
+0.00947
+0.06429
+0.11633
+0.12349
+0.12054
+0.08816
+0.06797
+0.04237
+0.03105
+0.03329
+0.03620
+0.04102
+0.04044
+0.04149
+0.04043
+0.03806
+
+v3
+0.30010
+0.02355
+-0.05173
+-0.12990
+-0.20526
+-0.19725
+-0.14051
+-0.09478
+-0.04720
+-0.00251
+0.04152
+0.07394
+0.10188
+0.13586
+0.17252
+0.19804
+0.20083
+0.19223
+0.17129
+0.14671
+0.12333
+0.09961
+0.07889
+0.06600
+
+v4
+0.12385
+0.04919
+-0.05698
+-0.12124
+-0.17254
+-0.14148
+-0.09933
+-0.05204
+0.01364
+0.03775
+0.06177
+0.06957
+0.07713
+0.08019
+0.04367
+0.01891
+-0.00184
+-0.06298
+-0.13905
+-0.20837
+-0.25367
+-0.27718
+-0.27997
+-0.27463
+
+Table 9.
+
+Median coefficients for first 4 score vectors, by cluster/family
+
+Cluster Intercept Coeff 1 Coeff 2
+1
+0.0500 29.0949 -1.2763
+2
+0.0269 33.5397 1.5962
+3
+-0.0381 34.0455 0.6514
+4
+0.0714 37.9729 1.6700
+5
+-0.0052 24.2750 -2.7641
+
+32
+
+Coeff 3
+-0.0014
+-0.2199
+0.8543
+-0.7928
+-0.1395
+
+Coeff 4
+-0.0681
+0.6667
+-0.1176
+-0.1456
+-0.0118
+
+Table 10.
+
+Male above-median family-specific deviations and
+cluster-invariant deviations: Df+
+
+Age
+0
+1-4
+5-9
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110+
+
+1
+0.737
+1.172
+0.754
+0.620
+0.683
+0.901
+0.955
+0.868
+0.788
+0.630
+0.492
+0.365
+0.260
+0.258
+0.242
+0.257
+0.284
+0.255
+0.222
+0.179
+0.200
+0.229
+0.278
+0.319
+
+2
+1.015
+1.181
+0.913
+0.772
+0.662
+0.754
+0.860
+0.880
+0.905
+0.849
+0.790
+0.719
+0.649
+0.632
+0.582
+0.545
+0.511
+0.417
+0.327
+0.228
+0.196
+0.183
+0.197
+0.218
+
+Family
+3
+0.912
+1.051
+0.737
+0.555
+0.400
+0.465
+0.504
+0.494
+0.484
+0.428
+0.373
+0.324
+0.279
+0.280
+0.266
+0.269
+0.269
+0.235
+0.198
+0.148
+0.138
+0.133
+0.141
+0.151
+
+33
+
+4
+0.572
+0.684
+0.680
+0.626
+0.473
+0.425
+0.431
+0.443
+0.446
+0.440
+0.425
+0.409
+0.390
+0.366
+0.337
+0.308
+0.274
+0.237
+0.201
+0.163
+0.133
+0.106
+0.086
+0.073
+
+5
+0.558
+0.828
+0.545
+0.485
+0.603
+0.803
+0.916
+0.889
+0.876
+0.769
+0.675
+0.570
+0.478
+0.469
+0.430
+0.411
+0.407
+0.333
+0.264
+0.189
+0.189
+0.209
+0.258
+0.303
+
+Dh+
+2.277
+3.178
+2.590
+2.207
+1.746
+1.835
+1.837
+1.722
+1.583
+1.359
+1.139
+0.951
+0.786
+0.725
+0.657
+0.629
+0.594
+0.513
+0.421
+0.309
+0.266
+0.228
+0.214
+0.213
+
+Table 11.
+
+Male below-median family-specific deviations and
+cluster-invariant deviations: Df−
+
+Age
+0
+1-4
+5-9
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110+
+
+1
+0.731
+1.061
+0.791
+0.697
+0.717
+0.850
+0.874
+0.809
+0.746
+0.636
+0.538
+0.451
+0.379
+0.372
+0.361
+0.370
+0.386
+0.369
+0.349
+0.322
+0.334
+0.351
+0.378
+0.402
+
+2
+0.902
+1.168
+0.960
+0.859
+0.799
+0.858
+0.832
+0.769
+0.700
+0.619
+0.546
+0.492
+0.450
+0.447
+0.452
+0.472
+0.492
+0.506
+0.514
+0.515
+0.527
+0.535
+0.543
+0.548
+
+Family
+3
+0.911
+0.986
+0.688
+0.520
+0.393
+0.456
+0.489
+0.481
+0.477
+0.433
+0.391
+0.355
+0.323
+0.332
+0.328
+0.339
+0.347
+0.325
+0.301
+0.264
+0.261
+0.261
+0.271
+0.282
+
+34
+
+4
+0.777
+0.868
+0.709
+0.614
+0.521
+0.562
+0.620
+0.635
+0.651
+0.623
+0.591
+0.553
+0.514
+0.503
+0.474
+0.451
+0.429
+0.374
+0.321
+0.262
+0.240
+0.228
+0.232
+0.242
+
+5
+1.069
+1.187
+0.844
+0.691
+0.661
+0.755
+0.707
+0.630
+0.555
+0.481
+0.421
+0.391
+0.377
+0.411
+0.458
+0.528
+0.595
+0.661
+0.716
+0.758
+0.803
+0.833
+0.854
+0.868
+
+Dh−
+1.934
+2.245
+1.779
+1.466
+1.110
+1.157
+1.192
+1.169
+1.139
+1.048
+0.952
+0.871
+0.797
+0.782
+0.751
+0.744
+0.727
+0.670
+0.607
+0.524
+0.494
+0.468
+0.460
+0.461
+
+Table 12.
+
+Female above-median family-specific deviations and
+cluster-invariant deviations: Df+
+
+Age
+0
+1-4
+5-9
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110+
+
+1
+0.755
+1.221
+0.915
+0.845
+0.883
+0.951
+0.888
+0.807
+0.728
+0.596
+0.469
+0.413
+0.381
+0.375
+0.300
+0.270
+0.271
+0.227
+0.188
+0.160
+0.165
+0.192
+0.238
+0.278
+
+2
+1.021
+1.205
+0.942
+0.818
+0.740
+0.800
+0.816
+0.815
+0.827
+0.773
+0.722
+0.696
+0.681
+0.681
+0.611
+0.570
+0.536
+0.441
+0.334
+0.238
+0.181
+0.156
+0.162
+0.177
+
+Family
+3
+0.914
+1.091
+0.806
+0.666
+0.581
+0.631
+0.633
+0.599
+0.558
+0.480
+0.405
+0.379
+0.367
+0.386
+0.361
+0.353
+0.337
+0.281
+0.219
+0.163
+0.130
+0.112
+0.113
+0.120
+
+35
+
+4
+0.581
+0.702
+0.688
+0.641
+0.552
+0.548
+0.559
+0.549
+0.531
+0.505
+0.478
+0.457
+0.437
+0.422
+0.401
+0.374
+0.334
+0.285
+0.233
+0.185
+0.144
+0.109
+0.083
+0.068
+
+5
+0.569
+0.843
+0.611
+0.571
+0.621
+0.689
+0.661
+0.646
+0.653
+0.593
+0.537
+0.506
+0.490
+0.478
+0.389
+0.346
+0.342
+0.282
+0.217
+0.166
+0.154
+0.173
+0.220
+0.261
+
+Dh+
+2.328
+3.316
+2.875
+2.624
+2.379
+2.437
+2.372
+2.193
+1.969
+1.685
+1.406
+1.265
+1.160
+1.126
+1.017
+0.931
+0.824
+0.659
+0.502
+0.361
+0.266
+0.198
+0.166
+0.157
+
+Table 13.
+
+Female below-median Family-Specific deviations and
+cluster-invariant deviations: Df−
+
+Age
+0
+1-4
+5-9
+10-14
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65-69
+70-74
+75-79
+80-84
+85-89
+90-94
+95-99
+100-104
+105-109
+110+
+
+1
+0.746
+1.099
+0.909
+0.863
+0.877
+0.917
+0.870
+0.807
+0.741
+0.643
+0.549
+0.505
+0.477
+0.469
+0.419
+0.396
+0.390
+0.359
+0.332
+0.313
+0.314
+0.328
+0.354
+0.376
+
+2
+0.914
+1.210
+1.073
+1.023
+1.001
+1.019
+0.978
+0.908
+0.821
+0.727
+0.636
+0.597
+0.571
+0.570
+0.554
+0.548
+0.541
+0.528
+0.522
+0.519
+0.521
+0.525
+0.530
+0.536
+
+Family
+3
+0.908
+1.020
+0.746
+0.616
+0.548
+0.595
+0.600
+0.573
+0.540
+0.476
+0.414
+0.397
+0.394
+0.419
+0.406
+0.409
+0.405
+0.364
+0.318
+0.275
+0.252
+0.242
+0.245
+0.253
+
+36
+
+4
+0.780
+0.884
+0.725
+0.642
+0.581
+0.614
+0.628
+0.626
+0.630
+0.597
+0.565
+0.549
+0.540
+0.541
+0.504
+0.480
+0.457
+0.398
+0.331
+0.271
+0.234
+0.214
+0.212
+0.218
+
+5
+1.066
+1.232
+0.976
+0.890
+0.898
+0.934
+0.892
+0.813
+0.714
+0.616
+0.524
+0.504
+0.502
+0.540
+0.569
+0.610
+0.646
+0.677
+0.717
+0.753
+0.789
+0.817
+0.838
+0.853
+
+Dh−
+1.945
+2.323
+1.907
+1.669
+1.476
+1.538
+1.541
+1.467
+1.370
+1.224
+1.080
+1.022
+0.987
+1.005
+0.964
+0.940
+0.889
+0.783
+0.669
+0.564
+0.493
+0.443
+0.421
+0.416
+
+Table 14.
+
+Alpha values to index family-specific ‘levels’ by life expectancy at birth, males
+
+Target e0
+30
+32.5
+35
+37.5
+40
+42.5
+45
+47.5
+50
+52.5
+55
+57.5
+60
+62.5
+65
+67.5
+70
+72.5
+75
+77.5
+80
+82.5
+85
+87.5
+90
+
+1
+0.982
+0.934
+0.884
+0.831
+0.774
+0.713
+0.645
+0.571
+0.487
+0.397
+0.287
+0.146
+-0.051
+-0.250
+-0.431
+-0.611
+-0.798
+-0.988
+-1.201
+-1.425
+-1.667
+-1.935
+-2.221
+-2.524
+-2.851
+
+2
+1.477
+1.425
+1.371
+1.314
+1.253
+1.187
+1.116
+1.039
+0.957
+0.867
+0.764
+0.645
+0.506
+0.347
+0.150
+-0.100
+-0.381
+-0.635
+-0.885
+-1.146
+-1.395
+-1.665
+-1.942
+-2.236
+-2.540
+
+37
+
+Family
+3
+1.505
+1.461
+1.416
+1.369
+1.318
+1.265
+1.208
+1.145
+1.076
+0.999
+0.920
+0.828
+0.717
+0.580
+0.408
+0.162
+-0.218
+-0.525
+-0.816
+-1.099
+-1.390
+-1.697
+-2.005
+-2.338
+-2.684
+
+4
+1.911
+1.868
+1.823
+1.776
+1.727
+1.675
+1.619
+1.559
+1.494
+1.429
+1.355
+1.272
+1.174
+1.060
+0.929
+0.772
+0.565
+0.281
+-0.152
+-0.506
+-0.842
+-1.176
+-1.517
+-1.877
+-2.253
+
+5
+0.487
+0.423
+0.352
+0.272
+0.177
+0.060
+-0.070
+-0.182
+-0.290
+-0.393
+-0.495
+-0.603
+-0.714
+-0.828
+-0.947
+-1.075
+-1.216
+-1.364
+-1.526
+-1.709
+-1.904
+-2.122
+-2.361
+-2.622
+-2.906
+
+Table 15.
+
+Alpha values to index family-specific ‘levels’ by life expectancy at birth,
+females
+
+Target e0
+30
+32.5
+35
+37.5
+40
+42.5
+45
+47.5
+50
+52.5
+55
+57.5
+60
+62.5
+65
+67.5
+70
+72.5
+75
+77.5
+80
+82.5
+85
+87.5
+90
+
+1
+1.022
+0.979
+0.937
+0.892
+0.845
+0.796
+0.742
+0.684
+0.620
+0.549
+0.470
+0.383
+0.276
+0.130
+-0.078
+-0.275
+-0.455
+-0.636
+-0.824
+-1.016
+-1.232
+-1.458
+-1.715
+-1.991
+-2.303
+
+2
+1.578
+1.534
+1.490
+1.447
+1.401
+1.354
+1.305
+1.249
+1.190
+1.126
+1.056
+0.979
+0.897
+0.802
+0.690
+0.557
+0.399
+0.196
+-0.087
+-0.371
+-0.638
+-0.904
+-1.181
+-1.472
+-1.788
+
+38
+
+Family
+3
+1.562
+1.521
+1.481
+1.441
+1.399
+1.355
+1.309
+1.259
+1.205
+1.147
+1.082
+1.010
+0.935
+0.849
+0.746
+0.619
+0.460
+0.249
+-0.120
+-0.452
+-0.752
+-1.044
+-1.355
+-1.679
+-2.028
+
+4
+1.952
+1.916
+1.878
+1.840
+1.800
+1.758
+1.715
+1.668
+1.619
+1.565
+1.507
+1.448
+1.383
+1.308
+1.223
+1.121
+1.003
+0.867
+0.691
+0.451
+0.074
+-0.389
+-0.766
+-1.146
+-1.520
+
+5
+0.533
+0.474
+0.415
+0.349
+0.273
+0.183
+0.067
+-0.062
+-0.167
+-0.267
+-0.364
+-0.460
+-0.558
+-0.661
+-0.767
+-0.876
+-0.991
+-1.119
+-1.255
+-1.402
+-1.565
+-1.747
+-1.949
+-2.177
+-2.434
+
+

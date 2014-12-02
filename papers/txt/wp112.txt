@@ -1,0 +1,1063 @@
+Coordinate free analysis of trends in British social
+mobility 1
+Anna Klimova, Tam´as Rudas
+
+Working Paper no. 112
+Center for Statistics and the Social Sciences
+University of Washington
+November 9, 2011
+
+1 Anna
+
+Klimova is a Graduate student, Department of Statistics, University of Washington, Box
+355845, Seattle WA 98195-4322; e-mail: klimova@u.washington.edu. Tam´as Rudas is Professor
+of Statistics and Head, Department of Statistics at E¨otv¨os Lor´and University, Budapest, Hungary;
+Affiliate Professor, Department of Statistics, University of Washington; e-mail: rudas@tarki.hu.
+This research was supported in part by Grant No TAMOP 4.2.1./B-09/1/KMR-2010-0003 from the
+European Union and the European Social Fund and by a Graduate Student Research Presentation
+and Training Grant from the Center for Statistics and the Social Sciences (UW). The second author
+is also a recurrent visiting professor at the Central European University, Budapest, and the moral
+support received is acknowledged. The authors wish to thank Fiona Devine, Yaojun Lee, Ren´
+ata
+N´emeth, and P´eter R´
+obert for their comments and suggestions.
+
+Abstract
+The paper is intended to make a contribution to the ongoing debate about declining social
+mobility in Great Britain by analyzing mobility tables based on data from the 1991 British
+Household Panel Survey and the 2005 General Household Survey. The models proposed
+here generalize Hauser’s levels models and allow for semi-parametric analysis of change in
+social mobility. The cell frequencies are assumed to be equal to the product of three effects:
+the effect of the Father’s position for the given year, the effect of the Son’s position for the
+given year, and the mobility effect related to the difference between the Father’s and Son’s
+positions. A generalization of the iterative proportional fitting procedure is proposed and
+applied to computing the maximum likelihood estimates of the cell frequencies. The standard
+errors of the estimated parameters are computed under the product multinomial sampling
+assumption. The results indicate opposing trends of mobility between the two timepoints.
+Fewer steps up or down in the society became less likely, while more steps became somewhat
+more likely.
+KEY WORDS: exponential family, maximum likelihood estimate, multiplicative model,
+product-multinomial sampling, social mobility
+
+Introduction
+A social mobility table is a cross-classification of individuals according to their own and their
+fathers’ social status. If the statuses are ordered, every individual is identified as upward
+(downward) mobile, i.e., having a higher (lower) status than his father, or immobile, i.e.,
+retaining his father’s status. Since greater social mobility is usually considered advantageous
+for a society, results of analyses comparing the patterns of social mobility across years or
+between different countries are often given political interpretation. This paper intends to
+contribute to the debate about declining social mobility in Great Britain (cf. Saunders, 2010).
+A social mobility table does not include a variable characterizing mobility per se, and
+mobility trends are usually inferred from the marginals and the association structure of
+the table. The marginal distributions reveal changes in the social structure that occurred
+between the fathers’ and sons’ generations, and part of mobility can be attributed to those
+changes. The association structure of the table, operationalized as various sets of odds ratios,
+reflects the chances of individuals who come from different positions to end up in different
+social statuses. A weaker association between the fathers’ and the sons’ social position, called
+higher social fluidity, implies higher chances of mobility. Although much of social mobility
+research is concerned with the analysis of the association structure of social mobility tables
+(cf. Goodman & Hout, 1998; Breen, 2008), neither the marginals nor the association structure
+quantify social mobility itself, and the question, where is social mobility in the mobility table,
+persists.
+The methods to be described in this paper are based on the observation that social
+mobility is a common characteristic of some of the cells of the mobility table. For example,
+if mobility is only considered as being upward or downward, then, if statuses are ordered
+from highest to lowest, upward mobility is a common characteristic of cells (and observations)
+in the lower diagonal triangle, downward mobility is a common characteristic of the upper
+diagonal triangle, and the cells on the main diagonal are characterized by immobility. If
+social status is considered to have many categories, then mobility can be categorized by the
+number of steps up or down from the father’s position, forming mobility bands parallel to
+the main diagonal, and the models considered in this paper include effects associated with
+these bands of mobility. The mobility effects are not based on any of the variables forming
+the table, and thus these models are coordinate free.
+The paper is organized as follows. In Section 1, the structure of a social mobility table, as
+well as the concepts of absolute and relative mobility are explained in more detail. The most
+frequently used models for social mobility, including the model of common social fluidity and
+the UNIDIFF model, are reviewed.
+
+1
+
+The data used for the analysis in this paper are described in Section 2. These father’s
+position by son’s position by year mobility tables were also analyzed by Devine & Li (2011)
+and are based on the British Household Panel Survey (1991) and on the General Household
+Survey (2005). Previously, Goldthorpe & Mills (2008) analyzed these data among other data
+sets in a larger study of trends in social mobility. Some of the results reported in the two
+papers are different due to somewhat different derivation procedures of the mobility tables.
+For men, Devine & Li (2011) found a significant decrease in upward mobility and a significant
+increase in downward mobility from 1991 to 2005, while Goldthorpe & Mills (2008) arrived
+to almost identical rates of the upward mobility in 1991 and in 2005. However, based on
+the estimates under the UNIDIFF model, both papers concluded that social fluidity for men
+was increasing.
+The coordinate free relational models (Klimova, Rudas, & Dobra, 2012) that are proposed
+for the analysis of social mobility tables are given in Section 3. Under these models, the cell
+frequencies are equal to the product of the effects that exist under conditional independence
+of respondents’ and their fathers’ positions given year, that is the father by year and son by
+year effects, and the effects associated with the subsets of cells exhibiting the same level of
+social mobility. Mobility is measured by the number and direction of steps from the origin;
+the diagonal (immobile) cells are unconstrained by these models. The model assuming
+that social mobility changed between 1991 and 2005 is tested against a more restrictive
+model assuming no change. The maximum likelihood estimates of the cell frequencies are
+computed using an algorithm that generalizes the traditional iterative proportional fitting
+(IPF) procedure and is given Section 3. The generalization proposed here adjusts the sums
+of the cell frequencies for subsets of cells that exhibit a common effect in the model to their
+observed values. Finally, the standard errors of the estimated parameters are computed
+under the product-multinomial sampling assumption using the approach of Lang (1996).
+The results of the analyses are discussed in Section 4. The model of no change does not
+fit well, and thus the data provide some evidence that mobility in Great Britain changed
+between the two timepoints. The model allowing change in mobility, but assuming that the
+mobility effect, in each year, depends only on the number and direction of steps taken by an
+individual, fits well. The parameter estimates for mobility effects obtained from this model
+indicate opposing trends of mobility between 1991 and 2005. In 2005, fewer steps up or down
+in the society became less likely than in 1991, while more steps became more likely. These
+results provide a finer picture of the patterns of change in social mobility in contemporary
+Great Britain than earlier analyses did.
+
+2
+
+1
+
+Models of Social Mobility
+
+A social mobility table is a cross-classification of two variables - Origin, the position in the
+society from which an individual came, and Destination, the position which the individual
+is now having. Origin usually refers to the Father’s status (e.g. Father’s job, when the
+respondent was at the age 16), and Destination refers to Son’s status (e.g. respondent’s
+current full-time job).
+A mobility table can be characterized by rates of absolute mobility and by rates of
+relative mobility. Absolute mobility comprises the upward mobility and downward mobility
+and is expressed as the percentage of the respondents who moved, respectively, up or down
+compared to their origin. Relative mobility is described by the association structure of the
+table and is expressed in terms of the odds ratios
+pii /pij
+.
+pji /pjj
+Thus, relative rates indicate the chances of an individual from the class i to stay in this class
+rather than move to the class j, relative to the chances of an individual from the class j to
+move to the class i rather than stay in class j (cf. Goldthorpe & Jackson, 2007).
+Perfect mobility means independence between Father’s status and Son’s status, and under
+this model, the log cell probabilities in the mobility table can be written in the log-linear
+representation of
+log pij = λ + λFi + λSj ,
+
+(1)
+
+where λFi and λSj are effects associated with Father’s status and with Son’s status, respectively. This model does not fit most data sets, because of too many immobile observations,
+that is sons who retained their fathers’ positions. The model of quasi-independence (Goodman, 1968) entirely removes restrictions from the diagonal cells by allowing for additional
+parameters:
+log pij = λ + λFi + λSj + δii .
+
+(2)
+
+Under the levels model (Hauser, 1978), also called topological model (Hout, 1983), the log
+cell probabilities are sums of the effects associated with Father’s status, Son’s status and
+some interaction effects, that are assumed to be identical for all cells that belong to the
+same level. The levels are determined empirically from the ratios of the frequencies expected
+under the model of independence to those observed. Clogg & Shockey (1984) suggested that
+cells belonging to the same level have to share some common substantive property. In turn,
+Kov´ach, R´obert, & Rudas (1986) considered levels consisting of contiguous cells. Models
+which accounted for the social distance between Father’s and Son’s statuses, as if it was
+3
+
+measured on the interval scale, were proposed by, e.g., Goodman (1972), Sobel (1981), Hope
+(1982), Agresti (1983), Hauser (1984). These models assume, for social statuses numbered
+from 1 to L, that the distance between categories l1 and l2 is the same as between categories
+l3 and l4 (1 ≤ l1 , l2 , l3 , l4 ≤ L), if |l1 − l2 | = |l3 − l4 |.
+Comparative mobility research concentrates on revealing changes in social mobility across
+years or between countries and is based on analyzing the relative mobility rates, or patterns
+of the association between Father’s and Son’s status in several social mobility tables.
+The model of conditional independence of Father’s and Son’s status given Year (Y )
+assumes that there is no association between Father’s and Son’s status within each year:
+log pijk = λ + λFi + λSj + λYk + λFikY + λSY
+jk .
+
+(3)
+
+Under the model of common (or constant) social fluidity (CSF), see Erikson & Goldthorpe
+(1992), the association between Father’s and Son’s status is allowed to exist and be different
+in every cell, but is assumed to be identical for each year (no second order association between
+F , S, and Y ):
+FS
+log pijk = λ + λFi + λSj + λYk + λFikY + λSY
+jk + λij .
+
+(4)
+
+If, instead of the λFijS term, Hauser’s levels are allowed, the model of constant pattern of
+fluidity (Erikson et al., 1982) is obtained.
+A generalization of this model is the UNIDIFF (uniform difference) model (Erikson &
+Goldthorpe, 1992), also called the log-multiplicative layer effect model (Xie, 1992):
+log pijk = λ + λFi + λSj + λYk + λFikY + λSY
+jk + ψij φk .
+
+(5)
+
+Under this model, the F × S × Y association is separated into the F × S and Y components.
+The relative strength of the F × S association in year k is expressed by the parameters φk ,
+for k = 1, . . . , K. Depending on the constraints placed on the parameters ψij and φk , this
+model can be just a reparameterization of the CSF model or can lead to some other models
+for mobility tables (Xie, 1992). A UNIDIFF model is used to test whether the odds ratios
+in the kth year are uniformly higher or uniformly lower than the odds ratios in the reference
+year. However, there are cases when the pattern of mobility does not change as specified by
+a UNIDIFF model (cf. Wong, 1994).
+This paper offers an approach that is based on the relational model framework, recently
+proposed by Klimova et al. (2012). This approach is a generalization of the levels model
+framework (Hauser, 1978), is not data driven, and allows for semi-parametric modeling of
+change in the mobility pattern. Under the relational models of mobility described in this
+paper (see Section 3), the cell frequencies arise as the products of effects associated with
+the marginal distributions and also with subsets of cells exhibiting the same level of social
+mobility.
+4
+
+2
+
+Data and Previous Analyses
+
+The analysis in this paper is based on the two data sets that were also analyzed in “Trends
+in intergenerational class mobility in modern Britain: evidence from national surveys, 1972–
+2005” (Goldthorpe & Mills, 2008), referred to as TICM in the sequel, and “Is social mobility
+really declining?” (Devine & Li, 2011), referred to as SMD. Both TICM and SMD relied on
+the British Household Panel Survey (1991) and the General Household Survey (2005). The
+mobility tables used by TICM and SMD are based on seven categories of class positions:
+1. Higher managerial and professional; 2. Lower managerial and professional; 3. Intermediate
+occupations (clerical, sales, service); 4. Small employers and own account workers; 5. Lower
+supervisory and technical; 6. Semi-routine; 7. Routine. Although the authors of SDM aimed
+to reproduce and expand the analyses described in TICM for the two surveys, they used
+somewhat different procedures to derive the occupational statuses from the survey data.
+Consequently, the results in TICM and SDM are not the same. For example, while TICM
+reports almost identical rates of the upward mobility for men in 1991 and 2005, SDM detects
+a significant decrease in upward mobility and a significant increase in downward mobility
+for men. The comparison of the fit statistics obtained in these papers is given in Table 1.
+Despite the differences, both papers conclude that association between Father’s and Son’s
+positions was decreasing, that is social fluidity for men was increasing.
+The percentage data obtained in SDM for male respondents of age 25-59, transformed to
+frequencies and given in Table 2, are used for the analysis in this paper.
+Table 1: Fit statistics and p-values
+Goldthorpe & Mills (2008) Devine & Li (2011)
+p-value
+
+G2
+
+p-value
+
+72 756.9
+
+0.00
+
+652.8
+
+0.00
+
+CSF
+
+36
+
+19.3
+
+0.99
+
+51.3
+
+0.00
+
+UNIDIFF
+
+35
+
+15.5
+
+0.99
+
+34.5
+
+0.49
+
+Model
+Cond Ind
+
+3
+
+df
+
+G2
+
+Relational Models of Social Mobility
+
+Let T be a contingency table. In the population, each cell t ∈ T has a fixed probability
+P
+p(t) ∈ (0, 1), such that Tt=1 p(t) = 1, where T stands for the number of cells in the table.
+Let P denote the set of such probability distributions. Let U = {U1 , . . . , US } be a class of
+5
+
+Table 2: Distribution of men by class of origin and destination
+
+Origin
+
+1991
+1
+2
+1 50 47
+2 124 166
+3 37 50
+4 61 66
+5 71 113
+6 34 71
+7 40 79
+
+Origin
+
+2005
+1
+2
+1 182 139
+2 246 297
+3 67 95
+4 55 79
+5 99 139
+6 75 115
+7 67 119
+
+Destination
+3
+4
+5
+5 11 11
+24 61 55
+8 18 24
+13 97 50
+24 74 100
+11 50 69
+18 71 105
+Destination
+3
+4
+5
+28 32 28
+51 123 91
+12 36 40
+12 63 55
+28 75 87
+12 75 95
+16 79 91
+
+6
+7
+5
+8
+29 47
+13 21
+21 53
+74 103
+74 95
+74 105
+6
+24
+87
+24
+51
+75
+91
+79
+
+7
+48
+127
+40
+59
+103
+119
+135
+
+non-empty subsets of the table T and A be a S × T matrix with entries
+
+1, if the t-th cell is in Us ,
+ast = Is (t) =
+for t = 1, . . . , T and s = 1, . . . , S.
+0, otherwise,
+A relational model RM (U) (Klimova et al., 2012) with the model matrix A is the following
+subset of P:
+RM (U) = {p ∈ P : log p = A0 β, for some β ∈ RS }.
+Without loss of generality, it is assumed that the model matrix A is of full row rank.
+The kernel of the model matrix Ker(A) = {γ ∈ RT : Aγ = 0} is a linear subspace. A
+matrix D with rows that form a basis of Ker(A) is called a kernel basis matrix of RM (U) and
+can be chosen to have integer entries (Klimova et al., 2012, Theorem 2.2). The distribution
+p belongs to the relational model RM (U) if and only if
+Dlog p = 0.
+
+(6)
+
+Relational models generalize, among others, the quasi models (Goodman, 1968, 1972),
+topological models (Hauser, 1978; Hout, 1983), indicator models (Zelterman & Youn, 1992).
+In the remainder of this section, two relational models for the comparative analysis of
+mobility tables will be described. The model (3) of conditional independence of Father’s
+6
+
+and Son’s status given Year will be used as the baseline model. This model assumes that,
+within a given year, Father’s and Son’s effects are independent from each other and thus the
+relative rates of mobility are equal to 1. Since this model doesn’t fit the data (see Table 1),
+further, mobility-related, effects are included.
+The relational models will be generated by the cylinder subsets associated with the F ×Y
+effect and S × Y effect and additional subsets, called mobility bands. A mobility band is a
+collection of those cells that represent the same number and direction of steps from Father’s
+position to Son’s position within each year. Each diagonal cell has its own effect, so that
+model fit is not influenced by immobile cells. The definition of mobility related subsets Uh is
+given in Table 3, where cells belonging to the same subset are marked with the same number.
+Under this model, called Mdif f ,
+log pijk = λ0 +
+
+λFi
+
++
+
+λSj
+
++
+
+λYk
+
++
+
+λFikY
+
++
+
+λSY
+jk
+
++
+
+38
+X
+
+βh IUh (i, j, k), i, j = 1, . . . , 7, k = 1, 2. (7)
+
+h=1
+
+Here IUh , for each h = 1, . . . , 38, is the indicator function of the mobility band Uh .
+
+2005
+1
+2
+3
+4
+5
+6
+7
+
+1
+32
+26
+27
+28
+29
+30
+31
+
+2
+20
+33
+26
+27
+28
+29
+30
+
+6
+5
+4
+3
+2
+1
+18
+7
+
+7
+6
+5
+4
+3
+2
+1
+19
+
+Origin
+
+1 2
+13 1
+7 14
+8 7
+9 8
+10 9
+11 10
+12 11
+
+Destination
+3 4 5
+2 3 4
+1 2 3
+15 1 2
+7 16 1
+8 7 17
+9 8 7
+10 9 8
+Destination
+3 4 5
+21 22 23
+20 21 22
+34 20 21
+26 35 20
+27 26 36
+28 27 26
+29 28 27
+
+1991
+1
+2
+3
+4
+5
+6
+7
+
+1 2
+13 1
+7 14
+8 7
+9 8
+10 9
+11 10
+12 11
+
+6
+24
+23
+22
+21
+20
+37
+26
+
+7
+25
+24
+23
+22
+21
+20
+38
+
+2005
+1
+2
+3
+4
+5
+6
+7
+
+1 2
+20 1
+7 21
+8 7
+9 8
+10 9
+11 10
+12 11
+
+Origin
+
+1991
+1
+2
+3
+4
+5
+6
+7
+
+Origin
+
+Origin
+
+Table 3: Mobility bands Uh in model Mdif f Table 4: Mobility bands Vh in model Msame
+Destination
+3 4 5 6
+2 3 4 5
+1 2 3 4
+15 1 2 3
+7 16 1 2
+8 7 17 1
+9 8 7 18
+10 9 8 7
+Destination
+3 4 5 6
+2 3 4 5
+1 2 3 4
+22 1 2 3
+7 23 1 2
+8 7 24 1
+9 8 7 25
+10 9 8 7
+
+7
+6
+5
+4
+3
+2
+1
+19
+7
+6
+5
+4
+3
+2
+1
+26
+
+Under the model Mdif f , the mobility effects are allowed to be different for the two years.
+The fit of this model will be compared with that of the model Msame . Under the model
+Msame , the mobility effects are supposed to be the same for the two years. The definition of
+7
+
+the mobility-related subsets Vh is given in Table 4, and the model can be written as
+log pijk = λ0 + λFi + λSj + λYk + λFikY + λSY
+jk +
+
+26
+X
+
+γh IVh (i, j, k), i, j = 1, . . . , 7, k = 1, 2, (8)
+
+h=1
+
+where IVh , for each h = 1, . . . , 26, is the indicator function of the mobility band Vh .
+The usual restrictions imposed on the parameters related to conditional independence
+7
+X
+
+λFi
+
+= 0,
+
+i=1
+2
+X
+
+λFikY
+
+7
+X
+
+= 0,
+
+j=1
+
+= 0,
+
+2
+X
+
+k=1
+
+k=1
+
+7
+X
+
+7
+X
+
+λFikY
+
+λSj
+
+= 0,
+
+i=1
+
+2
+X
+
+λYk = 0,
+
+k=1
+
+λSY
+jk = 0, for i, j = 1, . . . , 7;
+
+(9)
+
+λSY
+jk = 0, for k = 1, 2,
+
+j=1
+
+do not suffice to make all parameters of the models identifiable, and more constraints are
+needed. The band parameters associated with upward and with downward mobility are thus
+centered around 1 on the multiplicative scale within both years for the model Mdif f :
+6
+X
+h=1
+
+βh = 0,
+
+12
+X
+
+βh = 0,
+
+h=7
+
+25
+X
+
+βh = 0,
+
+h=20
+
+31
+X
+
+βh = 0,
+
+(10)
+
+h=26
+
+and are centered around 1 on the multiplicative scale for the model Msame :
+6
+X
+
+γh = 0,
+
+h=1
+
+12
+X
+
+γh = 0.
+
+h=7
+
+Both models include the overall effect, expressed by the parameter λ0 , and hence are
+regular exponential families (Klimova et al., 2012, Theorem 3.2). The maximum likelihood
+(ML) estimates of cell frequencies under these models exist and are unique (cf. BarndorffNielsen, 1978).
+The ML estimates of the cell frequencies can be obtained using an iterative proportional
+fitting (IPF) procedure that starts with a distribution in the model and adjusts the subset
+sums to their observed values. Let RM (U) be a relational model with the overall effect,
+ˆ = {ˆ
+y = {y(t)} be the observed frequency distribution, and y
+y (t)} denote the MLE of y
+under the model.
+Algorithm:
+Set m0 (t) = 1 for all t = 1, . . . , T . Cycle for d = 0, 1, 2, . . . :
+1. Ud+1 = Us , if d + 1 ≡ s mod T, 1 ≤ s ≤ S.
+8
+
+2. for all t ∈ T
+
+(
+d+1
+
+m
+
+(t) =
+
+P
+
+md (t) P
+md (t)
+
+r∈T IUd+1 (r)y(r)
+d
+r∈T IUd+1 (r)m (r)
+
+if t ∈ Ud+1 ,
+otherwise.
+
+This procedure is a generalization of the standard IPF algorithm (cf. Bishop, Fienberg, &
+Holland, 1975), but the proof of convergence given by Csisz´ar (1975) applies in this case too,
+ˆ.
+and the sequence m(d) converges, as d → ∞, to y
+The data used in this analysis were assembled from two independent surveys, and thus
+product-multinomial sampling is a better approximation of reality than multinomial sampling. Asymptotic standard errors for log-linear models under the product-multinomial
+sampling scheme were obtained by Lang (1996). Although the relational models for mobility tables described in this paper are more general than log-linear models, the derivation
+techniques originally proposed by Aitchinson & Silvey (1958) apply. If A and D stand,
+respectively, for the model matrix and a kernel basis matrix of Mdif f , then the estimate of
+the covariance matrix of the coefficients of the model is equal to (Lang, 1996, Eq.(4.5))
+ˆ β)
+ˆ fˆ)A0 (AA0 )−1 .
+ˆ = (AA0 )−1 ACov(
+Cov(
+
+(11)
+
+The estimate of the covariance matrix of the cell frequencies equals (Lang, 1996, Eq.(4.6))
+!
+0
+ˆ
+ˆ
+f
+f
+/N
+O
+1
+1 1
+ˆ fˆ) = (diag(fˆ )) − D0 (D(diag(fˆ ))−1 D0 )−1 D −
+Cov(
+(12)
+0
+O
+fˆ 2 fˆ 2 /N2
+Here N1 = 2630 and N2 = 3965 are the numbers of respondents in 1991 and in 2005,
+respectively.
+
+4
+
+Results
+
+The fit statistics and p-values for the models Msame and Mdif f are given in Table 5. The
+model Msame does not fit well and, thus, the data provide some evidence that the pattern of
+mobility changed between the two timepoints. Parameter estimates from the model Mdif f
+will be used to describe these changes.
+Table 5: Relational models: fit statistics and p-values
+G2
+
+Model
+
+df
+
+Mdif f
+
+38 45.18
+
+0.19
+
+Msame
+
+48 66.94
+
+0.04
+
+9
+
+p-value
+
+Table 6: Estimated mobility effects (standard errors) for the model Mdif f
+Distance from the origin
+6 steps down
+5 steps down
+4 steps down
+3 steps down
+2 steps down
+1 step down
+1 step up
+2 steps up
+3 steps up
+4 steps up
+5 steps up
+6 steps up
+
+1991
+0.44 (0.13)
+0.69 (0.10)
+0.93 (0.12)
+1.25 (0.13)
+1.46 (0.13)
+1.92 (0.14)
+1.78 (0.11)
+1.57 (0.11)
+1.33 (0.09)
+1.01 (0.08)
+0.66 (0.06)
+0.41 (0.06)
+
+2005
+0.78 (0.10)
+0.79 (0.06)
+0.86 (0.07)
+0.93 (0.07)
+1.35(0.08)
+1.49 (0.08)
+1.45 (0.07)
+1.30 (0.08)
+1.10 (0.07)
+0.97 (0.07)
+0.82 (0.06)
+0.60 (0.07)
+
+Ratio
+1.77 (0.56)
+1.14 (0.19)
+0.92 (0.14)
+0.74 (0.09)
+0.92 (0.10)
+0.78 (0.07)
+0.81 (0.06)
+0.83 (0.07)
+0.83 (0.08)
+0.96 (0.10)
+1.24 (0.15)
+1.46 (0.27)
+
+The ML estimates, under the model Mdif f , for the mobility effects (on the multiplicative
+scale), their ratios, and the applicable standard errors are shown in Table 6 1 . The effects
+are centered around 1 on both sides of the main diagonal by assumption (10). The standard
+errors for the mobility effects were computed from (11), and the standard errors for the ratios
+were obtained using the delta method.
+The estimated mobility effects for both years versus the number of steps up or down from
+the origin are displayed in Figure 1. The plot indicates that mobility decreases monotonically
+as the number of steps from the origin increases. Therefore, moving a small number of steps
+up or down compared to the origin seems to be easier than making larger steps. For 1991,
+the plot is remarkably symmetric (the effects depend very little on direction), less so in 2005.
+In 2005, small moves (1-3 steps) appear to be less likely than in 1991, and for 5 out of these
+6 levels the changes are statistically significant at the 95% level. For 4 steps of mobility, the
+chances in the two years are virtually identical. Large moves (5-6 steps) appear to be slightly
+more likely in 2005 than in 1991, but the increase is not statistically significant (see Table
+6). However, this lack of significance does not occur because of smaller estimated effect sizes
+for increased chances of more steps of mobility in 2005 compared to 1991, rather because of
+larger estimated standard errors for these quantities.
+1
+
+Parameter estimation for relational models that contain the overall effect, like Mdif f , can be performed
+using the gnm() function in the R package. However, for the models proposed in this paper, the gnm()
+results have shown some instability, and the authors used their own code, which is available upon request.
+
+10
+
+●
+
+1991 effects
+2005 effects
+
+●
+
+●
+
+1.5
+
+●
+●
+
+1.0
+
+Estimated Mobility Effect
+
+●
+●
+
+●
+●
+
+0.5
+
+●
+
+●
+
+●
+
+−6
+
+●
+
+−5
+
+−4
+
+−3
+
+−2
+
+−1
+
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+Number of Steps from the Origin
+
+Figure 1: Estimated mobility effects under Mdif f .
+The analyses based on the relational models described in this paper offer a number of
+advantages in comparative mobility research. The proposed models also include mobility
+effects that are not associated with variables or groups of variables in the table. An F × S
+interaction is not assumed beyond the one associated with having made a certain number
+of steps up or down, and a finer analysis of the changing mobility patterns is possible. The
+mobility effect in the model Mdif f is not assumed to be a linear or some other parametric
+function of the F × S interaction and is therefore modeled in a semi-parametric way. This
+makes it possible to analyze different numbers and directions of steps independently of
+each other, revealing effects when change is statistically significant for some levels but not
+significant for others.
+
+References
+Agresti, A. (1983). A simple diagonals-parameter symmetry and quasi-symmetry model.
+Statistics & Probability Letters, 1 , 313–316.
+Aitchinson, J., & Silvey, S. D. (1958). Maximum-likelihood estimation of parameters subject
+to restraints. The annals of mathematical Statistics, 29 , 813–828.
+Barndorff-Nielsen, O. E. (1978). Information and exponential families. New York: Wiley.
+Bishop, Y. M. M., Fienberg, S. E., & Holland, P. W. (1975). Discrete multivariate analysis:
+Theory and practice. MIT.
+
+11
+
+Breen, R. (2008). Statistical models of association for comparing cross-classification. Sociological Methods & Research, 36 , 442–461.
+Clogg, C. C., & Shockey, J. W. (1984). A note on two models for mobility tables. Comparative
+Social Research, 7 , 443–462.
+Csisz´ar, I. (1975). I-divergence geometry of probability distributions and minimization
+problems. The Annals of Probability, 3 , 146–158.
+Devine, F., & Li, Y. (2011). Is social mobility really declining? Sociological research online,
+16 .
+Erikson, R., & Goldthorpe, J. H. (1992). The constant flux. Clarendon Press, Oxford.
+Erikson, R., Goldthorpe, J. H., & Portocarero, L. (1982). Social fluidity in industrial nations:
+England, France and Sweden. The British Journal of sociology, 33 , 1–34.
+Goldthorpe, J. H., & Jackson, M. (2007). Intergenerational class mobility in contemporary
+Britain: political concerns and empirical findings. British Journal of Sociology, 58 , 525–
+546.
+Goldthorpe, J. H., & Mills, C. (2008). Trends in intergenerational class mobility in modern
+Britain: evidence from national surveys, 1972–2005. National Institute Economic Review ,
+205 , 83–100.
+Goodman, L. A. (1968). The analysis of cross-classified data: independence, quasiindependence, and interaction in contingency tables with or without missing cells. J.
+Amer. Statist. Assoc., 63 , 1091–1131.
+Goodman, L. A. (1972). Some multiplicative models for the analysis of cross-classified data.
+Proceedings of the Sixth Berkley Symposium on Mathematical Statistics and Probability.
+Goodman, L. A., & Hout, M. (1998). Statistical methods and graphical displays for analyzing
+how the association between two qualitative variables differs among countries, among
+groups, or over time: A modified regression-type approach. Sociological Methodology, 28 ,
+175–230.
+Hauser, R. M. (1978). A structural model of the mobility table. Social Forces, 56 , 919–953.
+Hauser, R. M. (1984). Vertical class mobility in England, France, and Sweden. Acta
+Sociologica, 27 , 87–110.
+Hope, K. (1982). Vertical and nonvertical class mobility in three countries. American
+Sociological review , 47 , 99–113.
+Hout, M. (1983). Mobility tables (Vol. 31). Sage Publications, Inc.
+Klimova, A., Rudas, T., & Dobra, A. (2012). Relational models for contingency tables.
+Journal of Multivariate Analysis, 104 , 159–173.
+
+12
+
+Kov´ach, I., R´obert, P., & Rudas, T. (1986). Towards the dimensions of mobility. in Andorka,
+R., Bertalan, L.(eds.) Economy and Society in Hungary, Budapest, 153–183.
+Lang, J. B. (1996). On the comparison of multinomial and Poisson log-linear models. J.
+Roy. Statist. Soc. Ser.B , 58 , 253–266.
+Saunders, P. (2010). Social mobility myths. London: Civitas.
+Sobel, M. E. (1981). Diagonal mobility models: A substantively motivated class of designs
+for the analysis of mobility effects. American Sociological Review , 46 , 893–906.
+Wong, R. S. (1994). Postwar mobility trends in advanced industrial societies. Research in
+Social stratification and mobility, 13 , 121–144.
+Xie, Y. (1992). The log-multiplicative layer effect model for comparing mobility tables.
+American Sociological Review , 57 , 380–395.
+Zelterman, D., & Youn, T. I. (1992). Indicator models for social mobility tables. Comput.
+Statist. Data Anal., 14 .
+
+13
+
+

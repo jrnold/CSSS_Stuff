@@ -1,0 +1,1633 @@
+Modeling Dependencies in International Relations
+Networks 1
+Peter D. Hoff and Michael D. Ward
+University of Washington, Seattle
+Working Paper no. 35
+Center for Statistics and the Social Sciences
+University of Washington
+
+September 16, 2003
+
+1 Peter
+
+Hoff is Assistant Professor of Statistics, Department of Statistics, University of
+Washington, Box 354322, Seattle WA 98195-4322; email: hoff@stat.washington.edu; web:
+www.stat.washington.edu/hoff. Michael Ward is Professor of Political Science, Department of
+Political Science, Univeristy of Washington, Box 98195-3530, Seattle WA 98195-3530; email:
+mdw@u.washington.edu. Earlier versions of this manuscript were presented at the Center for
+Statistics and Social Science, University of Washington, April 30, 2003, the University of California, Davis, March 21st, 2003, the Annual Conference of the International Studies Association,
+Portland, Oregon, US, February 26–29, 2003, the Conference on New Directions in International
+Relations, February 20-22, 2002 at Yale University, the Symposium on Social Network Analysis for
+National Security Committee on Human Factors, National Academy of Sciences, Washington, D.C.,
+USA, November 7-9, 2002. We are grateful to our colleague Mark Handcock for helpful discussions.
+This research is partially supported by Office of Naval Research grant N00014-02-1-1011 to Peter
+Hoff.
+
+Modeling Dependencies in International Relations
+Networks
+Michael D. Ward
+Peter D. Hoff
+Statistics
+Political Science
+University of Washington University of Washington
+Seattle, Washington
+Seattle, Washington
+98195
+98195
+
+Abstract
+Despite the desire to focus on the interconnected nature of politics and economics at the
+global scale, most empirical studies in the field of international relations assume that the
+major actors are not only sovereign, but also that their relationships are independent phenomena. In contrast, this article illustrates the use of linear and bilinear random effects
+models to represent statistical dependencies that often characterize dyadic data such as international relations. In particular, we show how to estimate models for dyadic data that
+simultaneously take into account:
+a) regressor variables,
+b) correlation of actions having the same actor,
+c) correlation of actions having the same target,
+d) correlation of actions between a pair of actors(i.e. reciprocity of actions), and
+e) third-order dependencies, such as transitivity, clustering, and balance.
+We apply this new approach to the political relations among a wide range of political actors
+in Central Asia over the period from 1989-1999, illustrating the presence and strength of
+second- and third-order statistical dependencies in these data.
+
+1
+
+Introduction
+
+Why has interdependence been ignored by empirical analysis in the field of international
+relations? Part of the answer resides in the long-standing tradition of “sovereignty” in
+world politics. Certainly since John Herz’ (1950) association of idealism and realism in the
+sovereignty of the nation-state, world politics has been conceived of as the relationships of
+sovereign entities, despite increasing evidence to the contrary. The geopolitical perspective
+that undergirds a realist perspective on politics goes far back into the 19th Century. R¨atzel,
+Kjell´en, Haushofer, and MacKinder, among others, promoted this geopolitical undergirding
+for world politics, an understanding that was quite successful in policy circles in Continental
+Europe (certainly in England and Germany) as well as in the United States.1 The incorporation of these ideas–especially the notion of lebensraum–into the foreign policies of the
+1
+
+In Asia, the distinction between empire and state was not so clear cut, but the omnipotence of the state
+was well established in both China and Japan by this point as well.
+
+1
+
+Third Reich and especially the policy role played by Haushofer and his most famous student,
+Rudolph Hess, brought great, formal disregard for geopolitics in the post-World War II era. 2
+Despite the widespread disrepute of geopolitics, its basic tenets guided much foreign policy throughout the last century. In this perspective, states were seen as irreducible objects.
+This meant that geopolitics, epitomized best perhaps by Henry Kissinger in the policy realm
+and by Hans Morgenthau in the scholarly community, implied an evaluation of world politics with a focus on the heft of monadic objects called states, a heft ascribed primarily to
+their “power” seen in the ability of individual states to affect the overall global geopolitical
+equilibrium. The main assumption of this conceptualization of politics is that world politics
+is (over)determined by the characteristics and actions of organizations asserting “sovereign”
+control over territory. This idea places very little importance on interactions, except as they
+may affect the heft or power of the individual nations in the global system.
+Most analyses of world politics and studies of national security policies recognize the
+interdependence among the salient actors across the salient issues, but typically ignore this
+interdependence. Traditionally, international politics has been defined as the scope and
+extent of the relations among independent countries, thought to be the most important
+elements in world politics. This means that actors as well as their actions are strategically interdependent (Signorino 1999). Ignoring the interdependence among these phenomena would appear to be a serious oversight that plague attempts to understand, let alone
+predict, the course of national security policy and world politics more generally. Quantitative, systematic studies of international relations and national security typically assume
+that the major events that comprise world politics consist of the independent actions of
+independent actors. An exception is analysis via game theoretic models, but these rarely
+deal with more than two actors at a time. Some beginning attempts to model the empirical interdependency in international relations have appeared in the literature (Ward and
+Kirby 1987; Smith 1999; Gleditsch and Ward 2001; Gleditsch and Ward 2001; Ward and
+Gleditsch 2002; Gleditsch 2002; Lofdahl 2002; Przeworski and Vreeland 2002).
+Social network analysis is a broad area of social science research that has been developed
+to describe the relationships among interdependent units. It is somewhat surprising that to
+date there are no published applications using a social network framework to study international relations3 , since it is evident at first blush that international politics is about the
+interdependencies that appear around the world. This is perhaps due to the fact that most
+tools for social network analysis are focused on the simple case of binary (0-1) relations,
+where the data can be represented by a simple graph (see Wasserman and Faust 1994 for
+a review). Dealing with non-binary data (such as counts or continuous data) or regressor
+variables has not been well addressed in the social networks literature (see Hoff, Raftery, and
+Handcock 2002 for a discussion).
+Herein, we develop a generalized regression framework for analyzing and accounting for
+2
+
+Hess, for example, sent Karl Haushofer to negotiate with Bene˘s during the Sudeten Crisis of 1938.
+Steven J. Brams (1966; 1968) and later Schofield (1972) tried to estimate linkages among countries, but
+this line of research was not pursued. Some work with elementary graph theory in the field of international
+relations has appeared more recently (Lai 1995), but like most of the early work, this applies to a small number
+of actors, typically three. Zeev Maoz and colleagues (2003) have begun to investigate this descriptive thread
+of social network analysis in the context of international relations.
+3
+
+2
+
+the dependencies in valued and binary dyadic international relations data. This approach
+builds on the social relations model (Warner, Kenny and Stoto 1979; Wong 1982) that specifies random effects for the originator and recipient of a relation or action, as well as allowing
+for within dyad correlation of relations.4 We expand upon previous approaches by allowing
+for certain kinds of third-order dependence using an inner product of latent, unobserved
+characteristic vectors. The use of inner products to model dependencies is new, and related
+to the the recent development of “latent space” models for dyadic data (Hoff, Raftery and
+Handcock 2002; Ward, Hoff and Lofdahl 2003; Hoff 2003b). The idea of measuring latent
+characteristics or positions of political actors has a long lineage in political science, though
+not in international relations.5
+
+2
+
+A Model of Dependent, Dyadic Interactions
+
+Dyadic data are replete in studies of international relations. Bilateral trade (Mansfield and
+Pollins 2003), the presence of conflicts and crises among countries (Brecher and Wilkenfeld
+2000; Wilkenfeld 2001), alliances (Gartzke and Simon 1996; Leeds 2003), and joint membership in international and nongovernmental organizations (Russett, Oneal and Berbaum
+2003), each provides a ready example of international phenomenon that can be viewed as
+dyadic. Let Y denote an n × n matrix that contains dyadic measurements, so that the i, jth
+entry yi,j is the measurement of the relation from i to j. The matrix Y is often called a
+socio-matrix. Similarly, let X denote an n × n × r array, so that xi,j is a vector of length r
+describing characteristics specific to dyad (i, j).
+It is typical to model these kind of data via a linear regression approach
+yi,j = β 0 xi,j + i,j .
+
+(1)
+
+Examples of this kind of model are common in the so-called democratic peace literature,
+although the errors i,j are typically treated as independent. In contrast, we develop a
+random effects model that can account for various second and third order dependencies that
+may be present in such dyadic data.6
+We begin by assuming the errors {i,j , i 6= j} have a covariance that is exchangeable
+under identical permutations of the indices i, j of the senders and receivers. With the added
+assumption of normality, this implies the residuals can be represented in terms of a linear
+4
+
+This work also builds upon advances in techniques for decomposition of variances (Li 2002; Li and
+Loken 2002; Gill and Swartz 2001).
+5
+See Martin and Quinn (2002) for recent developments as well as a summary of the canonical literature
+on “ideal points.”
+6
+Among others, see Hewitt (2003), Maoz and Russett (1993), Mansfield and Snyder (1995), Enterline
+(1996), Mousseau (1997), Russett, Oneal and Davis (1998), Beck, Katz and Tucker (1998), Russett and
+Oneal (2001), and Bennett and Stam (2000). However, each of these studies ignores the network aspects of
+the dyadic data on which they are based.
+
+3
+
+random effects model:
+i,j = ai + bj + γi,j
+
+  
+ai
+0
+∼ N
+,
+bi
+0
+
+  
+
+0
+γi,j
+,
+∼ N
+0
+γj,i
+
+
+(2)
+σa2 σab
+σba σb2
+σγ2 ρσγ2
+ρσγ2 σγ2
+
+
+
+
+,
+
+which defines a covariance structure for the i,j ’s given by:
+E(2i,j ) = σa2 + 2σab + σb2 + σγ2
+E(i,j j,i )
+E(i,j k,l )
+E(i,j i,k )
+E(i,j k,j )
+E(i,j k,i )
+
+=
+=
+=
+=
+=
+
+ρσγ2 + 2σab
+0
+σa2
+σb2
+σab ,
+
+where σa2 represents dependence among measurements having a common sender, σb2 represents
+dependence among measurements having a common receiver, and ρ represents correlation of
+measurements within a dyad, i.e. reciprocity. The above model has been called the “social
+relations” or “round robin” model (Warner, Kenny, and Stoto 1979, Wong 1982), and has
+been recently studied by Gill and Swartz (2001) and Li and Loken (2002).
+To accommodate other data types such as counts or binary measurements, the error
+structure in (2) can be integrated into a linear predictor in the framework of a generalized
+linear model in which the dyadic data are conditionally independent given the random effects,
+but are unconditionally dependent:
+
+p(y1,2 . . . yn,n−1
+
+θi,j = β 0 xi,j + ai + bj + γi,j
+E(yi,j | θi,j ) = g(θi,j )
+Y
+| θ1,2 . . . θn,n−1 ) =
+p(yi,j | θi,j ),
+
+(3)
+
+i6=j
+
+where g(·) is the inverse-link function. For example, letting g(θi,j ) = eθi,j and yi,j |θi,j ∼
+Poisson (eθi,j ) is equivalent to a mixed-effects Poisson regression model with the log-link.
+The random-effects model above can capture second-order forms of dependence such as
+reciprocity and within-actor correlation. However, the social network literature (Wasserman
+and Faust 1994) suggests that third-order dependence patterns, such as transitivity and
+balance, are often found in dyadic data. Indeed, international relations would seem to be
+replete with these phenomena. For binary data, transitivity describes the dependence among
+three nodes i, j, k in which i and k are more likely to be linked if i and j are linked and j
+and k are linked. For signed measurements, such as residuals, a triad is called “balanced”
+if the product of the measurements among the three nodes is positive, i.e. i,j j,k k,i > 0.
+A weaker concept similar to balance is clusterability, in which a positive relation between i
+and j implies that i,k and j,k will have the same sign for each other node k. A set of nodes
+4
+
+that are perfectly “clusterable” can be partitioned into groups that have all positive linkages
+within groups and negative linkages between groups.7 In practice, dyadic data will exhibit
+varying degrees of transitivity, balance, and clusterability.
+Building on Hoff, Raftery and Handcock (2002) we use unobserved latent characteristic
+vectors to represent transitivity, balance, and clusterability among dyadic data. We define
+an unobserved, latent K-dimensional vector zi for each node i in the network, which can be
+thought of as representing a position in an unobserved latent characteristic space of dimension
+k. Modelling the response between two nodes as an increasing function of the similarity of
+their latent characteristics induces a pattern of transitivity, balance, and clusterability into
+the network. We achieve this effect mathematically by adding the inner product zi0 zj to the
+linear predictor (3) to yield
+i,j = ai + bj + γi,j + zi0 zj .
+
+(4)
+
+Note that if the vectors zi and zj have similar direction and magnitude, then zi0 zj will be
+positive and the effects zi0 zk and zj0 zk will be similar to each other, thus representing balance
+and clusterability. Similarly, if zi0 zj and zj0 zk are both positive then zi0 zk is likely to be positive
+as well, thus representing transitivity.8
+The inner product term is one way to measure a latent similarity - Hoff, Raftery and
+Handcock (2002) discuss other ways of establishing the topology of latent space, including
+distance and projection approaches. The inner product used in the above model has the
+appeal of being analogous to an “error term” and facilitating substantive interpretation as
+a random or fixed effect. Considered as a random effect, if the zi ’s are independent samples
+from a multivariate normal distribution with mean zero and covariance matrix σz2 I, then
+the expectation of zi0 zj is zero. Furthermore, this inner-product term induces a third order
+dependence that captures transitivity and balance via the expectation of the third order
+moment E(i,j j,k k,i ). The incorporation of zi0 zj into the linear predictor gives
+E(2i,j ) = σa2 + 2σab + σb2 + σγ2 + Kσz4
+E(i,j j,i ) = ρσγ2 + 2σab + kσz4
+E(i,j j,k k,i ) = kσz6 ,
+with other second order moments given as above and all other third order moments equal to
+zero. Alternatively, as a fixed effect the inner-product term can be thought of as a reducedrank interaction term. In this context, it has been called a “bilinear effect” or “multiplicative
+interaction” (Gabriel 1978; Gabriel 1998).
+We re-parameterize the bilinear model given above as
+θi,j = βd0 xd,i,j + si + ri + γi,j + zi0 zj
+si = βs0 xs,i + ai
+ri = βr0 xr,i + bi
+7
+
+(5)
+
+These ideas were introduced into international relations in the 1960s to the balance of power (Zinnes
+1967), but have been applied more recently by Lai (1995) to study reciprocity among superpowers.
+8
+If φi is the angle of zi from a given fixed axis, then the inner product zi0 zj = cos(φi − φj ).
+
+5
+
+separating regressors xd,i,j that are specific to a dyad (i, j), from those specific to a sender
+xs,i or receiver xr,j . Bayesian estimation of model parameters is made feasible by use of a
+Markov chain Monte Carlo algorithm, which samples values of the parameters from their
+posterior distributions: We construct a Markov chain in {βd , βs , βr , Σab , Z, σz2 , Σγ } (where
+Z is the K × n matrix of latent vectors) that eventually samples from the desired target
+posterior distribution p(βd , βs , βr , Σab , Z, σz2 , Σγ | Y ). The algorithm proceeds by iterating
+three basic steps:
+1. Resampling of linear effects:
+(a) sample βd , s, r | βs , βr , Σab , Σγ , θ, Z (similar to a linear regression);
+(b) sample βs , βr | s, r, Σab , Σγ , θ, Z (similar to a linear regression);
+(c) sample Σab , Σγ from their full conditional distributions.
+2. Resampling of bilinear effects:
+(a) for each i, sample zi | {zj : j 6= i}, θ, β, s, r, Σz , Σγ (similar to linear regression);
+(b) sample Σz from its full conditional distribution.
+3. Resampling of dyad-specific parameters: update {θi,j , θj,i } using a Metropolis-Hastings
+step as follows:
+ ∗ 
+ 0
+
+
+θi,j
+β xi,j + ai + bj + zi0 zj
+propose:
+∼N
+, Σγ
+∗
+β 0 xj,i + aj + bi + zj0 zi
+θj,i
+ ∗ 
+∗ )
+θi,j
+p(yi,j |θ ∗ )p(yj,i |θj,i
+with probability p(yi,j |θi,j
+∧ 1.
+accept:
+∗
+)p(y
+|θ
+)
+i,j
+j,i
+j,i
+θj,i
+If conjugate priors are used, then all parameters in steps 1 and 2 can be sampled from their
+full conditional distributions. In this case, the full conditionals for the regression terms
+βd , s, r, βs , βr , Z are multivariate normal, and the covariance terms have inverse-Wishart
+conditional distributions. (more details on the full conditionals are available in Hoff (2003a)).
+This estimation procedure essentially provides a decomposition of θi,j into regressor,
+sender, receiver, and latent position effects in a generalized regression framework. This
+allows for the modeling of binomial, Poisson, and Gaussian network data in the presence of
+second and third order dependence. In the subsequent section we employ this approach to
+estimate the dependencies in dyadic data on the political interactions in Central Asia.9
+
+3
+
+Estimation of Network Links in Central Asia
+
+We use the bilinear mixed effects model to estimate the network structure of the political
+interactions among the primary actors in Central Asian politics over the period from 1989
+through 1999. This region has a great deal of conflict and spotty coverage in English language
+media, despite its contemporary salience. Event data collection has provided one way to
+9
+
+R routines, documentation, and sample data, (including the data described below) to implement this
+approach are available at stat.washington.edu/hoff.
+
+6
+
+examine the politics of such regions. Event data are nominal or ordinal codings of the
+recorded interactions of international actors.10 Berelson (1952) introduced the concept of
+content analysis to the social sciences, but it was North, Holsti, Zaninovich and Zinnes
+(1963) that pioneered its use in studies of world politics. Event data have been widely used
+in quantitative international relations research and in policy research for four decades (North
+1967; McClelland and Hoggard 1969; Azar 1980). Until the development of machine coding,
+the World Event Interaction Survey (WEIS) and Conflict on Peace Databank (COPDAB)
+were the two dominant schema. The contemporary, state-of-the-art is found in the Kansas
+Event Data System (KEDS) which uses automated coding of English-language news reports
+to generate political event data (Schrodt 2000; Schrodt, Davis and Weddle 1994).
+While most event data analyses in the field of international relations have focused on the
+interactions of countries, writ large, there is no reason to presume that national governments
+are the only actors in world politics. We include both countries and non-countries as actors
+and targets. The initial database was taken from the Kansas Event Data Survey, an automated textually oriented data generating process (Schrodt, Davis and Weddle 1994; Gerner,
+Schrodt, Francisco and Weddle 1994), available from http://www.ku.edu/ keds/data.html.
+The CASIA database records approximately 30, 000 events concerning Central Asian politics
+over the period from 1989-1999. Based on the CASIA database, there are 106 such actors
+with substantial interactions that have been deemed by substantive experts to be significant.
+Of these, there are 66 countries, and 40 non-country actors.11 For the purposes of most of
+our analyses, we sum the paired interactions among all actors across the eleven year period,
+so yi,j is the total number of directed interactions from actor i to actor j, resulting in a
+106 × 106 sociomatrix Y .
+We examine separately the conflictual and cooperative interactions among these 106
+actors. Conflictual interactions are defined as those having a negative Goldstein scale score
+(1992); cooperation is defined a events that have been assigned a positive score on this scale.
+Goldstein scale values, ranging from -10 (extreme conflict) to 8.3 (extreme cooperation)
+are psychometrically determined weights, where a positive weight means that the event has
+positive affect; conversely, a negative Goldstein score indicates negative affect.
+We model the count of cooperative or conflictual interactions among these 106 actors
+using the generalized bilinear model, using a Poisson distribution with a log-link. We include
+sender and receiver random effects, as well as a 2 dimensional latent space or bilinear effect. 12
+10
+
+A good introduction to event data collections, as well as the data we use in this study, can be found at
+http://www.ku.edu/ keds/intro.html.
+11
+The countries are Afghanistan, Angola, Armenia, Australia, Austria, Azerbaijan, Belgium, Belarus,
+Cambodia, Canada, Sri Lanka, China, Cuba, Cyprus, Czech Republic, France, Georgia, Germany, Ghana,
+India, Indonesia, Iran, Iraq, Israel, Italy, Japan, Kazakhstan, Kenya, North Korea, South Korea, Kuwait,
+Kyrgyzstan, Libya, Lebanon, Mexico, Mali, New Zealand, Norway Netherlands, Pakistan, Palestine, Peru,
+Poland, Portugal, Qatar, Romania South Africa Saudi Arabia, Senegal, Singapore, Slovakia, Sudan Switzerland, Tajikistan, Tanzania, Turkmenistan, Turkey, UAE, Egypt, Ukraine, UK, USA, Russia, Uzbekistan,
+Yemen, and Yugoslavia. Non-countries include groups such as peace keeping forces, Islamic militants, Azerbaijan rebels, the Afghan military, Afghan opposition, Afghan politicians, and Afghan rebels; individuals
+such as Abdul Rashid Dostum and Usama Bin Laden; and international organizations, including the Commission on Security and Cooperation in Europe, European Union, North Atlantic Treaty Organization,
+United Nations, and the Vatican.
+12
+The choice of K is not obvious. For descriptive purposes K ∈ 1, 2, 3 allows for straightforward graphical
+
+7
+
+In addition, we employ the so-called Tobler law of geography (Tobler 1979) to reflect the
+fact that actors that are close geographically have a higher rate of interaction. Although it is
+impossible to determine with certainty the geographical “location” of most non-state actors–
+where, for example are “international negotiators” located–we can with some confidence
+determine the nearest neighbor distances of the state actors (Gleditsch and Ward 2001). To
+gauge inter-country distances, we use nearest neighbor distance (Gleditsch and Ward 2001)
+up to 950 kilometers complemented by the distance in thousands of kilometers between the
+capital city of each of the countries for larger distances.13 We also allow for the possibility
+that countries will have a different propensity for dyadic interaction than non-country actors,
+both on the cooperative and conflictual scales. Therefore, we model the rate of interaction
+between two actors as depending on the country/non-country status of both the sender and
+receiver. The hierarchical model specifying these ideas is given by:
+θi,j = β0 + βs × (i ∈ c) + βr × (j ∈ c) + β1 × (i, j ∈ c) + β2 xi,j × (i, j ∈ c) + (6)
+ai + bj + zi0 zj + γi,j ,
+yi,j |θi,j ∼ Poisson(eθi,j )
+where xi,j is the distance between countries i and j (in thousands of kilometers), and c is
+the set of countries. The fixed effects, shown above in the first line of equation 6, are further
+detailed in Table 1.14
+Table 1: Fixed effects for dyads involving countries and non-countries. i ∈ c indicates
+that actor i is a country; i 6∈ c indicates that actor i is not a country, but an individual,
+organization, or other group.
+i
+j
+Fixed Effects Components
+∈ c ∈ c β0 + βs + βr + β1 + β2 xi,j
+∈ c 6∈ c β0 + βs
+6∈ c ∈ c β0
++ βr
+6∈ c 6∈ c β0
+Separate Markov chain Monte Carlo algorithms were run for the conflict and cooperation
+data. Each chain was run for 200, 000 iterations, with output saved every 50th iteration.
+Figure 1 illustrates the posterior densities and a time-series plot of the Markov chain for
+the distance parameter β2 is shown in Figure 1 for the cooperation data. This mixing is
+representative of the mixing of the other parameters.
+presentation of results. Based on cross-validation experiments for a similar dataset (Hoff 2003a), using the log
+probability of the data given the parameters indicates that K ∈ 2, 3 provides roughly equivalent predictive
+model performance. As a result, we employ two latent dimensions.
+13
+Actually, we scale these by 1000.
+14
+The random effects are each taken to be distributed as multivariate normal: (ai , bi )0 ∼ N (0, Σab );
+(γi,j , γj,i )0 ∼ N (0, Σγ ); and zi ∼ N (0, σz2 IK×K ). The prior distributions of β are given multivariate normal,
+where q indexes β’s dimension: β ∼ N (0, 1000 × Iq×q ). The variance of the sender and receiver effects,
+Σab is modelled as inverse Wishart(I2×2 , 4). Hyper-parameters σu2 , σv2 are taken to be i.i.d. Γ−1 (1, 1) and
+σ 2 +σ 2
+σ 2 −σ 2
+σγ2 = u 4 v and ρ = σu2 +σv2 .
+u
+
+v
+
+8
+
+-0.044 -0.079 -0.116
+
+Figure 1: The posterior density and a time-series plot of the Markov chain for the distance
+parameter for the cooperation data. The mean response is greater for actors that are closer
+together geographically, and the estimated coefficient is −0.079; 95% empirical confidence
+interval is [−0.044, −0.116]. See Table 2 for posterior means and confidence intervals for all
+estimated parameters. Note that this image is rotated −50◦ to provide perspective.
+The parameter estimates are presented for conflict and cooperation in Table 2. These
+estimates illustrate that the differences between networks of conflict and cooperation are
+not immense, but are recognizably different. There is a strong distance effect for both
+cooperation and conflict: the rate of political interaction is inversely related to distance, as
+expected, as both of the parameters are negative. The distance effect is about 30% greater for
+conflict than cooperation. This particular effect only applies to dyads for which the distance
+measurement makes sense, i.e., for dyads in which both nodes are countries (see Table 1).
+The effect of being a country seems about 40% stronger for conflict than for cooperation.
+This suggests that countries are more likely to share conflict linkages. The effects of countries
+being separately senders and receivers illustrates that countries are twice as likely to send
+cooperation, but more likely to receive conflict. The estimates of ρ indicate a large degree of
+reciprocity in reported actions, but it is substantially higher in cooperative social relations
+than in conflictual ones. This indicates a large degree of within-dyad dependence.
+The model also detects a large degree of sender and receiver specific variance, as well
+as third order dependence, as σa2 , σb2 and the variance of the inner-products σz20 z are all
+larger than σγ2 . Finally, Figure 2 presents posterior means of random effects for senders and
+receivers for conflict. The actors have similar random effects orderings across both domains
+of dyadic interaction,though only conflict orderings are presented herein.
+Figure 3 plots the posterior means and marginal distributions of the latent positions
+for the analysis of cooperation and conflict in Central Asia. The actor names are located
+at the posterior means of the latent positions, and posterior sample values are plotted in
+
+Table 2: Posterior Means and quantile-based 95% confidence intervals (above and below) are
+presented for the major parameters (given in bold) of the bilinear effects model as applied to
+both conflict and cooperation among 106 major political actors in Central Asia, 1989-1999.
+Broad comparison shows that there is a similar structure to cooperation and conflict. Countries that are distant geographically have lower interaction rates in both domains. Cooperative
+events are more highly reciprocated within dyads than conflictual ones. Strong second and
+third order dependence is evident in both cooperative and conflictual dyadic interactions.
+Posterior Means
+Conflict
+Cooperation
+Distance Effect
+
+β2
+
+Country Effect
+
+β1
+
+Intercept
+
+β0
+
+Sender Effect
+
+βs
+
+Receiver Effect
+
+βr
+
+−0.067
+
+−0.044
+
+−0.105
+
+−0.079
+
+−0.144
+0.914
+
+−0.116
+0.693
+
+0.550
+0.182
+−3.542
+
+0.328
+−0.006
+−3.082
+
+−4.751
+
+−4.363
+
+−6.015
+0.993
+
+−5.669
+1.129
+
+0.151
+
+0.292
+
+−0.642
+1.337
+
+−0.580
+1.201
+
+0.499
+
+0.365
+
+−0.345
+4.913
+
+−0.457
+5.520
+
+Common Sender Variance
+
+2
+σa
+
+2.604
+4.640
+
+3.045
+5.204
+
+Sender-Receiver covariance
+
+σa,b
+
+3.398
+
+3.853
+2.842
+5.127
+
+Common Receiver Variance
+
+σb2
+
+2.450
+4.876
+
+3.569
+
+3.790
+
+2
+σγ
+
+2.592
+1.631
+
+2.785
+1.556
+
+Error Variance
+
+1.439
+
+1.380
+
+1.265
+0.851
+
+1.216
+0.978
+
+Reciprocity
+
+ρ
+
+0.805
+
+0.968
+
+2
+σz
+
+0.749
+1.428
+
+0.957
+1.214
+
+Variance of Latent Dimensions
+
+1.145
+
+0.972
+0.774
+2.336
+
+Variance of Inner Product
+
+2
+σz
+0z
+
+0.918
+3.231
+
+2.623
+
+1.892
+
+Log Likelihood of Yi,j , Yj,i |modelled effects
+
+−4685
+
+3.598
+
+2.077
+
+4.082
+
+1.488
+
+−6005
+
+Note: Data are available from http://www.ku.edu/∼keds/data.html, and are briefly described above. Statistics presented are from runs of 200K
+iterations with output sampled every 50 iterations; the first 50K iterations were discarded as “burn-in”, although results are not appreciably
+different if they are included. Two latent dimensions were estimated for both domains, i.e., K = 2.
+
+color. Each actor is assigned a unique color in a way so that actors with similar latent
+position values have similar colors. Thus, the clusters of dots of similar colors reflect both
+the clustering of actors with similar positions, as well as the estimated uncertainty of these
+positions. This figure shows that there is considerable clustering in the estimated dyadic
+relations. The top panel and the bottom panel are similar, showing that there are similar
+patterns to both conflict and cooperation in the political interactions in Central Asia. In
+the top panel, several clusters are identifiable. The lower left hand portion is dominated by
+actors involved in the Armenian and Azerbaijan conflict which dominated the later part of
+the 1980s in Central Asia. Central European involvement in Kosovo with its implications
+for Central Asia cluster above this, with the Vatican, CSCE, NATO, and other European
+actors being visible. At the same time, the ebb and flow of politics in southern Central Asia,
+particularly Afghanistan, Pakistan present a visible cluster in the lower right of the latent
+space. Immediately above that one finds the cluster of Middle Eastern, Moslem, and Arab
+actors. The bottom panel illustrates similar clusterings for conflict interactions in Central
+Asia.
+In terms of prediction, the bilinear effects approach is quite accurate. For an arbitrary
+draw–the 200, 000th–from the posterior distribution, we compare the predicted number of
+linkages between actors i and j. The correlation of the predicted number of linkages and the
+
+10
+
+Af U UkU
+S
+K
+PghIr N raiA
+Afaza TK
+ajai zaakkaisnains O ne
+gh K
+T
+k
+t
+t
+h
+k
+u
+h
+a
+a
+a
+y
+i
+r
+rG
+gyoksetya stnann
+TuUzFnbG
+rkm
+reaknoisvzvesertrannnm
+U
+e
+Intzbek TCEaU
+ncietsannmeent
+K
+l
+ernGReGohEiibC
+n
+a t
+vsneran an t
+KaSaA
+aetirum
+z
+s
+u
+i
+r
+o
+dr i banaaannym
+AfzaA
+k
+Ae rijlaS en
+So ghI aIhtnm
+Int
+uNthsr aPR
+lrnai bntu t
+aeyl eebsiadiea ffs
+Taern MN
+GK
+J
+A
+a
+O
+o
+j a IospTaOs re els nt
+n
+a
+Tu A UikisttaioCnA
+arldaliebanm
+rkTmuze zbe En SG
+Ne
+gyCoE
+g
+PaernkrbimaSiwBkIeP
+kissteanjaintzrlaarqrepustvi ernotiat
+erl sde me or
+tannisPt G
+avn nt nt s
+Ar
+N PoGlaoarvneosP
+ed
+me IGnetdhCU
+A
+n
+eridnrerennsime
+u
+d
+E
+e
+b
+n
+r
+Cz YiuanLeioborngelaan metdNenint
+nt yta
+ecP goGs yaisaiads
+Isl C
+zov
+estloavve
+amaShamlR
+Az
+beopinueiarnm
+iM
+cuM
+d
+V
+a
+d
+N
+e
+b
+artialinl ia lic en
+o
+Pe ArbSarA
+t
+iius wcai ita
+Ko acefgA
+hBauejsalLgniatrPniakany nts
+sov S K
+A
+raulmreas
+fgohoLuCKeauneptM
+i
+i ii
+nibthenw
+aadnigtliatFardent
+Af aA
+A
+gh AQnfaO
+rtirpcapftoriaoicaoryce
+g
+s
+a
+a
+AbUsaNoarnY
+e
+sn
+o
+r
+Adzu mPoPtrhePm
+o ela itiA
+elrbRKaoBturKuloitnric onrmy
+i
+g
+N
+a
+i
+a
+e
+eRwoam
+isjhasonv Lal a ns
+Tu A
+rkm
+rm HSoiM
+ngeZxeaanindiRoDeoaden
+apicolaa bsetu
+eneinLi enK
+u
+g
+rdor nd lsm
+s ab K
+Az
+erb CTGan KteannnaPGnoolonneg
+aijSenyphaznan ya oivtic
+Slo an egru a ia erian
+nms
+vak Poals
+ent
+ia litic
+ian
+s
+
+−6
+
+−4
+
+−2
+
+0
+
+2
+
+Receiver Random Effects
+Af Uk
+Ka UghaUnSrAain
+I
+N i e
+P
+z
+T
+gh KTyrgaajkikairskahns O stan
+TuanRal yz istat nta
+iosbasta an n
+rzkG
+u
+Ka U
+vsi n n
+zak Tbum
+EEerkkeinseetiasrnm
+hzeC
+Int A
+hinC yatnan e
+G
+r
+o
+nt
+b
+ASefrnG
+e UKaviea
+jr
+Uz aguhaFatrioarm
+bekAdI in nnRacaenyannmen
+InTta
+rsmrAa r elbS
+t
+MG
+ejrinki
+o o eenlai bieatlus ff
+astti anANIA
+tasTllveOem
+rna m s
+o
+r
+y
+n
+G
+a
+S
+ent
+Tu
+o CInSaCl N
+ob
+rkm K SNe uN
+Etgh dKiaE veegrn
+yp o otm
+enUaizzbawkBtiethzeG
+i
+e
+O
+r
+t
+a
+r
+n
+e
+t
+l
+e
+orts
+I st ekhlar a s a
+PPeakislamanJIaPPpPrarreuleasnndds
+anPioc rM
+arqenssisidideen
+Tu acestK
+l
+d
+A
+n
+G
+zerrkm GLeUepAoavnidlitaentt t
+e n N
+baenSeuiobryiE
+i i adagani g rFnmts iyaz
+Ar
+me YIunjagdCnsotuG
+ov
+n na o e
+niPaAau osnlbeoavPre rcenst
+CzCSrKnleGsstriasviiaernsid
+t
+u
+e
+e
+i
+a
+Lwoaivne a mennt
+Af AcauhmR
+t
+Agh AM
+s baonkitern
+fnrtarielaipdliuiaba men
+Ab SfgohauCannaO
+t
+du BNQth M
+pacdpaaa lic
+l R eol ar tAa filoi si
+AA
+ghiwuarrictatrio
+VYaaesm
+Ko UzefrgbhaA
+i my a y n
+sovsaNmoainjPnPetgrioceladnnDo
+Az o LKarthanouli a stu
+Prtic
+erbL iboBsiK
+m
+PaoeijbaeronavooLreesaiiadns
+rtaunnotioade en
+Tu A
+SRinoK
+H
+N
+t
+u
+n
+n
+ongmardgaRe An
+rkm
+ew
+rm
+pnoial bel rm
+e en K M ZgaK
+Az
+erb niCsitaan Penyexeicaoloarnneg s y
+y
+G
+n
+T
+aij anh prGolia
+d
+SloSeann Pzaannua sovteicia
+vakegaoli ia rnm
+ns
+l
+t
+ia icia
+ent
+ns
+Af
+
+1:n
+
+1:n
+
+Sender Random Effects
+
+4
+
+−4
+
+−2
+
+0
+
+2
+
+4
+
+Figure 2: Orderings of sender-specific and receiver-specific random effects are similar for
+the conflict data. The United States, the United Nations, Ukraine, Afghanistan, Iran, Kazakhstan, and Pakistan are actors with large, positive random effects sending and receiving both
+conflict and cooperation (not shown).
+actual number of linkages is 0.85 for conflict and 0.86 for cooperation.15 If we compare the
+predicted fit for the fixed effects model estimated with no latent positions (i.e., with K = 0)
+with this same model using 2 latent dimensions, it is apparent that the fit is improved by
+the inclusion of the latent positions in the model. The correlation between predicted and
+actual number of cooperative events in the latter case is 0.85, compared to 0.75 when no
+latent positions are estimated.
+While the in-sample fit of the model is strong, it is also important to gauge its outof-sample predictive performance. This provides an important heuristic to determine the
+predictive value added for the random effects specified in the model. To examine this we
+undertook a small comparative study of out-of-sample predictive performance For both the
+cooperation and conflict data, one-third of the data was randomly replaced with missing
+values, and three models were fit using the remaining “in-sample” data. The first uses
+only the fixed-effects (i.e., only the β coefficients); a second model additionally includes
+random intercepts having country-specific sender and receiver effects; and the third model
+also includes the inner product effect zi0 zj , with K = 2. The posterior mean parameter
+values were then used to predict the one-third of the data reserved as “out-of-sample”, and
+15
+
+These are an order of magnitude larger than for a simple model that ignores dependencies.
+
+11
+
+Table 3: Correlation between observed values and out-of-sample predictions: The out-ofsample predictions show the marginal benefits of modeling the sender and receiver random
+effects, as well as the additional predictive gain of the inner product of latent positions.
+For cooperation a generalized linear model produces out-of-sample predictions that have a
+correlation of 0.13 with out-of-sample measurements, which rises to 0.68 when random effects
+for senders and receivers are included and to 0.86 when the inner product of latent positions
+is also modeled. The gain is even stronger for conflict, rising from 0.07 in the first instance
+to 0.91 in the last. These patterns are less striking when measured on the log scale, but still
+evident.
+Fixed effects +
+Random Intercepts +
+Fixed effects +
+Fixed effects Random Intercepts
+Latent Positions
+Cooperation
+0.13
+0.68
+0.86
+Cooperation (log scale)
+0.17
+0.56
+0.61
+Conflict
+0.07
+0.60
+0.91
+Conflict (log scale)
+0.11
+0.53
+0.60
+the correlations of predicted and actual responses were computed in a raw, untransformed as
+well as a logarithmic scale.16 Table 3 presents the results of this out-of-sample experiment.
+The addition of the random effects–spanning the random intercepts for senders and receivers as well as the inner product of the latent positions–increases predictive performance
+substantially, viewed in terms of the correlation between actual and predicted responses.
+The effect is particularly dramatic on the raw scale of the data, for which the inner product
+model is able to predict some very high responses, whereas the other models cannot.
+
+Conclusion
+This article presents a generalizable way to account for types of second and third order dependencies in regression models for dyadic data. Most current analyses in political science–and
+especially international relations–ignore all of these dependencies. The latent space, bilinear
+regression approach is major step forward for analysts interested in the interdependencies
+of dyadic data that are often used to characterize world politics. The latent space approach
+provides a practical framework that can be used to empirically estimate and display a range
+of important dependence patterns in dyadic data.
+This alone is an important breakthrough. Moreover, the approach facilitates the presentation of latent positions in an intuitively satisfying way, mapped into a small number of
+dimensions. Confidence regions for these latent positions are also available via the Markov
+chain Monte Carlo procedure, allowing for prediction of unmeasured relations, as well as
+confidence statements about such predictions. Perhaps most importantly this approach is
+quite general, since it encapsulates a broad class of models. Specifically, a variety of discrete
+and continuous specifications can easily be adapted, depending upon the data generating
+process. This allows scholars to embrace interdependence in an empirical framework that is
+16
+
+A small constant was added so that the correlation on the log scale was computed as cor [log(.1+y i,j ), θˆi,j ].
+
+12
+
+not only rich in description at the sub-national, national, multi- and transnational, as well
+as systemic levels, but one that is also firmly rooted in well-understood statistical methods
+such as generalized linear regression and random effects modeling.
+
+13
+
+4
+
+Cooperation
+
+2
+
+Singapore
+
+−4
+
+−2
+
+0
+
+Sri Lanka
+South Korea
+Czech Republic
+Uzbek
+Government
+Kong
+Uzbek
+President
+Vatican Poland Hong
+Austria
+Indonesia
+Australia
+Israel Libya
+Kenya
+Kazakh
+Government
+Canada
+China
+Kyrgyzstan
+Germany
+CSCE
+Belarus
+Cambodia
+Kazakhstan
+Japan
+NATO Kosovo
+Kazakh
+President
+Cuba
+Yemen
+UAE Sudan
+Norway
+Senegal
+Netherlands
+Tanzania
+Romania
+Palestine
+Uzbekistan
+Qatar
+ItalySouth
+Egypt
+Switzerland
+Ghana
+EEC
+Slovakia
+Africa
+Belgium
+Africa
+Usama
+Bin Laden
+Angola
+North Korea
+New Zealand
+Tajikistan
+Turkmenistan
+Government
+USA
+Mexico
+France
+Kuwait
+Iraq
+Peru
+Yugoslavia
+Kosovo
+Liberation
+Army
+UK
+Turkmenistan
+President
+Tajikistan
+Government
+Georgia
+Portugal
+Ukraine
+Turkmenistan
+International
+Stuffs Military
+International
+Negotiators
+India
+Armenia
+Arab
+Islamic
+Militants
+Russia
+Afghan
+Turkmenistan
+President
+Niyazov
+Armenian
+Politicians
+Saudi
+Arabia
+Lebanon
+Peace Kurd
+Keeping
+Forces
+Cyprus
+Afghanistan
+NGOs
+UNO
+Azerbaijan
+President
+Mali
+Pakistan
+Azerbaijan
+Turkey
+Afghan
+Opposition
+Pakistan
+GovernmentTaliban
+Iran
+Armenian Government
+Afghan Government
+Moslem
+Afghan
+Politicians
+Abdul
+Rashid
+Dostum
+Afghan
+Rebels
+Azerbaijan Government
+Azerbaijan Rebels
+Azerbaijan Politicians
+
+−4
+
+−2
+
+0
+
+2
+
+4
+
+2
+
+4
+
+Conflict
+
+0
+
+North Korea
+Cuba
+Portugal
+Libya
+Palestine
+CSCE
+Norway Canada Indonesia
+Romania
+Austria
+Poland
+NATO Cyprus
+Tanzania
+Sri
+Lanka
+New
+Zealand
+Czech
+Republic
+Japan
+Kenya
+South
+Korea
+Ghana
+Armenian Politicians
+Senegal
+President
+Kosovo Kazakh
+Sudan
+Peru
+Yemen
+Germany
+Kuwait Qatar
+Turkmenistan
+Government
+Australia
+Belgium
+KurdYugoslavia
+South
+Africa
+Kazakh
+Government
+EEC
+Vatican
+Hong
+Kong
+Kosovo
+Liberation
+Army
+Kazakhstan
+Turkey
+Israel
+Lebanon
+Netherlands
+Georgia
+Cambodia
+Switzerland
+Angola
+USA
+Kyrgyzstan
+Armenian Government
+Belarus
+Singapore
+SlovakiaIraq Usama Bin Laden
+Armenia
+UK
+Mexico
+China
+Azerbaijan
+India UAE
+Italy
+Azerbaijan President
+Egypt
+France
+Azerbaijan
+Government Peace Keeping Forces
+Saudi Arabia
+Azerbaijan
+Rebels
+Pakistan
+Government
+International
+UkraineStuffs
+UNO
+Azerbaijan Politicians
+Arab
+Moslem
+Russia
+Uzbekistan
+Turkmenistan
+President Niyazov
+Turkmenistan
+Islamic
+Militants
+Pakistan
+Iran
+Afghanistan
+International
+Negotiators
+Afghan
+Military
+UzbekNGOs
+Government
+Afghan
+Opposition
+Tajikistan
+Turkmenistan Tajikistan
+President Government
+Uzbek
+President
+
+−4
+
+−2
+
+Afghan
+Rebels
+Afghan
+Government
+Taliban
+AfghanMali
+Politicians
+Abdul Rashid
+Dostum
+
+−4
+
+−2
+
+0
+
+2
+
+4
+
+Figure 3: A sample of the estimated posterior latent positions in two dimensions identifies
+nodes that are similar in their patterns of interaction.
+Actors have the same color over sam14
+ples from the Markov chain; each actor has a unique color. Those actors with similar latent
+positions will have similar colors. The posterior mean position for each actor is located at the
+center of the text string identifying it. Only the last 100, 000 iterations of the Markov chain
+were used in the sampled latent positions presented here. Cooperative and conflictual latent
+positions have been rotated to enhance similarity; the inner product of the latent positions is
+invariant to such rotations.
+
+References
+
+Gabriel, Kuno Ruben. 1998.
+“Generalised bilinear regression.” Biometrika
+Azar, Edward. 1980. “The Conflict and Peace
+85(3):689–700.
+Data Bank (COPDAB) Project.” JourGartzke, Erik A. and Michael W. Simon.
+nal of Conflict Resolution 24:143–152.
+1996. “Political System Similarity and
+Beck, Nathaniel, Jonathan Katz and Richard
+the Choice of Allies: Do Democracies
+Tucker. 1998. “Taking Time Seriously:
+Flock Together, or Do Opposites AtTime Series Cross Section Analysis with
+tract?” The Journal of Conflict Resoa Binary Dependent Variable.” Amerilution 40(4):617–635.
+can Journal of Political Science 42:1260–
+Gerner, Deborah J., Philip A. Schrodt,
+1288.
+Ronald Francisco and Judith L. Weddle.
+Bennett, D. Scott and Allan Stam. 2000.
+1994. “The Analysis of Political Events
+“Research Note: A Cross-Validation of
+using Machine Coded Data.” InternaBueno de Mesquita and Lalman’s Intional Studies Quarterly 38:91–119.
+ternational Interaction Game.” British
+Journal of Political Science 30:541–561. Gill, Paramjit S. and Tim B. Swartz. 2001.
+“Statistical analyses for round robin inBerelson, Bernard. 1952. Content Analysis in
+teraction data.” The Canadian Journal
+Communication Research. Glencoe, IL:
+of Statistics. La Revue Canadienne de
+Free Press.
+Statistique 29(2):321–331.
+Brams, Steven J. 1966. “Transaction Flows Gleditsch, Kristian S. and Michael D. Ward.
+in the International System.” American
+2001. “Measuring Space: A Minimum
+Political Science Review 60:880–898.
+Distance Database and Applications to
+International Studies.” Journal of Peace
+Brams, Steven J. 1968. “DECOMP: A ComResearch 38(6):749–768.
+puter Program for the Condensation of a
+Directed Graph and the Hierarchical Or- Gleditsch, Kristian Skrede. 2002. All Interdering of Its Strong Components.” Benational Politics is Local: The Diffusion
+havioral Science 13:344–345.
+of Conflict, Integration, and Democratization. Ann Arbor, MI: University of
+Brecher, Michael and Jonathan Wilkenfeld.
+Michigan Press.
+2000. A Study of Crisis. 2nd ed. Ann
+Arbor, Michigan: University of Michi- Goldstein, Joshua. 1992.
+“A Conflictgan Press.
+Cooperation Scale for WEIS International Events Data.” Journal of Conflict
+Enterline, Andrew. 1996. “Driving While
+Resolution 36(2):369–385.
+Democratizing.” International Security
+20(4):183–96.
+Hewitt, J. Joseph. 2003. “Dyadic Processes
+and International Crises.” Journal of
+Gabriel, Kuno Ruben. 1978. “Least squares
+Conflict Resolution tba(tba):tba.
+approximation of matrices by additive
+and multiplicative models.” Journal of Hoff, Peter D. 2003a. “Bilinear Mixed Efthe Royal Statistical Society. Series B.
+fects Models for Dyadic Data.” available
+Methodological 40(2):186–196.
+at www.stat.washington.edu/hoff.
+15
+
+tems Study. Cambridge, MA: The MIT
+Hoff, Peter D. 2003b. Random Effects ModPress.
+els for Network Data. In Dynamic Social
+Network Modeling and Analysis: WorkMansfield, Edward D. and Brian M. Pollins,
+shop Summary and Papers, ed. Ronald
+eds. 2003. Economic Interdependence
+Breiger, Kathleen Carley and Philippa
+and International Conflict: New PerPattison. Committee on Human Facspectives on an Enduring Debate. Ann
+tors. Board on Behavioral, Cognitive,
+Arbor, MI: University of Michigan Press.
+and Sensory Sciences, Division of Behavioral and Social Sciences Education. Na- Mansfield, Edward and Jack Snyder. 1995.
+tional Academy of Science/National Re“Democratization and the Danger of
+search Council Washington, D.C., USA:
+War.” International Security 20:5–38.
+The National Academies Press, pp. 303–
+Maoz, Zeev and Bruce M. Russett. 1993.
+312.
+“Normative and structural causes of
+Hoff, Peter D., Adrian E. Raftery and
+democratic peace, 1946-1986.” AmeriMark S. Handcock. 2002. “Latent Space
+can Political Science Review 87(3):624–
+Approaches to Social Network Analy38.
+sis.” Journal of the American Statistical
+Maoz, Zeev, Lesley G. Terris, Ranan D. KuAssociation 97(460):1090–1098.
+perman and Ilan Talmud. 2003. “International Relations: A Network ApLai, David. 1995. “A Structural Approach
+proach.” Prepared for presentation at
+to Alignment: A Case Study of the
+the Gilman Conference on New DirecChina- Soviet-U.S. Strategic Triangle,
+tions
+in International Relations, Yale
+1971-1988.” International Interactions
+University, February 21-23, 2003.
+20(4):349–374.
+Leeds, Brett Ashley. 2003. “Do Alliances De- Martin, Andrew D. and Kevin M. Quinn.
+2002. “Dynamic Ideal Point Estimation
+ter Aggression? The Influence of Milivia Markov Chain Monte Carlo for the
+tary Alliances on the Initiation of MilU.S. Supreme Court, 1953-1999.” Polititarized Interstate Disputes.” American
+ical Analysis 10(2):134–153.
+Journal of Political Science 47(3):427–
+429.
+McClelland, Charles A. and Gary Hoggard.
+1969.
+Conflict patterns in the inLi, Heng. 2002. “Modeling through group interactions among nations. In Internavariance: an interesting example with
+tional Politics and Foreign Policy, ed.
+potential applications.” The Annals of
+James
+N. Rosenau. New York: The Free
+Statistics 30(4):1069–1080.
+Press pp. 711–724.
+Li, Heng and Eric Loken. 2002. “A uniMousseau, Michael. 1997.
+“Democracy
+fied theory of statistical analysis and
+and Militarized Interstate Conflicts,
+inference for variance component mod1816–1992.” Journal of Peace Research
+els for dyadic data.” Statistica Sinica
+34(1):73–87.
+12(2):519–535.
+North, Robert C. 1967. “Perception and AcLofdahl, Corey L. 2002. Environmental Imtion in the 1914 Crisis.” Journal of Inpacts of Globalization and Trade: A Systernational Affairs 21:103–122.
+16
+
+North, Robert C., Ole R. Holsti, M. George Signorino, Curtis. 1999. “Strategic Interaction and the Statistical Analysis of InZaninovich and Dina A. Zinnes. 1963.
+ternational Conflict.” American PolitiContent Analysis: A Handbook with Apcal Science Review 92(2):279–298.
+plications for the Study of International
+Crisis. Chicago: Northwestern UniverSmith, Alastair. 1999. “Testing Theories of
+sity Press.
+Strategic Choice.” American Journal of
+Political Science 43(4):1254–1283.
+Przeworski, Adam and James Raymond Vreeland. 2002. “A Statistical Model of Bilateral Cooperation.” Political Analysis Tobler, Waldo. 1979. Cellular Geography. In
+Philosphy in Geography, ed. S. Gale and
+10(2):101–112.
+G. Olsson. Reidel pp. 379–386.
+Russett, Bruce M. and John Oneal. 2001. Triangulating Peace: Democracy, Interde- Ward, Michael D. and Andrew M. Kirby.
+1987. “Re-examining Spatial Models of
+pendence, and International OrganizaInternational Conflict.” Annals of the
+tions. New York: W.W. Norton.
+American Association of Geographers
+77:86–105.
+Russett, Bruce M., John Oneal and Michael
+Berbaum. 2003.
+“Causes of Peace:
+Democracy, Interdependence, and Inter- Ward, Michael D. and Kristian Skrede Gleditsch. 2002. “Location, Location, Locanational Organizations, 1885-1992.” Intion: An MCMC Approach to Modeling
+ternational Studies Quarterly 47(3):371–
+the Spatial Context of War and Peace.”
+393.
+Political Analysis 10(3):244–260.
+Russett, Bruce M., John R. Oneal and
+David R. Davis. 1998. “The Third Leg Ward, Michael D., Peter D. Hoff and
+Corey Lowell Lofdahl. 2003. Identifying
+of the Kantian Tripod for Peace: InterInternational Networks: Latent Spaces
+national Organizations and Militarized
+and Imputation. In Dynamic Social NetDisputes, 1950-1985.” International Orwork
+Modeling and Analysis: Workganization 52:441–468.
+shop Summary and Papers, ed. Ronald
+Breiger, Kathleen Carley and Philippa
+Schofield, Norman J. 1972. “A Topological
+Pattison. Committee on Human FacModel of International Relations.” Peace
+tors. Board on Behavioral, Cognitive,
+Research Society, Papers 18:93–112.
+and Sensory Sciences, Division of BehavSchrodt, Philip A. 2000. “Forecasting conioral and Social Sciences Education. Naflict in the Balkans using Hidden Markov
+tional Academy of Science/National ReModels.” Presented at the Annual Meetsearch Council Washington, D.C., USA:
+ings of the American Political Science
+The National Academies Press, pp. 345–
+Association, Washington, D.C.
+360.
+Schrodt, Philip A., Shannon G. Davis and Warner, R., David A. Kenny and Michael A.
+Judith L. Weddle. 1994. “Political SciStoto. 1979. “A new round robin analence: KEDS-A Program for the Machine
+ysis of variance for social interaction
+Coding of Event Data.” Social Science
+data.” Journal of Personality and Social
+Computer Review 12(3):561–588.
+Psychology 37:1742–1757.
+17
+
+Wasserman, Stanley and Katherine Faust.
+1994. Social Network Analysis: Methods and Applications. Cambridge: Cambridge University Press.
+Wilkenfeld, Jonathan. 2001. The International Crisis Behavior Project: Origins,
+Current Status, and Future Directions.
+Presented at the Conference on Data
+Collection on Armed Conflict, June 89, Uppsala, Sweden, available online at
+http://www.pcr.uu.se/wilkenfeld.zip.
+Wong, George Y. 1982. “Round robin analysis of variance via maximum likelihood.”
+J. Amer. Statist. Assoc. 77(380):714–
+724.
+Zinnes, Dina A. 1967. “An Analytical Study
+of the Balance of Power Theories.” Journal of Peace Research pp. 270–288.
+
+18
+
+

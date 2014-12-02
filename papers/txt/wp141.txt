@@ -1,0 +1,9128 @@
+Partial Identi…cation and Inference in Censored Quantile
+Regression: A Sensitivity Analysis
+Yanqin Fan and Ruixuan Liu
+University of Washington, Seattle
+Working Paper no. 141
+Center for Statistics and the Social Sciences
+University of Washington
+First version: June 2013
+This version: December 2013
+
+Abstract
+In this paper we characterize the identi…ed set and construct asymptotically valid and non-conservative
+con…dence sets for the quantile regression coe¢ cient in a linear quantile regression model, where the dependent variable is subject to possibly dependent censoring. The underlying censoring mechanism is
+characterized by an Archimedean copula for the dependent variable and the censoring variable. For
+a broad class of Archimedean copulas, we characterize an outer set of the corresponding identi…ed set
+for the quantile regression coe¢ cient via inequality constraints. For one-parameter ordered families of
+Archimedean copulas, we construct simple con…dence sets by inverting asymptotically pivotal statistics
+related to kernel-based model speci…cation testing. The methodology we develop in this paper allows
+practitioners to conduct sensitivity analysis of the robustness of conclusions on the quantile regression
+coe¢ cient to the independent censoring mechanism. Bootstrap con…dence sets are also constructed. Interpreting the dependent variable and the censoring variable in our censored quantile regression model as
+two competing risks, our methodology is useful in duration analysis with possibly dependent competing
+risks. We present an empirical application to the survival time after acute myocardial infarction.
+Keywords: Archimedean Copula, Competing Risks Model, Con…dence Set, Dependent Censoring,
+Degenerate U-statistics, Independent Censoring, Mixed Type Regressor
+JEL Codes: C12, C14, C34, C41, C51
+
+Department of Economics, University of Washington, Box 353330, Seattle, WA 98195. We thank Xiaohong Chen, Aureo de
+Paula, Xavier D’Haultfoeuille, Xuming He, Marc Henry, Andres Santos, Chris Taber, Elie Tamer, and conference participants
+at the 2013 Cowles conference titled “Partial Identi…cation, Weak Identi…cation, and Related Econometric Problems,” 2013
+Shanghai Econometrics Workshop, 2013 The International Symposium on Econometric Theory and Applications (SETA), 2013
+California Econometrics Conference, and Workshop on “Recent Advances in Set Identi…cation: Theory and Applications” in
+Toulouse 2013 for helpful discussions and valuable suggestions.
+
+1
+
+Introduction
+
+1.1
+
+Quantile Regression With Dependent Censoring
+
+Since the seminal work of Koenker and Bassett (1978) who propose to use linear quantile regression to
+examine e¤ects of an observable covariate on the distribution of a dependent variable other than the mean,
+linear quantile regression has become a dominant approach in empirical work in economics, see e.g., Buchinsky
+(1994) and Koenker (2005). For q 2 (0; 1), a linear q-th quantile regression model takes the following form:
+QY o (qjx) = x0
+
+(1.1)
+
+o
+
+where QY o (qjx) denotes the q-th conditional quantile of the dependent variable Y given X = x with X the
+observable vector of covariates. In many applications in economics, the dependent variable Y is censored by
+a censoring variable denoted as C. So instead of observing the variable Y , the econometrician observes the
+triplet (V; X; D) with V
+
+min (Y; C) and D
+
+I fY < Cg.
+
+Existing work in the literature on the identi…cation and inference in censored linear quantile regression
+models either assume the independent censoring mechanism1 — that is, Y and C are independent (conditional
+on the covariate X), or make no assumption on the true censoring mechanism at all. Work in the former
+category include Buchinsky and Hahn (1998), Honore, Khan and Powell (2002), and Chernozhukov and
+Hong (2002), Portnoy (2003), Peng and Huang (2008) and Wang and Wang (2009), among others;2 and
+Powell (1984, 1986) and Khan and Powell (2001) who adopt a special case of the independent censoring,
+i.e., the …xed known censoring mechanism. Under additional conditions including a rank condition,
+
+o
+
+is
+
+point identi…ed in the case of independent censoring and the aforementioned work develop estimation and
+inference procedures for it. Work in the latter category include Khan and Tamer (2009), Khan, Ponomareva
+and Tamer (2011) who show that the quantile coe¢ cient
+
+o
+
+is not point identi…ed when no assumption is
+
+made on the true censoring mechanism and establish the identi…ed set for
+(2009) develop con…dence sets (CSs) for
+
+o
+
+o.
+
+In addition, Khan and Tamer
+
+when it is point identi…ed.
+
+The independent censoring mechanism is often violated in empirical applications, but on the other hand,
+the researcher typically has some information on the true censoring mechanism (e.g., Y and C may be known
+to be positively dependent), or may want to check robustness of conclusions to moderate deviations from
+independent censoring. The …rst objective of this paper is to develop inference procedures for the quantile
+coe¢ cient
+
+o
+
+when partial information on the true censoring mechanism such as positive dependence is
+
+available. The second objective is to develop methods for examining sensitivity of conclusions on
+
+o
+
+reached
+
+under the independent censoring mechanism to deviations from it. To accomplish both objectives in a uni…ed
+framework, we model the true censoring mechanism via an Archimedean copula for Y and C (conditional
+on X) and allow its generator function to vary in a pre-speci…ed class. For a given class of Archimedean
+copulas, we propose a two-step approach to the identi…cation of
+1 Throughout
+
+o.
+
+The …rst step extends the existing result
+
+this paper, we use the independent censoring mechanism to denote the conditional independent censoring
+mechanism which reduces to the unconditional independent censoring mechanism when there is no covariate.
+2 Some such as Chernozhukov and Hong (2002) assume that the censoring variable C is always observed.
+
+1
+
+in Rivest and Wells (2001) and Braekers and Veraverbeke (2005) which expresses the conditional distribution
+function of Y given X in terms of the generator function and functions that are identi…ed from the sample
+information. In the second step, we make use of this result and the linear quantile regression (1.1) to establish
+the identi…ed set for
+
+o
+
+when the generator function varies in the pre-speci…ed class of generator functions.
+
+One interesting …nding is that for a broad class of Archimedean copulas,
+
+o
+
+satis…es inequality constraints
+
+characterized by functionals of the conditional distribution function of V and the sub-distribution function
+of V .
+Our identi…cation strategy is well suited for sensitivity analysis to a known censoring mechanism. For
+example, to conduct a sensitivity analysis to independent censoring, we make use of global measures of
+dependence such as Kendall’s
+of zero for Kendall’s
+Kendall’s
+
+to measure deviations from the independent censoring mechanism; A value
+
+corresponds to independent censoring, while a value of one for the magnitude of
+
+corresponds to perfectly dependent censoring— Y and C are perfectly dependent conditional on
+
+X. We develop a simple sensitivity analysis to independent censoring by adopting parametric Archimedean
+copulas. Most parametric Archimedean copulas are characterized by a single parameter and are ordered
+according to the concordance ordering. Because of the one-to-one relation between Kendall’s
+copula parameter, the identi…ed sets for
+
+o
+
+and the
+
+corresponding to bounded ranges of the copula parameter of such
+
+ordered parametric Archimedean copulas provide bases for examining the sensitivity of conclusions on
+
+o
+
+to
+
+the independent censoring mechanism. To formalize this procedure, we construct asymptotically valid and
+non-conservative con…dence sets (CSs) for
+
+o
+
+for any pre-speci…ed range of values of the copula parameter.
+
+The general idea underlying our CSs comes from the observation that for a given generator function, the
+closed-form expression for the conditional distribution function of Y given X established in the …rst step
+and (1.1) imply that
+unknown, for any
+
+o
+
+must satisfy some equality constraints. Although the true generator function is
+
+in the identi…ed set, there must be at least one generator in the pre-speci…ed class that
+
+ensures such equality constraints to hold. The problem of constructing CSs for
+series of ‘speci…cation testing’problems; for each
+
+o
+
+is thus equivalent to a
+
+in the parameter space, we test the correct speci…cation
+
+of the copula or generator class and if the copula class is correctly speci…ed in the sense that there exists at
+least one copula or generator such that the equality constraints hold, then
+
+is in the CS for
+
+o;
+
+otherwise
+
+it is not. We construct two test statistics similar to test statistics for consistent model speci…cation testing
+based on kernel estimators, see Fan (1994), Fan and Li (1996), and Zheng (1996) and many subsequent works
+in the literature. For most one-parameter ordered families of Archimedean copulas, we show that under an
+appropriate condition, for each
+
+in the identi…ed set, there exists a unique value of the copula parameter
+
+that ensures the equality constraints to hold. This ensures that for each
+
+in the identi…ed set, our test
+
+statistics are asymptotically normally distributed leading to asymptotically valid and non-conservative CSs
+that are easy to implement. We also develop bootstrap CSs and present an empirical application to the
+survival time after acute myocardial infarction.
+
+2
+
+1.2
+
+A Semiparametric Competing Risks Model and Some Related Works
+
+Interpreting Y and the censoring variable C in our model as two competing risks, this paper proposes a
+new semiparametric competing risks model. Applications of the competing risks model in economics include
+Flinn and Heckman (1982) who investigate the duration of unemployment where an individual can exit
+unemployment either by …nding a job or by leaving the labor market; Katz and Meyer (1990) who study
+the probability of leaving unemployment through recalls and new jobs; Berrington and Diamond (2000)
+who study age at marriage or cohabitation; Booth and Satchell (1995) who study Ph.D. completion; Deng,
+Quigley, and Van Order (2000) who investigate mortgage termination; and Honore and Lleras-Muney (2006)
+who study changes in cancer and cardiovascular mortality since 1970.
+Identi…cation analysis of competing risks models has a long history dating back to Cox (1959). Tsiatis
+(1975) uses an explicit construction to demonstrate the non-identi…ability of the marginal distribution function of Y once the independent censoring mechanism is dispensed with. Crowder (1991) further ampli…es
+this identi…ability crisis by proving that even if the two marginal distribution functions of (Y; C) are given,
+their joint distribution still remains unidenti…ed generally. Peterson (1976) obtains the worst-case bounds
+for both the marginal distribution function of Y and the joint distribution function of Y and C.
+In response to the identi…ability crisis, two general approaches have been taken in the literature to achieve
+point identi…cation of a competing risks model. First, covariate information and speci…c model structures
+imposed on the marginal distributions may restore point identi…cation, see e.g., the proportional hazards
+and accelerated failure time models in Heckman and Honore (1989), Abbring and van den Berg (2003), Lee
+(2006), and Lee and Lewbel (2012); Second, assuming a known copula for the individual risks, Zheng and
+Klein (1995) …rst extend point identi…cation results for independent risks to dependent risks and propose
+a copula-graphic estimator of the marginal survival function. When the copula function is Archimedean
+and known, Rivest and Wells (2001) …rst derive an explicit expression for the copula-graphic estimator of
+the survival function proposed in Zheng and Klein (1995). In addition to establishing uniform consistency
+and asymptotic normality of the copula-graphic estimator, Rivest and Wells (2001) also study asymptotic
+properties of the copula-graphic estimator under misspeci…cation of the true Archimedean copula. Braekers
+and Veraverbeke (2005) extend Rivest and Wells (2001) to the …xed design regression.
+This paper contributes to the competing risks literature in several ways. First, the duration of the
+competing risk C is left unspeci…ed in our model3 and thus inference on the conditional quantile of Y is
+robust to possible misspeci…cation of the marginal model for the competing risk C. Moreover our inference
+procedures do not reply on conditions ensuring point identi…cation of
+
+o
+
+and thus allow for the presence of
+
+general covariates in the marginal model for the risk of interest Y ; Second, we don’t impose a known copula
+on the individual risks, instead we allow the true copula to vary in a prespeci…ed class of Archimedean copulas
+3 Independently, Szydlowski (2013) studies partial identi…cation of the proportional hazards model for the risk of interest in a
+competing risks model without specifying the marginal model for the competing risk. Like Khan and Tamer (2011), Szydlowski
+(2013) makes no assumption on the true censoring mechanism. Using an outer set of the identi…ed set for the parameter in
+a parametric proportional hazards model, Szydlowski (2013) applies existing inference procedures to constructing CSs for the
+parameter in his model.
+
+3
+
+and develop a formal approach to conducting inference and sensitivity analysis to the independent censoring
+mechanism. Informal sensitivity analysis has been performed in the context of competing risks models
+including marginal survival or hazard function (Slud and Rubinstein, 1983; Zheng and Klein, 1995; Rivest
+and Wells, 2001; Klein and Moeschberger, 1988); Cox regression (Huang and Zhang, 2008); and a general
+semiparametric transformation model (Chen, 2010). In contrast to the current paper, however, existing work
+…rst establish the consistency and asymptotic normality of the proposed estimators for a given dependence
+structure between Y and C conditional on X and then examine the sensitivity of the proposed estimators or
+inference procedures to independent censoring by selecting a few prespeci…ed dependence structures. Lastly,
+we propose a novel two-step identi…cation strategy for
+
+o
+
+or the marginal model for the risk of interest Y .
+
+Our identi…cation strategy is very general and not speci…c to the linear quantile model (1.1), instead it is
+applicable to any parametric model for Y including the proportional harzeds model and marginal regression
+model, see Remark 2.7 for a detailed discussion.
+Besides Khan and Tamer (2009), our paper is related to Honore and Lleras-Muney (2006) and Kline and
+Santos (2013). Assuming accelerated failure time models for each risk, Honore and Lleras-Muney (2006)
+derive bounds for aspects of the underlying distributions allowing for dependent risks with interval outcome
+data and discrete covariates. Both Khan and Tamer (2009) and Honore and Lleras-Muney (2006) are agnostic
+about the true censoring mechanism. Kline and Santos (2013) develop methods for conducting a sensitivity
+analysis in the context of missing data. They measure the degree of departure from missing-at-random by
+using the maximal Kolmogorov-Smirnov distance between the distributions of missing and observed outcomes
+across all values of the covariates. We refer readers to Henry and Mouri…e (2012) for a partial identi…cation
+analysis of the binary Roy model and other work on Roy models.
+The subsequent sections are organized as the following: Section 2 …rst introduces our identi…cation
+strategy for
+
+o
+
+when the true copula belongs to a given class of Archimedean copulas and then presents
+
+the identi…ed set for
+asymptotic CSs for
+
+o
+o
+
+when the class of Archimedean copulas is ordered. In Section 3, we present two
+
+and their asymptotic validity is shown in Section 4. We also construct bootstrap
+
+CSs in Section 4. Section 5 presents an empirical application on the survival time after acute myocardial
+infarction. The Appendices containing all the proofs are further divided into three sections. Appendix A
+shows the asymptotic linear representation of the plug-in estimator of the conditional distribution function
+of Y given X for a given generator function. The main theorems and the validity of our con…dence sets are
+proved in Appendix B. In Appendix C we collect a variety of auxiliary results used in Appendices A and B.
+
+2
+
+The General Framework and Partial Identi…cation of
+
+o
+
+We …rst introduce some notations used throughout the paper. Let FY o (yjx), FC (cjx), and FY;C (y; cjx)
+denote respectively the conditional marginal and joint distribution functions of (Y; C) given X = x, with the
+corresponding conditional survival functions SY o (yjx), SC (cjx), and SY;C (y; cjx). Also let FV;D=1 (vjx) and
+FV;D=0 (vjx) denote the two conditional sub distribution functions, summing up to FV (vjx). The marginal
+4
+
+distribution function of X is denoted as FX (x), supported on X .
+2
+
+Let Cxo (u; v) : [0; 1] 7! [0; 1] denote the conditional survival copula of (Y; C) given X = x. Following
+Braekers and Veraverbeke (2005), we assume that Cxo is Archimedean with generator function 'xo , i.e., for
+2
+
+(u; v) 2 [0; 1] ,
+
+[ 1]
+Cxo (u; v) = 'xo
+['xo (u) + 'xo (v)] ;
+[ 1]
+
+where 'xo : [0; 1] ! [0; 1] is a continuous, convex, strictly decreasing function with 'xo (1) = 0. Here, 'xo
+denotes the pseudo-inverse of 'xo de…ned by
+'[xo1] (u) =
+
+'xo1 (u) ;
+0;
+
+0 u 'xo (0)
+:
+'xo (0) u +1
+
+We say Cxo is strict if its generator function 'xo is strict, i.e., 'xo (0) = +1.
+Archimedean copulas have many nice properties, see Joe (1997) and Nelsen (2006). They arise naturally
+from shared frailty models as in Clayton and Cuzick (1985), Heckman and Honore (1989). Speci…cally, if the
+conditional hazard density functions of Y and C denoted as
+
+Yo
+
+and
+
+Co
+
+are speci…ed by the corresponding
+
+conditional baseline hazard functions and a multiplicative frailty term ! as:
+Yo
+
+(tjx; !)
+
+= !
+
+Yo
+
+(tjx) and
+
+Co
+
+(tjx; !)
+
+= !
+
+Co
+
+(tjx) ;
+
+(2.1)
+
+then it is well known that the conditional survival copula would be Archimedean with the (inverse of)
+generator 'xo1 = L F!jx , the Laplace transform of the conditional distribution of frailty denoted as F!jx .
+The complete monotonicity induced by the Laplace transform ensures that the generator function 'xo satis…es
+the requirement to produce a copula function (Joe, 1997).
+Braekers and Veraverbeke (2005) show that in competing risks models where Y and C are survival
+variables with support (0; 1), if Cxo is known, then FY o ( jx) is identi…ed from the sample information
+extending the well-known identi…cation result of competing risks models under the independent censoring
+mechanism. The latter is obtained when 'xo (u) = log (1=u) for all x under consideration. More importantly
+they establish a closed-form expression for FY o (yjx) in terms of 'xo and functions that are identi…ed from
+the sample information, see their Lemma 1 or Lemma 2.1 below. Based on this expression, they construct
+an estimator of FY o (yjx) referred to as the copula-graphic estimator and establish its asymptotic properties.
+When the true copula is a Clayton copula, Klein and Moeschberger (1988) establish this result and derive
+bounds on FY o (yjx) for a speci…ed range of values for the copula parameter.
+Our identi…cation analysis of
+
+o
+
+builds on a slight extension of Lemma 1 in Braekers and Veraverbeke
+
+(2005) which will be presented in the subsection below followed by a detailed analysis of identi…cation of
+
+2.1
+2.1.1
+
+A Two-Step Approach to the Identi…cation of
+Step 1. Identi…cation of FY o ( jx)
+
+Throughout this section, we assume that x 2 X is …xed.
+5
+
+o
+
+o.
+
+Assumption (AC). The true copula Cxo is a strict Archimedean copula.
+Assumption (SY). (i) Let the support of FY o ( jx) be [ylx ; yux ]
+
+R. The functions FV;D=1 ( jx) ;
+
+FV ( jx) and FY o ( jx) have continuous (sub) densities in [ylx ; vux ], where vux is the right end point of the
+support of FV ( jx); (ii) yux = vux .
+Assumption (AC) is an assumption on the true copula. Assumption (SY) imposes support assumptions
+on Y apart from some smoothness assumptions on the stated distribution functions. Assumption (SY) (ii)
+is needed only when one is interested in identifying the whole distribution function FY o ( jx). If vux < yux ,
+we never observe anything beyond vux for Y , so would not expect to identify FY o ( jx) on [vux ; yux ] even
+when 'xo is known. This potential tail problem is also present under the independent censoring assumption
+(see Fleming and Harrington, 1991; Gine and Guillou, 2001) and with general copula graphic identi…cation
+(see Corollary 3.3 in Zheng and Klein, 1995). In Braekers and Veraverbeke (2005), Y and C are survival
+variables assumed to have common support (0; 1) so that ylx = 0 and yux = vux = 1. We allow for …nite
+yux , but assume yux = vux . When one is only interested in some functional or feature of the distribution
+function FY o ( jx) such as the quantile coe¢ cient in (1.1), identi…cation of the whole distribution function
+FY o ( jx) may not be needed and Assumption (SY) (ii) may thus be dropped, see Remark 2.5 for further
+elaboration.
+Under Assumption (AC), SY;C (y; cjx) can be written as
+SY;C (y; cjx) = 'xo1 ['xo fSY o (yjx)g + 'xo fSC (cjx)g] :
+
+(2.2)
+
+By setting y = c = v in (2.2), we get
+SV (vjx) = 'xo1 ['xo fSY o (vjx)g + 'xo fSC (vjx)g] :
+
+(2.3)
+
+Using (2.2) and (2.3), Braekers and Veraverbeke (2005) show in their Lemma 1 that when ylx = 0 and
+yux = vux = 1, under mild conditions, the conditional cdf FY o ( jx) is point identi…ed from the sample
+information as long as the generator function 'xo is known and more importantly they provide a closedform expression for FY o (yjx). For completeness, we will restate their result in the lemma below under
+Assumptions (AC) and (SY). Since the proof is short, we will reproduce it as well to illustrate the roles of
+Assumptions (AC) and (SY).
+Lemma 2.1 (Braekers and Veraverbeke, Lemma 1) Suppose Assumptions (AC) and (SY) hold. If '0xo exists
+and is continuous on (0; 1], then 8y 2 [ylx ; yux ], we have:
+Z y
+1
+FY o (yjx) = 1 'xo
+'0xo fSV (vjx)g dFV;D=1 (vjx) :
+
+(2.4)
+
+ylx
+
+Proof. First, we take care of the two boundary points. When y = ylx , both sides of (2.4) will equal to zero.
+When y = yux , the left hand side of (2.4) will be equal to 1. We distinguish between two cases for the right
+Ry
+hand side of (2.4). First, if ylxux '0xo fSV (vjx)g dFV;D=1 (vjx) = 1, then 'xo1 (1) = 0 by de…nition and
+6
+
+R yux
+
+the right hand side of (2.4) equals 1 as well. Second, if
+
+ylx
+
+same derivation below for y 2 (ylx ; yux ) will apply here.
+
+'0xo fSV (vjx)g dFV;D=1 (vjx) < 1, then the
+
+It follows from Tsiatis (1975) that
+@
+SY;C (y; cjx) jy=c=v :
+@y
+
+0
+FV;D=1
+(vjx) =
+
+(2.5)
+
+For any y 2 (ylx ; yux ), SV (yjx) > 0 by the continuity property assumed in Assumption (AC). Hence
+0
+
+'xo and 'xo come into play over their properly de…ned domain (0; 1]. By (2.2) and the simple fact that
+@
+@u Cxo
+
+0
+
+0
+
+(u; v) = 'xo (u) ='xo (Cxo (u; v)) (see Chapter 5 in Nelsen, 2006), we get
+
+=
+
+@
+@
+SY;C (y; cjx) jy=c=v =
+Cxo (SY o (yjx) ; SC (cjx)) jy=c=v
+@y
+@t
+'0xo fSY o (vjx)g FY0 o (vjx)
+:
+'0xo fSV (vjx)g
+
+So
+0
+FV;D=1
+(vjx) =
+
+leading to
+
+Z
+
+'0xo fSY o (vjx)g FY0 o (vjx)
+'0xo fSV (vjx)g
+
+y
+
+'0xo
+
+fSY o (vjx)g FY0 o
+
+ylx
+
+or
+
+Z
+
+(vjx) dv =
+
+y
+
+ylx
+
+d'xo fSY o (vjx)g =
+
+Z
+
+y
+
+ylx
+
+Z
+
+(2.6)
+
+'0xo fSV (vjx)g dFV;D=1 (vjx)
+
+y
+
+ylx
+
+'0xo fSV (vjx)g dFV;D=1 (vjx)
+
+or
+'xo fSY o (yjx)g + 'xo fSY o (ylx jx)g =
+
+Z
+
+y
+
+ylx
+
+'0xo fSV (vjx)g dFV;D=1 (vjx) :
+
+The result or (2.4) follows from the above equation by noting that SY o (ylx jx) = 1, 'xo (1) = 0, and 'xo is
+strict.
+Remark 2.1 Braekers and Veraverbeke (2005) assume that '0xo exists on [0; 1] in their Lemma 1. However
+most commonly used generator functions do not have a …nite '0xo at 0, see for example those listed in Table 1.
+The additional continuity assumption we impose on '0xo in Lemma 2.1 guarantees that the Stieltjes integral
+in (2.4) is well de…ned.
+Remark 2.2 Lemma 2.1 implies that if 'xo is known, then FY o ( jx) is point identi…ed and has a closedform expression. When the true copula function Cxo (u; v) is not known to be Archimedean, a straightforward
+extension of Theorem 3.1 and Corollary 3.2 in Zheng and Klein (1995) to allow for the covariate X implies
+that under mild conditions, FY o ( jx) is point identi…ed from the sample information as well. However, no
+explicit expression for FY o (yjx) is available at such a general level.
+
+7
+
+2.1.2
+
+Step 2. Identi…cation of
+
+o
+
+Suppose Assumptions (AC) and (SY) hold for all x 2 J
+
+X . For each x 2 J , Lemma 2.1 expresses the true
+
+cdf FY o (yjx) in terms of the copula generator function 'xo and functions that are identi…ed from the sample
+information. In practice, the true copula or generator function is unknown. Let
+
+x
+
+denote a prespeci…ed
+
+class of strict generator functions. Lemma 2.1 or (2.4) allows us to establish the identi…ed set for FY o ( jx).
+Speci…cally, for a strict generator function 'x 2 x , let
+Z y
+FY (yjx; 'x ) = 1 'x 1
+'0x fSV (vjx)g dFV;D=1 (vjx) ; y 2 [ylx ; yux ]
+
+(2.7)
+
+ylx
+
+and FI (x) denote the identi…ed set for FY o ( jx). Then it follows immediately from Lemma 2.1 or (2.4) that
+FI (x) = fFY ( jx) : FY ( jx) = FY ( jx; 'x ) for some 'x 2
+The identi…ed set for the quantile regression coe¢ cient
+FY o ( jx) and (1.1). Let BI denote the identi…ed set for
+
+o.
+
+o
+
+x
+
+(2.8)
+
+can be deduced from the identi…ed set for
+
+Then
+
+BI = f 2 B : FY (x0 jx; 'x ) = q for some 'x 2
+Di¤erent choices of the generator class
+
+xg :
+
+x
+
+and all x 2 J g :
+
+(2.9)
+
+re‡ect either the researcher’s prior knowledge of the true
+
+censoring mechanism or represent deviations from independent censoring in a sensitivity analysis. The
+identi…ed set BI depends not only on
+class of generator functions
+
+x,
+
+x
+
+but also on the subset J . For a given subset J , the smaller the
+
+the smaller is the identi…ed set BI . For a given class
+
+x,
+
+the identi…ed set
+
+depends critically on the property of J . Below we present two examples illustrating these two di¤erence
+sources of identifying power.
+Example 2.3 Suppose for all x 2 J , the generator function 'xo is known so
+
+x
+
+= f'xo g. For example,
+
+under independent censoring, 'xo (u) = log (1=u) for all x 2 X . Since the conditional distribution function
+in this case is point identi…ed as FY ( jx; 'xo ) for x 2 J , rank conditions similar to those in Koenker and
+Bassett (1978) and Wang and Wang (2009) would lead to point identi…cation of
+Example 2.4 Suppose
+
+x
+
+o.
+
+is the whole class of strict generator functions. Let
+n
+J = x 2 X : Pr Ci
+
+0
+
+Xi
+
+o jXi
+
+o
+=x =1 :
+
+Suppose Assumption (A2) in Khan and Tamer (2009) holds, i.e., XB does not lie in a proper linear subspace
+of Rd . Then the identi…ed set BI is singleton. Notice that for 8x 2 J , we have
+FV (x0
+
+o jx)
+
+=
+
+Pr (Yi
+
+x0
+
+o ; Yi
+
+=
+
+Pr (Yi
+
+x0
+
+o jx)
+
+Ci jx) + Pr (Ci
+= q.
+
+8
+
+x0
+
+o ; Yi
+
+> Ci jx)
+
+(2.10)
+
+Alternatively, using the expression in (2.7), we get that for all x 2 J ,
+FY (x
+
+0
+
+o jx; 'x )
+
+=
+
+1
+
+'x
+
+Z
+
+1
+
+x0
+
+o
+
+'0x
+
+ylx
+
+'x 1 ('x fSV (x0
+
+=
+
+1
+
+=
+
+FV (x0
+
+fSV (vjx)g dFV (vjx)
+
+!
+
+o jx)g)
+
+o jx) ;
+
+x0
+
+where we have used the fact that FV (vjx) = FV;D=1 (vjx) for v
+
+o
+
+as derived in (2.10). As noted in
+
+Khan and Tamer (2009), this identi…cation strategy has also been employed in Powell (1986), Honore, Khan
+and Powell (2002) in one way or another.
+Remark 2.5 Without Assumption (SY) (ii), for a given generator function 'x , FY o (yjx) is identi…ed for
+all y 2 [ylx ; vux ] which may be used to establish the identi…ed set for
+
+2.2
+
+o.
+
+A Characterization of an Outer Set of the Identi…ed Set
+
+In this section, we consider one class of generator functions denoted as
+of an outer set of the identi…ed set for
+
+o
+
+O
+x
+
+and provide a nice characterization
+
+via inequality constraints.
+
+Assumption (O). The class of generator functions
+
+O
+x
+
+is composed of continuously di¤erentiable gener0
+
+0
+
+ator functions on (0; 1] and is indexed by a unique pair of generators 'x;L ; 'x;U such that 'x;L (u) ='x (u)
+0
+
+0
+
+O
+x.
+
+and 'x (u) ='x;U (u) are both non-decreasing on (0; 1) for all 'x 2
+The class of copulas generated by
+
+O
+x
+
+has a convenient/nice property facilitating a sensitivity analysis.
+
+To describe it, let CxL denote the Archimedean copula with generator function 'x;L and CxU denote the
+Archimedean copula with generator function 'x;U . Under Assumption (O), Corollary 4.4.6 in Nelsen (2006)
+implies that CxL
+
+Cx
+
+O
+x.
+
+CxU for any Archimedean copula Cx generated by 'x 2
+
+Thus in terms
+
+of concordance ordering, CxL is the smallest and CxU is the largest in the class of Archimedean copulas
+with generators in
+
+O
+x.
+
+Thus letting 'x;L (u) = log (1=u) or CxL (u; v) = uv, a sensitivity analysis can be
+
+conducted by varying CxU according to increasing or decreasing concordance ordering representing more
+strongly dependent censoring mechanisms. Dependence measures such as Kendall’s
+
+and Spearman’s
+
+are
+
+natural measures of deviation from independent censoring.
+
+O
+x
+
+Let FIO (x) and BIO denote the identi…ed sets for FY o ( jx) and
+
+o
+
+corresponding to the class of generators
+
+de…ned in Assumption (O). Further for y 2 [ylx ; yux ], let
+FL (yjx) = FY yjx; 'x;L
+
+and FU (yjx) = FY yjx; 'x;U :
+
+We show below that elements of FIO (x) are bounded by FL (yjx) from below and FU (yjx) from above (see
+(2.12)) which leads to nice inequality constraints characterizing an outer set of BIO .
+
+Proposition 2.6 Suppose Assumptions (AC), (SY), and (O) hold for all x 2 J . Then
+FU 1 (qjx)
+
+x0
+
+o
+
+FL 1 (qjx) for all x 2 J :
+9
+
+(2.11)
+
+Proof. We will complete the proof in two steps.
+Step 1. We show that FY o satis…es:4
+FL (yjx)
+
+FY o (yjx)
+
+FU (yjx) ; 8y 2 [ylx ; yux ):
+
+(2.12)
+
+It follows from (2.6) that
+0
+'0xo fSV (vjx)g FV;D=1
+(vjx)
+:
+0
+'xo fSY o (vjx)g
+
+FY0 o (vjx) =
+
+0
+
+Multiplying both sides of the above equation by 'x;L fSY o (vjx)g and integrating from ylx to y lead to
+Z
+
+'x;L fSY o (yjx)g =
+Because SY o (vjx)
+
+0
+
+y
+
+ylx
+
+'x;L fSY o (vjx)g'0xo fSV (vjx)g
+dFV;D=1 (vjx) :
+'0xo fSY o (vjx)g
+0
+
+(2.13)
+
+0
+
+SV (vjx), given the monotonicity of 'x;L (t) ='xo (t), we have
+0
+
+'0x;L fSV (vjx)g
+:
+'0xo fSV (vjx)g
+
+'x;L fSY o (vjx)g
+'0xo fSY o (vjx)g
+As '0x ( ) is negative, we get
+0
+
+'x;L fSY o (vjx)g'0xo fSV (vjx)g
+'0xo fSY o (vjx)g
+
+'0x;L fSV (vjx)g :
+
+(2.14)
+
+Hence (2.13) and (2.14) imply that
+'x;L fSY o (yjx)g
+
+Z
+
+y
+
+ylx
+
+=
+
+'0x;L fSV (vjx)g dFV;D=1 (vjx)
+
+'x;L fSY yjx; 'x;L g;
+
+where we have used (2.7). The desired result follows from the above inequality and the decreasing property
+of 'x;L . Flipping the sign to conclude the corresponding bounds for the distribution function.
+Step 2. Since FY o x
+
+0
+
+o jx
+
+= q holds for almost all x, we obtain: FL x
+
+0
+
+o jx
+
+q
+
+FU x
+
+0
+
+o jx
+
+.
+
+The claimed result follows the de…nition of the conditional quantile functions.
+Remark 2.7 Interpreting Y and C as two competing risks, the model de…ned in (1.1) and (2.2) is a new
+semiparametric competing risks model where the marginal model for Y conditional on the covariate X is
+speci…ed by the linear quantile model, the marginal model for C conditional on the covariate is unspeci…ed,
+and the conditional copula function of Y and C is Archimedean. Our model and inference procedures are
+potentially useful in duration analysis where the researcher is only interested in one of the competing risks
+denoted by Y . Speci…cally the interest is in e¤ ects of some observable covariate X on the q-th conditional
+quantile of Y in the presence of a possibly dependent competing risk C. In fact the identi…cation strategy
+and the subsequent inference procedures developed in this paper are not restricted to the marginal quantile
+model for Y . Given FY (yjx; 'x ) in (2.7), one can easily write down the identi…ed set for the parameter in
+4 The proof of Step 1 is a slight modi…cation of that of Proposition 2 in Rivest and Wells (2001) which measures the maximal
+bias of the copula-graphic estimator of the survival function due to a misspeci…ed Archimedian copula generator. We include
+a proof for completeness.
+
+10
+
+any parametric model for Y including the proportional hazard model and any parametric regression model.
+The reason is that the true parameter in all these models satis…es equality constraints on known functionals
+of the true conditional distribution function of Y given X. With slight abuse of notation, denote, e.g., the
+true parameter as
+
+o
+
+2 B and the functional constriaints as G (FY o ( jx) ;
+
+vector-valued functional G. Then the identi…ed set for
+
+o
+
+o)
+
+= 0 for a known possibly
+
+is
+
+f 2 B : G (FY ( jx; 'x ) ; ) = 0 for some 'x 2
+
+x
+
+and all x 2 J g :
+
+For example, G (FY ( jx; 'x ) ; ) = FY (x0 jx; 'x )
+
+q for the quantile model;
+Z
+G (FY ( jx; 'x ) ; ) = yFY (yjx; 'x ) dy x0
+
+for the linear regression model; and
+G (FY ( jx; 'x ) ; ) = FY ( jx; 'x )
+
+1 + L(
+
+0
+
+(;
+
+b ) exp (x
+
+0
+
+x) ;
+
+!) ;
+
+0
+b;
+
+=
+
+0
+x;
+
+0 0
+!
+
+;
+
+for the following parametric version of the mixed proportional hazard model in (2.1):
+Yo
+
+(tjx; !) = !
+
+0
+
+(t;
+
+ob ) exp (x
+
+0
+
+ox ) ;
+
+where the conditional distribution function of ! given X = x is denoted as F!jx ( ;
+Laplace transform L ( ;
+
+o! ),
+
+where
+
+0
+
+(t;
+
+ob )
+
+o! )
+
+with the corresponding
+
+is the integrated baseline hazard. Provided that the functional
+
+G ( ; ) is smooth enough, the CSs developed in the rest of this paper could be easily extended to any parametric
+marginal model for Y .
+
+2.3
+
+Ordered Parametric Families of Invariant Copulas
+
+To simplify the asymptotic analysis and the subsequent inference procedure, we introduce two more assumptions below, Assumptions (O-P-I) and (SC).
+Assumption (O-P-I). (i) The true copula is invariant w.r.t x; (ii) It belongs to a one-parameter family
+of Archimedean copulas denoted as C ( ; ; ) with generator ' ( ; ) indexed by
+for any
+
+1
+
+<
+
+2
+
+2A
+
+[
+
+L;
+
+U ];
+
+and (iii)
+
+from A, it holds that
+0
+
+' (u;
+'0 (u;
+
+1)
+2)
+
+is strictly increasing 8u 2 (0; 1) ;
+
+(2.15)
+
+where '0 (u; ) denotes the partial derivative of ' (u; ) with respect to u.
+Assumption (SC). Suppose there exists some x0 2 J , s.t. SY (yjx0 ;
+
+U)
+
+> SV (yjx0 ) for all y 2
+
+(ylx0 ; yux0 ).
+Assumption (O-P-I) (i) states that the true conditional copula function Cxo is invariant with respect to x
+and Assumption (O-P-I) (ii) parametrizes the generator function by some parameter
+
+2A
+
+R. The copula
+
+invariance assumption has been adopted in other contexts, see e.g., Chen and Fan (2006) for semiparametric
+copula-based multivariate dynamic models and Torgovitsky (2011) in nonseparable structural models. In the
+11
+
+context of competing risks, Bond and Shaw (2006) have studied the so-called covariate-time transformation
+model in which the modelling assumption directly implies the copula invariance. Bond and Shaw (2006)
+show that classical competing risks models including the accelerated failure-time model and the proportional
+hazard model fall into their framework, see also Clayton and Cuzick (1985), Heckman and Honore (1989).
+Assumption (O-P-I) (ii) restricts the class of copula functions to be in a given parametric class. Informal
+sensitivity analysis in Zheng and Klein (1995), Huang and Zhang (2008), and Chen (2010) suggest that the
+bias of estimates of the marginal survival function of Y is negligible when the parametric copula misspeci…es
+the true copula as long as the dependence range (such as Kendall’s tau) is correctly speci…ed. This is also
+con…rmed in our numerical analysis in Example 2.9 below. Many one-parameter families of Archimedean
+copulas including Frank or Clayton copulas satisfy Assumption (O-P-I) (iii). They are either positively
+ordered (increasing in concordance order as the parameter
+concordance order as the parameter
+
+increases) or negatively ordered (decreasing in
+
+increases), see Joe (1997), Nelsen (2006), and Rivest and Wells (2001).
+
+In Table 1 below, we list a number of one-parameter families5 of Archimedean copulas that are ordered and
+satisfy Assumption (O-P-I) (iii).
+
+Copulas
+Clayton
+Frank
+
+log
+
+Gumbel
+Gumbel-Hougaard
+Nelsen
+Nelsen
+Nelsen
+Nelsen
+
+Table 1: One-Parameter Archimedean Copulas
+0
+0
+' (u; )
+’s Range ' (u; )
+' (u;
+u
+1
+1
+(0; 1)
+u
+u U
+
+#12
+#16
+#19
+#20
+
+1 e
+1 e
+
+u
+
+( log u)
+log (1
+log u)
+1
+u
+
+1
++
+1 (1
+u
+=u
+e
+e
+eu
+e
+
+( 1; 1)
+
+e
+1 e
+
+[1; 1)
+(0; 1]
+
+u
+
+u)
+
+u2
+u2
+u2 e
+
+L (1
+
+u
+
+log
+
+u
+
+[1; 1)
+(0; 1)
+(0; 1)
+(0; 1)
+
+u
+
+U (1
+
+1
+u
+
+u log u
+1 u
+u
+
+1
+
+L
+U
+
+1+
+1
+
+L
+U
+
+1
+
+0
+
+L ) ='
+
+(u;
+
+U)
+
+L
+
+e
+e
+
+log
+
+U u)
+Lu)
+
+1
+u
+
+L
+
+1= L 1= U
+u log u 1= L
+L
+1
+1
+u
+
+U
+
+U
+
+1 + uL2 + UU
+L ( L
+U )u
+e
+U
+L
+u U
+L u
+e
+U
+
+=u
+
+uu
+
+Under Assumption (O-P-I), the class of generator functions is given by
+x
+
+= f'x : 'x ( ) = ' ( ; ) for some
+
+2 Ag ;
+
+where the functional form of ' ( ; ) is known. So for a given family of ordered parametric copulas, the choice
+of
+
+x
+
+is equivalent to the choice of A
+
+[
+
+L;
+
+U ].
+
+Users could specify
+
+L;
+
+U
+
+re‡ecting their prior knowledge
+
+on the possible dependence range giving rise to CxL and CxU . In a sensitivity analysis, users could take
+corresponding to the independence copula and specify several values for
+dependence between Y and C; the larger
+
+U
+
+U
+
+L
+
+re‡ecting di¤erent strengths of
+
+is, the larger is the deviation of the true censoring mechanism
+
+from independence censoring. Under Assumption (O-P-I), the following equality holds:
+( )=1+4
+
+Z
+
+0
+
+1
+
+' (u; )
+du:
+'0 (u; )
+
+(2.16)
+
+5 Some of the copulas in Table 1 do not have names (or not widely known among researchers), we simply attribute them as
+Nelsen’s #, as those are found by Table 4.1 appearing in Chapter 4, Nelsen (2006).
+
+12
+
+It is evident from (2.16) that perturbation on
+
+could be performed on the copula’s natural parameter
+
+For Clayton and Gumbel copulas, it is known that Kendall’s
+Clayton copula and
+
+=
+
++2
+
+1
+
+and
+
+respectively, so
+
+= 1 for Gumbel copula correspond to independent censoring and as
+
+.
+
+= 0 for
+
+increases the
+
+censoring mechanism deviates more from independent censoring. Assumption (SC) is a separation condition.
+It excludes cases where our copula lower bound SY ( jx;
+
+U)
+
+is identical to Peterson’s lower bound SV ( jx)
+
+for all x 2 J .
+Under Assumption (O-P-I), for 'x 2
+
+x,
+
+FY (yjx; 'x ) depends on 'x only through . So we denote it as
+
+FY (yjx; ) in the rest of this paper.
+Proposition 2.8 Suppose Assumptions (AC), (SY), and (O-P-I) hold for all x 2 J . Then (i) the identi…ed
+set for
+
+o
+
+is
+BIO = f 2 B : FY (x0 jx; ) = q for all x 2 J and some
+
+2 Ag ;
+
+in BIO , there is a unique
+
+(ii) if Assumption (SC) holds as well, then given any
+
+(2.17)
+
+( ) such that
+
+FY (x0 jx; ( )) = q for all x 2 J :
+Proof. (i) is obvious. Now given (i), it su¢ ces to show for any
+FY (x00 jx0 ;
+
+1)
+
+< FY (x00 jx0 ;
+
+2)
+
+1,
+
+(2.18)
+2
+
+2 A (w.l.o.g we take
+
+1
+
+<
+
+2 ),
+
+holds for the particular x0 in the separation assumption (SC). From the
+
+conclusion in Proposition 2.3 we know that SY ( jx0 ;
+
+2)
+
+SY ( jx0 ;
+
+U)
+
+> SV ( jx0 ) holds in terms of the
+
+invariant generator and at location x0 . The proof follows almost verbatim from the proof of Prop. 2.3. After
+equation (2.9) we shall proceed with those strict inequalities:
+0
+
+' fSY (vjx0 ;
+'0 fSY (vjx0 ;
+for
+
+1
+
+<
+
+2
+
+0
+
+' fSV (vjx0 ) ;
+> 0
+)
+;
+g
+' fSV (vjx0 ) ;
+2
+2
+
+2) ;
+
+1g
+
+1g
+
+2g
+
+; with v 2 (ylx0 ; yux0 )
+
+by (2.15) . Similar manipulation leads to 'fSY yjx0 ; '
+
+the copula generator is strictly decreasing, thus FY (yjx0 ;
+
+1)
+
+2
+
+;
+
+< FY (yjx0 ;
+
+when FY (x0 jx; ( )) = q 2 (0; 1), we could only have a unique
+
+1g
+
+> 'fSY yjx0 ; '
+
+2 ).
+
+1
+
+;
+
+Therefore given any
+
+1 g,
+
+and
+
+in BIO
+
+( ) for x 2 J .
+
+Example 2.9 (Gumbel Copula) Suppose Assumption (O-P-I) (i) and (ii) hold with the family of Gumbel
+copulas so
+' (u; ) = ( log u) ;
+Let
+
+o
+
+2 [1; 1):
+
+denote the true value of the copula parameter. Suppose the true conditional marginal survival functions
+
+are SY ojX (yjx) = e
+
+y=x
+
+and SCjX (cjx) = e
+
+c=x
+
+for y
+
+0, c
+
+0, and x > 0. It is easy to show that the
+
+conditional survival and sub-survival functions of the observable V are given by:
+SV (vjx)
+
+=
+
+SV;D=1 (vjx)
+
+=
+
+vi
+21= o
+and
+x
+h
+i
+1
+v
+exp 21= o
+; x > 0:
+2
+x
+
+exp
+
+h
+
+13
+
+Suppose we know that
+
+o
+
+Nelson, 2006). For any
+
+2 [
+2[
+
+yielding the bounds SY (yjx;
+Let x = 1,
+
+o
+
+=2(
+
+o
+
+L;
+L;
+
+L)
+
+U]
+
+or equivalently
+
+o
+
+2 [
+
+L;
+
+U]
+
+=
+
+U ],
+
+(2.7) implies that for y > 0;
+h
+yi
+SY (yjx; ) = exp 21= o 1=
+x
+
+and SY (yjx;
+
+= 0:5), and
+
+L
+
+= 1;
+
+U)
+
+U
+
+h
+
+1
+
+L
+L
+
+;
+
+1
+
+U
+U
+
+i
+
+(see Example 5.4 in
+
+(2.19)
+
+for the true survival function SY o (yjx).
+= 5 ( 2 [0; 0:8]). In Figure 1, we plot the true survival
+
+function SY o (yj1) (black solid curve), our copula bounds SY (yj1;
+
+L)
+
+and SY (yj1;
+
+U)
+
+(two blue curves),
+
+and the worst-case Peterson bounds (two red curves):
+SV (yj1)
+
+=
+
+exp
+
+SV;D=1 (yj1) + SV;D=0 (0j1)
+
+=
+
+1
+exp
+2
+
+21= o y
+
+and
+
+1
+21= o y + :
+2
+
+Some observations follow immediately. First the Peterson’s upper bound has some unpleasant feature, namely
+it is only pointwise sharp not functionally sharp. The upper bound on the survival function is not a proper
+survival function itself, more speci…cally, limy!1 [SV;D=1 (yj1) + SV;D=0 (0j1)] = Pr (D = 0j1), which is
+strictly bigger than 0 in nontrivial cases (see Crowder 1991; Bedford and Meilijson 1997). Second, Peterson’s
+bounds can be tightened signi…cantly when prior knowledge on the censoring mechanism is available. Finally,
+the deviation from the independent censoring assumption may not be negligible, making the sensitivity analysis
+necessary.
+Next we illustrate the e¤ ect of misspeci…cation in the generator function (while …xing the dependence
+range) on the copula bounds. So instead of the Gumbel copula, we use the Clayton copula:
+'
+e (u; e ) =
+
+u
+
+e
+
+e
+
+14
+
+1
+
+; e>0
+
+in (2.7) leading to
+1
+
+SY (yjx; e ) =
+
+21=
+
+o
+
+h
+
+h
+exp 21=
+
+o
+
+e
+
+yi
+x
+
+Example 5.4 in Nelson (2006) shows that for the Clayton copula,
+
+i
+1 +1
+
+=
+
+e
+e +2 .
+
+1=e
+
+:
+
+(2.20)
+
+The range for Kendall’s
+
+varying
+
+in [0; 0:8] would translate to e 2 [0; 8]. In Figure 2 we again plot the true survival function SY o (yj1) (black
+solid curve) and the copula bounds SY (yj1;
+
+L)
+
+and SY (yj1;
+
+U)
+
+(two blue curves) using the correctly speci…ed
+
+Gumbel copula. In addition, we also plot the misspeci…ed copula bounds SY (yj1; e L ) and SY (yj1; e U ) (the
+two red curves) computed using the Clayton copula, where e L = 0 and e U = 8. Notice that the two sets of
+
+copula bounds are almost identical. This observation is consistent with existing simulation results showing
+the negligible bias in the estimated bounds with misspeci…ed copula function as long as the dependence range
+is correctly speci…ed, see Zheng and Klein (1995), Huang and Zhang (2008), and Chen (2010).
+Finally we complete this example by deriving the identi…ed set for
+1
+
+o.
+
+By the restriction that SY (
+
+o jx;
+
+)=
+
+q, we get:
+o
+
+2 log
+
+In terms of the corresponding [
+o
+
+L;
+
+2 log
+
+1
+1
+
+q
+
+U ],
+
+U
+
+1=
+
+o
+
+1
+
+; log
+
+1
+
+q
+
+21=
+
+L
+
+1=
+
+o
+
+:
+
+21
+
+L
+
+1=
+
+o
+
+:
+
+(2.21)
+
+we get
+
+1
+1
+
+21=
+
+q
+
+21
+
+U
+
+1=
+
+o
+
+1
+
+; log
+
+1
+
+q
+
+In this example, the quantile regression coe¢ cient is interval identi…ed (Manski, 2003) and there is oneto-one correspondence between the quantile regression coe¢ cient and the dependence level characterized by
+Kendall’s tau.
+It is obvious from the expression for SY (yjx; ) in (2.19) that Assumption (SC) holds for all x > 0 and
+all …nite
+
+3
+
+U.
+
+Asymptotic Con…dence Sets for
+
+o
+
+In the rest of this paper, we suppose Assumptions (AC), (SY), and (O-P-I) hold for all x 2 J . In this
+section, we construct two asymptotic con…dence sets for
+
+o
+
+based on the identi…ed set BIO in (2.17):
+
+BIO = f 2 B : FY (x0 jx; ) = q for all x 2 J and some
+
+2 Ag :
+
+The identi…ed set BIO allows X to be any random variable, discrete or continuous or mixed. In what follows,
+
+X c ; X d with both continuous component X c =
+
+we work explicitly with mixed type regressors, so X
+X1c ;
+
+Xpc and discrete component X d = X1d ;
+
+Xrd . Furthermore, Xjd takes the values 0; 1; :::; cj
+
+1 for
+
+j = 1; :::; r.
+De…ne the population criterion function as
+T( )=
+
+min
+
+2[
+
+L;
+
+U]
+
+T( ; )=
+
+min
+
+2[
+
+L;
+
+U]
+
+15
+
+Z
+
+J
+
+[FY (x0 jx; )
+
+2
+
+2
+q] fX
+(x) dx,
+
+(3.1)
+
+where J = J c J1d ::: Jrd , with J c int(X c ) being compact and Jjd = f0; 1; :::; cj g for j = 1; :::; r. Also
+R
+P R
+the integral dx is understood to be xd d (xc ), integrating over the counting measure on J1d ::: Jrd
+and Lebesgue measure on X c . Our CSs are based on the sample version of T ( ; ) de…ned as:
+Tn ( ; ) =
+
+Z h
+J
+
+Fb (x0 jx; )
+
+q
+
+i2
+
+2
+fbX
+(x) dx;
+
+(3.2)
+
+where Fb ( jx; ) is the plug-in estimator of FY ( jx; ) introduced in the subsection below and fbX (x) is the
+kernel-type density estimator of fX (x) de…ned below:
+
+n
+
+where W (x; Xi ) = Kh (xc
+
+1X
+W (x; Xi )
+fbX (x) =
+n i=1
+
+Xic ) L xd ; Xid ;
+
+,
+
+= (h; ) = (h;
+
+(3.3)
+1;
+
+;
+
+r ),
+
+Kh ( ) = h
+
+p
+
+K ( =h) denotes
+
+6
+
+the standard kernel function for continuous regressors, whereas L ( ; ; ) is the Aitchison and Aitken (1976)
+kernel:
+L xd ; Xid ;
+
+=
+
+r
+Y
+
+(
+
+j = (cj
+
+1))
+
+Nij (x)
+
+(1
+
+j)
+
+1 Nij (x)
+
+j=1
+d
+with Nij (x) = I Xij
+6= xdj for j = 1; :::; r. For the advantage of smoothing discrete regressors over the
+
+standard frequency approach, see Hall, Racine and Li (2004), Li and Racine (2007).
+We propose two test statistics from which we could draw inference on
+
+o:
+
+Tbn ( ) = Tn ( ; b ( )) and
+
+(3.4)
+
+Ten ( ) = Tn ( ; e ( )) ;
+
+where
+
+b ( ) 2 arg
+
+e ( ) 2 arg
+
+min
+
+2[
+
+L;
+
+min
+
+2[
+
+L;
+
+U]
+
+(3.5)
+
+Tn ( ; ) and
+
+U]
+
+bn ( ; )
+Tn ( ; ) B
+q
+b( ; )
+
+bn ( ; ) and b ( ; ) being uniformly consistent estimators of Bn ( ; ) and
+with B
+
+( ; ) de…ned in (B.6)
+
+(B.8) in Appendix B. Our CSs for o with asymptotic level (1
+) are de…ned as
+8
+9
+bn ( ; b ( ))
+<
+=
+nhp=2 Tbn ( ) B
+q
+CS1N ;Tb =
+2B:
+z1 =2 and
+n
+:
+;
+b ( ; b ( ))
+CS1N
+
+where z1
+
+=2
+
+is the (1
+
+;Ten
+
+8
+<
+
+bn ( ; e ( ))
+nhp=2 Ten ( ) B
+q
+=
+2B:
+:
+b ( ; e ( ))
+
+z1
+
+=2)-th percentile of the standard normal distribution.
+
+=2
+
+9
+=
+;
+
+;
+
+6 In typical applications, discrete regressors would have di¤erent support and cardinality, so we let
+notational brevity we use single bandwidth for all continuous regressors.
+
+16
+
+(3.6)
+
+(3.7)
+
+change with r; for
+
+We show in the next section that under conditions including Assumption (O-P-I) and the conditions of
+Proposition 2.6, both CS1N
+By varying
+
+L
+
+and
+
+U,
+
+;Tbn
+
+and CS1N
+
+;Ten
+
+are asymptotically valid and non-conservative CSs for
+
+both CSs can be used to check sensitivity of inference for
+
+o
+
+to the independent
+
+censoring assumption. In contrast to most CSs for partially identi…ed parameters, the CSs CS1N
+CS1N ;Te
+n
+
+o.
+
+and
+
+;Tbn
+
+are straightforward to implement. This is especially important in the context of a sensitivity
+
+analysis since they are typically computed several times for di¤erent ranges of the copula parameter .
+Remark 3.1 For a given
+
+2 BIO , the test statistics Tbn ( ) and Ten ( ) in (3.4) and (3.5) resemble the test
+
+statistics for consistent model speci…cation testing based on kernel estimators, see Fan (1994), Fan and Li
+(1996), and Zheng (1996) and many subsequent works in the literature.7 Indeed, as in these papers, we show
+later that under suitable conditions including the separation assumption (SC), the asymptotic distributions of
+Tbn ( ) and Ten ( ) are normal justifying the CSs CS1N
+CSs
+
+CS1N ;Tb
+n
+
+and
+
+CS1N ;Te
+n
+
+for
+
+o
+
+;Tbn
+
+and CS1N
+
+2 A.
+
+Remark 3.2 An alternative approach to construcing CS for
+on
+
+o
+
+in Proposition 2.6: FL (x
+
+following criterion function:
+Z h
+Fb (x0 jx;
+J
+
+o jx)
+
+L)
+
+de…ned in (3.6) and (3.7). Thus the
+
+are intrinsically linked to speci…cation tests for the class of parametric
+
+copulas with generator function ' ,
+
+0
+
+;Ten
+
+q
+
+q
+
+i2
+
+_
+
+FU (x
+
+0
+
+o jx)
+
+2
+fbX
+(x) dx +
+
+o
+
+is to make use of the inequality constraints
+
+for all x 2 J . For instance, one could adopt the
+
+Z h
+Fb (x0 jx;
+J
+
+U)
+
+q
+
+i2
+
++
+
+2
+fbX
+(x) dx:
+
+(3.8)
+
+Compared with Tbn ( ) or Ten ( ), this approach su¤ ers from several drawbacks. First, the asymptotic dis-
+
+tribution of the statistic in (3.8) is di¢ cult to establish; Second, similar to existing work on inference for
+parameters de…ned by moment inequalities such as Andrews and Shi (2013), variants of the ‘generalized moment selection’may be needed introducing additional parameters that practitioners have to select. In contrast,
+CSs based on Tbn ( ) or Ten ( ) circumvent this because they rely on equality constraints only; Third, let
+BO = f 2 B : FL (x0
+
+o jx)
+
+q
+
+FU (x0
+
+o jx)
+
+for all x 2 J g :
+
+Proposition 2.6 only shows that BO is an outer set of the identi…ed set BIO , i.e., BIO
+whether BO
+
+3.1
+
+BIO .
+
+BO , but it is not clear
+
+The Plug-in Estimator of FY (yjx; )
+
+Our test statistics depend on an estimator of FY (x0 jx; ) or generally of FY (yjx; ) de…ned in (2.7).
+Throughout this section we will suppress the subscript Y in its conditional distribution or survival functions unless otherwise emphasized. When the censoring mechanism is independent conditional on covariates,
+Dabrowska (1987, 1989) studies the consistency and weak convergence of the so-called conditional KaplanMeier estimator originally proposed by Beran in an unpublished report. Under dependent censoring mechanism, Braekers and Veraverbeke (2005) generalize the copula-graphic methods in Rivest and Wells (2001)
+7 Similar speci…cation testing procedures with mixed type regressors could be found in Fan, Li and Min (2006) and Hsiao,
+Li and Racine (2007).
+
+17
+
+to the case where X is univariate and non-stochastic. In this section we propose a plug-in estimator of
+FY (yjx; ) using its expression in (2.7).
+We …rst introduce the Nadaraya-Watson kernel estimators of FV;D=1 (vjx) and FV (vjx):
+FbV;D=1 (vjx)
+
+FbV (vjx)
+
+where wn (x; Xi ) = W (x; Xi ) =
+
+Pn
+
+j=1
+
+=
+=
+
+n
+X
+
+i=1
+n
+X
+
+wn (x; Xi ) I [Vi
+
+v; Di = 1] and
+
+wn (x; Xi ) I [Vi
+
+v] ;
+
+i=1
+
+W (x; Xj ), with W ( ; ) de…ned in the previous subsection. In view
+
+of our Lemma 2.1, it is natural to work with the plug-in type estimator for the conditional distribution
+functions indexed by :
+Fb (yjx; )
+
+=
+
+=
+
+1
+
+'
+
+1
+
+'
+
+1
+
+1
+
+2
+4
+
+Z
+
+y
+
+ylx
+
+n
+o
+'0 SbV (sjx) ;
+dFbV;D=1 (sjx) ;
+
+X
+
+0
+
+SbV (Vi jx) ;
+
+'
+
+Vi y;Di =1
+
+(3.9)
+3
+
+wn (x; Xi ) ; 5 :
+
+Remark 3.3 An alternative estimator of FY (yjx; ) is the copula graphic estimator introduced in Braekers
+and Veraverbeke (2005) denoted as Fe (yjx; ) = 1
+=
+
+Se (yjx; )
+8
+<
+=' 1
+:
+
+X
+
+Vi y;Di =1
+
+h
+
+Se (yjx; ), where
+
+' SbV Vi jx ;
+
+' SbV Vi jx
+
+wn (x; Xi ) ;
+
+i
+
+;
+
+9
+=
+;
+
+(3.10)
+:
+
+The estimator Fe (yjx; ) generalizes the conditional kernel Kaplan-Meier estimator proposed in Dabrowska
+
+(1987, 1989) to allow for conditional dependent censoring characterized by the generator function ' ( ; ).
+When ' (t; ) = log (1=t), (Y; C) are independent conditional on X = x and Fe (yjx; ) reduces to the conditional kernel Kaplan-Meier estimator in Dabrowska (1987, 1989),
+2
+!D[i] 3
+Y
+w
+x;
+X
+n
+[i]
+5
+1
+FeInd (yjx) = 1 4
+Pi 1
+w
+x;
+X
+1
+n
+[j]
+j=1
+V(i) y
+
+where V(i)
+
+n
+i=1
+
+denote the order statistics and D[i] ; X[i]
+
+n
+i=1
+
+(3.11)
+
+denote the induced order statistics of the sample.
+
+The above estimator resembles the traditional Kaplan-Meier estimator closely, replacing the empirical weight
+n
+
+1
+
+with the kernel weight wn (x; Xi ). As shown in Lemma A.3, the two estimators Fb (yjx; ) and Fe (yjx; )
+
+are …rst order asymptotically equivalent.
+
+4
+
+Asymptotic Validity and Bootstrap Con…dence Sets
+
+In this section, we …rst establish a uniform asymptotic linear representation of the plug-in estimator of
+FY (yjx; ), then establish asymptotic validity of the CSs CS1N
+bootstrap CSs.
+18
+
+;Tbn
+
+and CS1N
+
+;Ten
+
+, and lastly construct
+
+4.1
+
+Asymptotic Linear Representation of Fb (yjx; )
+
+We …rst present regularity assumptions used to establish the asymptotic linear representation of Fb (yjx; ).
+The random vector Zi = (Vi ; Di ; Xi ) stacks all the observable random variables. To ease the notational
+burden, we assume that the support of the conditional distribution function of Y is …xed at [yl ; yu ], invariant
+with respect to x. In addition, we let ' (u) = ' (u; ) throughout the rest of this paper and let
+@ 0
+' (u) and '_
+@
+
+'_ 0 (u)
+
+1
+
+(u)
+
+@
+'
+@
+
+1
+
+(u) :
+
+Assumption (D). (i) The random variable X c has an absolutely continuous and bounded density w.r.t
+the Lebsegue measure
+
+in Rp , and inf x2J fX (x) > 0 for the compact subset J in (3.1); (ii) The marginal
+
+density function fX (x) = fX xc ; xd satis…es 8xd , xc ! fX xc ; xd is s-order continuously di¤erentiable
+over the set J c and the s-order derivatives are bounded; (iii) There exists yu0 in the support of Y and
+
+0
+
+>0
+
+such that
+SV yu0 jx
+
+0
+
+a.s. x 2 J :
+
+(3.12)
+
+Assumption (F). (i) The two conditional sub-distribution functions have continuous bounded conditional sub-density functions fV;D=j (vjx), j = 0; 1 uniformly for x 2 J ; (ii) Along the xc -axis the conditional
+sub distribution functions satisfy:
+8v 2 yl ; yu0 and 8xd , xc ! FV;D=1 vjxc ; xd ; x ! FV;D=0 vjxc ; xd are s-order continuously di¤eren-
+
+tiable over the set J c , with bounded s-order derivatives.
+
+Assumption (G). (i) Along the u-axis, the generator function ' ( ) is third order continuously di¤er(3)
+
+entiable with '
+
+()
+
+(3)
+
+0 and '
+
+0
+
+( ) remains bounded uniformly for 8 2 A and for 8u 2 [ 0 ; 1]. Moreover
+
+' ( ) is bounded away from 0 uniformly for
+
+2 A and u 2 [ 0 ; 1] for the
+
+(ii) The Lipschitz continuity property with respect to
+
+holds for
+
+0
+
+de…ned in (3.12);
+0
+
+00
+
+( ) = 1=' ( ) or
+
+( ) = ' ( ) with
+
+positive constant L:
+sup
+u2[
+
+0 ;1]
+
+1
+
+(u)
+
+2
+
+(u)
+
+Lj
+
+1
+
+2j :
+p
+
+nh
+2s
+Assumption (H). (i) The bandwidth satis…es the following conditions: h ! 0, log
+! 0,
+n ! 1, nh
+
+nh2s+p
+log n
+
+! 0 and
+
+(log n)2
+nh3p=2
+
+! 0 as n ! 1;
+
+nhp
+
+2
+
+! 0 and log nj ! 0, as n ! 1.
+Qp
+Assumption (K). Let K (u) = j=1 k (uj ), where k ( ) is a bounded s-order kernel function with
+
+(ii) For all j = 1;
+
+; r,
+
+j
+
+compact support, i.e.,
+
+Z
+
+k (u) du = 1 and
+
+Moreover it can be written as
+
+Z
+
+(p (x)), with
+
+uj k (u) du = 0 for j = 1; :::; s
+
+1.
+
+( ) being of bounded variation and p (x) a real polynomial
+
+on R.
+Assumptions (D)(i), (ii) and (F) are standard assumptions used to establish asymptotic properties of
+estimators or test statistics that are functionals of kernel type regression estimators (see Li and Racine,
+19
+
+2007). Assumption (D)(iii) plays a similar role to Assumption (D)(i), because most generator functions
+have unbounded derivatives at 0, see Table 1. Assumption (D)(iii) allows us to avoid having to deal with
+such explosive behavior of the generator function and require Assumption (G) (i) only when establishing
+the linear representation of Fb (yjx; ), see the expression in (3.9).8 It can be relaxed by imposing suitable
+
+restrictions on the tail behavior of the generator function at the expense of more tedious proofs. Apropos
+of the requirement on the copula generator, the di¤erentiability and non-vanishing …rst order derivative are
+almost necessary in view of the following uniform asymptotic linear representation. The Lipschitz continuity
+in Assumption (G)(ii) is used to prove uniformity of the linear representation over
+
+and it also simpli…es
+
+the convergence argument for b ( ) or e ( ) when we apply the local U-process machinery. The condition
+
+on the bandwidth is standard in kernel estimation problem, and we undersmooth a bit to kill the bias term,
+facilitating the inference procedure. Under Assumption (K), we have the following VC-type functional class
+due to Nolan and Pollard (1987):
+K= K h
+
+1
+
+(x
+
+) : x 2 Rp , h > 0 :
+
+An explicit construction of k ( ) satisfying the above requirement could be found in Section 1.2.2 in Tsybakov
+(2008) based on Legendre polynomials.
+Theorem 4.1 Under Assumptions (D)-(K), it holds that
+Fb (yjx; )
+
+FY (yjx; ) =
+
+1
+nfX (x)
+
+n
+X
+
+W (x; Xi ) g (yjZi ; x; ) + Rn (y; x; ) ;
+
+(3.13)
+
+i=1
+
+where g (yjZi ; x; ) = c (yjZi ; x; ) + b (yjZi ; x; ) in which
+Z y
+00
+1
+c (yjZi ; x; ) = 0
+[
+' fSV (vjx)g [I (Vi
+' fSY (yjx; )g yl
+
+v)
+
+FV (vjXi )] dFV;D=1 (vjx) (3.14)
+
+'0 fSV (yjx)g [I (Vi v; Di = 1) FV;D=1 (yjXi )]
+Z y
+00
+' fSV (vjx)g [I (Vi v; Di = 1) FV;D=1 (vjXi )] dFV (vjx)];
+yl
+
+b (yjZi ; x; ) =
+
+Z y
+00
+1
+[
+' fSV (vjx)g [FV (vjXi )
+'0 fSY (yjx; )g yl
+
+FV (vjx)] dFV;D=1 (vjx)
+
+(3.15)
+
+'0 fSV (yjx)g [FV;D=1 (yjXi ) FV;D=1 (yjx)]
+Z y
+00
+' fSV (vjx)g [FV;D=1 (yjXi ) FV;D=1 (vjx)] dFV (vjx)]
+yl
+
+and Rn (y; x; ) satis…es that
+sup sup
+
+sup
+
+0]
+2A x2J y2[yl ;yu
+
+jRn (y; x; ) j = Op
+0
+
+8 At
+
+log n
+nhp
+
+:
+
+the right end point 1, only Gumbel copula generator has ' (1) = 0 in our Table 1, one could simply modify the above
+requirement for t 2 [ 0 ; 1 ], with some approporiate 1 < 1.
+
+20
+
+Compared with the result for the copula-graphic estimator Fe (yjx; ) in Braekers and Veraverbeke (2005),
+
+(3.13) holds uniformly for x 2 J
+
+X with a better rate for the remainder term, where the density of X
+
+stays away from 0 on J , and our covariate is a multivariate random variable rather than univariate …xed
+design.
+Remark 4.2 Holding X = x …xed and ' …xed at some
+np
+h
+of the conditional empirical process:
+nhp Fb (yjx; )
+
+2 A, we could also establish the weak convergence
+o
+i
+FY (yjx; ) : y 2 yl ; yu0 . It can be shown that
+
+the process is stochastically equicontinuous w.r.t. certain pseudo metric. We refer the readers to Braekers
+and Veraverbeke (2005) for a detailed proof for the copula-graphic estimator Fe (yjx; ).
+
+We can also establish the uniform consistency of Fb (yjx; ), which we record as a corollary below. Its
+
+proof is actually shown in Lemma A.3 when characterizing the order of Rn3 (y; x; ) de…ned in Appendix A.
+Corollary 4.3 Under the Assumptions (D)-(K), it holds that
+sup sup
+
+sup
+
+0]
+2A x2J y2[yl ;yu
+
+In particular, it holds if we set y = x
+
+4.2
+
+0
+
+jFb (yjx; )
+
+for those x
+
+FY (yjx; ) j = Op
+0
+
+r
+
+log n
+nhp
+
+!
+
+:
+
+2 yl ; yu0 .
+
+Validity of the Asymptotic Con…dence Sets
+
+In order to prove the asymptotic exactness of the con…dence sets de…ned in (3.6) and (3.7), we show that
+Tbn ( ) and Ten ( ) are both asymptotically normal upon proper centering and normalization. Noting that
+
+those two statistics resemble the population criterion function closely, we show below that b ( ) and e ( )
+converge in probability to
+
+( ) and prove the stochastic equicontinuity (SE) of [Tn ( ; )
+
+in the local neighborhood of
+
+to
+
+Bn ( ; )] w.r.t
+
+( ) whose radius is determined by the convergence rate of b ( ) or e ( )
+
+( ). Proving consistency and getting convergence rate for estimators obtained from minimizing a
+
+kernel based criterion function is akin to a problem from smooth minimum distance estimation, as shown
+in Linton (1997, 1998), also see Lavergne and Patilea (2013) on a recent account. For
+asymptotic distribution of [Tn ( ; )
+
+=
+
+( ), the
+
+Bn ( ; )] is determined by a degenerate U -statistic similar to the test
+
+statistics in Hardle and Mammen (1993), Fan (1994), Fan and Li (1996), and Zheng (1996); when
+
+6=
+
+( ),
+
+[Tn ( ; )
+
+Bn ( ; )] could be decomposed as the degenerate U-statistic, a non-degenerate U-statistic and
+R
+2 2
+the deterministic drifting term: J [FY (x0 jx; ) q] fX
+(x) dx. The SE of [Tn ( ; ) Bn ( ; )] would
+be proved by showing the SE of the degenerate U-process and negligibility of the other two terms when
+
+approaches
+
+( ) su¢ ciently fast.
+
+We need two more sets of assumptions to show the validity of our con…dence sets, one (Assumptions (V0)
+and (V1)) for CS1N
+
+;Tbn
+
+and one (Assumptions (V0) and (V2)) for CS1N
+
+Assumption (V0). For all
+
+2 B, x
+
+0
+
+2
+
+yl ; yu0
+
+for all x 2 J .
+
+21
+
+;Ten
+
+.
+
+2 BIO , the corresponding
+
+Assumption (V1). (i) For any
+
+( ) belongs to the interior of A; (ii) In
+
+addition to Assumption (H), we assume that nh2s ! 0; (iii) In addition to Assumption (G), those functions
+'_ 0 (u), '_
+
+1
+
+(u) exist and are continuous and bounded in the range of [ 0 ; 1] and [0; 1) respectively.
+q
+Assumption (V2). (i) In addition to Assumption (H), there exists a sequence "n ! 0 such that logn n "n !
+
+1 and nhp "n ! 0; (ii) In addition to Assumption (G), the Lipschitz continuity property with respect to
+holds for
+
+0
+
+( ) = 1=' ( ) or
+
+00
+
+( ) = ' ( ) with positive constant L from below:
+Lj
+
+2j
+
+1
+
+sup
+u2[
+
+0 ;1]
+
+1
+
+(u)
+
+2
+
+(u) :
+
+Assumption (V0) is used for both CSs. It ensures that all the conditional quantiles of potential interest
+stay su¢ ciently far away from the right end support point of V . When independent censoring is assumed,
+similar restrictions have also appeared in Peng and Huang (2008), Wang and Wang (2009) for
+borhood of the (point identi…ed) true
+
+o.
+
+in a neigh-
+
+There is a distinction between Assumption (V1) and Assumption
+
+(V2) because of the slightly di¤erent arguments used in the proofs for CS1N
+
+;Tbn
+
+and CS1N
+
+;Ten
+
+. The con-
+
+sistency of b ( ) follows the standard way to contrast sample criterion function and population criterion
+
+function, viewed as a minimum distance estimator. Its rate of convergence is shown once the requirement
+that
+
+( ) stays in the interior and enough smoothness (w.r.t ) on the generator function are satis…ed. In
+
+comparison, a di¤erent route is taken for e ( ) as in Santos (2006). Its consistency and rate of convergence
+will be achieved through the di¤erent convergence stochastic orders of the test statistic and a careful study
+of the local neighborhood of the ’null’set for (see Santos, 2006):
+Z
+2 2
+2A:
+[FY (x0 jx; ) q] fX
+(x) dx
+A"on =
+J
+
+"n ; with "n ! 0 :
+
+Notice that when "n ! 0, A"on will shrink to the singleton f ( )g; on the other hand, when
+
+(3.16)
+2
+= A"on , the
+
+sample criterion function would be shown to be explosive.
+The …rst main result in this section establishes the asymptotic distributions of the test statistics Tbn ( )
+
+and Ten ( ) for
+
+2 BIO , thereafter the asymptotic size property of our con…dence sets follows immediately.
+
+Proposition 4.4 Suppose Assumptions (SC), (D)-(K), and (V0) hold, then for
+
+2 BIO with the unique
+
+( ),
+nhp=2 [Tn ( ; ( )) Bn ( ; ( ))]
+p
+=) N (0; 1) :
+( ; ( ))
+
+(3.17)
+
+In addition if (V1) holds, we have:
+
+if (V2) holds, we have:
+
+h
+i
+bn ( ; b ( ))
+nhp=2 Tn ( ; b ( )) B
+q
+=) N (0; 1) ;
+b ( ; b ( ))
+h
+i
+bn ( ; e ( ))
+nhp=2 Tn ( ; e ( )) B
+q
+=) N (0; 1) ;
+b ( ; e ( ))
+22
+
+(3.18)
+
+(3.19)
+
+where Bn ( ; ) = n
+Appendix C, and
+
+1
+
+h
+
+p
+
+R
+
+K 2 (u) du
+
+R
+
+2
+
+(x0 jx; ) fX (x) dx in which
+
+2
+
+(x0 jx; ) is de…ned in (C.2) in
+
+bn ( ; )
+( ; ) is de…ned in (B.8) in Appendix B with uniformly consistent estimators B
+
+and b ( ; ) respectively.
+
+Theorem 4.5 Under the assumptions (SC), (D)-(K), and (V0), our con…dence sets have pointwisely asn
+o
+ymptotic exact size: for 8 2 BIO , if (V1) holds, we get: limn!1 Pr
+2 CS1N ;Tb = 1
+; or if (V2)
+n
+n
+o
+N
+holds, we get: limn!1 Pr
+2 CS1 ;Te = 1
+:
+n
+
+Remark 4.6 Both test statistics and con…dence sets have their own merits. Tbn ( ) circumvents the need to
+estimate the complicated drifting term and asymptotic variance term when the minimization over
+
+2 A is
+
+conducted; on the other hand, even without the separation assumption (SC), the procedure based on Ten ( )
+
+is still asymptotically valid although may be conservative, similar to Jun and Pinske (2009) in a di¤ erent
+context:
+h
+i
+bn ( ; )
+nhp=2 Tn ( ; ) B
+q
+lim sup Pr min
+: 2A
+n
+b ( ; ( ))
+h
+i
+8
+bn ( ; ( ))
+< nhp=2 Tn ( ; ( )) B
+q
+lim Pr
+n
+:
+b ( ; ( ))
+8
+<
+
+=
+
+4.3
+
+1
+
+z1
+
+z1
+
+=2
+
+=2
+
+:
+
+9
+=
+;
+
+9
+=
+;
+
+Bootstrap Con…dence Sets
+
+It is well documented in the literature on model speci…cation testing that the normal approximation of the
+distribution of the kernel-based test statistics may not work well in small samples, see Hardle and Mammen
+(1993) and resampling methods such as bootstrap may be used. Below we present bootstrap analogues of
+the asymptotic con…dence sets CS1N
+Let
+Tn;b ( ; )
+
+;Tbn
+
+Z "
+J
+
+where
+
+=
+
+and CS1N
+n
+
+;Ten
+
+.
+
+0
+1X
+W (x; Xi ) cb x jZi ; x;
+n i=1
+
+#2
+
+dx;
+
+cb (yjZi ; x; )
+Z y
+n
+oh
+i
+Mi;b
+00
+n
+o[
+' SbV (vjx) I (Vi v) FbV (vjXi ) dFbV;D=1 (vjx)
+yl
+'0 Sb (yjx; )
+n
+oh
+i
+'0 SbV (yjx) I (Vi v; Di = 1) FbV;D=1 (yjXi )
+Z y
+n
+oh
+i
+00
+' SbV (vjx) I (Vi v; Di = 1) FbV;D=1 (vjXi ) dFbV (vjx)]
+
+(3.20)
+
+yl
+
+n
+on
+in which the perturbation variables Mi;b
+
+i=1
+
+are independently generated with zero mean and unit variance
+
+from, for example, the standard normal distribution or centered unit exponential distribution. Thereafter
+
+23
+
+we de…ne Tn;b ( ; b ( )) and Tn;b ( ; e ( )) accordingly.9
+n
+on
+n
+oB
+We could generate Mi;b
+for b = 1; :::; B and obtain Tn;b ( ; b ( ))
+i=1
+
+b=1
+
+The bootstrap critical values are de…ned as
+(
+B
+1 X n p=2
+B
+cn;Tb ( ; 1
+) = inf t :
+I nh Tn;b ( ; b ( ))
+n
+B
+b=1
+
+( ;1
+cB
+n;Te
+n
+
+) = inf
+
+(
+
+B
+1 X n p=2
+I nh Tn;b ( ; e ( ))
+t:
+B
+b=1
+
+t
+
+o
+t
+
+1
+o
+
+1
+
+or
+)
+
+n
+oB
+Tn;b ( ; e ( ))
+.
+b=1
+
+and
+)
+
+:
+
+Hence the following two bootstrap con…dence sets are immediate:
+CS1B
+
+;Tbn
+
+CS1B ;Te
+n
+
+=
+=
+
+n
+
+n
+
+2 B : nhp=2 Tbn ( )
+p=2
+
+2 B : nh
+
+Ten ( )
+
+cB
+( ;1
+n;Tb
+n
+
+cB
+n;Ten
+
+( ;1
+
+o
+) and
+o
+) :
+
+Theorem 4.7 Under the assumptions (AC), (D)-(K), and (V0), our bootstrap con…dence sets have pointn
+o
+wisely asymptotic exact size: for 8 2 BIO , if (V1) holds, we get: limn!1 Pr
+2 CS1B ;Tb = 1
+; or if
+n
+n
+o
+(V2) holds, we get: limn!1 Pr
+2 CS1B ;Te = 1
+:
+n
+
+5
+
+An Empirical Application
+
+In this section, we illustrate our methodology on a real data set used in Wang and Wang (2009). The
+data comes from a study on the survival of patients after acute myocardial infarction conducted at the
+University Clinical Center in Ljubljana and is publicly available in R package relsurv. It consists of n = 1; 040
+observations with 493 censored observations. The variable of interest, i.e., the survival time, is recorded in
+days and we transform it into the unit scale [0; 1] by the empirical probability integral transformation. There
+are two regressors of mixed type; the discrete regressor is Gender (with 751 observations from Male vs. 289
+observations from Female) and the continuous regressor is Age (we again transform the original data into
+the unit scale between [0; 1]).10 The exact cause of censoring is unknown in this data, however in typical
+clinical studies censoring is not merely of administrative type (censoring occurs because the study simply
+terminates). Patients might be removed if there is evidence that treatment is ine¤ective, or patients withdraw
+themselves because of side e¤ects or they die due to other causes (Fleming and Harrington, 1991). Hence it
+is reasonable to expect some positive dependence between Y and C in those situations.
+B
+We compare our con…dence set CS95%;
+with two bootstrap con…dence intervals in Portnoy (2003),
+Tb
+n
+
+Peng and Huang (2008) (Por, PH in Table 2 below respectively) where conditional independent censoring
+is assumed. Those two approaches could be automatically implemented in Roger Koenker’s R package
+quantreg. Linear quantile regressions, with intercept
+
+and slope , are …tted on subsets splitted according
+
+could bootstrap the drifting term when calculating Ten ( )
+comparison, Wang and Wang (2009) take the log transform of the original survival time. Also, even though the procedure
+in Wang and Wang (2009) calls for ordinary kernel smoothing across the variable Age, they still work with the original one,
+which is integer-valued.
+9 One
+
+1 0 In
+
+24
+
+to gender groups and we report the bootstrap con…dence intervals on the slope coe¢ cient . Notice that the
+data between di¤erent gender groups are very unbalanced, which justi…es the smoothing across the discrete
+regressor here (Li and Racine, 2007). Referring to the actual implementation of our approach, since the
+continuous regressor is univariate, we let K (u) =
+
+15
+16
+
+1
+
+2
+
+u2 , the bisquare kernel which is a second order
+
+kernel. Moreover the two tuning parameters are set to be h = 2n
+
+1=4
+
+,
+
+=n
+
+1=2
+
+, and the truncation of
+
+the integral is restricted to be J = [0:1; 0:9]. Also the perturbation variable Mi;b in the bootstrap weight is
+taken to be standard normal. Needless to say, our procedure is computationally more intensive as for every
+regression coe¢ cient under consideration, a minimization over
+
+is carried out and bootstrap is needed
+
+to obtain the critical value. To reduce computational cost, we simply set the the number of bootstrap
+replications at 100 and do a grid search over
+
+2 [ 5; 1] with grid length equal to 0:01. Notice that our
+
+construction of con…dence set leads to simultaneous inference on both the slope
+
+and the intercept
+
+.
+
+However, the bootstrap intervals in Portnoy (2003), Peng and Huang (2008) are for the slope and intercept
+separately. For fair comparison, we have picked a projection based version of ours by considering all
+rejected while
+
+not
+
+runs over in [0; 1] with a grid length 0:01.11 To check the sensitivity of conclusions from
+
+maintaining ICM assumption, we consider two scenarios, small vs. moderate deviations. In the former case,
+we set
+
+2 [0; 0:2] whereas in the latter case
+
+2 [0; 0:5]. Both con…dence sets based on Clayton copula and
+
+Gumbel copula are reported to examine the e¤ect of employing di¤erent copula generator functions when
+the speci…ed dependence level
+
+coincides. The results are reported in Table 2 below, where DCM denotes
+
+dependent censoring mechanism.
+Some remarks follow from Table 2. First of all, our con…dence sets turn out to be intervals for this
+particular case, so there are no holes in between. Second, despite we choose the projection based inference
+(which might be conservative) and allow for a wider range of dependence, our con…dence intervals are not
+necessarily wider than those in Por, PH for the female group. The frequency approach by splitting the data
+leaves too few observations in the female group and as noted in Wang and Wang (2009), Por, PH tend to
+be unstable for small samples. Third, the conclusion on negative e¤ect (the sign) of aging on the survival
+time is robust even when we allow for
+
+2 [0; 0:5], but the one on the exact magnitude might change. For
+
+example, in the male group when q = 3=4, the ICM intervals lead to the accelerating e¤ect (j j > 1) from
+aging, but this could be overturned when we allow for moderate positive dependence. Finally, the di¤erence
+between …tting a Clayton and Gumbel is almost negligible, never larger than 0:08. So the exact shape of a
+generator function plays only a minor role.
+
+6
+
+Concluding Remarks
+
+Assuming an Archimedean copula for the dependent variable Y and the censoring variable C, we have proposed a two-step method for studying partial identi…cation of the quantile coe¢ cient
+1 1 The reason we set the parameter space B to be [0; 1]
+(2003), Peng and Huang (2008) and is slightly enlarged.
+
+o
+
+in quantile regression
+
+[ 5; 1] is that it includes the widest interval coming from Portnoy
+
+25
+
+Table 2: Con…dence Sets
+q
+ICM
+Por
+PH
+DCM
+Clay
+Gum
+DCM
+Clay
+Gum
+
+1=4
+
+Male
+1=2
+
+[ 0:73; 0:49]
+[ 0:75; 0:47]
+
+[ 1:69; 0:73]
+[ 2:18; 0:46]
+
+[ 0:70; 0:44]
+[ 0:71; 0:41]
+
+[ 1:83; 0:51]
+[ 1:85; 0:59]
+
+[ 0:80; 0:23]
+[ 0:78; 0:27]
+
+[ 1:94; 0:24]
+[ 1:98; 0:25]
+
+3=4
+
+Female
+1=2
+
+3=4
+
+0:28]
+0:19]
+
+[ 2:07; 0:82]
+[ 2:12; 0:93]
+
+[ 3:73; 0:80]
+[ 4:39; 0:84]
+
+0:40]
+0:38]
+
+[ 2:14; 1:05]
+[ 2:18; 1:07]
+
+[ 2:52; 1:29]
+[ 2:50; 1:24]
+
+0:21]
+0:15]
+
+[ 2:21; 0:87]
+[ 2:20; 0:84]
+
+[ 2:73; 0:75]
+[ 2:76; 0:71]
+
+1=4
+
+=0
+[ 2:26; 1:34] [ 0:72;
+[ 2:38; 1:30] [ 0:76;
+2 [0; 0:2]
+[ 2:33; 1:31] [ 0:76;
+[ 2:30; 1:28] [ 0:73;
+2 [0; 0:5]
+[ 2:47; 0:82] [ 0:84;
+[ 2:44; 0:86] [ 0:84;
+
+with possibly dependent censoring. For a broad class of Archimedean copulas, we have characterized an outer
+set of the identi…ed set of
+
+o
+
+via inequality constraints. Most Archimedean copulas are characterized by a
+
+single parameter and are also ordered. Using such ordered parametric Archimedean copulas, we have developed an econometric method for conducting sensitivity analysis to examine the sensitivity of conclusions
+on
+
+o
+
+to the independent censoring mechanism commonly adopted in empirical work. Interpreting Y and
+
+the censoring variable C in our model as two competing risks, our methodology should be useful in duration
+analysis with possibly dependent competing risks.
+As a …rst step towards developing formal sensitivity analysis in censored quantile regression models, we
+have opted for simplicity instead of generality in this paper. Many important extensions are worthwhile.
+First, in practice, it is also of interest to test certain linear restriction on the parameter in the identi…ed set,
+e.g., whether a particular component equals to zero. Without point identi…cation, such testing problems can
+be formulated as in Santos (2006, 2012), i.e., we check whether there is at least one
+
+o
+
+satisfying the linear
+
+restriction under the null,
+H0 : Bo \ R 6= ;, vs. H1 : Bo \ R = ;;
+where R = f 2 B : R = rg, with a given matrix R and vector r. Second, endogenous regressors can be
+incorporated in our framework as in Khan and Tamer (2009) or one may extend Manski (1994) to allow for
+censored outcome variables in quantile selection models.
+
+7
+
+Appendix A: Asymptotic Linear Representation of the Plug-in
+Estimator Fb (yjx; )
+
+In this section, let M be a universal …nite constant and
+
+be an intermediate value appearing in a Taylor
+
+expansion. Their speci…c values are of no importance, so may vary from line to line. We will need to handle
+various functional classes F using local U-process techniques collected in Appendix C, and will refer to the
+term
+
+2
+
+, s.t.
+
+P mf 2
+
+2
+
+F
+
+for m = 1 or 2 as the maximal variance (see Appendix C). The following
+
+26
+
+notations would facilitate the proofs:
+HV (vjx)
+
+SV (vjx) =fX (x) , HV;D=1 (vjx)
+
+SV;D=1 (vjx) =fX (x) ,
+
+b V (vjx)
+H
+
+b V;D=1 (vjx)
+SbV (vjx) =fbX (x) , H
+
+SbV;D=1 (vjx) =fbX (x) ,
+
+(A.1)
+
+where the various estimators are all of kernel type introduced in the main text.
+
+The following facts would be used repeatedly in the proofs, so we list them below for easy reference.
+Facts: Under the Assumptions (D)-(K), the following results hold:
+!
+r
+log
+n
+sup fbX (x) fX (x) = Op
+;
+nhp
+x2J
+!
+r
+log n
+b
+sup sup FV (yjx) FV (yjx) = Op
+; and
+nhp
+0]
+x2J y2[yl ;yu
+!
+r
+log
+n
+:
+sup sup FbV;D=1 (yjx) FV;D=1 (yjx) = Op
+nhp
+0]
+x2J y2[yl ;yu
+
+(A.2)
+
+(A.3)
+
+(A.4)
+
+The proofs of the above facts would follow from Theorems 1 and 3 in Einmahl and Mason (2005), combining
+the arguments dealing with discrete regressors as in Li and Racine (2007). For completeness, we sketch a
+proof of (A.3) in Appendix C.
+We now give a main proof of Theorem 4.1, where the convergence rates of various terms used in the proof
+would be collected in a series of lemmas following the main proof.
+Proof. Recall that
+Fb (yjx; )
+
+=
+
+=
+
+1
+
+1
+
+'
+
+'
+
+Z
+
+1
+
+1
+
+y
+
+0
+
+'
+
+yl
+
+2
+
+X
+
+4
+
+SbV (vjx) dFbV;D=1 (vjx)
+'
+
+0
+
+yl
+y
+
+=
+
+Z
+
+y
+Z ly
+yl
+y
+
+Z
+
+yl
+
+h 0
+'
+
+0
+
+'
+
+y
+
+0
+
+' (SV (vjx)) dFV;D=1 (vjx)
+
+yl
+
+SbV (vjx)
+
+i
+'x (SV (vjx)) dFV;D=1 (vjx)
+0
+
+h
+0
+' (SV (vjx)) d FbV;D=1 (vjx)
+
+h
+
+SbV (Vi jx) wn (x; Xi )5 :
+
+Vi y;Di =1
+
+Straightforward algebra shows that
+Z y
+Z
+0
+' SbV (vjx) dFbV;D=1 (vjx) +
+
+3
+
+SbV (vjx)
+
+i
+FV;D=1 (vjx)
+
+i h
+0
+' (SV (vjx)) d FbV;D=1 (vjx)
+
+i
+FV;D=1 (vjx) :
+
+Regarding the above expression, we now take a second order Taylor expansion on the …rst term and integrate
+by parts on the second term on the right hand side:
+Z y
+Z y
+0
+0
+' SbV (vjx) dFbV;D=1 (vjx) +
+' (SV (vjx)) dFV;D=1 (vjx)
+=
+
+Z
+
+yl
+
+y
+
+yl
+
+00
+
+Z
+
+h
+
+' fSV (vjx)g FbV (vjx)
+y
+
+yl
+
+yl
+
+i
+FV (vjx) dFV;D=1 (vjx)
+
+h
+00
+' fSV (vjx)g FbV;D=1 (vjx)
+
+h
+0
+' fSV (vjx)g FbV;D=1 (vjx)
+
+FV;D=1 (vjx)
+
+i
+FV;D=1 (vjx) dFV (vjx)] + Rn1 (y; x; ) + Rn2 (y; x; )
+27
+
+i
+
+where
+Rn1 (y; x; ) =
+
+f g hb
+FV (vjx)
+2
+
+y
+
+yl
+
+h 0
+'
+
+'
+
+SbV (vjx)
+
+By Lemmas A.1 and A.2, we get
+
+sup sup
+2A x2J
+
+i2
+FV (vjx) dFV;D=1 (vjx) and
+
+(3)
+
+y
+
+yl
+
+Z
+
+Rn2 (y; x; ) =
+
+Z
+
+sup
+
+i h
+0
+'x (SV (vjx)) d FbV;D=1 (vjx)
+
+Rn1 (y; x; )
+
+=
+
+Op
+
+log n
+nhp
+
+Rn2 (y; x; )
+
+=
+
+Op
+
+log n
+nhp
+
+0]
+y2[yl ;yu
+
+sup sup
+
+sup
+
+0]
+2A x2J y2[yl ;yu
+
+(A.5)
+
+i
+FV;D=1 (vjx) :
+
+(A.6)
+
+and
+:
+
+Hence the result follows once we show the order of those remainder terms.
+Finally to see why (3.14) and (3.15) hold, it su¢ ces to illustrate on the …rst term inside the bracket of
+(3.13):
+Z
+
+y
+
+yl
+
+=
+=
+
+h
+00
+' fSV (vjx)g FbV (vjx)
+
+1
+
+fbX (x) n
+1
+fX (x) n
+
+n
+X
+i=1
+n
+X
+
+W (x; Xi )
+
+Z
+
+y
+
+yl
+
+W (x; Xi )
+
+Z
+
+00
+
+' fSV (vjx)g [I (Vi
+
+y
+
+yl
+
+i=1
+
+i
+FV (vjx) dFV;D=1 (vjx)
+
+00
+
+' fSV (vjx)g [I (Vi
+
+v)
+
+FV (vjx)] dFV;D=1 (vjx)
+
+v)
+
+FV (vjx)] dFV;D=1 (vjx)
+
+Z y
+n
+00
+fX (x) fbX (x) X
+W (x; Xi )
++
+' fSV (vjx)g [I (Vi
+b
+fX (x) fX (x) n
+yl
+
+v)
+
+FV (vjx)] dFV;D=1 (vjx) ;
+
+i=1
+
+where the second term is bounded from above uniformly in
+M sup fX (x)
+x2J
+
+fbX (x)
+
+sup
+
+sup
+
+x2J
+
+0]
+y2[yl ;yu
+
+2 A by
+
+FbV (yjx)
+
+FV (yjx) = Op
+
+log n
+nhp
+
+;
+
+whose rate of convergence follows from the stated facts (A.2) and (A.3).
+Lemma A.1 Under Assumptions (D)-(K), we have: sup
+
+2A
+
+supx2J supy2[yl ;yu0 ] jRn1 (y; x; ) j = Op
+
+log n
+nhp
+
+:
+
+Proof. We pull out the integrand on the right hand side of (A.5) and notice that dFV;D=1 ( jx) is a …nite
+measure for a:s: x 2 J :
+sup sup
+
+sup
+
+0]
+2A x2J y2[yl ;yu
+
+jRn1 (y; x; )j
+
+h
+1
+sup sup sup j'(3) ( ) j FbV (yjx)
+2 2A x2J y2[yl ;yu0 ]
+
+FV (yjx)
+
+i2
+
+:
+
+Now Assumption (G1) on the copula generator and the stated fact (A.3) give the desired rate.
+The next lemma characterizing the order of Rn2 (y; x; ) is most cumbersome. Braekers and Veraverbeke
+(2005) …rst discretize along the y-axis and then bound the local oscillation uniformly for x 2 J invoking
+certain maximal inequalities to arrive at the rate of
+
+log n
+nhp
+
+3=4
+
+. We shall improve this rate to
+
+log n
+nhp
+
+because
+
+the dominating term is a second order U-process as in Major (2006). A similar proof appears in Lemma 3.1
+of Lopez (2011) dealing with the conditional Kaplan-Meier estimator.
+
+28
+
+Lemma A.2 Under Assumptions (D)-(K), we have: sup
+
+2A
+
+supx2J supy2[yl ;yu0 ] jRn2 (y; x; ) j = Op
+
+log n
+nhp
+
+:
+
+Proof. Given Assumption (G), we can decompose the expression for Rn2 (y; x; ) in (A.6) into two terms
+as:
+
+=
+
+Z
+
+Z
+
+yl
+
+y
+
+yl
+
++
+
+y
+
+Z
+
+h
+
+0
+
+'
+
+SbV (vjx)
+
+i h
+0
+' (SV (vjx)) d FbV;D=1 (vjx)
+
+h
+00
+' (SV (vjx)) SbV (vjx)
+y
+
+yl
+
+h
+'(3) ( ) SbV (vjx)
+
+i h
+SV (vjx) d SbV;D=1 (vjx)
+
+SV (vjx)
+
+Apparently the second term is negligible and of order
+
+i2 h
+d SbV;D=1 (vjx)
+log n
+nhp
+
+FV;D=1 (vjx)
+
+i
+
+i
+SV;D=1 (vjx)
+
+i
+SV;D=1 (vjx) :
+
+3=2
+
+by (A.3) and (A.4). Some simpli…cation
+
+occurs in handling the …rst term. Recalling the de…nitions given in (A.1), we have:
+h
+i
+bX (x) HV (vjx)
+i
+h
+f
+(x)
+f
+X
+1
+b V (vjx) HV (vjx) +
+H
+SbV (vjx) SV (vjx) =
+2 (x)
+fX (x)
+fX
+i h
+h
+ih
+i2
+b V (vjx) HV (vjx)
+fX (x) fbX (x) H
+fX (x) fbX (x) HV (vjx)
+:
++
++
+2 (x) fb (x)
+fX (x) fbX (x)
+fX
+X
+h
+i
+A similar expression holds for SbV;D=1 (vjx) SV;D=1 (vjx) . The latter two terms (also those from conditional sub-survival functions) would be of smaller order by (A.2), (A.3), (A.4), and Assumption (F). Now it
+reduces to bound the dominating terms as
+Z y 00
+i h
+i
+' (SV (vjx)) h b
+b V;D=1 (vjx) HV;D=1 (vjx) and
+HV (vjx) HV (vjx) d H
+2
+fX (x)
+yl
+Z y 00
+i
+i h
+' (SV (vjx)) h
+bX (x) d H
+b V;D=1 (vjx) HV;D=1 (vjx) :
+f
+(x)
+f
+X
+2 (x)
+fX
+yl
+It su¢ ces to demonstrate with the …rst term. We introduce further notations as
+i
+i
+h
+h
+b V;D=1 (vjx) :
+b V (vjx) and H
+e V;D=1 (vjx) = E H
+e V (vjx) = E H
+H
+
+Standard bias-variance decomposition leads to
+Z y 00
+i h
+i
+' (SV (vjx)) h b
+e
+b
+H
+(vjx)
+H
+(vjx)
+d
+H
+(vjx)
+H
+(vjx)
+V
+V
+V;D=1
+V;D=1
+2 (x)
+fX
+yl
+Z y 00
+i h
+i
+' (SV (vjx)) h e
+b V;D=1 (vjx) HV;D=1 (vjx)
+H
+(vjx)
+H
+(vjx)
+d
+H
++
+V
+V
+2 (x)
+fX
+yl
+Z y 00
+i h
+i
+' (SV (vjx)) h b
+e V (vjx) d H
+b V;D=1 (vjx) H
+e V;D=1 (vjx)
+=
+HV (vjx) H
+2
+fX (x)
+yl
+Z y 00
+i h
+i
+' (SV (vjx)) h b
+e V (vjx) d H
+e V;D=1 (vjx) HV;D=1 (vjx)
++
+H
+(vjx)
+H
+V
+2 (x)
+fX
+yl
+Z y 00
+i h
+i
+' (SV (vjx)) h e
+b V;D=1 (vjx) H
+e V;D=1 (vjx)
++
+H
+(vjx)
+H
+(vjx)
+d
+H
+V
+V
+2 (x)
+fX
+yl
+Z y 00
+i h
+i
+' (SV (vjx)) h e
+e V;D=1 (vjx) HV;D=1 (vjx) :
++
+HV (vjx) HV (vjx) d H
+2
+fX (x)
+yl
+29
+
+Analogous expansion as in Lopez (2011) could be taken to bound the last three terms involving bias, and
+1=2
+P
+P
+2
+n
+s
+the order is of log
+(hs +
+p
+j ) + (h +
+j ) , smaller than the dominating one under Assumption
+nh
+
+(H). In the end, it boils down to bound the …rst term which is a second order degenerate U-statistic plus the
+diagonal term:
+Z
+=
+
+00
+i h
+' (SV (vjx)) h b
+e V (vjx) d H
+b V;D=1 (vjx)
+H
+(vjx)
+H
+V
+2 (x)
+fX
+yl
+n
+1 X
+1 X
+f (Zi ; Zj )
+f
+(Z
+;
+Z
+)
++
+i
+i
+n2 h2p i=1
+n2 h2p
+
+y
+
+i
+e V;D=1 (vjx)
+H
+
+i6=j
+
+where
+00
+
+' (SV (V1 jx))
+f (Z1 ; Z2 ) = D1
+1 fV1 > yg hp W (x; X1 ) H (X2 ; V2 ; V1 )
+2 (x)
+fX
+Z
+00
+' (SV (v1 jx))
+1 fv1 > yg hp W (x; x1 ) H (X2 ; V2 ; v1 ) dPZ (v1 ; d1 ; x1 )
+d1
+2 (x)
+fX
+with
+p
+
+H (X2 ; V2 ; u) = 1 fV2 > ug h W (x
+
+X2 )
+
+Z
+
+1 fv2 > ug hp W (x; x2 ) dPZ (v2 ; x2 ) :
+
+The diagonal term could be bounded from above uniformly by
+"
+#
+"
+n
+n
+1 X 2
+1 X 2
+M sup 2
+W (x; Xi )
+M sup 2
+K (x
+n i=1
+n i=1 h
+x
+x
+
+#
+
+Xi ) = Op
+
+1
+nhp
+
+.
+
+When it comes to the degenerate U-process indexed by (y; x; ; ), the maximal variance for the kernel
+function f ( ; ) is of order h2p as in Lopez (2011). Hence the application of (C.4) gives the desired rate
+Op
+
+log n
+nhp
+
+.
+
+Lemma A.3 Under Assumptions (D)-(K), we have: sup
+Op
+
+log n
+nhp
+
+2A
+
+:
+
+supx2J supy2[yl ;yu0 ] Fe (yjx; )
+
+FbY (yjx; ) =
+
+Proof. By the de…nition of these two estimators, we get:
+Fe (yjx; ) FbY (yjx; )
+0
+h P
+i 1
+' 1
+SbV Vi jx
+' SbV Vi jx
+wn (x; Xi )
+Vi y;Di =1 '
+h P
+i
+A
+= @
+0
+bV (Vi jx) wn (x; Xi )
++' 1
+'
+S
+Vi y;Di =1
+
+= Rn3 (y; x; ) + Rn4 (y; x; );
+where
+
+" Ry 0
+#2
+00
+bV (vjx) dFbV;D=1 (vjx)
+'
+S
+' f' 1 ( )g
+Rn3 (y; x; ) =
+and
+Ryyl 0
+2'0 f' 1 ( )g3
++ yl ' (SV (vjx)) dFV;D=1 (vjx)
+2 P
+SbV Vi jx
+' SbV Vi jx
+wn (x; Xi )
+1
+Vi y;Di =1 '
+4
+Rn4 (y; x; ) = 0
+P
+0
+1
+' ' ( )
++ V y;D =1 ' SbV (Vi jx) wn (x; Xi )
+i
+
+30
+
+i
+
+3
+
+5:
+
+Hence it su¢ ces to show that
+sup sup
+
+sup
+
+0]
+2A x2J y2[yl ;yu
+
+sup sup
+2A x2J
+
+sup
+0]
+y2[yl ;yu
+
+jRn3 (y; x; ) j = Op
+
+log n
+nhp
+
+jRn4 (y; x; ) j = Op
+
+log n
+nhp
+
+and
+:
+
+00
+
+In the expression for Rn3 (y; x; ), the multiplier ' =2'0 remains uniformly bounded under our assumption
+(G). Hence it su¢ ces to show that the following holds:
+Z
+
+y
+
+0
+
+SbV (vjx) dFbV;D=1 (vjx) +
+
+'
+
+yl
+
+log n
+nhp
+
+Omitting the smaller than Op
+
+Z
+
+Z
+
+y
+
+0
+
+'
+
+yl
+
+Z
+
+y
+
+0
+
+' (SV (vjx)) dFV;D=1 (vjx) = Op
+
+yl
+
+log n
+nhp
+
+1=2
+
+:
+
+terms, we obtain that
+
+SbV (vjx) dFbV;D=1 (vjx) +
+
+Z
+
+y
+
+0
+
+' (SV (vjx)) dFV;D=1 (vjx)
+
+yl
+
+i
+h
+' fSV (vjx)g FbV (vjx) FV (vjx) dFV;D=1 (vjx)
+yl
+h
+i
+0
++ ' fSV (vjx)g FbV;D=1 (vjx) FV;D=1 (vjx)
+Z y
+i
+h
+00
+' fSV (vjx)g FbV;D=1 (vjx) FV;D=1 (vjx) dFV (vjx)]
++
+y
+
+00
+
+yl
+
+M jFbV (vjx)
+
+FV (vjx) j + jFbV;D=1 (vjx)
+
+FV;D=1 (vjx) j :
+
+The result follows again from the stated facts (A.3) and (A.4).
+
+As for Rn4 (y; x; ), taking second order Taylor expansion of
+X
+
+SbV Vi jx
+
+'
+
+Vi y;Di =1
+
+we get
+
+Rn4 (y; x; ) =
+
+1
+2
+
+SbV Vi jx
+
+'
+
+X
+
+wn (x; Xi ) ;
+
+00
+
+' ( ) wn2 (x; Xi ) ;
+
+Vi y;Di =1
+
+00
+
+and by the decreasing property of ' ( ) assumed in Assumption (G1)(i) and the fact that for large enough
+n, supx2J supy2[yl ;yu0 ] SbV ( jx)
+sup sup
+
+0,
+
+sup
+
+0]
+2A x2J y2[yl ;yu
+
+this term is bounded from above by
+jRn4 (y; x; ) j
+
+sup
+x2J
+
+!
+n
+X
+1 00
+2
+j' ( 0 ) j
+wn (x; Xi ) :
+2
+i=1
+
+00
+
+The conclusion follows from the boundedness of ' ( ) at point
+Pn
+n
+showing i=1 wn2 (x; Xi ) = Op log
+nhp .
+
+8
+
+and the standard kernel density argument
+
+Appendix B: Asymptotic Validity of the Con…dence Sets
+
+To ease the notational burden and because we are …xing
+(
+
+0
+
+o)
+
+simply as
+
+o
+
+for the given
+
+o,
+
+i.e., F (x0
+
+o jx;
+
+31
+
+o)
+
+at
+
+o
+
+under the null, we will denote the unique
+
+= q a:s. Similarly we use notations b o and e o
+
+instead of b (
+
+o)
+
+and e (
+
+o ).
+
+We will …rst present a proof of the main theorem which makes use of results in
+
+the subsequent lemmas.
+
+It su¢ ces to prove those weak convergence results in Prop. 4.4. As already
+
+Proof of Theorem 4.5.
+
+explained in the main text, there are both common and distinct parts in proving (3.18) and (3.19). Tbn (
+
+o)
+
+resembles the population criterion function closely we would argue below that b o converges in probability to
+o
+
+and prove the stochastic equicontinuity of the process nhp=2 [Tn (
+
+o;
+
+)
+
+Bn (
+
+neighborhood whose radius is determined by the convergence rate of b o to
+we will explore the fact that [Tn (
+6=
+
+o
+
+o;
+
+)
+
+Bn (
+
+o;
+
+o;
+
+)] w.r.t
+
+in the local
+
+When it comes to Ten (
+
+o.
+
+)] has di¤erent asymptotic behaviors for
+
+=
+
+o
+
+o ),
+
+and for
+
+as in Santos (2006).
+
+The proof of (3.18) will be accomplished in Steps 1-3 below and the proof of (3.19) will be accomplished
+in Steps 1’-3’below.
+Step 1. We show the asymptotic normality of the degenerate U-statistic at
+
+where
+p1
+n
+
+nhp=2
+
+p
+
+(
+
+o)
+
+[Tn (
+
+o;
+
+o)
+
+Bn (
+
+o;
+
+o )]
+
+=) N (0; 1) ;
+
+(B.1)
+
+( ; ) is de…ned in (B.8).
+
+Step 2. We show b o !p
+_
+
+o;
+
+o:
+
+Moreover, b (
+
+log n
+nhp .
+
+o;
+
+o
+
+n)
+
+and characterize the convergence rate, b o
+(
+
+o;
+
+n)
+
+= op (1) for 8
+
+n
+
+!p
+
+o,
+
+lim sup Pr
+n!1
+
+i.e. 8" > 0, we could …nd a
+sup
+
+j
+
+o j<
+
+nhp=2 j[Tn (
+
+o;
+
+)
+
+O(
+
+Bn (
+
+o;
+
+n ),
+
+)]
+
+= Op (
+
+n ),
+
+with
+
+n
+
+=
+
+o.
+
+Step 3. We show the stochastic equicontinuity of the process [Tn (
+neighborhood of
+
+o
+
+o;
+
+)
+
+Bn (
+
+o;
+
+)] indexed by
+
+in a
+
+s.t.
+[Tn (
+
+o;
+
+o)
+
+Bn (
+
+o;
+
+o )]j
+
+"
+
+!
+
+< ":
+
+(B.2)
+
+0
+
+Step 1 is the same as Step 1.
+0
+
+Step 2 . We show that outside the neighborhood A"on de…ned in (3.16), the test statistic will diverge to
+positive in…nity:
+min "n q
+
+2AnAo
+0
+
+nhp=2
+b(
+
+o; )
+
+Step 3 . We argue the convergence of e o !p
+
+jTn (
+o
+
+o;
+
+)
+
+Bn (
+
+o;
+
+)j ! +1:
+
+(B.3)
+
+due to (B.3) and the uniqueness of
+
+follows from the stochastic equicontinuity of the process [Tn (
+
+o;
+
+)
+
+Bn (
+
+the neighborhood A"on .
+
+o;
+
+o.
+
+Finally the result
+
+)] indexed by
+0
+
+via (B.2) in
+
+0
+
+Notice that Step 1 leads to (3.17) while Steps 1-3 give us (3.18). Steps 1 -3 lead to (3.19), see Santos
+(2006). Once we verify the claims in those three steps, combining them together leads to the conclusion that
+both con…dence sets would be of exact size asymptotically.
+Proof of Step 1. We show that the asymptotic behavior of Tn (
+
+32
+
+o;
+
+o)
+
+is given by a degenerate U-statistic.
+
+Note that
+Tn (
+
+o;
+
+o)
+
+=
+
+Z h
+J
+
+Z "
+
+Fb (x0
+
+o jx;
+
+FY (x0
+
+o)
+
+o jx;
+
+o)
+
+i2
+
+2
+fX
+(x) dx + op n
+
+1
+
+#2
+n
+1X
+0
+0
+=
+W (x; Xi ) (c (x o jZi ; x; o ) + b (x o jZi ; x; o )) dx
+n i=1
+J
+" n
+Z
+1X
+0
++
+W (x; Xi ) (c (x0 o jZi ; x; o ) + b (x0 o jZi ; x;
+Rn (x o ; x; )
+n i=1
+J
+Z
++
+Rn2 (x0 o ; x; ) dx + op n 1 h p=2
+J
+
+=
+
+Z "
+J
+
+n
+
+1X
+W (x; Xi ) (c (x0
+n i=1
+
+o jZi ; x;
+
+o)
+
++ b (x0
+
+o jZi ; x;
+
+o ))
+
+#2
+
+p=2
+
+h
+
+o ))
+
+dx + op n
+
+1
+
+#
+
+dx
+
+p=2
+
+h
+
+:
+
+2
+2
+The …rst equality where we replaced fbX
+(x) with fX
+(x) follows the same argument as in Prop.1 in Hardle
+
+and Mammen (1993). In the second equality we apply Cauchy-Shwartz inequality to the second term and
+use the result that sup jRn (x0
+
+o ; x;
+
+)j = Op
+
+log n
+nhp
+
+. We need Assumption (H) which states:
+
+(log n)2
+nh3p=2
+
+! 0,
+
+to show the negligibility of the third term. Also for simplicity, we omit the range of the integral, so
+Tn (
+
+o;
+
+o)
+
+= In1 + 2In2 + 2In3 + In4 + s:o:
+
+(B.4)
+
+where
+In1
+
+=
+
+In2
+
+=
+
+In3
+
+=
+
+In4
+
+=
+
+n Z
+1 X
+W 2 (x; Xi ) c2 (x0 o jZi ; x; o ) dx;
+n2 i=1
+X Z
+1
+W (x; Xi ) W (x; Xj ) c (x0 o jZi ; x; o ) c (x0 o jZj ; x; o ) dx;
+n2
+1 i<j n
+2
+3
+n Z
+n
+X
+1
+1X
+W (x; Xi ) c (x0 o jZi ; x; o ) 4
+W (x; Xj ) b (x0 o jZj ; x; o )5 dx;
+n i=1
+n j=1
+
+Z "
+
+#2
+
+n
+
+1X
+W (x; Xi ) b (x0
+n i=1
+
+o jZi ; x;
+
+o)
+
+dx:
+
+The above decomposition and the next sequence of lemmas parallel the results presented by Hall (1984ab),
+hence we follow his notation as closely as possible. In addition, we write conditional expectation given
+0
+
+0
+
+covariates as E , i.e. E [Z] = E [ZjX1 ;
+2
+
+(yjXi ; x;
+
+o)
+
+0
+
+2
+
+= E c (yjZi ; x;
+
+o)
+
+and
+
+; Xn ], as in Hall (1984b). Recall from (C.2) in Appendix C,
+2
+
+(yjx;
+
+o)
+
+= limxn !x
+
+2
+
+(yjxn ; x;
+
+o) :
+
+The calculation in the proof of Lemma C.3 in Appendix C gives In4 = O h2s +
+hence nhp=2 In4 = O
+
+P
+nhp+2s + rj=1
+hp=2
+
+2
+p
+j nh
+
+= o
+
+1
+hp=2
+
+Pr
+
+j=1
+
+2
+j
+
+immediately,
+
+by Assumption (H), which is of smaller order than
+
+nhp=2 In1 demonstrated in Lemma B.1 below. The proof of Step 1 will be completed via Lemmas B.1-B.5.
+Lemma B.1 Under Assumptions (D)-(K), we have that
+Z
+Z
+1
+p=2
+2
+2
+nh In1 = p=2
+K (u) du
+(x0
+h
+33
+
+o jx;
+
+o ) fX
+
+(x) dx + s:o:
+
+Proof. As in Hall, Li and Racine (2004), after taking conditional expectation one gets
+n Z
+1 X
+E [In1 ] = 2 2p
+K2
+n h i=1
+
+xc
+
+0
+
+and by boundedness of c (x0
+4
+
+(nhp ) E
+
+0
+
+o jZi ; x;
+
+h
+In1
+
+o) ;
+
+0
+
+E [In1 ]
+
+Xic
+
+2
+
+h
+
+(x0
+
+o jXi ; x;
+
+xc
+
+Xic
+
+o ) dx
+
++ s:o:;
+
+we obtain:
+
+i2
+
+M
+
+Z
+n
+X
+
+K2
+
+h
+
+i=1
+
+2
+
+dxc
+
+= O nh2p :
+
+(B.5)
+
+Hence by Markov’s inequality, we get
+lim lim sup Pr
+
+M !1
+
+n!1
+
+n
+
+0
+
+E [In1 ] > M n
+
+In1
+
+3=2
+
+p
+
+h
+
+o
+; Xn = 0;
+
+jX1;
+0
+
+Z
+h 0
+i
+1
+xc Xic
+2
+nhp=2 E E [In1 ] = 3p=2
+(x0 o jXi ; x; o ) K 2
+h
+h
+Z
+Z
+1
+2
+K 2 (u) du
+(x0 o jx; o ) fX (x) dx + s:o:;
+hp=2
+
+=
+
+3=2
+
+E [In1 ] = Op n
+
+and thus the unconditional probability goes to zero too, i.e., In1
+
+h
+
+p
+
+: Since
+
+fX (Xi ) dXi dx + s:o:
+
+0
+
+another application of Markov’s inequality gives nhp=2 In1 = nhp=2 E [In1 ] + s:o:.
+Now we de…ne
+Bn ( ; ) =
+
+1
+nhp
+
+Z
+
+K 2 (u) du
+
+Z
+
+2
+
+(x0 jx; ) fX (x) dx:
+
+(B.6)
+
+Before dealing with In2 , we introduce further notations needed in the martingale representation:
+n2 h2p In2 =
+
+X
+
+Wnij =
+
+Yni ;
+
+(B.7)
+
+i=2
+
+1 j<i n
+
+R
+
+n
+X
+
+Pi 1
+h2p W (x; Xi ) W (x; Xj ) c (x0 o jZi ; x; o ) c (x0 o jZj ; x; o ) dx, and Yni = j=1 Wnij . Now
+Pi
+the partial sum Sni = j=1 Ynj is a martingale triangular array with respect to the …lter Fn;i generated by
+where Wnij =
+
+X1 ;
+
+; Xn and Z1 ;
+Vn2 =
+
+n
+X
+i=2
+
+=
+Further let
+
+; Zi : Let
+
+2
+E Yni
+jFn;i
+
+1
+
+=
+
+i=2 j=1
+
+Vn1 + Vn2 :
+o
+
+(
+
+o;
+
+o ),
+
+n X
+i 1
+X
+
+2
+E Wnij
+jFn;i
+
+1
+
++2
+
+n
+X
+
+X
+
+i=2 1 j<k i 1
+
+E [Wnij Wnik jFn;i
+
+1]
+
+where
+
+( ; )=2
+
+Z
+
+4
+
+0
+
+(x jx;
+
+2
+) fX
+
+(x) dx
+
+Z
+
+Lemma B.2 Under Assumptions (D)-(K), we have that an
+
+34
+
+Z
+
+2
+
+K (u) K (v + u) du
+E [Vn1 ] =
+
+n(n 1) 3d
+h
+4
+
+dv:
+
+o
+
++ s:o:
+
+(B.8)
+
+Proof. To see why the above expression holds, we …rst focus on the conditional expectation given covariates:
+Z
+2
+h2p W (x; Xi ) W (x; Xj ) c (x0 o jZi ; x; o ) c (x0 o jZj ; x; o ) dx
+E
+2 RR
+3
+xc Xjc
+xc Xic
+ZZZZ
+0
+0
+K
+K
+c
+(x
+jZ
+;
+x;
+)
+c
+(x
+jZ
+;
+x;
+)
+o
+o
+o i
+o j
+h
+h
+4
+5
+=
+y Xic
+y Xj
+0
+0
+K
+K
+c
+(y
+jZ
+;
+x;
+)
+c
+(y
+jZ
+;
+x;
+)
+dxdy
+i
+o
+j
+o
+o
+o
+h
+h
+dQ (Zi jXi ) dQ (Zj jXj ) dFX (Xi ) dFX (Xj ) + s:o:
+Z Z " R c (x0 jZ ; x; ) c (y 0 jZ ; x; ) dQ (Z jX ) #2
+o
+o
+i
+i
+o i
+o i
+
+=
+
+x Xic
+h
+
+K
+
+y Xic
+h
+
+K
+
+dFX (Xi )
+
+dxdy + s:o:
+
+Also de…ne
+(x0
+
+0
+o; y
+
+o jXi ; x;
+
+o)
+
+=
+
+Z
+
+c (x0
+0
+
+= E [c (x0
+
+o jZi ; x;
+o jZi ; x;
+
+Finally, by omitting smaller order terms, we obtain:
+2
+Z
+X
+1
+4
+(x0 o ; y 0 o jXi ; x; o ) K
+o =2 = 3d
+h
+d d
+
+x
+
+c
+
+=
+
+=
+
+Z
+
+Z
+
+4
+
+2
+4
+
+X
+
+x0
+
+o; y
+
+0
+
+(x
+
+0
+
+2
+o ) fX
+
+o jx;
+
+xc
+
+oj
+
+xd ;y d
+
+(x) dx
+
+Z
+
+uh; xd ; x;
+Z
+
+o
+
+0
+
+o ) c (y
+
+Xic
+h
+
+x ;y
+
+1
+hd
+
+o ) c (y
+
+K
+yc
+
+K (u) K
+
+o jZi ; x;
+0
+
+o ) dQ (Zi jXi )
+
+o jZi ; x;
+
+y
+
+c
+
+Xi
+h
+
+xc
+h
+
+o )] :
+
+32
+
+fX (Xi ) dXi 5 dxdy + s:o:(B.9)
+
++ u fX xc
+
+2
+
+K (u) K (v + u) du
+
+32
+
+uh; xd du5 dxdy + s:o:
+
+dv + s:o:
+
+Now we are ready to present the result for In2 .
+Lemma B.3 Under Assumptions (D)-(K), we have that 2nhp=2 In2 =) N (0;
+
+o) :
+
+Proof. The proof follows modi…cation of Lemmas 1 & 2 in Hall (1984b), and we use the fact that the
+centering term c (x0
+
+o jZi ; x;
+
+o)
+
+is uniformly bounded repeatedly without further mentioning.
+
+First, we would show: Vn1 = an +op (1) =
+
+n(n 1) 3p
+h
+4
+
+o +op
+
+(1) by controlling E [Vn1
+
+2
+
+an ] : E [Vn1
+
+4
+M n3 E Wn12
+, and the fourth moment shall be bounded in a similar way as in Hall (1984a):
+8 2
+392
+>
+ZZZZ >
+4
+c
+c
+<
+=
+x(i) X1
+6X Y
+7
+4
+(i)0
+(i)
+E Wn12
+E4
+c x
+jZ
+;
+x
+;
+dxc(1)
+K
+5
+1
+o
+o
+>
+>
+h
+:
+;
+xd i=1
+
+M h2p
+
+8
+ZZZZ >
+<X Z
+>
+: xd
+
+(i)
+
+K (v)
+
+(i)
+
+= M h5p
+
+8
+ZZZZ >
+<X Z
+>
+: xd
+
+(i)
+
+= O h5p :
+
+K (v)
+
+"
+
+"
+
+4
+Y
+
+K v+
+
+xc(i)
+
+h
+
+i=2
+4
+Y
+
+xc(1)
+
+K v + w(i)
+
+i=2
+
+35
+
+#
+
+#
+
+f x(1)
+
+f xc(1)
+
+vh dv
+
+vh dv
+92
+>
+=
+>
+;
+
+92
+>
+=
+>
+;
+
+dxc(1)
+
+dxc(4)
+
+dxc(4)
+
+dxc(1) dw(2) dw(3) dw(4)
+
+2
+
+an ]
+
+2
+
+an ] = O n3 h5p , and Vn1 = an + Op n3=2 h5p=2 .
+
+Hence E [Vn1
+
+Analogously, one bounds the following higher order moment terms by routine yet tedious calculation as
+done on Page 251 in Hall (1984b),
+E [Wn13 Wn14 Wn23 Wn24 ] = O h7p
+
+2
+2
+and E Wn12
+Wn13
+= O h5p :
+
+From there we could show Vn2 being negligible, since
+2
+Vn2
+
+E
+
+= 4E
+
+1 j<k n 1
+
+X
+
+M
+
+n
+X
+
+X
+
+Wnij Wnik
+
+i=k+1
+
+!2
+
+2
+2
+nE Wn12
+Wn13
++ n2 E [Wn13 Wn14 Wn23 Wn24 ]
+
+1 j<k n 1
+
+= O n3 h5p + n4 h7p :
+0
+
+Thus we get E n
+
+2
+
+3p
+
+h
+
+Vn2
+
+2
+
+1
+nhp
+
+= Op
+
++ hp = op (1) :
+
+Finally, we check the Lindeberg condition in order to apply Corollary 3.2 in Hall and Heyde (1980):
+8" > 0; as n ! 1,
+n
+
+2
+
+h
+
+3p
+
+n
+X
+i=1
+
+h
+i
+2
+E Yni
+I jYni j > "nh3p=2 ! 0:
+
+(B.10)
+
+The proof shall be accomplished by Markov’s inequality and computing the fourth moments:
+n3 h5p , since
+n
+
+2
+
+h
+
+3p
+
+n
+X
+i=1
+
+Overall, n
+
+2
+
+h
+
+3p
+
+Vn2 !
+
+h
+i
+2
+E Yni
+I jYni j > "nh3p=2
+
+o =4
+
+in probability, n
+n
+
+1
+
+h
+
+2
+
+3p=2
+
+h
+
+3p
+
+n
+X
+
+2
+
+"
+
+n
+
+4
+
+6p
+
+h
+
+n
+X
+
+4
+E Yni
+=O
+
+i=2
+
+1
+nhp
+
+Pn
+
+i=2
+
+4
+E Yni
+=
+
+:
+
+Vn2 = op (1) and one would deduce
+
+Yni =) N
+
+0;
+
+i=2
+
+o
+
+4
+
+which is the desired result once rewritten in terms of 2In2 :
+Next we characterize the stochastic order of In3 , which is smaller than In2 when we select an undersmoothing bandwidth.
+Denote bn (x) =
+Jn1 + Jn2 , where
+
+1
+n
+
+Pn
+
+j=1
+
+W (x; Xi ) b (x0
+
+n
+
+Jn1
+
+=
+
+Jn2
+
+=
+
+1X
+n i=1
+n
+
+1X
+n i=1
+
+Z
+Z
+
+o jZj ; x;
+
+o ),
+
+and
+
+n
+
+(x) = E [bn (x)]. Break In3 into In3 =
+
+W (x; Xi ) c (x0
+
+o jZi ; x;
+
+o)
+
+W (x; Xi ) c (x0
+
+o jZi ; x;
+
+o ) [bn
+
+Lemma B.4 Under Assumptions (D)-(K), Jn2 = op n
+
+36
+
+1
+
+h
+
+p=2
+
+.
+
+n
+
+(x) dx and
+(x)
+
+n
+
+(x)] dx
+
+Proof. The following string of computation is routine:
+2
+!2 3
+n Z
+X
+0
+0
+1
+2
+5
+E Jn2
+= 2E 4
+W (x; Xi ) c (x0 o jZi ; x; o ) [bn (x)
+n (x)] dx
+n
+i=1
+" Z
+#
+n
+2
+1 X 0
+=
+E
+W (x; Xi ) c (x0 o jZi ; x; o ) [bn (x)
+n (x)] dx
+n2 i=1
+Z
+Z
+n
+1 X 0
+2
+2
+0
+E
+W
+(x;
+X
+)
+c
+(x
+jZ
+;
+x;
+)
+dx
+W (x; Xi ) [bn (x)
+i
+i
+o
+o
+n (x)] dx
+n2 i=1
+Z
+n Z
+X
+0
+1
+2
+2
+0
+W
+(x;
+X
+)
+c
+(x
+jZ
+;
+x;
+)
+dx
+W (x; Xi ) [bn (x)
+sup
+E
+i
+o
+o i
+n (x)] dx
+n2 i
+i=1
+where the …rst inequality is merely Cauchy-Schwartz inequality and the claim would follow if one can show
+0
+
+2
+E Jn2
+= op n
+
+2
+
+h
+
+p
+
+via
+E
+
+Indeed by expanding [bn (x)
+
+"
+
+n Z
+X
+
+2
+
+p
+
+h W (x; Xi ) [bn (x)
+
+n
+
+#
+
+(x)] dx = op (1) :
+
+i=1
+
+2
+
+n
+
+(x)] into diagonal and cross product terms and recalling the expression of
+
+the bias term in the linear representation, we get
+Z
+2
+E
+hp W (x; Xi ) [bn (x)
+n (x)] dx
+Z
+1
+M nh2p
+E
+hp W (x; Xi ) dx
+Z
+n
+o
+2
+2
+E
+hp W (x; Xj ) [FV;D=1 ( jXj ) FV;D=1 ( jx)] + [FV ( jXj ) FV ( jx)] dx
+Z
+n
+o
+2
+2
+2
++M (nhp ) E
+h2p W 2 (x; Xi ) [FV;D=1 ( jXi ) FV;D=1 ( jx)] + [FV ( jXi ) FV ( jx)] dx
+Z
+o
+xc Xjc n
+1
+2
+2
+M (nhp ) E
+K
+[FV;D=1 ( jXj ) FV;D=1 ( jx)] + [FV ( jXj ) FV ( jx)] dx
+h
+1
+= o
+;
+n
+where the last one follows from the standard kernel convergence result, thus the claim is proved.
+Lemma B.5 Under assumptions (D)-(K),
+
+p
+
+n
+hs Jn1
+
+= Op (1).
+
+Proof. Conditional on the covariates, Jn1 is a sum of centered independent random variables: Jn1 =
+R p
+Pn
+1
+h W (x; Xi ) c (x0 o jZi ; x; o ) n (x) dx. Actually one could show the CLT holds
+i=1 Zni with Zni =
+nhp
+for
+
+p
+
+n
+hs Jn1
+
+as in Hall (1984b) by verifying the Lindeberg condition: 8" > 0;
+1
+nh2(p+s)
+
+and convergence in probability of
+
+n
+X
+i=1
+
+1
+E
+nh2(p+s)
+
+p
+2
+I jZni j > " nhp+s
+E Zni
+
+! 0;
+
+Pn
+2
+( i=1 Zni ) . What we do here is much simpler by bounding the
+
+second moments of Zni since we are using undersmoothed bandwidth, only the weak result stated in the
+37
+
+lemma is of interest to us:
+2
+EZni
+
+M h2p
+
+Z
+
+K (z) K (z + u) dz
+
+ZZ
+
+n
+
+(x)
+
+n
+
+(x + uh) dxdu
+
+M h2(p+s) :
+
+The …rst inequality follows a change of variables and bounding the centering term, while the second one
+follows by expanding the bias term up to second order. Now
+E
+
+p
+
+n
+
+hs
+
+2
+
+Jn1
+
+"
+
+n
+X
+1
+= E p p+s
+Zni
+nh
+i=1
+
+#2
+
+M
+nh2(p+s)
+
+nh2(p+s) :
+
+Therefore under the Assumption (H) that we are using the bandwidth to kill the bias, In3 is of smaller order.
+o
+
+under the null we have
+
+minimizing (3.1). By Assumption (G), FY (yjx; ) is continuous w.r.t
+
+, so is the population
+
+Proof of Step 2.
+a unique
+
+o
+
+Recall the result in Prop. 2.6, which states that given any
+
+criterion function (3.1). Now the compactness of A guarantees the well separation of this minimum point.
+
+Furthermore uniform almost surely convergence of FbY (yjx; ) to FY (yjx; ) as shown in Cor. 3.8 would give
+the desired convergence of b o to
+
+o
+
+by Theorem 5.7 in Van der Vaart (1998). Getting the rate of convergence
+
+is a bit more complicated and we separate it out in the next lemma.
+Referring to the claim that b (
+
+o;
+
+n)
+
+(
+
+o;
+0
+
+n)
+
+= op (1) for 8
+
+00
+
+n
+
+!p
+
+o,
+
+a close inspection of
+
+(
+
+o;
+
+)’s
+
+expression from Appendix C shows that only ' , ' coupled with FV (vjx) and FV;D=1 (vjx) are involved.
+0
+
+00
+
+By Assumption (G2), ' and ' are uniformly continuous w.r.t
+
+and the plug-in type estimator b (
+
+o;
+
+)
+
+merely replaces FV (vjx) and FV;D=1 (vjx) with their kernel estimators FbV (vjx) and FbV;D=1 (vjx). Hence
+the result follows from the standard convergence result in kernel estimation.
+
+Lemma B.6 Under Assumptions (D)-(K), (SC), (V0), and (V1), we have that b o
+n
+
+=
+
+p1
+n
+
+_
+
+o
+
+= Op (
+
+n ),
+
+with
+
+log n
+nhp .
+
+Proof. To get the convergence rate of b o to
+
+o,
+
+notice that the minimizer satis…es the following …rst order
+
+condition given the smoothness of generator function in Assumption (G):
+Z h
+i
+@ b 0
+2
+Fb (x0 o jx; b o ) q fbX
+(x)
+F (x o jx; b o ) dx = 0:
+@
+Taking a …rst order expansion around o , we get
+Z (
+2
+h
+@ b 0
+@2 b 0
+(b o
+)
+F
+(x
+jx;
+)
++
+F (x o jx; o ) Fb (x0 o jx;
+o
+o
+o
+2
+@
+@
+Z h
+i
+@ b 0
+2
+F (x o jx; o ) dx + s:o:
+=
+Fb (x0 o jx; o ) q fbX
+(x)
+@
+Z h
+i
+@
+2
+=
+Fb (x0 o jx; o ) q fbX
+(x)
+FY (x0 o jx; o ) dx
+@
+Z h
+i
+@ b 0
+@
+2
++
+Fb (x0 o jx; o ) q fbX
+(x)
+F (x o jx; o )
+FY (x0 o jx;
+@
+@
+
+38
+
+o)
+
+o)
+
+q
+
+i
+
+)
+
+2
+fbX
+(x) dx
+
+dx + s:o:
+
+The integral on the LHS converges to the following term in probability:
+Z (
+2
+@
+@2
+F (x0 o jx; o ) [F (x0 o jx;
+F (x0 o jx; o ) +
+@
+@ 2
+Z
+2
+@
+2
+=
+F (x0 o jx; o ) fX
+(x) dx > 0;
+@
+where we have used the fact that [F (x0
+@
+@
+
+Now we denote
+
+FY (x0
+
+o jx;
+
+o)
+n
+
+1 (2)
+1X
+Un (f ) +
+2p
+h
+n i=1
+=
+
+o jx;
+
+= G (x0
+
+Z
+
+o)
+
+o)
+
+)
+
+2
+q] fX
+(x) dx
+
+q] = 0 for any x.
+
+o ; x;
+
+o) ;
+
+W (x; Xi ) b (x0
+
+the …rst term on RHS could be written as
+o jZi ; x;
+
+1 (2)
+U (f ) + O (hs ) + s:o:
+h2p n
+
+b (x) G (x0
+
+o ) fX
+
+o ; x;
+
+o ) dx
+
++ s:o:
+
+where f 2 F3 in Appendix C. After symmetrizations, the Hoe¤ding-Hajek decomposition shows that the
+(1)
+
+leading term is Un (
+n
+
+1X
+n i=1
+
+p
+1 f ) =h ,
+
+Z
+
+which is
+
+W (x; Xi ) c (x0
+
+o jZi ; x;
+
+o ) fX
+
+(x) G (x0
+
+o ; x;
+
+o ) dx
+
+= Op n
+
+1=2
+
+;
+
+by standard Lindeberg central limit theorem, similar to the average derivative type result under Assumption
+(H). The second term on the RHS is
+Z h
+Z
+i
+1
+0
+0
+2
+b
+b
+F (x o jx; o ) q fX (x) '_
+'_ (SV (vjx)) dFV;D=1 (vjx)
+Z
+Z
+0
+0
+b
+b
+'_
+SV (vjx) dFV;D=1 (vjx)
+'_ (SV (vjx)) dFV;D=1 (vjx) dx
+M
+
+Z
+= Op
+
+Z h
+Fb (x0
+Z
+
+'_
+
+log n
+nhp
+
+0
+
+,
+
+o jx;
+
+o)
+
+q
+
+i2
+
+1=2
+
+dx
+
+SbV (vjx) dFbV;D=1 (vjx)
+
+Z
+
+0
+
+'_ (SV (vjx)) dFV;D=1 (vjx)
+
+where the second term in the bracket could be handled just as the plug-in estimator.
+
+39
+
+2
+
+dx
+
+!1=2
+
+Proof of Step 3. The following decomposition holds for an arbitrary :
+q
+=
+
+q
+
+nhp=2
+b(
+
+[Tn (
+
+o; )
+
+nhp=2
+
+b(
+
+o; )
+
+o;
+
+Z h
+
+)
+
+Fb (x0
+
+Bn (
+
+o jx;
+
+o;
+
+)]
+
+(B.11)
+
+FY (x0
+
+)
+
+o jx;
+
+) + FY (x0
+
+o jx;
+
+)
+
+q
+
+i2
+
+2
+fbX
+(x) dx
+
+Bn (
+
+o;
+
+)
+
+3
+X Z
+1
+4
+W (x; Xi ) W (x; Xj ) c (x0 o jZi ; x; o ) c (x0 o jZj ; x; o ) dx5
+= q
+2
+b ( o ; ) n 1 i<j n
+#
+"
+n Z
+X
+nhp=2
+1
+0
+0
++q
+[FY (x o jx; ) q] W (x; Xi ) c (x o jZi ; x; o ) fbX (x) dx
+b ( o ; ) nfX (x) i=1
+Z
+nhp=2
+2 2
++q
+[FY (x0 o jx; ) q] fbX
+(x) dx + s:o:
+b ( o; )
+
+=
+
+q
+
+nhp=2
+
+nhp=2
+
+b(
+
+2
+
+[Pn1 ( ) + Pn2 ( ) + Pn3 ( )] + s:o:
+
+o; )
+
+The proof will be completed once we show that 8" > 0, one could …nd a , s.t.
+!
+lim sup Pr
+
+sup
+
+n!1
+
+and for 8
+
+s.t. j
+
+oj
+
+O(
+
+j
+
+1
+
+nhp=2 jPn1 (
+
+1)
+
+Pn1 (
+
+2 )j
+
+"
+
+< ";
+
+nhp=2 [Pn2 ( ) + Pn3 ( )] = op (1). It is rather easy to bound the
+
+n ),
+
+deterministic term: nhp=2 Pn3 ( )
+
+2 j<
+
+nhp=2 M supx [FY (x0
+
+o jx;
+
+2
+
+q] = M nhp=2
+
+)
+
+1
+n
+
+_
+
+log n
+nhp
+
+2
+
+= o (1)
+
+under Assumption (H). The other two claims will be proved in the subsequent lemmas.
+Lemma B.7 Under Assumptions (D)-(K), 8" > 0, we could …nd a , s.t.
+lim sup Pr
+n!1
+
+sup
+j
+
+p=2
+
+nh
+
+2 j<
+
+1
+
+jPn1 (
+
+1)
+
+Pn1 (
+
+2 )j
+
+"
+
+!
+
+< ":
+
+Proof. Recalling the expression for Pn1 ( ), the di¤erence could be written as,
+
+=
+
+h2p [Pn1 (
+X
+1
+n2
+
+1)
+
+1 i<j n
+
+Z
+
+Pn1 (
+
+2 )]
+
+= Un(2) f
+
+h2p W (x; Xi ) W (x; Xj )
+
+As the operation (taking di¤erence of f 2 F4 over
+
+c (x0 o jZi ; x; 1 ) c (x0 o jZj ; x; 1 )
+c (x0 o jZi ; x; 2 ) c (x0 o jZj ; x; 2 )
+
+dx:
+
+de…ned in Appendix C) still preserves the VC property,
+
+we have the following VC-type class of functions:
+F4 =
+
+f :h
+
+with bounded envelope M and P 2 f
+
+0;
+
+j
+
+2
+
+2 0;
+2
+
+F4
+
+cj
+
+1
+cj
+
+, where
+
+;(
+2
+
+1;
+
+2)
+
+2 A; j
+
+= O h3p
+
+2
+
+1
+
+2j
+
+<
+0
+
+00
+
+and using the fact that 1=' and '
+
+are Lipschitz continuous with respect to . Now we apply Major’s (2006) tail bound with k = 2 for a large
+
+40
+
+enough n s.t. the constraints are satis…ed:
+(
+Pr
+
+p=2
+
+sup
+
+j
+
+(
+
+nh
+
+2 j<
+
+1
+
+Un(2)
+
+jPn1 (
+
+1)
+
+3p=2
+
+f
+
+"h
+
+Hence the desired result follows as
+
+! 0:
+
+=
+
+Pr
+
+sup n
+
+Pn1 (
+
+f 2F 4
+
+)
+
+2 )j
+
+"
+
+M exp
+
+)
+M
+
+= Pr
+
+(
+
+sup nh
+
+3p=2
+
+Un(2)
+
+f 2F 4
+
+"h3p=2
+
+= M exp
+
+h
+
+"
+
+f
+
+M
+
+" i
+
+)
+
+:
+
+Lemma B.8 Under Assumptions (D)-(K), we have
+sup
+j
+
+oj
+
+O(
+
+n)
+
+q
+
+nhp=2
+b(
+
+Pn2 ( ) = op (1) :
+
+o; )
+
+Proof. Omiting the smaller order diagonal term in Pn2 ( ), we consider the U-process indexed by :
+XZ
+1
+[FY (x0 o jx; ) q] W (x; Xi ) W (x; Xj ) c (x0 o jZi ; x; o ) dx
+Un(2) (f ) =
+n (n 1)
+i6=j
+R
+0
+0
+X1
+2
+R[FY (x 0 o jx; ) q] W (x; Xi ) W (x; Xj ) c (x 0 o jZi ; x; o ) dx
+=
+:
+n (n 1)
+2 + [FY (x o jx; ) q] W (x; Xi ) W (x; Xj ) c (x o jZj ; x; o ) dx
+i6=j
+
+The function f belongs to F3 with j
+
+oj
+
+in Appendix C and G (y; x; ) = [FY (yjx; )
+
+n
+
+q]. By the
+
+Hoe¤ding decomposition, we have the …rst linear term being dominating since the second one is of smaller
+order following (C.4):
+n
+
+Un(2)
+
+2X
+(f ) =
+n i=1
+
+Z
+
+[FY (x
+
+0
+
+o jx;
+
+)
+
+q]
+
+Z
+
+Under Assumption (G) we have jFY (x0
+
+o jx;
+
+and envelope functions are bounded up by
+
+xc h) duW (x; Xi ) c (x0
+
+K (u) f (u
+
+n
+
+)
+
+qj
+
+M
+
+n,
+
+o jZi ; x;
+
+o ) dx
+
++ Un(2) (
+
+2f ) :
+
+hence both the square root of maximal variance
+
+in the …rst order Hoe¤ding decomposition. Hence by inequality
+
+(2.5) in Gine and Guillou (2001), we have
+E Un(1) (
+
+1f )
+
+j
+
+oj
+
+O(
+
+n)
+
+M
+
+r
+
+log n
+n
+
+n
+
+which completes the proof.
+
+1
+0
+s
+3
+p
+log
+n
+A = o (1) ;
+= O @ hp log n _
+nhp
+
+Proof of Step 2’. First of all, the normalized drifting term is still bounded from below:
+Z
+p
+p
+p
+2 2
+nPn3 ( )
+n [FY (x0 o jx; ) q] fbX
+(x) dx
+n"n + s:o:
+
+By assumptions (K) and (V2) and compactness of J , as in Appendix C we have the functional class F4 being
+of VC type with bounded envelope function and the maximal variance of order h3p just as the calculation
+done in (B.9). Applying the maximal inequality by Gine and Mason (2007), we get that
+1
+h4p E
+n2
+
+X
+
+1 i<j n
+
+Z
+
+2
+
+W (x; Xi ) W (x; Xj ) c (x0
+
+o jZi ; x;
+
+o ) c (x
+
+0
+
+o jZj ; x;
+
+M h3p n
+
+o ) dx
+G
+
+41
+
+2
+
+(log n) :
+
+Hence by Markov inequality, uniformly we get
+X Z
+1
+Pn1 ( ) = 2
+W (x; Xi ) W (x; Xj ) c (x0
+n
+
+0
+o ; Zi jx; ) c (x
+
+1 i<j n
+
+o jZi ; x;
+
+o ) dx = Op
+
+p
+
+log n
+nhp=2
+
+:
+
+In order to deal with Pn2 , we express it in terms of standard U-statistic with the negligible diagonal term:
+XZ
+1
+[FY (x0 o jx; ) q] W (x; Xi ) W (x; Xj ) c (x0 o jZi ; x; o ) dx + s:o:
+Pn2 ( ) =
+n (n 1)
+i6=j
+
+After symmetrizations and by the inequality in Gine and Mason (2007), the above term is of order Op
+In sum, recalling Assumption (E), we have
+min "n q
+
+2AnAo
+
+nhp=2
+b(
+
+[Tn (
+
+o;
+
+o;
+
+)
+
+Bn (
+
+o;
+
+q
+
+)]
+
+)
+
+p
+
+nhp
+
+b(
+
+Op
+
+o;
+
+)
+
+p
+log n
+p
+n
+
+q
+
+log n
+n
+
+p
+p
+log n + n"n ! +1;
+
++ Op
+
+because the …nal drifting term is positive and dominates others by Assumption (V2).
+Proof of Step 3’. Recall
+test statistic pnh
+b
+(
+
+p=2
+o;
+
+)
+
+=
+
+o
+
+[Tn (
+
+o;
+
+(
+
+)
+
+o;
+
+o ),
+
+Bn (
+
+o;
+
+and the following string of inequalities bounding the studentized
+2 A"on is similar to Santos
+
+)] over the small neighborhood
+
+(2006) modulo the smaller order terms:
+3
+X
+j=1
+
+inf"n q
+
+2Ao
+
+inf"n q
+
+2Ao
+
+=
+
+nhp=2
+b(
+
+nhp=2
+
+b(
+
+nhp=2
+q Pn1 (
+bo
+nhp=2
+q Pn1 (
+bo
+
+[Pnj ( )] + s:o:
+
+o; )
+
+[Tn (
+
+o;
+
+)
+
+Bn (
+
+o;
+
+)]
+
+o; )
+o)
+
+o)
+
+nhp=2
++ q
+(Pn2 (
+bo
+
+o)
+
++ Pn3 (
+
+o ))
+
++ s:o:
+
++ s:o:;
+
+where the …rst inequality follows by taking in…mum over three terms separately and the second inequality
+follows by the fact that
+statistic over
+0 at
+
+o,
+
+2
+
+A"on
+
+o
+
+2 A"on . The last equality by Pn2 (
+
+is bounded up by
+
+p=2
+nh
+p Pn1
+bo
+
+(
+
+o)
+
+o)
+
++ Pn3 (
+p=2
+
+hold:
+
+inf"n
+
+2Ao
+
+"
+
+sup 4 q
+
+2A"on
+
+nhp=2
+b(
+
+o;
+
+The last one is easy combining e o !p
+
+)
+
+nhp=2
+b(
+#
+
+Pn1 ( )
+
+o
+
+= 0, hence the studentized test
+
+plus smaller order term. Since that inf
+
+p
+we could bound the studentized test statistic from below by nh
+2
+
+o)
+
+o;
+
+)
+
+3
+
+bo
+
+jPn2 ( )j5 =
+
+nhp=2
+q Pn1 (
+bo
+
+o)
+
+=
+
+Pn1 (
+
+o)
+
+2A"on
+
+Pn3 ( ) =
+
+once we show the following
+
+op (1) and
+
+op (1) :
+
+and the stochastic equicontinuity of Pn1 ( ) already proved in
+
+0
+
+(B.2). Based on results in Step 2 we know e o must be in A"on for large enough n and Assumption (V2)
+42
+
+.
+
+states the metric inducing the neighborhood A"on is equivalent as a standard neighborhood around
+p
+radius "n .
+
+o
+
+Also the proof handling Pn2 ( ) follows the complete analog in Lemma B.8 with a di¤erent radius
+around
+
+o:
+
+Un(1)
+
+E
+
+(
+
+1f )
+
+M
+
+2A"on
+
+r
+
+with
+p
+
+"n
+
+log n "n
+,
+n
+
+thereafter
+2
+
+3
+
+p=2
+
+2nh
+jPn2 ( )j5 = Op nhp=2
+sup 4 q
+"n
+2Ao
+b ( o; )
+
+r
+
+"n
+n
+
+p
+
+= Op
+
+nhp "n = op (1) :
+
+Proof of Bootstrap Consistency. Recall the expression for the bootstrap test statistic: for any ,
+Tn;b (
+=
+
+o;
+
+)
+
+Z "
+
+n
+
+0
+1X
+W (x; Xi ) cb x jZi ; x;
+n i=1
+
+n Z
+0
+1 X
+W 2 (x; Xi ) cb 2 x jZi ; x;
+dx +
+n2 i=1
+X Z
+0
+2
+W (x; Xi ) W (x; Xj ) cb x jZi ; x;
+2
+n
+1 i<j n
+
+#2
+
+dx
+
+0
+
+cb x jZj ; x;
+
+dx
+
+In1 ( ) + 2In2 ( ) :
+
+Let Zn represent the whole sample. Apparently conditional on Zn , In2 ( ) is a degenerate U-statistic for
+h
+i
+any , i.e. E In2 ( ) jZn ; Mi;b = 0 by the construction of the multiplier bootstrap procedure. Referring
+to its conditional second moment, we have E In22 ( ) jZn
+
+n(n 1) 3p
+h
+4
+
+(
+
+o;
+
+) converges to 0 for almost
+
+surely sample realization Zn . Hence continuing the same argument as in the proof of Lemma B.2, for almost
+surely sample realization Zn , we have
+2nhp=2 In2 ( ) =) N (0;
+When it comes to In1 ( ), we get that nhp=2 [In1 ( )
+in
+
+(
+
+o;
+
+)) :
+
+Bn ( )] converges to zero in probability uniformly
+
+, for almost surely sample realization Zn . This is because In1 ( ) goes to its conditional expectation
+
+E [In1 ( ) jZn ] = In1 ( ) de…ned in (B.4) by standard LLN and nhp=2 [In1 ( )
+formly in
+
+Bn ( )] goes to zero uni-
+
+for almost surely sample realization Zn because of (B.5) and the subsequent arguments. Also
+
+the negligibility of replacing the
+
+(
+
+o;
+
+) with its plug-in consistent estimator b (
+
+o;
+
+) follows the same
+
+argument as in the proof of Step 2. In sum, we have shown the following conditional weak convergence:
+nhp=2
+T (
+( o ; ) n;b
+
+o;
+
+)
+
+Bn ( ) =) N (0; 1) ;
+
+uniformly in . In particular the result holds for both b o and e o , hence the validity of bootstrap con…dence
+sets follow immediately.
+
+43
+
+9
+
+Appendix C: Auxiliary Results
+
+In this appendix, we present several useful results. The …rst one is the Hadamard di¤erentiability of
+SY ( jx; ) as a functional of (SV ( jx) ; SV;D=1 ( jx)), see Lemma C.1. Although we didn’t actually use it in
+our proofs, as it is for a …xed , we present it here since it generalizes a similar result for the Kaplan-Meier
+estimator in Van der Vaart and Wellner (1996) and the conditional Kaplan-Meier estimator in Dabraska
+(1987, 1989) assuming independent censoring. In Lemma C.2, we present the asymptotic variance and bias
+of the plug-in estimator Fb (yjx; ). Finally we collect some useful results on local U-processes used repeatedly
+
+in the proofs of the main results in Appendices A and B.
+
+9.1
+
+Hadamard Di¤erentiability
+0
+
+Lemma C.1 Suppose the copula generator ' ( ) is third order continuously di¤ erentiable and ' ( ) is not
+equal to zero. Then SY ( jx; ) is Hadamard di¤ erentiable from the domain of D
+D
+
+yl ; yu0 , where D
+
+yl ; yu0
+
+BV 1 yl ; yu0 into
+
+yl ; yu0 denote the space of càglàd functions on yl ; yu0 and BV 1 yl ; yu0 ????
+
+Proof. First consider '
+
+S ( jx; 'x ) = (SV ( jx) ; SV;D=1 ( jx)) ( ), where
+Z
+0
+(SV ( jx) ; SV;D=1 ( jx)) ( ) =
+' fSV (sjx)g dSV;D=1 (sjx) :
+0
+
+Now we shall apply Lemma 20.10 in Van der Vaart (1998) to
+
+(SV ( jx) ; SV;D=1 ( jx)). A close inspection
+
+yl ; yu0 or D yl ; yu0 . The derivative
+
+shows that the proof does not rely on whether we are dealing with D
+
+is given combining Van der Vaart’s formula and chain rule on ' 1 :
+Z
+Z
+0
+0
+00
+1
+h2 ' (SV (sjx)) jyl
+h2 d' (SV (sjx)) +
+' (SV (sjx)) h1 dSV;D=1 (sjx) (C.1)
+0
+'
+SY ( jx; )
+yl
+yl
+Z
+Z
+0
+00
+00
+1
+=
+h
+'
+(S
+(
+jx))
+h
+'
+(S
+(sjx))
+dS
+(sjx)
++
+' (SV (sjx)) h1 dSV;D=1 (sjx)
+2
+V
+V
+2
+V
+0
+'
+SY ( jx; )
+yl
+yl
+Notice when we set h1 = FV ( jx)
+
+FbV ( jx) and h2 = FV;D=1 ( jx)
+
+FbV;D=1 ( jx), the above expression is
+
+consistent with our linear representation, although in a pointwise sense.
+
+Remark 9.1 Given the weak convergence of kernel estimators of the (sub) survival functions of observable
+V and the above Hadamard di¤ erentiability, the weak convergence of the plug-in estimator is immediate
+(with a given
+
+). Also, by Lemma 3.9.23 in van der Vaart and Wellner (1996), one could obtain the
+
+weak convergence of the conditional quantile process as long as the conditional density function exist and
+is bounded away from zero. Note merely upon change of notation, our Lemma C.1 also works for the
+marginal survival function SY ( j ) when the covariate X is absent, which gives another proof of the weak
+convergence result in Rivest and Wells (2003), namely their Theorem 2. Moreover for the marginal survival
+function, since the empirical (sub) survival functions are e¢ cient estimators, by the results in Section 25.7
+in Van der Vaart (1998) we could conclude the e¢ ciency of the plug-in estimator and the copula graphic
+estimator in Rivest and Wells (2003) given the above Hadamard di¤ erentiability. Again this generalizes the
+44
+
+classical result showing the Kaplan-Meier estimator is e¢ cient under independence censoring assumption,
+since now the dependence structure could be allowed to be di¤ erent (but with a known generator ' and a …xed
+).
+
+9.2
+
+Asymptotic Variance and Bias of Fb (yjx; )
+
+Lemma C.2 The asymptotic covariance of
+
+p
+
+by
+(t; sjx; ) =
+Z tZ
+[
+yl
+
+Z
+
+s
+
+t
+
+00
+
+00
+
+00
+
+s
+
+y
+y
+Z ls l
+
+0
+
+00
+
+FV (ujx) FV (vjx)] dFV;D=1 (ujx) dFV;D=1 (vjx)
+FV (vjx) FV;D=1 (sjx)] dFV;D=1 (vjx)
+
+00
+
+' fSV (ujx)g ' fSV (vjx)g [FV;D=1 (u ^ vjx)
+
+00
+
+yl
+0
+
+i
+FY (sjx; ) is given
+
+jjKjj22
+fX (x) ' fSY (tjx; )g '0 fSY (sjx; )g
+
+' fSV (vjx)g ' fSV (sjx)g [FV;D=1 (v ^ sjx)
+Z
+
+FY (tjx; ) ; Fb (sjx; )
+
+0
+
+' fSV (ujx)g ' fSV (vjx)g [FV (u ^ vjx)
+
+yl
+
+yl
+Z t
+
+h
+nhp Fb (tjx; )
+
+0
+
+' fSV (vjx)g ' fSV (tjx)g [FV;D=1 (v ^ tjx)
+
+FV (vjx) FV;D=1 (ujx)] dFV (ujx) dFV;D=1 (vjx)
+
+FV (vjx) FV;D=1 (tjx)] dFV;D=1 (vjx)
+
++' fSV (tjx)g '0 fSV (sjx)g [FV;D=1 (t ^ sjx) FV;D=1 (tjx) FV;D=1 (sjx)]
+Z s
+00
+0
++
+' fSV (vjx)g ' fSV (tjx)g [FV;D=1 (v ^ tjx) FV (tjx) FV;D=1 (vjx)] dFV (vjx)
+yl
+
+Z tZ
+
++
++
+
+yl
+Z t
+
+yl
+Z t
+yl
+
+s
+
+yl
+
+00
+
+00
+
+' fSV (ujx)g ' fSV (vjx)g [FV;D=1 (u ^ vjx)
+
+00
+
+0
+
+' fSV (vjx)g ' fSV (sjx)g [FV;D=1 (v ^ sjx)
+Z
+
+s
+
+yl
+
+00
+
+FV (ujx) FV;D=1 (vjx)] dFV;D=1 (ujx) dFV (vjx)
+
+FV;D=1 (vjx) FV;D=1 (sjx)] dFV (vjx)
+
+00
+
+' fSV (ujx)g ' fSV (vjx)g [FV;D=1 (u ^ vjx)
+
+FV (ujx) FV;D=1 (vjx)] dFV (ujx) dFV (vjx)]:
+
+Proof. We would …rst calculate the conditional covariance for the centering term c (tjZi ; x; ) in the linear
+0
+
+0
+
+representation. Again we write conditional expectation given covariates as E , i.e. E [Z] = E [ZjX1 ;
+
+; Xn ]
+
+as in Hall (1984b). For any t; s, the following equalities need no further explanation:
+0
+
+E [(I [Vi
+
+t]
+
+0
+
+FV (tjXi )) (I [Vi
+
+E [(I [Vi
+=
+0
+
+E [(I [Vi
+
+t]
+
+t; Di = 1]
+
+FV;D=1 (t ^ sjXi )
+
+FV (tjXi )) (I [Vi
+
+s]
+
+FV (sjXi ))] = FV (t ^ sjXi )
+
+FV;D=1 (tjXi )) (I [Vi
+
+s; Di = 1]
+
+FV (tjXi ) FV (sjXi ) ;
+
+FV;D=1 (sjXi ))]
+
+FV;D=1 (tjXi ) FV;D=1 (sjXi ) ; and
+
+s; Di = 1]
+
+FV;D=1 (sjXi ))] = FV;D=1 (t ^ sjXi ) FV (tjXi ) FV;D=1 (sjXi ) :
+
+45
+
+Therefore by straightforward yet tedious algebra, one gets
+0
+
+(t; sjXi ; x; ) = E [c (tjZi ; x; ) c (sjZi ; x; )]
+1
+=
+'0 fSY (tjx; )g '0 fSY (sjx; )g
+Z tZ s
+00
+00
+' fSV (ujx)g ' fSV (vjx)g [FV (u ^ vjXi )
+[
+Z
+
+FV (ujXi ) FV (vjXi )] dFV;D=1 (ujx) dFV;D=1 (vjx)
+
+yl
+
+yl
+
+t
+
+yl
+Z t
+
+00
+
+' fSV (vjx)g '0 fSV (sjx)g [FV;D=1 (v ^ sjXi )
+Z
+
+s
+
+yl yl
+s
+
+Z
+
+yl
+0
+
+00
+
+FV (vjXi ) FV;D=1 (sjXi )] dFV;D=1 (vjx)
+
+00
+
+' fSV (ujx)g ' fSV (vjx)g [FV;D=1 (u ^ vjXi )
+
+00
+
+' fSV (vjx)g '0 fSV (tjx)g [FV;D=1 (v ^ tjXi )
+
+FV (vjXi ) FV;D=1 (ujXi )] dFV (ujx) dFV;D=1 (vjx)
+
+FV (vjXi ) FV;D=1 (tjXi )] dFV;D=1 (vjx)
+
++' fSV (tjx)g '0 fSV (sjx)g [FV;D=1 (t ^ sjXi ) FV;D=1 (tjXi ) FV;D=1 (sjXi )]
+Z s
+00
++
+' fSV (vjx)g '0 fSV (tjx)g [FV;D=1 (v ^ tjXi ) FV (tjXi ) FV;D=1 (vjXi )] dFV (vjx)
+yl
+
+Z tZ
+
++
++
+
+yl
+Z t
+yl
+Z t
+yl
+
+s
+
+yl
+
+00
+
+00
+
+' fSV (ujx)g ' fSV (vjx)g [FV;D=1 (u ^ vjXi )
+
+00
+
+' fSV (vjx)g '0 fSV (sjx)g [FV;D=1 (v ^ sjXi )
+Z
+
+s
+
+yl
+
+00
+
+FV (ujXi ) FV;D=1 (vjXi )] dFV;D=1 (ujx) dFV (vjx)
+
+FV;D=1 (vjXi ) FV;D=1 (sjXi )] dFV (vjx)
+
+00
+
+' fSV (ujx)g ' fSV (vjx)g [FV;D=1 (u ^ vjXi )
+
+FV (ujXi ) FV;D=1 (vjXi )] dFV (ujx) dFV (vjx)]:
+
+Hence we have the de…nition:
+2
+
+(yjXi ; x; )
+
+(y; yjXi ; x; )
+
+0
+
+E c2 (yjZi ; x; ) and
+
+2
+
+(yjx; ) = lim
+
+xn !x
+
+2
+
+(yjxn ; x; ) :
+
+(C.2)
+
+An alternative way to proceed is to express the centering term as in Braekers and Veraverbeke (2005):
+Z y
+00
+1
+c (yjZi ; x; ) = 0
+[
+' fSV (vjx)g [I (Vi v) FV (vjXi )] dFV;D=1 (vjx) (C.3)
+' fSY (yjx; )g yl
+Z y
+0
+' fSV (vjx)g d [I (Vi v; Di = 1) FV;D=1 (vjXi )]];
+yl
+
+by grouping the last two terms together. The result given by Braekers and Veraverbeke (2005) consists of
+seemingly four terms, yet a close inspection shows that there are still nine terms in total and upon integration
+by parts, and it is equivalent as what has been derived here. Now the asymptotic covariance follows the
+standard kernel estimation step:
+h
+(nhp ) cov Fb (tjx; )
+=
+
+=
+
+FY (tjx; ) ; Fb (sjx; )
+
+hp cov [wni (x; ) c (tjZi ; x; ) ; wni (x; ) c (sjZi ; x; )] + o (1)
+1
+Xic xc
+E [c (tjZi ; x; ) c (sjZi ; x; ) jXi ] + o (1)
+E h pK 2
+2
+fX (x)
+h
+2
+
+=
+
+i
+FY (sjx; )
+
+kKk
+(t; sjx; ) :
+fX (x)
+
+Next lemma gives the order of the bias term.
+46
+
+Lemma C.3 Under Assumptions (D)-(K), we have that
+sup sup
+
+sup
+
+0]
+2A x2J y2[yl ;yu
+
+0
+n
+r
+X
+1X
+W (x; Xi ) b (yjZi ; x; ) = Op @hs +
+n i=1
+j=1
+
+j
+
+1
+
+A:
+
+Proof. Because b (yjZi ; x; ) is linear in those three terms (see (3.15)), we shall only illustrate on the …rst
+one. Also the term
+
+1
+'0 fSY (yjx; )g
+
+remains uniformly bounded, hence it will be omitted in the derivation
+
+without a¤ecting the stochastic order. We de…ne the indicator functions Ij x
+ed ; xd for j = 1; :::; r s.t.
+
+Ij x
+ed ; xd = 1 i¤ x
+ed and xd di¤er only in the j-th component. Following Hall, Li and Racine (2004), we get
+" n
+#
+Z y
+X
+00
+E
+W (x; Xi )
+' fSV (vjx)g [FV (vjXi ) FV (vjx)] dFV;D=1 (vjx)
+yl
+
+i=1
+
+=
+
+X
+x
+ed
+y
+
+Z
+=
+
+Pr X d = x
+ed
+
+r n
+Y
+[
+
+j = (1
+
+j ) (cj
+
+Nij (x)
+
+1)]
+
+j=1
+
+(1
+
+o
+
+j)
+
+Z
+' fSV (vjx)g K (u) FV vjxc uh; x
+ed
+FV (vjx) fX x uh; x
+ed dudFV;D=1 (vjx)
+yl
+(
+)
+Z yX
+r
+X
+00
+j
+d
+d
+c
+d
+Ij x
+e ;x
+FV vjx ; x
+e
+FV (vjx) ' fSV (vjx)g fX xc ; x
+ed dFV;D=1 (vjx)
+1
+yl j=1 cj
+x
+ed
+"Z
+!#
+p
+s
+i
+s Z yX
+s i
+X
+00
+h
+@
+F
+(vjx)
+@
+f
+(x)
+V
+X
++
+k (uj ) usj duj
+' fSV (vjx)g dFV;D=1 (vjx) + s:o:
+i
+s i
+c
+c
+s! yl j=1
+@ xj
+@ xj
+i=0
+0
+1
+Z y
+r
+X
+00
+A + s:o:
+' fSV (vjx)g dFV;D=1 (vjx) O @hs +
+sup sup sup
+j
+00
+
+2A x2J y2[yl ;yu ]
+
+0
+
+O @hs +
+
+r
+X
+j=1
+
+j
+
+yl
+
+j=1
+
+1
+
+A + s:o:
+
+Now the claim in the stated lemma follows from Markov inequality.
+
+9.3
+
+Local U-processes
+
+We borrow the following sequence of remarkable results on moment inequality in Gine and Mason (2007),
+and tail inequality in Major (2006). Compared with classical results on U-processes initiated by Nolan and
+Pollard (1987) and well summarized in de la Pena and Gine (1999), the following bounds allow the functional
+class to change with n and the (maximal) variance of individual function appears in the bound, as an analog
+of Bernstein type inequality. Hence they suit our purpose to handle the kernel type estimated function when
+bandwidth is changing with n and when the variance term is much smaller than the envelope function.
+First some notations and terminologies will be collected here from Nolan and Pollard (1987), de la Pena
+and Gine (1999). We say a class of functions F is of VC type with respect to an envelope F if the covering
+number N (F; L2 (Q) ; "), the smallest number of L2 (Q) open balls of radius " required to cover F, statis…es
+!v
+M kF kL2 (Q)
+N (F; L2 (Q) ; ")
+for 0 < " 2 kF kL2 (Q) ,
+"
+47
+
+for some universal positive constants M; v and for every probability measure Q on the underlying space.
+For a kernel function f of k variables, we denote
+Un(k) (f ) =
+where Inm = f(i1 ;
+
+; im ) : 1
+
+ij
+
+(n
+n!
+
+k)! X
+
+f (Xi1 ;
+
+; Xik ) ;
+
+k
+i2In
+
+n; ij 6= ik if j 6= kg. Now suppose f is symmetric in its entries, we have
+
+the well-known Hoe¤ding decomposition:
+Un(m) (f )
+
+Ef =
+
+m
+X
+
+Un(k) (
+
+kf ) ;
+
+k=1
+
+where
+kf
+2
+
+Moreover let
+
+=(
+
+P)
+
+x1
+
+(
+
+P)
+
+xk
+
+Pm
+
+k
+
+f:
+
+(which we call maximal variance) be any number satisfying
+P mf 2
+
+2
+F
+
+M 2:
+
+Lemma C.4 (Gine and Mason, 2007, Theorem 8) Let F be a collection of measurable symmetric functions
+f : S m ! R, bounded up by M in absolute values, and let P be any probability measure on (S; S) : Assume
+F is of VC type with envelope function F
+and A
+
+m
+
+e ;v
+
+1; there exist constants C1; C2 , s.t. for any k = 1; :::; m;
+nk E Un(k) (
+
+assuming n
+
+M and with characteristics A and v. Then for every m 2 N ,
+
+2
+
+C2 log
+
+A
+
+2
+kf )
+
+F
+
+C1 2k
+
+2
+
+log
+
+A
+
+k
+
+;
+
+(C.4)
+
+.
+
+Lemma C.5 (Major, 2006, Theorem 2) Let F be a collection of measurable symmetric functions f : S m !
+R satisfying the all assumptions stated in previous lemma, then we have
+)
+(
+Pr
+
+sup nk=2 Un(k) (
+
+kf )
+
+x
+
+M exp
+
+M
+
+x
+
+2=k
+
+;
+
+(C.5)
+
+f 2F
+
+if n
+
+x 2=k
+
+2
+
+M
+
+1
+log n
+
+3=2
+
+log
+
+2
+
+:
+
+Remark 9.2 The case that m = 1 corresponds to the usual empirical process result. Modulo the universal
+constant, the above lemmas are also in accordance with the rates obtained in Gine and Guillou (2001),
+Einmahl and Mason (2005) earlier, hence we will simply refer to the above two lemmas even in the case
+where we are dealing with the usual empirical process.
+Below we list those functional classes that have appeared in Appendices A and B, which …t into this local
+U-process (or empirical process) framework:
+F1
+
+I [V
+
+v] K
+
+xc
+
+Xc
+h
+
+L xd ; X d ;
+
+: v 2 R1 ; x 2 J ; h
+48
+
+0;
+
+j
+
+2 0;
+
+cj
+
+1
+cj
+
+;
+
+(C.6)
+
+F2
+
+8
+00
+' (SV (V1 jx))
+>
+1 fV1 > yg hp W (x; X1 ) H (X2 ; V2 ; V1 )
+D
+>
+2 (x)
+1
+>
+fX
+< R
+00
+' (SV (v1 jx))
+d1
+1 fv1 > yg hp W (x; x1 ) H (X2 ; V2 ; v1 ) dPZ (v1 ; d1 ; x1 )
+2 (x)
+fX
+>
+h
+i
+>
+>
+c 1
+:
+y 2 y ; y 0 ; x 2 J ; h 0; 2 0; j
+l
+
+F3
+F4
+
+8 R
+< c (yjZ1 ; x;
+
+o) K
+
+xc X1c
+h
+
+j
+
+u
+
+L xd ; X1d ;
+
+cj
+
+xc X2c
+h
+
+L xd ; X2d ;
+i
+h
+c 1
+2 0; jcj
+
+K
+
+G (y; x;
+
+:
+y 2 yl ; yu0 ; x 2 J ; h 0; j
+8 R
+c
+c
+c
+c
+< c (yjZ1 ; x; ) c (yjZ2 ; x; ) K x X1 L xd ; X1d ; K x X2 L xd ; X2d ;
+h
+i h
+h
+c 1
+:
+y 2 yl ; yu0 ; h 0; j 2 0; jcj
+
+9
+>
+>
+>
+=
+>
+>
+>
+;
+
+o ) dx
+
+;
+
+(C.7)
+
+9
+: =
+
+;
+9
+dx : =
+;
+
+;
+
+(C.8)
+
+;
+
+(C.9)
+
+where the additional H and G functions appearing in F2 and F3 are de…ned in Lemma A.2, Lemma B.6,
+and Lemma B.8. To see that the entropy condition holds for all those four classes, note that the following
+three sub-classes are all uniformly bounded and of VC type:
+v] : v 2 R1 ;
+
+F1;1
+
+=
+
+I [V
+
+F1;2
+
+=
+
+K
+
+F1;3
+
+=
+
+L xd ; X d ;
+
+xc
+
+Xc
+
+: xc 2 J c ; h
+
+h
+
+: 8xd ;
+
+j
+
+2 0;
+
+0 ; and
+cj
+
+1
+
+:
+
+cj
+
+Since the product is Lipschitz continuous with three individual terms using the boundedness of those functions, we have
+N F1 ; L2 (Q) ; M kF kL2 (Q) "
+
+3
+Y
+
+i=1
+
+N F1;i ; L2 (Q) ; M kFi kL2 (Q) "
+
+by Theorem 2.10.20 in Van der Vaart and Wellner (1996), thus F1 is also of VC type. Complete analogy
+applies to F2 and F3 . When it comes to F4 , by our assumption (P1) on the generator functions, we obtain
+0
+
+that 8f; f 2 F4 , f
+
+f
+
+0
+
+0
+
+M
+
+, thus F4 is of VC type following Theorem 2.7.11 in Van der Vaart
+
+and Wellner (1996).
+Now we illustrate with class F1 to give a quick proof of (A.3).
+Proof of (A.3).
+
+For any f1 2 F1 , we have Ef12 = O hp 1 +
+
+Pr
+
+j=1
+
+= O (hp ) as in Li and Racine
+
+j
+
+(2007). Thereafter we could take the maximal variance for the current class as
+FbV (yjx)
+0
+
+FV (yjx)
+1
+r
+X
+s
+A + Op
+Op @h +
+j
+0
+
+Op @h +
+s
+
+j=1
+
+r
+X
+j=1
+
+j
+
+1
+
+A + Op
+
+s
+
+1 (1)
+E p Un (
+h
+
+1
+hp
+
+r
+
+hp log n
+n
+
+!
+
+2
+1f )
+F1
+
+= Op
+
+2
+F1
+
+= O (hp ).
+
+!
+r
+
+log n
+nhp
+
+!
+
+;
+
+where the …rst inequality follows from standard bias-variance decomposition and in the second inequality we
+apply (C.4), and the …nal result follows our assumption (H). The strengthening to almost surely convergence
+is routine by the blocking device and Montgomeny-Smith inequality (see Theorem 1.1.5 in de la Pena and
+Gine, 1999) as presented in Gine and Guillou (2001), however, the weaker results are su¢ cient for our
+purpose.
+49
+
+References
+[1] Abbring, J.H., and G.J. van den Berg (2003), The identi…ability of the mixed proportional hazards
+competing risks model, Journal of the Royal Statistical Society B, 65 701-710.
+[2] Aitchison, J., and C.G.G. Aitken (1976), Multivariate binary discrimination by the kernel method,
+Biometrika 63, 413-420.
+[3] Andrews, D.W.K., and X. Shi (2013), Inference based on conditional moment inequalities, Econometrica,
+81, 609-666.
+[4] Bedford, T., and I. Meilijson (1997), A characterization of marginal distributions of (possibly dependent)
+lifetime variables which right censor each other, The Annals of Statistics, 25 1622-1645.
+[5] Berrington, A., and I. Diamond (2000), Marriage or cohabitation: A competing risks analysis of the
+…rst-partnership formation among the 1958 birth cohort, Journal of the Royal Statistical Society A,
+163, 127-152.
+[6] Bond, S., and J. Shaw (2006), Bounds on the covariate-time transformation for competing-risks survival
+analysis, Lifetime Data Analysis 12, 285–303.
+[7] Booth, A. L., and S.E. Satchell (1995), The hazards of doing a PhD: An analysis of completion and
+withdrawal rates of British PhD Students in the 1980s, Journal of the Royal Statistical Society A,
+158, 297-318.
+[8] Braekers, R., and N. Veraverbeke (2005), A copula-graphic estimator for the conditional survival function under dependent censoring, Canadian Journal of Statistics, 33, 429–447.
+[9] Buchinsky, M., and Hahn, J. (1998), An alternative estimator for the censored regression model, Econometrica, 66, 653–671.
+[10] Chen, X., and Y. Fan (2006), Estimation and model selection of semiparametric copula-based multivariate dynamic models under copula misspeci…cation, Journal of Econometrics, 135, 125–154.
+[11] Chen, Y.-H. (2010), Semiparametric marginal regression analysis for dependent competing risks under
+an assumed copula, Journal of the Royal Statistical Society B, 72 235-251.
+[12] Chernozhukov, V., and H. Hong (2002), Three-step censored quantile regression and xxtramarital a¤airs,
+Journal of The American Statistical Association, 97, 872-882.
+[13] Clayton, D., and J. Cuzick (1985), Multivariate generalizations of the proportional hazard model, Journal of the Royal Statistical Society A, 148, 82-117.
+[14] Cox, D.R. (1959), The analysis of exponentially distributed life-times with two types of failure, Journal
+of the Royal Statistical Society B, 21, 411–421.
+[15] Crowder, M. (1991), On the identi…ability crisis in competing risk analysis, Scandinavian Journal of
+Statistics 18, 223-233.
+50
+
+[16] Dabrowska, D.M. (1987), Non-parametric regression with censored survival time data, Scandinavian
+Journal of Statistics, 14, 181-197.
+[17] Dabrowska, D.M. (1989), Uniform consistency of kernel conditional Kaplan-Meier estimate, The Annals
+of Statistics, 17, 1157-1167.
+[18] de la Pena, V.H., and E. Gine (1999), Decoupling: From Dependence to Independence. Springer.
+[19] Deng, Y., Quigley, J.M., and R. Van Order (2000), Mortgage terminations, heterogeneity and the
+exercise of mortgage options, Econometrica, 68, 275-307.
+[20] Einmahl, U., and D.M. Mason (2005), Uniform in bandwidth consistency of kernel-type function estimators, The Annals of Statistics, 33, 1380-1403.
+[21] Fan, Y. (1994), Testing the goodness of …t of a parametric density function by kernel method, Econometric Theory, 10, 316-356.
+[22] Fan, Y., and Q. Li (1996), Consistent model speci…cation tests: omitted variables and semiparametric
+functional forms, Econometrica, 64, 865-890.
+[23] Fan, Y., Li, Q., and I. Min (2006), A nonparametric bootstrap test of conditional distributions, Econometric Theory, 22, 587-613.
+[24] Fermanian, J.-D. (2003), Nonparametric estimation of competing risks models with covariates, Journal
+of Multivariate Analysis, 85, 156–191.
+[25] Fleming, T.R., and D.P. Harrington (1991), Counting Processes and Survival Analysis, Wiley, New
+York.
+[26] Flinn, C.J., and J.J. Heckman (1982), New methods for analyzing structural models of labor force
+dynamics, Journal of Econometrics, 18, 115-168.
+[27] Gine, E., and A. Guillou (2001), On consistency of kernel density estimators for randomly censored data:
+Rates holding uniformly over adaptive intervals, Annales de l’Institut Henri Poincaré, 37 503-522.
+[28] Gine, E., and D.M. Mason (2007), On local U-statistic processes and the estimation of densities of
+functions of several sample variables, The Annals of Statistics, 35, 1105-1145.
+[29] Hall, P. (1984a), Central limit theorem for integrated square error of multivariate nonparametric density
+estimators, Journal of Multivariate Analysis, 14, 1-16.
+[30] Hall, P. (1984b), Integrated square error properties of kernel estimators of regression functions, The
+Annals of Statistics, 12, 241-260.
+[31] Hall, P. and C. Heyde (1980), Martingale Limit Theory and Its applications, Academic, New York.
+[32] Hall, P., Racine, J., and Q. Li, (2004). Cross-validation and the estimation of conditional probability
+densities, Journal of The American Statistical Association, 99, 1015–1026.
+
+51
+
+[33] Hardle, W., and E. Mammen (1993), Comparing nonparametric versus parametric regression …ts. The
+Annals of Statistics, 21, 1926-1947.
+[34] Heckman, J.J., and B. Honore (1989), The identi…ability of competing risks model, Biometrika, 76,
+325-330.
+[35] Henry, M., and I. Mouri…e (2012), Sharp bounds in the binary Roy model, Working Paper.
+[36] Honore, B., Khan, S., and J. Powell (2002), Quantile regression under random censoring, Journal of
+Econometrics, 109, 67–105.
+[37] Honore, B., and A. Lleras-Muney (2006), Bounds in competing risks models and the war on cancer,
+Econometrica, 74, 1675-1698.
+[38] Hsiao, C., Li, Q., and J.S. Racine (2007), A consistent model speci…cation test with mixed discrete and
+continuous data, Journal of Econometrics, 140, 802–826.
+[39] Huang, X., and N. Zhang (2008), Regression survival analysis with an assumed copula for dependent
+censoring: A sensitivity analysis approach. Biometrics, 64, 1090-1099.
+[40] Joe, H. (1997), Multivariate models and dependence concepts, Chapman & Hall.
+[41] Jun, S.J., and J. Pinske (2009), Semiparametric tests of conditional moment restrictions under weak or
+partial identi…cation. Journal of Econometrics, 152, 3–18.
+[42] Katz, L.E, and B.D. Meyer (1990), Unemployment insurance, recall expectations, and unemployment
+outcomes, Quarterly Journal of Economics, 105, 973-1002.
+[43] Khan, S., and Powell, J.L. (2001), Two-Step Estimation of Semiparametric Censored Regression Models,
+Journal of Econometrics, 100, 319–355.
+[44] Khan, S., and E. Tamer (2009), Inference on endogenously censored regression models using conditional
+moment inequalities, Journal of Econometrics, 152, 104–119.
+[45] Khan, S., Ponomareva, M., and E. Tamer (2011), Sharpness in randomly censored linear models, Economic Letters, 113, 23-25.
+[46] Klein, J.P., and M.L. Moeschberger (1988), Bounds on net survival probabilities for dependent competing risks, Biometrics 22, 529-538.
+[47] Kline, P., and A. Santos (2013), Sensitivity to missing data assumptions: Theory and an evaluation of
+the U.S. wage structure, Quantitative Economics, 4, 231–267.
+[48] Lavergne, P., and V. Patilea (2013), Smooth minimum distance estimation and testing with conditional
+estimating equations: Uniform in bandwidth theory, Journal of Econometrics, 177, 47–59.
+[49] Lee, S. (2006), Identi…cation of a competing risks model with unknown transformations of latent failure
+times, Biometrika 93, 996–1002.
+
+52
+
+[50] Lee, S., and A. Lewbel (2012), Nonparametric identi…cation of accelerated failure time competing risks
+model, Econometric Theory, forthcoming.
+[51] Li, Q., and J.S. Racine (2007), Nonparametric Econometrics: Theory and Practice, Princeton Press.
+[52] Linton, O. (1997), Asymptotic ine¢ ciency of an estimator derived from a kernel-based test statistic
+(Problem), Econometric Theory, 13, 306-307.
+[53] Linton, O. (1998), Asymptotic ine¢ ciency of an estimator derived from a kernel-based test statistic
+(Solution), Econometric Theory, 14, 153-154.
+[54] Lopez, O. (2011), Nonparametric estimation of the multivariate distribution function in a censored
+regression model with applications, Communications in Statistics: Theory and Methods, 40, 26392660.
+[55] Major, P. (2006), An estimate on the supremum of a nice class of stochastic integrals and U-statistics,
+Probability Theory and Related Fields, 134, 489-537.
+[56] Manski, C. (1994), The selection problem, in C. Sims (editor) Advances in Econometrics, Six World
+Congress, Cambridge University Press, 143-170.
+[57] Manski, C. (2003), Partial identi…cation of probability distributions, Springer-Verlag.
+[58] Nelson, R.B. (2006), An Introduction to Copulas, 2nd Edition, Springer.
+[59] Nolan, D. and D. Pollard (1987), U-processes: rates of convergence, The Annals of Statistics, 15, 780799.
+[60] Peng, L., and Y. Huang, (2008), Survival analysis with quantile regression models, Journal of the
+American Statistical Association, 103, 637–649.
+[61] Portnoy, S. (2003), Censored regression quantiles, Journal of the American Statistical Association, 98,
+1001-1012.
+[62] Powell, J. (1984), Least absolute deviation estimation for the censored regression model, Journal of
+Econometrics, 25, 303-325.
+[63] Powell, J. (1986), Censored regression quantiles, Journal of Econometrics, 32, 143-155.
+[64] Peterson, A.V. (1976), Bounds for a joint distribution function with …xed sub-distribution functions:
+applications to competing risks. Proc. Natl. Acad. Sci. USA 73, 11-13.
+[65] Rivest, L.-P., and M.T. Wells (2001), A martingale approach to the copula-graphic estimator for the
+survival function under dependent censoring, Journal Multivariate Analysis, 79, 138-155.
+[66] Santos, A. (2006), Inference in nonparametric instrumental variables with partial identi…cation, working
+paper.
+[67] Santos, A. (2012), Inference in nonparametric instrumental variables with partial identi…cation, Econometrica, 80, 213-276.
+53
+
+[68] Slud, E.V., and L.V. Rubinstein (1983), Dependent competing risks and summary survival curves,
+Biometrika, 70, 643-649.
+[69] Szydlowski, A. (2013), Endogenous censoring in the mixed proportional hazard model with an application to optimal unemployment insurance, Job Market Paper, Northwestern University.
+[70] Torgovitsky, A. (2011), Identi…cation of nonseparable models with general instruments, working paper.
+[71] Tsiatis, A. (1975), A nonidenti…ability aspect of the problem of competing risks. Proc. Natl. Acad. Sci.
+USA 72, 20-22.
+[72] Tsybakov, A. (2008), Introduction to Nonparametric Estimation, Springer, New York.
+[73] Van der Vaart A. (1998), Asymptotic Statistics, Cambridge University Press.
+[74] Wang, H.J., and L. Wang (2009), Locally weighted censored quantile regression, Journal of the American
+Statistical Association, 104, 1117-1128.
+[75] Zheng, M., and J.P. Klein (1995), Estimates of marginal survival for dependent competing risks based
+on an assumed copula. Biometrika, 82, 127-138.
+[76] Zheng, J.X. (1996), A consistent test of functional form via nonparametric estimation techniques. Journal of Econometrics, 75, 263-289.
+
+54
+
+

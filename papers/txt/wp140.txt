@@ -1,0 +1,7274 @@
+A Direct Approach to Inference in Nonparametric and
+Semiparametric Quantile Models
+Yanqin Fan and Ruixuan Liu
+University of Washington, Seattle
+Working Paper no. 140
+Center for Statistics and the Social Sciences
+University of Washington
+First version: December 2012
+This version: September 2013
+
+Abstract
+This paper makes two main contributions to inference for conditional quantiles. First, we
+construct a generic con…dence interval for a conditional quantile from any given estimator of
+the conditional quantile via the direct approach. Our generic con…dence interval makes use
+of two estimates of the conditional quantile function evaluated at two appropriately chosen
+quantile levels. In contrast to the standard Wald type con…dence interval, ours circumvents the
+need to estimate the conditional density function of the dependent variable given the covariate.
+We show that our new con…dence interval is asymptotically valid for any quantile function
+(parametric, nonparametric, or semiparametric), any conditional quantile estimator (standard
+kernel, local polynomial or sieve estimates), and any data structure (random samples, time series,
+or censored data), provided that certain weak convergence of the conditional quantile process
+holds for the preliminary quantile estimator. In the same spirit, we also construct a generic
+con…dence band for the conditional quantile function across a range of covariate values. Second,
+we use a speci…c estimator, the Yang-Stute (also known as the symmetrized k-NN) estimator
+for a nonparametric quantile function, and two popular semiparametric quantile functions to
+demonstrate that oftentimes by a judicious choice of the quantile estimator combined with the
+speci…c model structure, one may further take advantage of the ‡exibility and simplicity of
+the direct approach. For instance, by using the Yang-Stute estimator, we construct con…dence
+intervals and bands for a nonparametric and two semiparametric quantile functions that are free
+from additional bandwidth choices involved in estimating not only the conditional but also the
+marginal density functions and that are very easy to implement. The advantages of our new
+con…dence intervals are borne out in a simulation study.
+Keywords: Generic Con…dence Interval; Generic Con…dence Band; Partially Linear Quantile Regression; Single-Index Quantile Regression; Rearranged Quantile Curve
+JEL Codes: C12; C14; C21
+Department of Economics, University of Washington, Box 353330, Seattle, WA 98195. We thank Matias Cattaneo,
+Xuming He, Yu-Chin Hsu, Sang Soo Park, and seminar participants at Northwestern, Peking University, Simon Fraser
+University, Texas A&M, University of British Clumbia, and the University of Michigan, as well as participants at 2013
+Tsinghua International Conference in Econometrics and the 2013 North American Econometric Society Meetings for
+helpful comments and discussions. We also thank Song Song for sharing his code with us and Jon Wellner for …nding
+the reference, Thompson (1936), for us.
+
+1
+
+Introduction
+
+In their seminal paper, Koenker and Bassett (1978) propose to use linear quantile regression to
+examine e¤ects of an observable covariate on the distribution of a dependent variable other than
+the mean. Since then, linear quantile regression has become a dominant approach in empirical
+work in economics, see e.g., Buchinsky (1994) and Koenker (2005). Following Koenker and Bassett
+(1978), this approach has been extended to censored data in Powell (1986), Buchinsky and Hahn
+(1998), Honore, Khan and Powell (2002), and to unit root quantile regression models in Koenker
+and Xiao (2004), further broadening its scope of applications.
+Linearity adopted in Koenker and Bassett (1978) has been relaxed to accommodate possibly
+nonlinear e¤ects of the covariates on the conditional quantile of the dependent variable in nonparametric and semiparametric quantile regression models. The ‘check function’approach of Koenker
+and Bassett (1978) has been extended to estimating these models as well, see e.g., Truong (1989),
+Chaudhuri (1991), and He, Ng, and Portnoy (1998) for nonparametric estimation of conditional
+quantiles; Chaudhuri, Doksum, and Samarov (1997) for nonparametric average derivative quantile
+estimation; Fan, Hu and Truong (1994), Yu and Jones (1998) and Guerre and Sabbah (2012) for
+local polynomial estimation of regression quantiles; Lee (2003) and Song, Ritov, and Hardle (2012)
+for partial linear quantile regression models; Wu, Yu, and Yu (2010) and Kong and Xia (2012) for
+single index quantile regression models; and Chen and Khan (2001) for partially linear censored
+regression models.1
+For nonparametric quantile regression models, an alternative estimation approach to the ‘check
+function’approach is taken in Stute (1986), Bhattacharya and Gangopadhyay (1990), Fan and Liu
+(2011), and Li and Racine (2008), among others. In this approach, the conditional distribution
+function of the dependent variable Y given the covariate X is estimated …rst and the generalized
+inverse of this estimator at a given quantile level p 2 (0; 1) is taken as an estimator of the p-th
+conditional quantile. Stute (1986) and Bhattacharya and Gangopadhyay (1990) focus on univariate
+
+covariate and estimate the conditional distribution function by k-NN method, while Fan and Liu
+(2011) and Li and Racine (2008) allow for multivariate covariate and adopt respectively k-NN and
+kernel estimators of the conditional distribution function.
+Under regularity conditions, existing work establish asymptotic normality of the conditional
+quantile estimators which is the basis for the Wald-type inference, i.e., using the t statistic to test
+hypotheses or form con…dence intervals (CI) for the true conditional quantiles. Regardless of the
+approach used to estimate the conditional quantile in parametric, semiparametric, or nonparametric
+quantile regression models, one common feature of the asymptotic distributions of the conditional
+1
+Conditional quantile function also plays an important role in the non-separable structural econometrics literature,
+see e.g., Chesher (2003), Holderlein and Mammen (2007) and in the estimation of quantile treatment e¤ects, see e.g.,
+Firpo (2007) and Fan and Park (2011).
+
+1
+
+quantile estimators is that their asymptotic variances depend on the conditional (quantile) density
+function of Y given X = x and some even depend on the density function of X, see e.g., Horowitz
+(1998), Khan (2001), Koenker and Xiao (2002), Li and Racine (2008), Hardle and Song (2010), and
+Song, Ritov, and Hardle (2012), among others. As a result, inference procedures for the conditional
+quantiles based on the asymptotic distributions of these estimators require consistent estimators of
+the conditional (quantile) density function of Y given X = x and/or the density of X both involving
+bandwidth choice. Numerical evidence presented in De Angelis, Hall, and Young (1993), Buchinsky
+(1995), Horowitz (1998), and Kocherginsky, He, and Mu (2005) shows that although asymptotically
+valid, these inference procedures are sensitive in …nite samples to the choice of smoothing parameter
+used to estimate the conditional (quantile) density function.
+Various alternative approaches have been proposed in the current literature to improve on
+the …nite sample performance of Wald-type inferences. Most of these are developed for linear or
+parametric conditional quantile regression models. First, Goh and Knight (2009) propose a di¤erent scale statistic to standardize the estimator of the model parameter in linear quantile regression
+models resulting in a nonstandard inference procedure; Second, Zhou and Portnoy (1996) construct
+con…dence intervals/bands directly from pairs of estimates of conditional quantiles in the locationscale forms of linear quantile regression models extending the direct or order statistics approach
+for sample quantiles in Thompson (1936), see also Ser‡ing (1980), Csorgo (1983), and van der
+Vaart (1998); Third, Gutenbrunner and Jureckova (1992) and Gutenbrunner, Jureckova, Koenker,
+and Portnoy (1993) employ rank scores to test a class of linear hypotheses; Fourth, Whang (2006)
+and Otsu (2008) apply the empirical likelihood approach to parametric quantile regression models;
+Lastly, MCMC related approaches have been proposed to improve standard resampling or simulation paradigms: He and Hu (2002) resample estimators from the marginal estimating equation
+along the generated Markov chain; and Chernozhukov, Hansen, and Janssen (2009) develop …nite
+sample inference procedures based on conditional pivotal statistics in parametric quantile regression
+models. A nice survey of various inference procedures targeted at linear quantile regression models
+could be found in Kocherginsky, He, and Mu (2005).
+Compared with parametric quantile regression models, inference in nonparametric and semiparametric quantile regression models is still in its infancy. The only alternative approach to the
+Wald-type and bootstrap inferences that is currently available is the empirical likelihood procedure
+in Xu (2012) for nonparametric quantile regression models. In semiparametric quantile regression
+models including partial linear and single index models, only Wald-type and bootstrap inferences
+are available. Although the empirical likelihood approach in Xu (2012) avoids estimation of the conditional (quantile) density function and performs better than the Wald-type inference procedures,
+it is known to be computationally costly. Among existing approaches to inference in parametric quantile regression models, the direct approach is the simplest to implement and least costly
+
+2
+
+computationally— it only requires computing pairs of the quantile estimate. In addition, it does not
+rely on any estimate of the conditional (quantile) density function and exhibits superior …nite sample performance compared with the Wald-type inference, see Zhou and Portnoy (1996). However,
+as discussed in Portnoy (2012), it appears that the direct approach in Zhou and Portnoy (1996)
+has theoretical justi…cation only under location-scale forms of linear quantile regression models.
+This paper aims at bridging this gap. Speci…cally, it makes two main contributions to inference
+on conditional quantiles. First, we construct a generic con…dence interval (CI) for a conditional
+quantile from any given estimator of the conditional quantile via the direct approach. Our generic
+con…dence interval makes use of two estimates of the conditional quantile function evaluated at two
+appropriately chosen quantile levels. If the original quantile estimator is monotone in the quantile
+level p 2 (0; 1), then the two estimates are computed from this estimator; else the two estimates
+
+are computed from the monotone rearranged version of the original quantile estimator as proposed
+in Chernozhukov, Fernandez-Val, and Galichon (2010). In contrast to the standard Wald type
+con…dence interval, ours circumvents the need to estimate the conditional density function of the
+dependent variable given the covariate. We show that our new con…dence interval is asymptotically
+valid for any quantile function (parametric, nonparametric, or semiparametric), any conditional
+quantile estimator (standard kernel, local polynomial or sieve estimates), and any data structure
+(random samples, time series, or censored data), provided that certain weak convergence of the
+conditional quantile process holds for the preliminary quantile estimator. In the same spirit, we
+also construct a generic con…dence band (CB) for the conditional quantile function across a range of
+covariate values focusing on the nonparametric setting and a class of quantile estimators obtained
+from inverting proper estimators of the conditional distribution function of Y given X. Since
+
+members of this class of quantile estimators are monotone by construction, monotone rearrangement
+is avoided. Second, we use a speci…c estimator, the Yang-Stute (also known as the symmetrized
+k-NN) estimator for a nonparametric quantile function, and two popular semiparametric quantile
+functions to demonstrate that oftentimes by a judicious choice of the quantile estimator combined
+with the speci…c model structure, one may further take advantage of the ‡exibility and simplicity
+of the direct approach. For instance, by using the Yang-Stute estimator, we construct con…dence
+intervals and bands for a nonparametric and two semiparametric quantile functions that are free
+from additional bandwidth choices involved in estimating not only the conditional but also the
+marginal density functions and that are very easy to compute. The reason that we choose the YangStute estimator is its simplicity and elegance; It inherits the so-called asymptotic distributionalfree property (Stute, 1984b) and avoids estimating covariate’s marginal density function (unlike
+standard kernel estimators), so we are able to eliminate all unnecessary tuning parameters. Besides,
+as we directly invert conditional distribution functions, the resulting conditional quantile estimators
+are indeed monotone, so there is no need for monotone rearrangement. Of course, practitioners
+
+3
+
+are free to choose their favorite preliminary quantile estimators and under the mild high level
+assumptions below, our generic CIs/CBs would apply.
+Like the empirical likelihood con…dence interval for a nonparametric quantile function in Xu
+(2012), our con…dence intervals/bands for nonparametric quantiles based on the Yang-Stute estimator internalize the conditional quantile density estimation of Y given X and the covariate density
+estimation and they are not necessarily symmetric. Compared with Xu (2012), our procedure is
+much easier to implement and does not require optimization. For conditional quantiles in partial
+linear and single index quantile regressions, a direct application of the generic CI and CB would
+require monotone rearrangement, but by making use of the model structures, we construct CIs and
+CBs that are easy to implement avoiding monotone rearrangement. A small scale simulation study
+demonstrates the advantages and feasibility of our con…dence intervals/bands over existing ones
+in practically relevant model set-ups. Finally, we point out that there is an interesting connection
+between our generic CI and the well-known CI for unconditional quantiles based on order statistics
+originally proposed in Thompson (1936), see also Ser‡ing (1980) and van der Vaart (1998). In fact
+by using pairs of the standard k-NN asymmetric quantile estimate, our generic CI employes pairs
+of order statistics of the induced order statistics of Y , so it shares the elegance and simplicity of
+the con…dence interval for unconditional quantiles based on order statistics.
+The rest of this paper is organized as follows. Section 2.1 presents our generic con…dence
+interval and shows its asymptotic validity under a high level assumption on the preliminary quantile
+estimator. The high level assumption is veri…ed in four examples including the asymmetric k-NN
+estimator, local polynomial quantile regression, a nonparametric quantile regression with censoring,
+and the class of conditional quantile estimators in Donald, Hsu, and Barrett (2012) which includes
+parametric quantile estimators as well. A generic CB is proposed in Section 2.2. Section 3.1
+considers the nonparametric quantile regression with a univariate covariate. It constructs a new
+con…dence interval and a new con…dence band using the Yang-Stute estimator. Section 3.2 extends
+the con…dence intervals/bands developed in Section 3.1 to two popular semiparametric models,
+partial linear and single index quantile regression models. Section 4 provides a simulation study
+comparing the …nite sample performance of our new con…dence intervals with Wald-type con…dence
+intervals and two bootstrap versions for nonparametric and partial linear quantile regressions. We
+conclude in the last section. All the technical proofs are collected in the Appendices.
+
+2
+
+Generic Results on the Direct Approach to Quantile Inference
+
+Consider the random vector (X 0 ; Y )0 with marginal distribution functions FX (x), FY (y) respectively, where x 2 X
+
+Rd and y 2 Y
+
+R. Let FY jX ( jx) denote the conditional distribution
+
+function of Y given X = x with density function fY jX ( jx). For 0 < p < 1, we are interested in
+conducting inference on the p-th conditional quantile of Y given X = x:
+4
+
+(pjx)
+
+1
+FY jX
+(pjx) either
+
+at a speci…c location x = x0 2 X or for all x in a subset of the support of X.
+Let b (pjx) denote a consistent and asymptotically normally distributed estimator of
+
+(pjx).
+
+To introduce the direct approach to quantile inference, consider inference for (pjx0 ) for a …xed
+x0 2 X . Suppose b (pjx) is monotone in the quantile level p 2 (0; 1). Then the CI for (pjx0 ) based
+
+on the direct approach takes the form of a closed interval with the end points given by b ( jx0 )
+
+evaluated at two appropriately chosen quantile levels, one smaller and one larger than p, see (3)
+below with b (pjx0 ) being replaced by b (pjx0 ). In contrast to Wald-type CIs, CIs based on the
+
+direct approach are not dependent on any estimate of the conditional density function of Y given
+X = x0 .
+
+To ensure the validity of the resulting CI, it is essential that the quantile estimator being
+used is monotone in the quantile level p 2 (0; 1). It is well known that some commonly used
+quantile estimators including the linear quantile estimator of Koenker and Bassett (1978) and
+local polynomial quantile estimators are not monotone in the quantile level. This is known as
+the quantile crossing problem (He, 1997; Chernozhukov, Fernandez-Val, and Galichon, 2010). To
+rectify this issue, various methods of monotonization have been proposed in the literature including
+Chernozhukov, Fernandez-Val, and Galichon (2010) who propose a monotone rearranged quantile
+estimator from a given preliminary quantile estimator and Dette and Volgushev (2008) who propose
+smooth monotone quantile estimators from consistent estimators of the conditional distribution
+function FY jX ( jx). Of course quantile estimators constructed from inverting monotone estimators
+of the conditional distribution function FY jX ( jx) are also monotone.
+
+(pjx0 ) from a preliminary consistent estimator b (pjx0 )
+using the direct approach and refer to it as the generic CI. For non-monotone b (pjx0 ), our generic
+CI makes use of the rearranged version of b (pjx0 ) in Chernozhukov, Fernandez-Val, and Galichon
+In Section 2.1, we construct a CI for
+
+(2010).2 In Section 2.2, we construct a generic CB from the direct approach which is valid for all
+x in a compact subset of X .
+
+2.1
+
+A Generic Con…dence Interval
+
+For any consistent estimator b (pjx) of
+
+(pjx), the monotone version of b (pjx) in Chernozhukov,
+
+Fernandez-Val, and Galichon (2010) is based on the fact that
+Z 1
+FY jX (yjx) = 1 (yjx) =
+I f (ujx) yg du;
+
+(1)
+
+0
+
+so we can replace (ujx) with b(ujx) in the expression on the right hand side of (1) to get a monotone
+estimator of FY jX (yjx). Since the resulting estimator of FY jX (yjx) is monotone, its generalized
+2
+We could use the smooth monotone estimators proposed in Dette and Volgushev (2008) as well. But since
+they involve the choice of an additional smoothing parameter, we …nd the method in Chernozhukov, Fernandez-Val,
+and Galichon (2010) more suitable for our purpose. Marmer and Shneyerov (2012) o¤er an alternative method for
+constructing a monotone quantile estimator from a preliminary quantile estimator, but the asymptotic properties of
+their monotone estimator are unknown.
+
+5
+
+inverse is a consistent and monotone estimator of (pjx). This is the monotone rearranged version
+of b (pjx0 ) proposed by Chernozhukov, Fernandez-Val, and Galichon (2010):
+b (pjx) = inf y :
+
+Z
+
+1
+
+0
+
+1fb (ujx)
+
+ygdu
+
+p :
+
+(2)
+
+We note that if the original estimator b (pjx) is monotone in p 2 (0; 1), then b (pjx) = b (pjx) for
+all p 2 (0; 1). So we will use b (pjx) in this section to introduce our generic CI for (pjx0 ).
+
+Below we …rst provide assumptions on the quantile function (pjx0 ) and a high level assumption
+on the original estimator b (pjx0 ) under which our generic CI is asymptotically valid and then verify
+the high level assumption for four examples in Section 2.1.1.
+Assumption (GI)
+
+(i) (pjx0 ) is a continuously di¤erentiable function in p 2 (0; 1) and for …xed p 2 (0; 1), (pjx)
+
+is continuously di¤erentiable at x = x0 ;
+(ii) Let qp (x)
+
+@
+@p
+
+(pjx) = 1=fY jX ( (pjx) jx) denote the conditional quantile density function.
+
+Then qp (x0 ) > 0 for p 2 [p1 ; p2 ] (0; 1);
+(iii) The quantile estimator b ( jx0 ) takes its values in the space of bounded measurable functions
+de…ned on [p1 ; p2 ]
+cn b ( jx0 )
+
+(0; 1), where p 2 [p1 ; p2 ], and in l1 ([p1 ; p2 ]),
+( jx0 ) =) q (x0 ) B ( jx0 ) ;
+
+as a stochastic process indexed by p 2 [p1 ; p2 ], where fB (pjx0 ) ; p 2 [p1 ; p2 ]g is a Gaussian process
+
+with variance
+
+2 (pjx
+
+0)
+
+V ar [B (pjx0 )] which does not depend on qp (x0 ) and cn is a sequence of
+
+positive constants such that cn ! 1 as n ! 1.
+
+Assumption (GI) (i) and (ii) are taken directly from Chernozhukov, Fernandez-Val, and Gali-
+
+chon (2010). Assumption (GI) (iii) is a special case of Assumption 2 in Chernozhukov, FernandezVal, and Galichon (2010). It imposes a speci…c structure on the asymptotic variance of the quantile
+estimator b (pjx0 ) which ensures the asymptotic validity of the following generic con…dence interval
+obtained from the direct approach:
+CI-G1
+where
+
+= b
+
+p
+
+z
+
+=2 b (pjx0 )
+
+cn
+
+jx0 ; b
+
+p+
+
+z
+
+2 (0; 1), b (pjx0 ) is a consistent estimator of
+
+=2 b (pjx0 )
+
+cn
+
+jx0
+
+(pjx0 ), and z
+
+;
+=2
+
+(3)
+is the upper quantile of
+
+standard normal random variable N , i.e. Pr N > z =2 = 1
+=2. For many quantile estimators
+b (pjx) regardless of the model and data structure, Assumption (GI) (iii) is either established in
+
+existing work or can be shown using results in existing work, see Section 2.1.1 and Section 3 for
+examples of parametric, nonparametric and semiparametric quantile estimators. Moreover, for
+many quantile estimators,
+
+2 (pjx
+
+0)
+
+takes the form of p (1
+
+p) $2x0 for some positive constant $x0
+
+depending on x0 , see the …rst three examples in Section 2.1.1 and Section 3. Example 2.4 presents
+6
+
+that does not take this form.3 In addition to the examples in Section
+2.1.1 and Section 3, another (parametric) example of b (pjx) is the quantile estimator of Koenker
+
+an example of
+
+2 (pjx
+
+0)
+
+and Bassett (1978). Under standard regularity conditions, the quantile estimator of Koenker and
+
+Bassett (1978) satis…es Assumption (GI) (iii) for the special class of location scale forms of linear
+quantile regression models, see Zhou and Portnoy (1996), Gutenbrunner and Jureckova (1992),
+Koenker and Xiao (2005), and Portnoy (2012), so our generic con…dence interval CI-G1
+
+de…ned
+
+in (3) is asymptotically valid. In fact, for location scale forms of the linear quantile regression
+models, our generic con…dence interval CI-G1
+
+is just the con…dence interval in Zhou and Portnoy
+
+(1996) using the original estimator of Koenker and Bassett (1978), due to the absence of quantile
+crossing problem as demonstrated by He (1997).
+THEOREM 2.1 Suppose Assumption (GI) holds. Then CI-G1
+coverage probability equal to (1
+
+is asymptotically valid with
+
+).
+
+Proof. Resorting to Corollary 3 in Chernozhukov, Fernandez-Val, and Galichon (2010) which
+asserts that the rearranged estimator b (pjx0 ) has the same …rst order asymptotic properties as
+b (pjx0 ). In particular, Assumption (GI) (iii) implies that
+cn b (pjx0 )
+
+(pjx0 ) =) qp (x0 ) B (pjx0 ) :
+
+Making use of stochastic equicontinuity of the process
+cn ! 1, we have
+cn b
+
+z
+
+p
+
+=2 b (pjx0 )
+
+cn
+
+n
+cn b (pjx0 )
+
+b (pjx0 ) = cn
+
+jx0
+
+z
+
+p
+
+o
+(pjx0 ) ; p 2 (0; 1) and
+
+=2 b (pjx0 )
+
+cn
+
+jx0
+
+(pjx0 ) + op (1) :
+
+Now use the simple fact that under Assumption (GI) (i) and consistency of b (pjx0 ):
+cn
+
+p
+
+z
+
+=2 b (pjx0 )
+
+cn
+
+jx0
+
+(pjx0 ) =
+
+qp (x0 ) z
+
+=2
+
+(pjx0 ) + op (1) :
+
+Hence the generic con…dence interval is asymptotically valid:
+lim Pr f (pjx0 ) 2 CI-G1
+
+n!1
+
+=
+=
+
+lim Pr b
+
+n!1
+
+p
+
+lim Pr b (pjx0 )
+
+n!1
+
+= 1
+
+z
+
+g
+
+=2 b (pjx0 )
+
+z
+
+cn
+
+jx0
+
+=2
+
+(pjx0 )
+
+cn
+
+(pjx0 )
+qp (x0 )
+
+:
+
+b
+
+(pjx0 )
+
+p+
+
+z
+
+=2 b (pjx0 )
+
+cn
+
+b (pjx0 ) +
+
+z
+
+=2
+
+jx0
+(pjx0 )
+cn
+
+qp (x0 )
+
+Q.E.D
+3
+
+We thank Yu-Chin Hsu for suggesting this example.
+
+7
+
+Remark 2.1. Under Assumption (GI), the standard Wald type con…dence interval is constructed by centering around b (pjx0 ) with the standard error multiplied by the normal critical
+value as
+2
+
+4b (pjx0 )
+
+z
+
+=2 b (pjx0 )
+
+fbY jX b (pjx0 ) jx0 cn
+
+; b (pjx0 ) +
+
+z
+
+=2 b (pjx0 )
+
+fbY jX b (pjx0 ) jx0 cn
+
+3
+
+5,
+
+(4)
+
+where fbY jX (yjx0 ) is a consistent estimator of fY jX (yjx0 ) such as a kernel conditional density
+
+estimator. It is well known that the …nite sample performance of the Wald CI in (4) is very sensitive
+to the choice of the smoothing parameter involved in the estimate fbY jX (yjx0 ). Distinct from the
+Wald type interval, our new con…dence interval in (3) avoids the estimation of the conditional
+
+density function fY jX (yjx0 ) and the two end points of the CI are not necessarily symmetric around
+b (pjx0 ).
+2.1.1
+
+Examples of the Generic Con…dence Interval
+
+Let (Xi0 ; Yi )0
+
+n
+i=1
+
+denote the sample information on (X 0 ; Y )0 . It could be a random sample or a
+
+time series. To demonstrate the broad applicability of the con…dence interval, CI-G1
+
+, de…ned in
+
+(3), we present four examples in this subsection. They include a novel con…dence interval for nonparametric conditional quantiles based on order statistics/induced order statistics in Example 2.1;
+a new con…dence interval for nonparametric quantile regression based on local polynomial estimator
+in Example 2.2; a new con…dence interval for nonparametric censored quantile regression in Example 2.3, and …nally new con…dence intervals for the class of conditional quantile models in Donald,
+Hsu, and Barrett (2012). For the …rst three examples,
+
+2 (pjx
+
+0)
+
+takes the form: p (1
+
+p) $2x0 for
+
+some positive constant $x0 depending on x0 , while for the last example it doesn’t have this speci…c
+form.
+Example 2.1. (A Novel Order Statistic Approach):4 The generic con…dence interval
+in (3) when applied to the standard asymmetric k-NN estimator of the conditional quantile leads
+to a novel con…dence interval for conditional quantiles based on pairs of order statistics of an
+appropriately chosen set of induced order statistics of fYi gni=1 . It extends con…dence intervals for
+
+unconditional quantiles based on pairs of order statistics of fYi gni=1 , see Thompson (1936) or van
+
+der Vaart (1998) for random samples and Wu (2005) for time series observations.
+in
+
+To introduce it, let Ri = jjXi
+
+Rd ,
+
+and
+
+(Yn;i )ni=1
+
+x0 jj, for i = 1;
+
+; n, where jj jj is the standard Euclidean norm
+
+denote the collection of induced order statistics by rank (Ri )ni=1 , i.e., Yj = Yn;i
+
+i¤ Rj = R(i) and R(i) is the i-th order statistic of (Ri )ni=1 . For k
+4
+
+n, the standard asymmetric
+
+After …nishing the …rst version of this paper, we came across Kaplan (2013), who also proposed similar inference
+procedures to this example by further taking linear combinations of those order statistics. Higher order properties
+have been given in Kaplan (2013) using Dirichlet process theory.
+
+8
+
+k-NN estimator of the distribution function of Y given X = x0 is de…ned as
+Fbn;k (yjx0 ) = k
+
+1
+
+k
+X
+
+I (Yn;i
+
+y)
+
+i=1
+
+and the asymmetric k-NN estimator of (pjx0 ) is given by
+[kp]
+k
+= the [kp] -th order statistic of Yn;1 ; Yn;2 ;
+
+b (pjx0 ) = inf y : Fbn;k (yjx0 )
+
+; Yn;k ;
+
+(5)
+4
+
+kn is a sequence of constants such that kn ! 1 and kn = o n 4+d . Assuming (GI)
+
+where k
+
+(i) and (ii), the asymptotic validity of CI-G1
+
+based on the asymmetric k-NN estimator relies
+
+on Assumption (GI) (iii). For a random sample fXi ; Yi gni=1 , Dabrowska (1987) provides primitive
+
+conditions under which the standard k-NN estimator of the conditional distribution function converges weakly to a Gaussian process which can be used to show that Assumption (GI) (iii) holds
+p
+for b (pjx0 ) in (5) with cn = kn and $2x0 = d=2 = (d=2 + 1). We refer the reader to Section 3.3
+
+and the proof of Proposition 3.4 in Dabrowska (1987) for further details including the primitive
+conditions. Since by de…nition b (pjx0 ) in (5) is monotone in p, the con…dence interval (3) reduces
+to:
+
+h
+b p z
+h
+= Yn;([k(p
+
+CI-O1
+
+where
+kn
+
+kn
+
+=
+
+=
+
+p
+p(1
+
+=2 kn jx0
+z
+
+=2
+
+;b p + z
+
+=2 kn jx0
+
+; Yn;([k(p+z
+kn )])
+
+=2 kn
+
+i
+
+i
+
+)]) ;
+
+(6)
+
+p)$2x0 =kn and Yn;(i) denotes the i-th order statistic of fYn;i gki=1 . Notice that
+
+involves no covariates’ density and the constant factor $2x0 is the volume of the unit ball in
+
+Rd , which appears in the asymptotic variance of the standard asymmetric k-NN estimator. The
+new con…dence interval CI-O1
+
+de…ned in (6) for conditional quantiles shares the elegance and
+
+simplicity of the con…dence interval for unconditional quantiles based on order statistics.
+Example 2.2. (Local Polynomial Quantile Regression): A local polynomial estimator
+de…ned as the minimizer of a weighted check function is the natural nonparametric analog of the
+linear quantile estimator originated by Koenker and Bassett (1978). Recall that the check function
+is of the form:
+
+p (t)
+
+= pt+ + (1
+
+p) t , where subscripts +;
+
+stand for the positive and negative
+
+parts respectively. The local polynomial estimator of order s using kernel function K ( ) is de…ned
+0
+by b (pjx0 ) = e b (pjx0 ), with e1 = (1; 0; :::; 0) and
+1
+
+b (pjx0 ) = arg min
+
+where Ps (z)T =
+
+n
+X
+
+p
+
+Yi
+
+T
+
+Ps
+
+i=1
+
+zv
+v! ; jvj
+
+s for v = (v1 ;
+
+x0
+
+Xi
+
+hn
+
+K
+
+x0
+
+Xi
+
+hn
+
+; vd ) with jvj = v1 +
+
+vectors of v 2 N d being ordered lexicographically, z v =
+9
+
+d
+Q
+
+i=1
+
+,
+
++ vd , v! =
+
+d
+Q
+
+vi ! and the
+
+i=1
+
+zivi (see Chaudhuri, 1991; Fan, Hu
+
+and Truong, 1994; Guerre and Sabbah, 2012). With i.i.d. observations, under primitive conditions
+Guerre and Sabbah (2012) establish a Bahadur representation for b (pjx0 ) valid uniformly over
+p 2 (0; 1), where the linear representation is proportional to qp (x0 ). So Assumption (GI) (iii)
+p
+p
+is satis…ed under their conditions, where $x0 = kKk2 = fX (x0 ) and cn = nhdn with hn the
+
+bandwidth. In the time series setting, Assumption (GI) (iii) is satis…ed under the conditions in
+
+either Polonik and Yao (2002) or Su and White (2012) under proper mixing conditions. It is known
+that the local polynomial estimator b (pjx0 ) is not guaranteed to be monotone in p, so our generic
+
+CI employes the rearranged version of b (pjx0 ).
+
+Example 2.3. (Nonparametric Quantile Regression With Censoring): Consider a
+
+nonparametric censored quantile regression model where the dependent variable Yi is subject to
+conditional random censoring by Ci . So instead of observing fXi ; Yi gni=1 , we observe a random
+sample (min (Yi ; Ci ) ; i ; Xi )ni=1 , where
+
+i
+
+= 1fYi
+
+Ci g, Yi and Ci are independent of each other
+
+conditional on Xi . Dabrowska (1987) extends various nonparametric quantile regression estimators
+for random samples including the kernel estimator, the symmetrized k-NN estimator, and the
+standard k-NN estimator to the above censored case. Under primitive conditions, she establishes
+weak convergence of the associated quantile processes which ensures Assumption (GI) (iii) with
+standard nonparametric convergence rate and the factor $x0 now also involving the conditional
+cumulative hazard function and conditional sub-survival function (see Corollary 2.2 in Dabrowska,
+1987). Thus our generic con…dence interval de…ned in (3) is asymptotically valid. Also one could
+use local polynomial type estimators given the work of Kong, Linton and Xia (2013).
+Example 2.4.
+
+(Inverting Estimators of the Conditional Distribution Function):
+
+Donald, Hsu, and Barrett (2012) consider various models for the conditional distribution function
+including fully parametric models of the form: FY jX (yjx)
+an unknown parameter
+for an unknown (F;
+
+0 ).
+
+0
+
+F (yjx;
+
+0)
+
+for a known function F and
+
+and semiparametric models of the form: FY jX (yjx)
+
+F (log y
+
+x0 0 )
+
+For each model, they provide primitive conditions under which Assumption
+
+(GI) (iii) is satis…ed for random samples, but
+
+2 (pjx
+
+0)
+
+is not of the form: p (1
+
+p) $2x0 . We refer
+
+interested readers to Section 3 in their paper for details.
+
+2.2
+
+A Generic Con…dence Band
+
+Often it is of interest to conduct inference simultaneously on
+
+(pjx) for all x in a subset of the
+
+support of X. In this section, we construct a generic CB for a nonparametric quantile function5
+by the direct approach again avoiding the conditional density estimation, when x varies in some
+compact set J contained in the interior of the support of X. Unlike the generic CI in (3) which
+relies on the normal limiting distribution, the generic CB developed in this section will rely on the
+5
+
+For the location-scale forms of linear quantile models, Zhou and Portnoy (1996) construct Sche¤e type con…dence
+band using the direct approach (see their Proposition 3.1) based on chi-square asymptotics.
+
+10
+
+extreme type limiting distribution of a stationary Gaussian process (Bickel and Rosenblatt, 1973;
+Leadbetter, Lindgren and Rootzen, 1983) obtained from characterizing the maximal deviation of
+the original nonparametric estimator from the true conditional quantile. Although the …rst order
+asymptotic properties of the monotone quantile estimator in Chernozhukov, Fernandez-Val and
+Galichon (2010) are the same as the original quantile estimator, this is not su¢ cient for the purpose
+of constructing a generic CB, see the discussion on Assumption GB (iii) below for a more detailed
+explanation. Because of this, we will adopt a special class of monotone quantile estimators obtained
+from inverting monotone estimators of the conditional distribution function of Y given X. Since
+these estimators are monotone by construction, the generic CI in (3) is applicable to them. For
+both practical and technical reasons, we focus on the case when X is univariate. For multivariate
+covariate, semiparametric models including the partially linear and single index quantile regression
+models are introduced in the literature to alleviate the curse of dimensionality associated with
+fully nonparametric models. In Section 3, we illustrate how CBs using the direct approach can be
+constructed for semiparametric quantile models.
+(Xi0 ; Yi )0
+
+n
+i=1
+
+denote the sample information on (X 0 ; Y )0 , random sample or time series
+data. Consider any …rst-step estimator Fb (yjx) of the conditional distribution function FY jX ( jx)
+Let
+
+taking the following linear form:
+Fb (yjx) =
+
+n
+X
+
+Win (x) I [Yi
+
+y] ;
+
+(7)
+
+i=1
+
+where fWin (x)gni=1 is a sequence of non-negative weights summing up to one. Let Fb
+the generalized inverse of Fb ( jx).
+
+1 (pjx)
+
+denote
+
+The linear form given in (7) nests almost all commonly used kernel type local smoothers6 such
+
+as Nadaraya-Watson estimator, Yang-Stute estimator (Yang, 1981; Stute, 1984b), Local Partitioned estimator (the local constant version in Chaudhuri, 1991), and Adjusted Nadaraya-Watson
+estimator (Hall, Wol¤ and Yao, 1999):7
+Kh (x Xi )
+NW
+Win
+(x) = Pn n
+;
+Xj )
+j=1 Khn (x
+
+(8)
+
+Kh (Fn (x) Fn (Xi ))
+YS
+Win
+(x) = Pn n
+;
+Fn (Xj ))
+j=1 Khn (Fn (x)
+
+(9)
+
+I [Xi 2 Pn (x)]
+P
+; and
+Win
+(x) = Pn
+j=1 [Xj 2 Pn (x)]
+
+(10)
+
+6
+Theorem 2.2 and the high level assumptions are written focusing on local smoothers. Upon change of notations,
+sieve type estimators could be incorporated as well, see Figueroaf-Lopez (2011).
+7
+As shown by Hall, Wol¤ and Yao (1999), this Adjusted Nadaraya-Watson estimator is asymptoticall the same
+as local linear estimator upto the …rst order, hence it inherits the smaller bias property of local linear estimator,
+especially at the boundary. Meanwhile it is suprior to local linear estimator as the weights are all positive and
+summing up to 1, thus the estimated CDF is a proper distribution function.
+
+11
+
+pi (x) Khn (x Xi )
+AN W
+;
+Win
+(x) = Pn
+Xj )
+j=1 pj (x) Khn (x
+
+where h
+
+(11)
+
+hn ! 0 is a bandwidth and Kh ( ) = K ( =h) =h with standard kernel density function
+
+K. Moreover in the Yang-Stute estimator, Fn (x) is the empirical distribution function of fXi gni=1 ;
+Q
+in the Adjusted Nadaraya-Watson weights, we maximize nj=1 pj (x) subject to the following conP
+P
+straints: pj (x) 0, nj=1 pj (x) = 1 and nj=1 Khn (Xj x) (Xj x) pj (x) = 0; and in the local
+partitioned version, Pn = fP1n ; P2n ; :::g stands for a partition of X with maxj Leb (Pjn ) of order
+hn , and Pn (x) 2 Pn , is the set containing point x.
+
+The high level assumptions below are written for the local smoothers with tuning parameter hn
+
+de…ned above. Implicitly below we select an under-smoothed hn to kill the bias term.
+Assumption (GB)
+(i). A continuous and positive conditional density function fY jX (yjx) exists uniformly over the
+i
+h
+1
+1
+(p2 jx) + for some > 0, where [p1 ; p2 ] contains p and belongs to
+(p1 jx)
+; FY jX
+interval FY jX
+
+(0; 1) and for x 2 J .
+
+(ii). The …rst step estimator for the conditional distribution function in (7) has the following
+
+convergence rate:
+sup sup Cn Fb (yjx)
+
+x2J y2Y
+
+FY jX (yjx) = Op (1) .
+
+Moreover the uniform local oscillation could be bounded as follows:
+sup
+
+sup
+
+x2J jy1 y2 j O(Cn 1 )
+
+Cn Fb (y1 jx)
+
+Fb (y2 jx)
+
+FY jX (y1 jx) + FY jX (y2 jx) = op (1) ;
+
+and for all x 2 J the local weights satisfy: maxi Win (x) = o Cn 1 almost surely.
+(iii). Given p 2 (0; 1), we could …nd An , Dn and a deterministic function
+
+lim Pr sup An
+x2J
+
+with (nhn )
+
+1=2
+
+h
+
+Dn
+
+p
+(x) nhn Fb ( (pjx) jx)
+
+An 1 = O Cn 1 and
+
+FY jX ( (pjx) jx)
+
+i
+
+Dn
+
+z
+
+(x) such that
+
+= exp ( 2 exp ( z)) ;
+
+(x) being uniformly bounded away from zero and
+
+in…nity.
+For those local smoothers the uniform convergence rate is Cn =
+
+q
+nhn (log n)
+
+1
+
+under standard
+
+regularity conditions and the magnitude of local weights are all of order O (nhn )
+
+1
+
+. The local
+
+oscillation could be readily handled given the results in Stute (1984a) or Einmahl and Mason
+(2005). Apropos of the convergence to the Gumbel distribution in (GB) (iii), we shall rely on the
+bivariate Gaussian approximation and deduce that the limiting distribution is the maximum of a
+R
+stationary Gaussian process, say h 1=2 K u h v dB (v) for a Gaussian process B ( ) and kernel
+
+function K ( ) as demonstrated in Hardle (1989), Hardle and Song (2010) for random sample, Liu
+
+and Wu (2010) for time series data. Given the limiting distribution in (GB)(iii) and condition in
+12
+
+(GB)(ii) for Bahadur representation of the conditional quantile estimator (by directly inverting the
+conditional CDF estimator), one could obtain the limiting distribution for the maximal deviation
+of this conditional quantile estimator, also see Lemma 3.4 and its following remark. The di¢ culty
+with the estimator b (pjx) in Chernozhukov, Fernandez-Val and Galichon (2010) by rearranging
+an arbitrary b (pjx) (may not be monotone in p) is due to the lack of uniform asymptotic property
+
+of b (pjx). To the best of our knowledge, the characterization of the maximal deviation of b (pjx)
+remains to be an open question.
+
+Our generic CB takes the following form:
+CB-G1
+
+where
+n (x;
+
+h
+= Fb
+)= p
+
+1
+
+(
+
+) jx) ; Fb
+
+n (x;
+
+1
+nhn b (x)
+
+Dn +
+
+log 2
+
+1
+
+( +
+
+n (x;
+
+log jlog (1
+An
+
+and b (x) denote a uniformly consistent estimator of
+
+i
+) jx)
+
+(12)
+
+)j
+
+(x).
+
+THEOREM 2.2 Suppose Assumption (GB) holds. Then the con…dence band in (12) has the
+desired asymptotic size:
+lim Pr f (pjx) 2 CB-G1
+
+; 8x 2 J g = 1
+
+n!1
+
+:
+
+Proof. In order to prove the validity of the generic con…dence band, we …rst need the following
+type of Bahadur representation for any "n = O Cn 1 around p, uniformly over x 2 J :
+Fb
+
+1
+
+(p + "n jx)
+
+h
+1
+p + "n
+fY jX ( (pjx) jx)
+
+(pjx) =
+
+To see why the above result holds, set
+
+n
+
+= Fb
+
+1 (p
+
+i
+Fb ( (pjx) jx) + op Cn 1 .
+
++ "n jx)
+
+(13)
+
+(pjx). The following string of
+
+equalities hold in view of the order of its local oscillation in Assumption (GB) (ii):
+Fb ( (pjx) +
+
+n jx)
+
+= FY jX ( (pjx) +
+
+Fb ( (pjx) jx)
+
+(14)
+
+FY jX ( (pjx) jx) + op Cn 1 = fY jX ( (pjx) jx)
+
+n jx)
+
+n
+
++ o p Cn 1 :
+
+Also due to the linear structure of Fb (yjx), and the negligibility of the individual weights in Assumption (GB) (ii), we have
+Fb ( (pjx) +
+
+n jx)
+
+= Fb Fb
+
+Thereafter replace Fb ( (pjx) +
+
+1
+
+(p + "n jx) jx + op Cn 1 = p + "n + op Cn 1 :
+
+n jx)
+
+with p + "n + op Cn 1 at the LHS in (14), we have shown the
+
+…rst claim. Similar representations as in (13) and their proofs could be found in Ser‡ing (1980) for
+marginal quantile and Zhou and Portnoy (1996) for a linear quantile regression.
+13
+
+Now with (13) in hand, the next string of derivations need no further explanation once we set
+"n =
+
+n (x;
+
+), and for notational simplicity we suppress the smaller order term op Cn 1 along the
+
+lines:
+o
+(x;
+)
+jx)
+(pjx)
+0;
+8x
+2
+J
+n
+h
+i
+1
+= Pr
+p + "n Fb ( (pjx) jx)
+0; 8x 2 J
+fY jX ( (pjx) jx)
+#
+("
+log 2 log jlog (1
+D
+n
+= Pr
+Fb ( (pjx) jx) p p
+p
+b
+nhn (x)
+nh b (x) An
+i
+nh
+p
+Dn
+= Pr
+(x) nhn Fb ( (pjx) jx) FY jX ( (pjx) jx)
+n
+Pr Fb
+
+1
+
+(p +
+
+Similarly by omitting the smaller order terms, we get
+n
+o
+Pr Fb 1 (p
+(pjx) 0; 8x 2 J
+n (x; ) jx)
+nh
+i
+p
+= Pr
+(x) nhn Fb ( (pjx) jx) FY jX ( (pjx) jx) + Dn
+
+)j
+
+; 8x 2 J
+
+log 2
+
+)
+
+log jlog (1
+
+log jlog (1
+
+)j
+
+)j ; 8x 2 J
+
+o
+
+log 2; 8x 2 J
+
+o
+
+Thus applying the extreme value type asymptotics in Assumption (GB) (iii), we get
+lim Pr f (pjx) 2 CB-G1
+
+n!1
+
+; 8x 2 J g = 1
+
+:
+
+Q.E.D
+
+3
+
+Inference Based On Yang-Stute Estimator
+
+Let (Xi ; Yi )0
+
+n
+i=1
+
+denote a random sample on (X; Y )0 for a univariate X. In this section, we give
+
+a detailed illustration of the direct approach using the conditional quantile estimator de…ned as
+the generalized inverse of particular estimator of FY jX ( jx) proposed by Yang (1981) and Stute
+
+1
+(1984b, 1986). In the sequel we will proceed with the interchangeable notation FY jX
+(pjx) = (pjx)
+
+to highlight this generalized inverse nature. We consider three quantile models: nonparametric,
+partially linear, and single index models. For each model, we construct a generic CI and a generic
+CB for the corresponding conditional quantile function and provide primitive conditions under
+which we show their asymptotic validity. We use partially linear and single index models here
+to demonstrate how CIs/CBs may be constructed for semiparametric quantile models when the
+covariate is multivariate.
+It is worth repeating here that no monotone rearrangement is needed in this section, because the
+quantile estimator we adopt is monotone by construction. Compared with the other local smoothers
+in the previous section, including the (Adjusted) Nadaraya-Watson estimator, and Local Partitioned
+estimator, we show that the advantage of Yang-Stute estimator is that it allows us to construct CIs
+14
+
+:
+
+:
+
+and CBs for all three quantile models that do not require estimation of the covariate’s marginal
+density function (in fact the method does not even require the existence of covariate’s density
+function), thus achieving the so-called asymptotic distribution-freeness in Stute (1984b).
+
+3.1
+
+Univariate Nonparametric Quantile Function
+
+1
+We now introduce our estimator of FY jX
+(pjx) at a …xed value x0 2 X . Let Fbn (yjx0 ) denote the
+
+estimator of FY jX (yjx0 ) introduced in Yang (1981) and further studied in Stute (1984b, 1986). It
+is of the form in (7) with weights de…ned in (9), so
+Fbn (yjx0 ) =
+
+Pn
+
+i=1 1fYi
+
+ygK
+
+Pn
+
+i=1 K
+
+Fn (x0 ) Fn (Xi )
+hn
+
+Fn (x0 ) Fn (Xi )
+hn
+
+;
+
+(15)
+
+where K( ) is a kernel function and hn ! 0 is a bandwidth. Notice that the local neighborhood
+
+around the point of interest is calibrated according to ranks instead of Euclidean distance, so
+Fbn (yjx0 ) is also known as the symmetrized k-NN estimator8 . A more intuitive view of Yang-Stute
+estimator is the following kernel estimator replacing Fn ( ) with FX ( ):
+Fen (yjx0 ) =
+
+Pn
+
+i=1 1fYi
+
+ygK
+
+Pn
+
+i=1 K
+
+FX (x0 ) FX (Xi )
+hn
+
+FX (x0 ) FX (Xi )
+hn
+
+:
+
+In Appendix A, we show that the di¤erence between Fen ( j ) and Fbn ( j ) is negligible for the inferential purposes considered in our paper, thus Fbn ( j ) could be viewed as a feasible version of Fen ( j )
+where the probability integral transformation FX ( ) on the covariate makes its marginal density
+
+equal to 1 along its whole support.
+
+The estimator of (pjx0 ) based on Fbn (yjx0 ) is de…ned as the generalized inverse of Fbn ( jx0 ):
+b (pjx0 ) = Fb 1 (pjx0 ) :
+n
+
+(16)
+
+In the rest of this section, we provide primitive conditions under which Assumptions (GI) and (GB)
+hold for Fbn (yjx0 ) or Fbn 1 (pjx0 ) so the generic CI in (3) and the generic CB in (12) are applicable
+to Fbn 1 (pjx0 ).
+
+3.1.1
+
+A New Con…dence Interval
+
+Our new level (1
+CIN1
+
+1
+)-con…dence interval for FY jX
+(pjx0 ) takes the following form:
+
+h
+= Fbn 1 p
+
+z
+
+=2
+
+b 1 p+z
+np (K) jx0 ; Fn
+
+=2
+
+np (K) jx0
+
+i
+
+;
+
+(17)
+
+8
+To illustrate its symmetry, suppose there are three observations, X1 = 1:5; X2 = 2; and X3 = 5, and we are
+interested in estimating the conditional functional at x0 = 3 using e¤ectively two observations. Then the standard
+k-NN estimator would choose (X1 ; X2 ) according to Euclidean distance, whereas the symmetrized k-NN estimator
+would pick (X2 ; X3 ) based on rank.
+
+15
+
+where
+np (K)
+
+=
+
+s
+
+in which R (K) =
+
+R (K) p (1
+nhn
+
+R
+
+p)
+
+(18)
+
+K 2 (u) du.
+
+1
+Recall that qp (x) = 1=fY jX FY jX
+(pjx) jx
+
+is the conditional quantile density function of Y
+
+given X. It is obvious from (17) that our new con…dence interval (CI), CIN1
+
+, has several advan-
+
+tages over existing CIs. First, compared with Wald-type con…dence intervals, our new con…dence
+interval, CIN1
+
+, does not require either a consistent estimator of the density function of X or
+
+the conditional quantile density function of Y given X = x0 , qp (x0 ). Second, compared with the
+CI based on the empirical likelihood approach in Xu (2012), our CI is much easier to implement;
+there is no optimization involved and it only requires evaluating our conditional quantile estimator
+b (pjx0 ) at two speci…c quantile levels, p z =2 np (K) and p + z =2 np (K).
+Below we provide a list of su¢ cient conditions for the asymptotic validity of CIN1
+
+.
+
+Assumption (S). Let H (yju) = FY jX yjFX 1 (u) .
+(i) Assume that
+sup
+jt sj
+
+H FY 1 (t) ju
+
+H FY 1 (s) ju
+
+=o
+
+ln
+
+1
+
+1
+
+as
+
+!0
+
+uniformly in a neighborhood of u0 = FX (x0 );
+(ii) Uniformly in y, H (yj ) belongs to the second order Holder class at u0 2 (0; 1), i.e., for any
+
+y, H (yju) is di¤erentiable w.r.t u at u0 and there exists a neighborhood of u0 such that for any
+u1 ; u2 in this neighborhood, we have that
+H 0 (yju1 )
+
+H 0 (yju2 )
+
+Lju1
+
+u2 j
+
+holds uniformly in y, where H 0 (yju) = @H (yju) =@u and L < 1:
+Assumption (H). The bandwidth satis…es hn = O n
+
+for some
+
+satis…es: nh5n ! 0 and nh3n ! 1 as n ! 1.
+
+2 (1=5; 1=3), i.e., it
+
+Assumption (K). The kernel function K( ) is a twice continuously di¤erentiable density func-
+
+tion with zero mean, compact support and bounded second order derivative.
+Assumption (X). The conditional density function fY jX ( jx0 ) exists and is continuous and
+h
+i
+1
+1
+positive on the interval FY jX
+(p1 jx0 )
+; FY jX
+(p2 jx0 ) + for some > 0, where [p1 ; p2 ] contains
+p and belongs to (0; 1), also X has continuous distribution function FX (x) :
+
+Assumption (S) is chosen in accordance with Assumptions (A), (B) in Stute (1986). For (S)(i)9
+is used by Stute (1986) to show the tightness of the conditional empirical process. It is pretty
+9
+
+To clarify some notation, we added the corresponding quantile transformation since Stute (1986) directly works
+with (X; Y ) with uniform marginal distributions.
+
+16
+
+weak; if the term in absolute values could be bounded by any polynomial order in , it would
+imply (S)(i). In Fan and Liu (2011), we show that existence of copula density function of Y and X
+would imply this result. (S)(ii) is written slightly di¤erently from Assumption (B) in Stute (1986)
+as it does not require second order di¤erentiability of H (yju), but achieves the same purpose in
+controlling the bias term. The so-called uniform Holder class is adapted from Tsybakov (2008), see
+also Guerre and Sabbah (2012). Assumption (X) spells out this asymptotic distribution freeness
+advocated by Stute (1984b), as by the elementary fact FX (Xi )
+
+U [0; 1]. The requirement on the
+
+bandwidth is standard, with one added condition nh3n ! 1, which is necessary in dealing with
+the asymptotic variance term as demonstrated in Stute (1984b). Assumption (K) ensures that our
+quantile estimator Fbn 1 (pjx0 ) is monotone in p 2 (0; 1) so CIN1 is non-empty. Kernel functions
+satisfying Assumption (K) include Bisquare and Triweight kernels.
+
+THEOREM 3.1 Suppose Assumptions (X), (S), (K), and (H) hold and x0 is an interior point
+not on the ‡at part of FX . For 0 <
+
+1
+< 1, we get: Pr FY jX
+(pjx0 ) 2 CIN1
+
+!1
+
+as n ! 1.
+
+Given our generic result in Section 2, the proof of this theorem follows immediately after Lemma
+3.2 below and as Fbn (yjx0 ) is a proper distribution function by Assumption (K), the rearranging
+
+step could be skipped. The Lemma below demonstrates the critical role played by the symmetrized
+k-NN estimator Fbn (yjx0 ) in our new con…dence interval which not only avoids the estimation of
+the conditional quantile density function of Y given X = x0 but also the estimation of the density
+
+function of X.
+
+Lemma 3.2 Suppose the conditions of Theorem 2.1 hold. Then
+h
+i
+p
+(i) nhn Fbn ( jx0 ) FY jX ( jx0 ) =) B0 ( ), where B0 ( ) is the Brownian Bridge with the fol-
+
+lowing covariance structure:
+
+Cov(B0 (y1 ); B0 (y2 )) = R (K) FY jX (y1 ^ y2 jx0 )
+
+FY jX (y1 jx0 )FY jX (y2 jx0 ) ;
+
+(ii) Moreover, the conditional density function of Y given X is strictly positive on the interval:
+h
+i
+1
+1
+FY jX
+(p1 jx0 )
+; FY jX
+(p2 jx0 ) +
+for some > 0. Then
+np
+
+h
+nhn Fbn 1 (pjx0 )
+
+i
+o
+1
+1
+FY jX
+(pjx0 ) : p 2 [p1 ; p2 ] =) qp (x0 ) B0 (FY jX
+(pjx0 )):
+
+Lemma 3.2 (i) is restated from Stute (1986). It makes clear that in contrast to the commonly
+used Nadaraya-Watson estimator or the local polynomial estimator of the conditional distribution
+function, the asymptotic variance of Fbn (yjx0 ) does not depend on the density of the covariate X.
+
+In fact, Lemma 3.2 does not even require that X has a density. It is this “density-free” feature of
+Fbn (yjx0 ) that enables us to dispense with the density of X in our new con…dence interval.
+17
+
+Lemma 3.2 (ii) follows from Lemma 2.3 (i), Lemma 21.3 in van der Vaart (1998), and the
+functional Delta method. It implies that for a …xed p 2 [p1 ; p2 ],
+i
+1
+FY jX
+(pjx0 ) =) N 0;
+
+h
+p
+nhn Fbn 1 (pjx0 )
+
+2
+
+p) qp2 (x0 ). So even though the use of Fbn (yjx0 ) frees us from estimating
+the density of X, the asymptotic variance of Fbn 1 (pjx0 ) still depends on the conditional quantile
+
+with
+
+2
+
+= R (K) p (1
+
+density qp (x0 ). As a result, Wald-type inference procedures based on the asymptotic normality of
+1
+Fbn 1 (pjx0 ) would still require a consistent estimator of qp (x0 ) or fY jX FY jX
+(pjx0 ) jx0 which our
+new con…dence interval avoids as well.
+3.1.2
+
+A New Con…dence Band
+
+In many applications, uniformly valid con…dence bands over a range of covariate values may be
+desirable, see Hardle and Song (2010), Song, Ritov, and Hardle (2012) for interesting empirical
+applications in labor economics. Below we extend our con…dence interval CIN1
+
+to con…dence
+
+bands over a range of covariate values.
+Let
+CBN1
+where
+
+np (K)
+
+h
+= Fbn 1 (p
+
+b
+
+cn ( ; K)
+
+np (K) jx) ; Fn
+
+is de…ned in (18) and
+
+cn ( ; K) =
+
+c( )
+(2 log n)1=2
+
+in which c ( ) = log 2
+
+1
+
+(p + cn ( ; K)
+
++ dn
+
+log j log(1
+
+dn = (2 log n)1=2 + (2 log n)
+
+i
+
+np (K) jx)
+
+;
+
+(19)
+
+(20)
+)j and
+2R
+
+1=2
+
+6
+log 4
+
+Note that like our con…dence interval CIN1
+
+0
+
+K (u)
+
+2
+
+4 R(K)
+
+3
+du 7
+5:
+
+, our con…dence band, CBN1
+
+(21)
+
+, is easy to compute
+
+and shares the remarkable density-free feature.
+Below we provide additional conditions under which we show the uniform asymptotic validity
+of our con…dence band. Let J
+X denote an inner compact subset of X .
+˜
+Assumption (S). Assumption (S) holds uniformly for x 2 J .
+˜ The conditional density function fY jX (yjx) has bounded derivative with
+Assumption (X).
+respect to y uniformly for x 2 J . Notice Assumption (X) plus the compactness of J would give
+
+uniform continuity of FX ( ). We list this rather redundant assumption for easy reference.
+R
+Assumption (B). (i) hn 3 log n jyj>an fY (y)dy = O (1), where fY (y) is the marginal density of
+
+1
+Y and (an )1
+n=1 is a sequence of constants tending to in…nity as n ! 1; (ii) inf x2J fY jX (FY jX (pjx) jx) >
+
+18
+
+0; (iii) supy supx2J fY jX (yjx) < 1; (iv) Y has Lipschitz continuous distribution function FY ( ) and
+(X; Y ) has uniformly bounded copula density function c (x; y).
+
+Assumption (B) (i)(ii) are added in accordance with the strong approximation result in Hardle
+and Song (2010). Since we base our analysis on the covariate X after (empirical) probability integral
+transform, some of the assumptions in Hardle and Song (2010) will be satis…ed automatically here
+such as their (A5) and (A6). Also notice that our Assumption (H) on the bandwidth implies
+Assumption (A2) in Hardle and Song (2010) and our Assumption (K) implies their assumption
+(A1). Assumption (B) (iii), (iv) will be needed to establish the uniform Bahadur representation.
+Speci…cally Assumption (B)(iii) aims to control the bias term in the local oscillation uniformly, and
+with the help of (B)(iv) we could utilize certain nice maximal inequality in Stute (1984a) to bound
+the local oscillation of copula process within a shrinking rectangle. Details could be found in our
+Lemmas A7 and A8.
+˜ (X),
+˜ (K), and (H) hold. Then the con…dence
+THEOREM 3.3 Suppose Assumptions (B), (S),
+band CBN1
+
+is asymptotically valid with coverage probability 1
+
+uniformly over x 2 J .
+
+Compared with our con…dence interval, our con…dence band replaces z
+
+=2
+
+with cn ( ; K). The
+
+Lemma below explains why.
+˜ (X),
+˜ (K), and (H), it holds that
+Lemma 3.4 Under Assumptions (B), (S),
+Pr (2 log n)1=2
+
+1
+np (K)
+
+n
+1
+(pjx) jx jFbn 1 (pjx)
+sup fY jX FY jX
+
+x2J
+
+! exp ( 2 exp ( z)) as n ! 1:
+
+o
+1
+FY jX
+(pjx) j
+
+dn
+
+z
+
+Remark 3.1. The above lemma follows from Theorem 2.2 in Hardle and Song (2010) when the
+covariate is uniformly distributed between [0; 1]. The detailed proof consists of a characterization
+of maximal deviation of the conditional CDF estimator, as in our Assumption (GB)(iii) and a
+uniform Bahadur representation of the conditional quantile estimator in terms of the conditional
+1
+CDF estimators evaluated at FY jX
+(pjx).
+
+3.2
+
+Semiparametric Quantile Models
+
+In most applications, the covariate is multivariate. Semiparametric quantile models are introduced in the literature to alleviate the curse of dimensionality associated with fully nonparametric
+models and at the same time are more robust than fully parametric models. Commonly used semiparametric quantile regression models include partial linear and single index quantile regression
+models. Although most work in the literature concern root-n estimation of the …nite dimensional
+parameters, Song, Ritov and Hardle (2012) have constructed uniform con…dence bands for partial
+
+19
+
+linear quantile regressions. Their con…dence bands, however, require the estimation of both the
+conditional quantile density and the density function of the covariate.
+In the next two subsections, we extend our con…dence interval/band for univariate nonparametric quantile in Section 3.1 to both partial linear and single index quantiles.
+3.2.1
+
+Partial Linear Quantile Model
+
+Consider the following partial linear quantile model with a univariate covariate X and multivariate
+covariate Z having support Z
+0
+
+(pjZi ; Xi ) = Zi
+
+0 (p)
+
+Rd :
+
++ gp (Xi )
+
+where fYi ; Xi ; Zi gni=1 is a random sample. We note that the p-th conditional (on Xi = x) quantile
+function of Yi
+
+0
+
+Zi
+
+0 (p)
+
+is gp (x).
+
+Root-n consistent estimators of
+
+0 (p)
+
+are available in Lee (2003) and Song, Ritov, and Hardle
+
+(2012). Semiparametric e¢ cient estimation of the above model has been studied by Lee (2003). Due
+to the root-n consistency of the …nite dimensional parameter and additive structure, the nonparametric component will play the dominating role in the inference for the whole conditional quantile
+0
+function. Denote the random variable Ye = Y
+Z 0 (p), and the Wald type inference requires
+estimation of the conditional density fYe jX (gp (x) jx), see Song, Ritov and Hardle (2012). Utilizing
+the observation that F e 1 (pjx) = gp (x), we would use estimates of F e 1 (p
+Y jX
+
+Y jX
+
+jx) to construct a
+
+CI for gp (x) from the direct approach avoiding the estimation of fYe jX (gp (x) jx). Speci…cally let
+b (p) denote a root-n consistent estimator of
+0 (p). For x0 2 X and z0 2 Z, let
+Pn
+0
+Zi b (p) ygK Fn (x0 )hnFn (Xi )
+i=1 1fYi
+Fbn;PL (yjx0 ; p) =
+:
+(22)
+Pn
+Fn (x0 ) Fn (Xi )
+i=1 K
+hn
+
+Our CI for gp (x0 ) is of the form:
+h
+1
+1
+Fbn;PL
+p z =2 np (K) jx0 ; p ; Fbn;PL
+p+z
+
+=2 np (K) jx0 ; p
+
+i
+
+and that for the conditional quantile (pjz0 ; x0 ) = [z00 0 + gp (x0 )] is de…ned as:
+" 0
+#
+1
+z0 b (p) + Fbn;PL
+p z =2 np (K) jx0 ; p ;
+CIPL1 =
+;
+0
+1
+z0 b (p) + Fbn;PL
+p + z =2 np (K) jx0 ; p
+where
+
+np (K)
+
+(23)
+
+is de…ned in (18).
+
+We now introduce two assumptions.
+Assumption (Z1). Assumptions (S) and (X) hold for Ye ; X , where Ye = Y
+
+Assumption (PL). Zi has a …nite absolute conditional (on Xi ) moment and
+h
+i
+0
+0
+E 1fYi Zi 1 yg 1fYi Zi 2 yg jXi
+Mj 1
+2j
+
+holds uniformly in y, where M is a positive constant.
+20
+
+Z
+
+0
+
+0 (p).
+
+THEOREM 3.5 Suppose b (p)
+
+0 (p)
+
+1=2
+
+= Op n
+
+hold. Then the con…dence interval, CIPL1
+
+, achieves the nominal level (1
+
+Similarly, the new con…dence band is de…ned as
+" 0
+1
+z b (p) + Fbn;PL
+(p cn ( ; K)
+CBPL1 =
+0
+1
+b
+b
+z (p) + Fn;PL (p + cn ( ; K)
+
+where
+
+np (K)
+
+and Assumptions (Z1), (PL), (K) and (H)
+
+np (K) jx; p) ;
+np (K) jx; p)
+
+#
+
+) asymptotically.
+
+;
+
+(24)
+
+is de…ned in (18) and cn ( ; K) is de…ned in (20).
+
+Once we strengthen our assumptions to handle various uniformity issues, we get the asymptotic
+validity of the new con…dence band for the partial linear quantile model.
+0
+˜
+Assumption (Z1).
+Let Ye = Y Z 0 (p). For Z taking values restricted to a given compact
+˜ (X),
+˜ and (B) hold for Ye ; X .
+set K Z; Assumptions (S),
+THEOREM 3.6 Suppose b (p)
+
+0 (p)
+
+hold. Then the con…dence band, CBPL1
+
+1=2
+
+= Op n
+
+˜ (PL), (K) and (H)
+and Assumptions (Z1),
+
+, is asymptotically valid with coverage probability (1
+
+)
+
+uniformly over x 2 J and z 2 K.
+
+0
+1
+(pjx0 ; p). Under mild conditions, one can
+Remark 3.2. Let bPL (pjz0 ; x0 ) = z0 b (p) + Fbn;PL
+show that bPL (pjz0 ; x0 ) is a consistent estimator of (pjz0 ; x0 ), so the generic CI in (3) would
+apply. However since b (pjz0 ; x0 ) may not be monotone in p 2 (0; 1), monotone rearrangement is
+
+PL
+
+needed in order to apply the generic CI to bPL (pjz0 ; x0 ). In contrast, by making use of the partially
+linear structure of the quantile function and applying the direct approach to gp (x0 ), we are able to
+
+construct a computationally simpler CI for (pjz0 ; x0 ) which does not rely on any estimate of the
+conditional quantile density function.
+3.2.2
+
+Single Index Quantile Model
+
+Consider the single index model with multivariate covariate Z:
+fYi ; Zi gni=1 is a random sample.
+
+~ = Z0
+Let X
+
+0 (p)
+
+0
+
+(pjZi ) = gp Zi
+
+0 (p)
+
+and observe FY j1X~ (pj~
+x) = gp z
+
+, where
+0
+
+0 (p)
+
+.
+
+In order to implement the Wald inference one has to estimate the conditional density function
+fY jX~ (gp (~
+x) j~
+x). In contrast, our CI and CB avoid the need to estimate the aforementioned conditional density function.
+Let b (p) denote a consistent estimator of
+
+0 (p)
+
+such as that in Wu, Yu, and Yu (2010) or Kong
+
+and Xia (2012), based on structural adaptive estimation methods. For z0 2 Z, let
+Fbn;SI (yjz0 ; p) =
+
+Pn
+
+i=1 1fYi
+
+Pn
+
+i=1 K
+
+ygK
+
+0
+0
+Fbn (z0 b(p)) Fbn (Zi b(p))
+hn
+
+0
+0
+Fbn (z0 b(p)) Fbn (Zi b(p))
+hn
+
+21
+
+;
+
+(25)
+
+n 0
+on
+. Our CI for (pjz0 )
+where Fbn is the empirical distribution function of Zi b (p)
+i=1
+
+gp (z00
+
+0 (p))
+
+is de…ned as:
+CISI1
+where
+
+np (K)
+
+h
+1
+= Fbn;SI
+p
+
+z
+
+=2
+
+is de…ned in (18).
+
+b 1
+np (K) jz0 ; p ; Fn;SI p + z
+
+=2
+
+np (K) jz0 ; p
+
+i
+
+;
+
+(26)
+
+We make the following assumptions.
+~
+Assumption (Z2). Assumptions (S) and (X) hold for Y; X
+EjjZjj < 1 for some
+
+~ = Z0
+with X
+
+0 (p).
+
+Moreover,
+
+4:
+
+Assumption (HS). In addition to Assumption (H), the bandwidth also satis…es:
+hn 1=2 n
+
+1=4+1=2
+
+p
+
+ln n = o(1) and hn 5=2 n
+
+THEOREM 3.7 Suppose b (p)
+
+Then the con…dence interval, CISI1
+
+0 (p)
+
+1+1=
+
+= Op n
+
+1=2
+
+ln n = o(1):
+and Assumptions (Z2), (K), and (HS) hold.
+
+, achieves the nominal level (1
+
+) asymptotically.
+
+Remark 3.3. The root-n asymptotic normality of the estimator b (p) in Wu, Yu, and Yu
+
+(2010), Kong and Xia (2012) actually requires much stronger assumptions than what we assume
+here. For the restriction on bandwidth, Assumption (H) is maintained, letting hn = n
+could be chosen from (1=5; 1=3) ensuring
+
+. A suitable
+
+4, which is a rather mild restriction:
+
+Again once we strengthen our assumptions in accordance with various uniformity issues, we
+get the asymptotic validity of the new con…dence band de…ned in (27) below for the single index
+quantile model.
+~ = Z 0 0 (p). In addition to the moment restriction in (Z2), Assump˜
+Assumption (Z2).
+Let X
+~ uniformly in a compact set K Z.
+˜ (X),
+˜ and (B) hold for Y; X
+tions (S),
+THEOREM 3.8 Suppose b (p)
+
+0 (p)
+
+= Op n
+
+1=2
+
+˜ (K), and (HS) hold.
+and Assumptions (Z2),
+
+Then the con…dence band below is asymptotically valid with coverage probability (1
+
+over z 2 K:
+
+CBSI1
+where
+
+np (K)
+
+h
+1
+= Fbn;SI
+(p
+
+cn ( ; K)
+
+b 1
+np (K) jz; p) ; Fn;SI (p + cn ( ; K)
+
+is de…ned in (18) and cn ( ; K) is de…ned in (20).
+
+Remark 3.2 for the partially linear model applies here, since bSI (pjz0 )
+
+be monotone in p 2 (0; 1).
+
+4
+
+) uniformly
+
+i
+(K)
+jz;
+p)
+;
+np
+
+(27)
+
+1
+Fbn;SI
+(pjz0 ; p) may not
+
+Simulation
+
+In this section, we investigate the …nite sample performance of our new con…dence intervals for nonparametric and partially linear quantile regressions and compare them with Wald-type con…dence
+22
+
+intervals and two bootstrap con…dence intervals. In order to see the separate e¤ects of estimating
+fX (x) and qp (x), we use both the Nadaraya-Watson estimator and Yang-Stute symmetric k-NN
+estimator of the conditional distribution function of Y given X. In sum, we compare four asymptotic con…dence intervals in our simulation. For the nonparametric quantile regression, they take
+the following forms:
+
+W-NW1
+W-S1
+CI-NW1
+CIN1
+
+2
+
+6
+= 4
+
+z
+
+1
+Fbn;N
+W (pjx)
+
+1
+Fbn;N
+W (pjx) +
+
+z
+
+2
+
+2
+
+qp;N W (x)
+np (K)b
+
+p
+
+b
+
+;
+
+fX (x)
+qp;N W (x)
+np (K)b
+
+p
+
+fbX (x)
+
+3
+
+7
+5;
+
+(28)
+
+i
+1
+b
+(K)
+q
+b
+(x)
+;
+F
+(pjx)
++
+z
+(K)
+q
+b
+(x)
+;
+p
+p
+=2 np
+=2 np
+n
+1
+0
+13
+z =2 np (K)
+z =2 np (K)
+1
+1
+@p
+@p + q
+q
+= 4Fbn;N
+jxA ; Fbn;N
+jxA5 ;
+W
+W
+b
+b
+fX (x)
+fX (x)
+h
+i
+= Fbn 1 p z =2 np (K) jx ; Fbn 1 p + z =2 np (K) jx ;
+
+h
+= Fbn 1 (pjx)
+2
+0
+
+z
+
+(29)
+(30)
+
+1
+where qbp (x) = 1=fbY jX bp (x) jx , qbp;N W (x) = 1=fbY jX bp;N W (x) jx , and Fbn;N
+W (pjx) is the
+generalized inverse of Fbn;N W (yjx) de…ned as
+
+Fbn;N W (yjx) =
+
+Pn
+
+i=1 1fYi
+
+Pn
+
+n
+1 X
+b
+fX (x) =
+K
+nhX
+i=1
+
+ygK
+
+x Xi
+hn;N W
+
+i=1 K
+
+x
+
+Xi
+hX
+
+x Xi
+hn;N W
+
+;
+
+(31)
+
+, and fbY jX (yjx) =
+
+Pn
+
+i=1 K
+
+hC;Y
+
+y Yi
+hC;Y
+
+Pn
+
+i=1 K
+
+K
+
+x Xi
+hC;X
+
+x Xi
+hC;X
+
+;
+
+(32)
+
+in which hX , hC;X , hC;Y , and hn;N W are all bandwidths that need to be chosen.
+While the …rst two con…dence intervals, W-NW1
+
+and W-S1
+
+, are both Wald-type con…dence
+
+intervals relying on a consistent estimator of the conditional quantile density function, W-S1
+
+does
+
+not require a consistent estimator of the covariate density function fX (x). The two new con…dence
+intervals,10 CIN1
+
+and CI-NW1
+
+, make use of the conditional quantile estimators directly. They
+
+di¤er in the quantile estimators being used the consequence of which is that CIN1
+on any density estimation, but CI-NW1
+
+does not depend
+
+depends on a consistent estimator of the covariate density
+
+fX (x).
+Throughout the simulation, we used the Bisquare Kernel function, K (u) =
+
+15
+16
+
+1
+
+u2
+
+2
+
+Ifjuj
+
+1g. The choice of bandwidths is delicate and will be discussed below. Among these four con…dence
+intervals, our new con…dence interval, CIN1
+
+, is the least demanding in terms of bandwidth choice,
+
+as it only requires choosing one bandwidth which is needed to estimate the conditional quantile
+10
+
+Section 3 establishes the asymptotic validity of CIN1
+using Theorem 2.1.
+
+. The asymptotic validity of CI-NW1
+
+23
+
+can be established
+
+function. In sharp contrast, the Wald-type con…dence interval, W-NW1
+
+, is the most demanding,
+
+as there are four bandwidths involved.11
+As the Wald-type inference is known to be poor in linear models (see Kocherginsky, He, and
+Mu, 2005), we also compared our con…dence intervals with the following two bootstrap competitors:
+Boot-Norm1
+Boot-Perc1
+where
+
+Boot
+
+percentile.
+
+1
+= Fbn;N
+W (pjx)
+
+1
+= Fbn;N
+W (pjx)
+
+z
+
+=2
+
+zBoot;1
+
+b 1
+Boot ; Fn;N W (pjx) + z
+
+=2 Boot
+
+b 1
+=2 ; Fn;N W (pjx) + zBoot;
+
+=2
+
+i
+
+;
+
+;
+
+(33)
+
+1
+is the bootstrap standard deviation for Fbn;N
+W (pjx) and zBoot;
+
+In the tables below, we denote these con…dence intervals, W-NW1
+CIN1
+
+i
+
+, Boot-Norm1
+
+and Boot-Perc1
+
+=2
+
+is the bootstrap
+
+, W-S1
+
+, CI-NW1
+
+,
+
+as ‘Asy NW’, ‘Asy CI’, ‘New NW’, ‘New CI’, ’BootNm’,
+
+and ’BootPerc’respectively.
+
+4.1
+
+Nonparametric Quantile Regression
+
+The …rst two designs are taken from Yu and Jones (1998). Model 1 gives curvy quantile with
+homoskedasticity while Model 2 exhibits almost linear quantile with heteroskedasticity:
+Model 1 :
+Model 2 :
+
+Yi = 2:5 + sin (2Xi ) + 2 exp 16Xi2 + 0:5"i and
+p
+Yi = sin (0:75Xi ) + 1 + 0:3 (sin (0:75Xi ) + 1)"i ;
+
+where Xi and "i are independent bivariate normal with standard normal marginal distributions.
+We computed the coverage rates of six con…dence intervals based 5; 000 simulations with sample
+size n varying from 200, 500 to 1000 and nominal size equal to 95%. The bootstrap replication12
+is set to be 500. The con…dence interval, W-NW1
+hn;N W in the quantile estimator is chosen to be n
+
+, involves four bandwidths: (i) the bandwidth
+1=20 h
+Y J,
+
+where hY J is the rule of thumb band-
+
+width in Yu and Jones (1998) based on a preliminary Ruppert-Sheather-Wand bandwidth. The
+presence of the factor n
+
+1=20
+
+(H); (ii) the bandwidth hX
+
+re‡ects the slightly undersmoothing requirement in our Assumption
+in fbX (x) is chosen to be the Sheather-Jones bandwidth with Silver-
+
+man’s rule of thumb as the pilot estimate; (iii) the two bandwidths (hC;Y ; hC;X ) in the conditional
+
+quantile density estimator are chosen by the ’normal-reference’rule in Racine’s np package. The
+bandwidths involved in the remaining three con…dence intervals, W-S1
+
+, CI-NW1
+
+, and CIN1
+
+,
+
+are chosen in the same way. However it is worth mentioning that hn and hn;N W are di¤erent as the
+11
+
+The results in Tables 1-7 reveal the best performance of the Wald-type con…dence intervals when these bandwidths
+are di¤erent and chosen carefully and the worst performance when these bandwiths are chosen to be the same.
+12
+To ease the computational burden, we …xed the bandwidth for the bootstrap sample.
+
+24
+
+…rst one is based on the sample (Yi ; Fn (Xi )) after we transform Xi using its empirical distribution
+function.13 The results are presented in Tables 1-3 for di¤erent sample sizes.
+Insert Tables 1-3 here
+Several observations follow immediately from Tables 1-3. First, the performance of the two new
+CIs based on pairs of quantile estimates is very stable across models, quantile levels, and sample
+sizes, especially our new CI using the symmetric k-NN estimator— its performance is comparable
+to the computationally more extensive Bootstrap percentile method and in many cases better with
+…nite sample coverage rate very close to the nominal level even for sample size 200; Second, the
+performance of the two Wald-type CIs is not as stable. For small sample sizes, their coverage rates
+at most covariate points for both models are not close to the nominal level. Even at sample size
+1000, the coverage rates of the two Wald-type CIs could be far away from the nominal level, e.g.,
+0.991, 0.9896 for Model 1 when x = 0 and p = 0:5 and 0.9302, 0.9254 for Model 2 when x = 1:5 and
+p = 0:25; For the two bootstrap con…dence intervals, the one based on normal approximation is
+biased towards undercovering even in relatively large samples, while the one based on the percentile
+approach is much more accurate, but showing some variability in small samples.
+To see the sensitivity of Wald-type con…dence intervals to the choice of bandwidths, we also
+computed their coverage rates using one bandwidth only, the bandwidth in the conditional quantile
+estimate. Table 4 presents the results for sample size 1000. For comparison purposes, we also
+presented the coverage rates for the two new con…dence intervals, CIN1
+coverage rates for CIN1
+rate of CI-NW1
+
+and CI-NW1
+
+.14 The
+
+are the same as in Table 3. Interestingly we observe that the coverage
+
+does not change much, but the performance of the two Wald-type intervals is
+
+very poor for Model 1.
+Insert Table 4 here
+Overall these results reveal the superior performance of our direct approach and it is also
+worthwhile to avoid estimating covariate’s density function using CIN1
+
+. In comparision the
+
+sensitivity of Wald-type con…dence intervals to the choice of bandwidths in the estimation of the
+conditional quantile density function is quite severe.
+13
+
+We need to truncate the support of X in order to avoid the crash of computation of Ruppert-Sheather-Wand
+bandwidth for the Nadaraya-Watson type estimators. In particular, for Model 1, we restrict the computation of the
+R-S-W bandwidth only for those points whose covariate values are in [ 1:65; 1:65] and for Model 2, the restricted
+range is [ 2; 2] : When it comes to the small sample with 200 observations, we always truncate at [ 0:75; 0:75] for
+both models. In contrast, the empirical probability integral transformation prevents this crash due to the equal
+spacing of sample points.
+14
+The two bootstrap con…dence intervals also require only one bandwidth from estimating the conditional quantile,
+hence the results would not change from Table 3 and we will not replicate that part.
+
+25
+
+4.2
+
+Partial Linear Quantile Regression
+
+The design is adapted from Song, Ritov, and Hardle (2012) and the …nite dimensional parameter
+was estimated by the method proposed in Song, Ritov, and Hardle (2012):
+Model 3: Yi = 2Zi + Xi 2 + "i ;
+where Xi , Zi , and "i are independent of each other, Xi
+
+U (0; 1), Zi
+
+U (0; 2), and "i is standard
+
+normal.
+Our new con…dence interval, CIPL1
+
+, is presented in (23). Modi…cations will be required
+
+to the other three types of con…dence intervals for partial linear models. Speci…cally, we need to
+replace Yi with Yi Zi b in computing Fbn;N W (pjx) ; Fbn (pjx) ; and fbY jX b (pjx) jx and also add
+z 0 b to both end points of the intervals in (28), (29), and (30). The bandwidths are chosen in the
+same way as in the nonparametric model. Tables 5 and 6 report results for n = 500; 1000.
+Insert Tables 5 and 6 here
+Like in the nonparametric case, the two new con…dence intervals based on pairs of estimated
+quantiles perform remarkably well across covariate values, quantile levels, and sample sizes. Their
+performance is comparable and sometimes better than the Boot-Norm1
+than Boot-Perc1
+
+which performs better
+
+for the partial linear model. In contrast the two Wald-type intervals do not
+
+perform well even when the sample size is 1000.
+We also computed the coverage rates of the …rst three con…dence intervals using one bandwidth
+only, the bandwidth in the conditional quantile estimate. Table 7 presents the results for sample
+size 1000. Again the performance of the Wald-type intervals deteriorates dramatically.
+Insert Table 7 here
+
+5
+
+Concluding Remarks
+
+In this paper, we have constructed a generic con…dence interval for the p-th conditional quantile
+from any preliminary conditional quantile estimator using the direct approach. We have shown
+that our generic CI is asymptotically valid for any quantile function (parametric, nonparametric,
+or semiparametric), any method of estimation, and any data structure, provided that the conditional
+quantile function satis…es some mild smoothness assumptions and the original quantile estimator is
+such that its associated quantile process converges weakly to a Gaussian process with a covariance
+kernel proportional to the conditional (quantile) density function. In the same spirit, we have also
+constructed generic con…dence bands across a range of covariate values from conditional quantile
+estimators de…ned as the generalized inverse of conditional distribution estimators.
+26
+
+To further demonstrate the ‡exibility and simplicity of the direct approach, we have constructed
+complete “density-free”con…dence intervals and bands for conditional quantiles based on the YangStute estimator for nonparametric conditional quantile function with univariate covariate and two
+semiparametric conditional quantile functions with multivariate covariate. In contrast to Wald-type
+con…dence intervals or bands based on the asymptotic distributions of estimators of the conditional
+quantiles, our con…dence intervals and bands circumvent the need to estimate the density of the
+covariate and the conditional quantile density of the response variable, thus freeing practitioners
+from choosing bandwidths involved in estimating the covariate density and the conditional quantile
+density. A small Monte Carlo study reveals the superior …nite sample performance of our new CIs
+compared with the Wald-type CIs that are sensitive to the choice of bandwidth needed to estimate
+the conditional quantile density function and two bootstrap CIs.
+As far as we know, this paper is the …rst paper presenting a systematic study of the direct
+approach to inference in nonparametric and semiparametric quantile models. Given the simplicity and superior performance of this approach compared with existing approaches, it would be
+worthwhile investigating its applicability in other contexts. One example is inference on the …nite
+dimensional parameter in semiparametric models. This paper has focused exclusively on inference
+for the conditional quantiles. In semiparametric models, the …nite dimensional parameter might be
+of interest, but this is beyond the scope of the current paper.
+
+6
+
+Appendix A. Technical Proofs For Section 3.1
+
+Throughout the proofs, M denotes an unspeci…ed positive constant and its value does not depend
+on n and typically does not depend on x 2 J and y either (This will be clear in speci…c context that
+
+M is used);
+and
+
+denotes an intermediate value in the Taylor series expansion. The values of both M
+
+may vary from line to line. Also the limits are taken as n ! 1 unless stated otherwise. We
+
+rely on the device to control the local oscillation of empirical process on various occasions, let
+Bn (x; Xi ) = Fn (x)
+
+Fn (Xi )
+
+FX (x) + FX (Xi ):
+
+The following bounds hold almost surely in fact, but it is su¢ cient for our purpose in the present
+form.
+Lemma A.1 (Stute, 1982) Under Assumptions (H), (K), and (X),
+p
+(i) for any given x0 2 X , we have: nhn 1 supjFX (x0 ) FX (Xi )j M hn jBn (x0 ; Xi ) j = Op (1);
+q
+(ii) uniformly over x 2 X , we have: n (hn log n) 1 supjFX (x) FX (Xi )j M hn jBn (x; Xi ) j = Op (1).
+We will also make frequent use of (local) U-process theory, thus some notations and terminologies
+will be collected here from Nolan and Pollard (1987), Gine and Mason (2007) for easy reference.
+27
+
+We say a class of function F is of VC type with respect to an envelope F if the covering number
+N (F; L2 (Q) ; "), the smallest number of L2 (Q) open balls of radius " required to cover F, satis…es
+!v
+M kF kL2 (Q)
+; for 0 < " 2 kF kL2 (Q) ,
+N (F; L2 (Q) ; ")
+"
+
+for some universal positive constant M; v for every probability measure Q on the underlying space.
+For a kernel function f of k variables, we denote
+k)! X
+
+f (Xi1 ;
+
+; im ) : 1
+
+ij
+
+(n
+
+Ukn (f ) =
+
+n!
+
+where Inm = f(i1 ;
+
+; Xik ) ;
+
+i2Ink
+
+n; ij 6= ik if j 6= kg. Now suppose f is symmetric in its entries,
+
+we have the well-known Hajek-Hoe¤ding decomposition stated as:
+n
+Um
+(f )
+
+Ef =
+
+m
+X
+
+Ukn (
+
+kf ) ;
+
+k=1
+
+where
+kf
+
+=(
+
+x1
+2
+
+Moreover let
+P mf 2
+
+P)
+
+(
+
+xk
+
+P)
+
+Pm
+
+k
+
+f:
+
+(which we call maximal variance) is any number satisfying
+2
+
+F
+
+M 2:
+
+The following lemma comes handy when we consider various local U-processes in the proofs, when
+m = 1 similar bound appears in Proposition 1 in Einmahl and Mason (2005) for local empirical
+process.
+Lemma A.2 (Gine and Mason, 2007, Theorem 8) Let F be a collection of measurable symmetric
+
+functions f : S m ! R, bounded up by M in absolute values, and let P be any probability measure
+on (S; S) : Assume F is of VC type with envelope function F
+em ; v
+
+v. Then for every m 2 N , and A
+nk E kUkn (
+assuming n
+
+2
+
+2
+k f )kF
+
+C2 log
+
+C1 2k
+A
+
+2
+
+log
+
+A
+
+M and with characteristics A and
+
+1; there exist constants C1; C2 , s.t. for any k = 1; :::; m;
+
+k
+
+;
+
+(A.1)
+
+.
+
+Recall
+n
+
+Fen ( jx) =
+
+X
+1
+1fYi
+nhn fbU (x) i=1
+
+gK
+
+FX (x)
+
+FX (Xi )
+hn
+
+28
+
+,
+
+where we also de…ne fbU (x) and feU (x) as
+1 Xn
+fbU (x) =
+K
+i=1
+nhn
+
+Fn (x)
+
+Fn (Xi )
+
+hn
+
+1 Xn
+and feU (x) =
+K
+i=1
+nhn
+
+FX (x)
+
+FX (Xi )
+hn
+
+:
+
+Instead of treating Fbn ( j ) as the nearest neighbor estimator based on ranks, it could also be viewed
+
+as a feasible kernel estimator after taking probability integral transformation on the covariate. In
+fact to show the validity of our new con…dence band, we proceed by approximating Fbn ( j ) by
+Fen ( j ) uniformly and then resort to the results in Hardle (1989), Hardle and Song (2010) to get
+the desired limiting distribution. Before that, let us …rst characterize the bias term.
+
+˜ (ii) and (K), for any interior point x 2 X and any y 2 Y,
+Lemma A.3 Given Assumptions (S)
+
+when hn ! 0, we have
+Z
+1
+FY jX (yjXi ) K
+hn
+
+FX (x)
+
+FX (Xi )
+hn
+
+where M is independent of y and x in J
+
+dFX (Xi )
+
+FY jX (yjx)
+
+M h2n ;
+
+X.
+
+Proof. Let u = FX (x). Then
+Z
+FX (x) FX (Xi )
+1
+FY jX (yjXi ) K
+dFX (Xi ) FY jX (yjx)
+hn
+hn
+Z
+=
+FY jX yjFX 1 (u U hn ) K (U ) dU FY jX yjFX 1 (u)
+Z
+=
+[H (yju U hn ) H (yju)] K (U ) dU :
+The …rst equality is obtained by a change of variables and the second one is just rewritten in terms
+˜ (ii) we
+of H (yju). Notice that U 2 [0; 1]. Now take the Taylor expansion and by Assumption (S)
+have
+
+H (yju
+with j (u; U ) j
+
+U hn )
+Lh2n
+2 ,
+
+0
+
+H (yju) = U hn H (yju) + (u; U )
+for an L independent of u or y: The result follows immediately from As-
+
+sumption (K). Q.E.D
+The following sequence of lemmas is patterned after Ser‡ing (1980) to get the uniform Bahadur
+representation in Lemma A.8, thereafter the validity of con…dence band could be argued as when
+we present the generic results.
+˜ we have:
+Lemma A.4 Under Assumptions (H), (K), and (X),
+s
+nhn b
+sup sup
+Fn (yjx) Fen (yjx) = op (1) :
+log
+n
+y2Y x2J
+29
+
+(A.2)
+
+Proof. Decompose Fbn (yjx)
+=
+
+=
+
+Fbn (yjx)
+
+Fen (yjx) as in a standard way,
+
+FY jX (yjx) + FY jX (yjx) Fen (yjx)
+Xn
+Fn (x)
+1fYi yg FY jX (yjx) K
+
+1
+Fn (Xi )
+i=1
+b
+h
+n
+nhn fU (x)
+X
+n
+FX (x) FX (Xi )
+1
+1fYi yg FY jX (yjx) K
+i=1
+e
+hn
+nhn fU (x)
+Xn
+1
+Fn (x) Fn (Xi )
+FX (x) FX (Xi )
+1fYi yg FY jX (yjx) K
+K
+i=1
+b
+h
+hn
+n
+nhn fU (x)
+!
+FX (x) FX (Xi )
+1
+1 Xn
+1
+1fYi yg FY jX (yjx) K
+:
+i=1
+nhn
+hn
+fbU (x) feU (x)
+
++
+
+In order to handle the denominator and the term in parenthesis in the above decomposition, we
+need to bound the di¤erence fbU (x) feU (x):
+1 X
+Fn (x) Fn (Xi )
+FX (x) FX (Xi )
+fbU (x) feU (x) =
+K
+K
+nhn
+hn
+hn
+X
+FX (x) FX (Xi )
+1
+0
+K
+=
+[Fn (x) FX (x) Fn (Xi ) + FX (Xi )]
+2
+nhn
+hn
+1 X 00
++ 3
+K ( ) [Bn (x; Xi )]2 :
+nhn
+q
+log n
+uniformly.
+It would be clear in a moment that the above di¤erence could be shown as Op
+nhn
+
+For the present purpose, it su¢ ces that the di¤erence is uniformly op (1) : Hence we could just focus
+on the …rst term’s numerator.
+Similarly, the numerator for the …rst term admits the following decomposition,
+1 X
+Fn (x) Fn (Xi )
+FX (x) FX (Xi )
+1fYi yg FY jX (yjx) K
+K
+nhn
+hn
+hn
+X
+1
+FX (x) FX (Xi )
+0
+=
+1fYi yg FY jX (yjx) K
+[Fn (x) FX (x) Fn (Xi ) + FX (Xi )]
+2
+nhn
+hn
+1 X
+00
+1fYi yg FY jX (yjx) K ( ) [Bn (x; Xi )]2
++
+3
+nhn
+=
+_ In + IIn
+For IIn , as argued in Lemma 1 in Stute (1984b), for any x, we only need to consider those sample
+points for which jFn (x)
+
+supx jF (x)
+
+supx jFX (x)
+IIn
+
+Fn (x)j
+
+Cn
+
+FX (X)j
+Op
+
+Fn (Xi )j
+
+hn log n
+n
+
+1=2 .
+
+hn and by the Kvorezky-Kiefer-Wolfowitz bound, we have
+
+Therefore we only need to consider the oscillation restricted by
+
+Chn , so
+jK ( ) j X
+1fYi
+nh3n
+00
+
+yg
+
+FY jX (yjx) = Op
+
+log n
+nh2n
+
+:
+
+To handle In , we …rst show that it could be written as a scaled U-statistic plus some smaller order
+term, and then we characterize the approximation order of the U-statistic by
+q its Hajek projection.
+log n
+Finally we end the derivation by showing that the Hajek projection is op
+nhn :
+30
+
+Let Fni
+
+1 (x)
+
+be the leave-one-out empirical distribution function and de…ne Bni
+
+1 (x; Xi )
+
+simi-
+
+larly. Proceeding as Lemma 2 in Stute (1984b), we have
+Fn (x) = Fni
+
+1 (x)
+
+n
+
+Therefore, Bn (x; Xi ) = Bni
+
+1
+
+Fni
+
+1 (x)
+
+1 (x; Xi )
+
+1
+
++n
+
+1fXi
+
++ Op n
+
+1
+
+xg:
+
+, where the residual term’s order is uniform w.r.t.
+
+x by standard Glivenko-Cantelli result.
+Indeed the diagonal term is of smaller order, and now it su¢ ces to consider the following Uprocess indexed by x: IIn = hn 2 U2n f1 + s:o:, where
+U2n f1
+=
+
+0
+
+X1B
+2
+B
+n (n 1)
+2@
+i6=j
+
+1fYi
++ 1fYj
+
+yg
+
+FY jX (yjx) K
+
+yg
+
+0
+
+FY jX (yjx) K
+
+FX (x) FX (Xi )
+hn
+0
+
+FX (x) FX (Xj )
+hn
+
+1fXj xg FX (x)
+1fXj Xi g + FX (Xi )
+1fXi xg FX (x)
+1fXi Xj g + FX (Xj )
+
+Consider the following function class:
+)
+(
+0
+1fYi yg FY jX (yjx) K FX (x) hnFX (Xi )
+;
+F1 =
+[1fXj xg FX (x) 1fXj Xi g + FX (Xi )] : y 2 R; x 2 J ; hn > 0
+which could be written as produce of three sub-classes:
+F1;1 = f 1fYi
+F1;2 = fK
+
+0
+
+yg
+
+FX (x)
+
+FY jX (yjx) : y 2 R; x 2 J g;
+
+FX (Xi )
+: x 2 J ; hn > 0g;
+hn
+xg FX (x) 1fXj Xi g + FX (Xi )] : x 2 J g:
+
+F1;3 = f[1fXj
+
+F1;1 is of VC type because FY jX (yjx) is bounded and monotone along y axis and Lipschitz con0
+
+tinuous along x axis over the compact set J . Because K ( ) has bounded variation due to the
+bounded second order derivative, F1;1 is also of VC type by Nolan and Pollard (1987). So is F1;3 ,
+˜ we have
+noting FX (x) is uniformly continuous by Assumption (X).
+log N (F; L2 (Q) ; ")
+
+M log
+
+1
+"
+
+; for any measure Q,
+
+for any probability measure Q by Theorem 2.10.20 in Van der Vaart and Wellner (1996). Therefore,
+as the expectation of the U-statistic is zero and by the moment bound in Lemma A.2, we can
+approximate U2n f1 by its Hajek-Hoe¤ding Projection with an error of order n
+1 n
+1
+U2 f1 = 2 U1n
+2
+hn
+hn
+
+1 f1
+
++ Op
+
+1
+nh2n
+
+:
+
+31
+
+1,
+
+i.e.,
+
+1
+
+C
+C:
+A
+
+Next, we compute the projection explicitly. Let Uj = FX (Xj ), Ui = FX (Xi ), and u = FX (x).
+Then
+n Z
+1 X
+1 f1 =
+nh2n
+
+1 n
+U
+h2n 1
+
+=
+
+j=1
+
+[1fFX (Xj )
+n Z
+1 X
+nhn
+
+Z
+
+[H (yju
+
+Z
+
+sup
+
+n
+
+j=1
+
+M hn
+
+= Op
+
+[H (yjUi )
+
+FX (x)
+
+FY jX (yjx) K
+
+1fFX (Xj )
+
+H (yju)] [1fUj
+
+ug
+
+0
+
+vhn )
+
+H (yju)] [1fUj
+
+FX (x)
+
+FX (Xi )
+hn
+
+FX (Xi )g + FX (Xi )] dFX (Xi )
+u
+
+1fUj
+
+j=1
+
+1X
+n
+
+=
+
+FX (x)g
+
+FY jX (yjXi )
+
+Ui g + Ui ] dK
+
+ug
+
+u
+
+1fUj
+
+u
+
+1fUj
+
+u
+
+vhn g + u
+
+u
+
+Ui
+hn
+
+vhn g + u
+
+vhn ] dK (v)
+
+n
+
+1X
+1fUj ug u
+ju vj hn n j=1
+!
+!
+r
+r
+log n
+log n
+hn
+= op
+;
+nhn
+nhn
+
+where u = FX (x). Notice that jH (yjU )
+
+H (yju) j
+
+vhn djK (v) j
+
+M hn for U satisfying jU
+
+uj
+
+hn
+2 .
+
+The term
+
+after the sup in the above inequality is nothing but the local oscillation of the uniform empirical
+process, whose order q
+is given in Lemma A.1. Also K (v) is of bounded variation, hence the integral
+log n
+nhn
+
+term is of order Op
+
+:
+
+In sum, by our Assumption (H), we have
+sup sup jFbn (yjx)
+y2Y x2J
+
+=
+
+"
+
+Op
+
+hn
+
+r
+
+log n
+nhn
+
+!
+
+Fen (yjx) j
+
++ Op
+
+log n
+nh2n
+
+#
+
++ Op
+
+r
+
+log n
+nhn
+
+!
+
+op (1) = op
+
+r
+
+log n
+nhn
+
+!
+
+:
+
+Q.E.D
+˜ (S)(ii),
+˜
+Lemma A.5 Under Assumptions (H), (K), (X),
+and (B)(iii), it holds that for any "n =
+q
+q
+log n
+1
+b 1
+O
+FY jX
+(pjx) = Op
+(nhn ) 1 log n :
+nhn , supx2J Fn (p + "n jx)
+Proof. First of all we have
+sup sup Fen (yjx)
+y2Y x2J
+
+FY jX (yjx) = Op
+
+r
+
+log n
+nhn
+
+!
+
+:
+
+This follows directly from Theorem 3 in Einmahl and Mason (2005). Actually it is even easier,
+because the transformation makes the covariate uniformly distributed, and there is no denominator
+of any kernel function. Note that we always use an undersmoothing bandwidth to kill the bias
+(uniformly over x) as shown in Lemma A.2.
+
+32
+
+It follows from Lemmas A.3 and A.4 that
+!
+r
+log
+n
+:
+sup sup Fbn (yjx) FY jX (yjx) = Op
+nhn
+y2Y x2J
+
+Hence,
+
+"
+
+Pr Fbn 1 (p + "n jx)
+"
+
+= Pr p + "n > Fbn
+2
+
+= Pr 4
+= Pr
+
+"
+
+> "n + Fbn
+
+q
+
+1
+FY jX
+
+"
+
+(pjx) + M
+
+n
+
+nhn
+jx
+log n
+
+q
+1
+nhn
+FY jX FY jX
+(pjx) + M log
+n jx
+q
+q
+1
+1
+nhn
+nhn
+jx
+F
+FY jX
+(pjx) + M log
+F
+(pjx)
++
+M
+Y jX
+n
+log n jx
+Y jX
+
+3
+5
+
+fY jX ( jx) M >
+q
+q
+1
+nhn
+nhn
+F 1 (pjx) + M log
+(pjx)
++
+M
+jx
+F
+F
+Y
+jX
+n
+log n jx
+Y jX
+
+lim lim sup Pr Fbn 1 (p + "n jx)
+
+M !1
+
+s
+
+#
+nhn
+log n
+!#
+
+p
+
+"n + Fbn
+
+log n
+nhn
+
+Therefore we obtain
+
+1
+FY jX
+(pjx) > M
+
+s
+
+(A.3)
+
+F
+
+1
+
+(pjx)
+
+M
+
+s
+
+#
+
+:
+
+#
+nhn
+=0
+log n
+
+by the requirement on cn and (A.3). Analogous argument shows that
+s
+"
+#
+nh
+n
+1
+1
+lim lim sup Pr Fbn (p + "n jx) F (pjx) < M
+=0
+M !1
+log n
+n
+and the conclusion follows. Q.E.D
+
+˜ and (S)(ii),
+˜
+Lemma A.6 q
+Under Assumptions (H), (K), (X),
+uniformly in y and x 2 J and for
+log n
+any n = Op
+nhn , it holds that
+Fbn (y +
+
+Fbn (yjx)
+
+n jx)
+
+Fen (y + an jx) + Fen (yjx) = op
+
+log n
+nhn
+
+:
+
+Proof. The proof follows that of Lemma A.3 closely, except that we have 1fYi
+1fy < Yi
+
+y+
+
+ng
+
+(say
+
+additional parameter
+
+0 w.l.o.g.) and index this new functional class by f2 2 F2 incorporating
+
+n
+n,
+
+Everything works through straightforwardly up to the Hajek-Hoe¤ding
+
+projection. Now the projection becomes
+n Z
+1 X
+1 n
+U
+f
+=
+[H (y +
+1 2
+h2n 1
+nhn
+j=1
+
+[1fUj
+
+ug
+
+n M sup
+
+= op
+
+u
+
+Z
+
+log n
+nhn
+
+yg replaced by
+
+1fUj
+
+n jU )
+
+Ui g + Ui ] dK
+
+H (yjU )]
+u
+
+Ui
+hn
+
++ s:o:
+
+n
+
+1X
+1fUj
+n
+
+ug
+
+u
+
+1fUj
+
+j=1
+
+;
+33
+
+u
+
+vhn g + u
+
+vhn djK (v) j
+
+where the integral term in the above inequality is handled similarly as the proof of Lemma A.3.
+For IIn , this
+IIn = Op
+
+nM
+
+term could also be factored out:
+K ( )X
+1fy < Yi
+nh3n
+00
+
+hn log n
+n
+
+y+
+
+ng
+
+FY jX (y +
+
+n jx)
+
++ FY jX (yjx)
+
+00
+
+= Op
+= Op
+
+hn log n K ( )
+Prfy < Yi
+n
+h3n
+n log n
+:
+nh2n
+
+y+
+
+ng
+
+n fY jX
+
+(yjx) + s:o;
+
+Q.E.D
+˜ (S)(ii),
+˜
+Lemma A.7 Under Assumptions (H), (K), (X),
+and (B)(iii)(iv),
+i
+h
+sup
+sup
+Fen (y + yjx) Fen (yjx)
+FY jX (y + yjx) FY jX (yjx)
+x2J y2R;jyj "n
+
+= Op
+
+log n
+nhn
+
+3=4
+
+!
+
+;
+
+where "n is any positive sequence of order O
+
+q
+
+log n
+nhn
+
+.
+
+Proof. The standard decomposition shows that the problem could be simpli…ed a bit:
+h
+i
+Fen (y + yjx) Fen (yjx)
+FY jX (y + yjx) FY jX (yjx)
+=
+
+=
+
+Xn
+1
+FX (x) FX (Xi )
+1fYi y + yg 1fYi yg
+K
+i=1
+e
+F
+(y
++
+yjx)
+F
+(yjx)
+hn
+Y jX
+Y jX
+nhn fU (x)
+!
+FX (x) FX (Xi )
+1 Pn
+1
+[1fY
+y
++
+yg
+1fY
+yg]
+K
+i
+i
+i=1
+nhn
+hn
+feU (x)
+FY jX (y + yjx) FY jX (yjx)
+
++
+
+FY jX (y + yjx) FY jX (yjx)
+feU (x)
+
+h
+1
+
+i
+feU (x) ;
+
+noting feU (x) converges to 1 uniformly with a rate of
+
+p
+log n= (nhn ) .It is clear from the above
+
+decomposition that we only need to work with the …rst term’s numerator. Another simpli…cation
+is that we could modulo the bias term along the derivation. By the existence of second order
+derivative FY jX ( j ) along y axis:
+E
+=
+=
+
+1
+hn
+1
+hn
+
+= Op
+
+1
+FX (x) FX (Xi )
+[1fYi y + yg 1fYi yg] K
+FY jX (y + yjx) FY jX (yjx)
+hn
+hn
+Z
+FX (x) FX (Xi )
+FY jX (y + yjXi ) FY jX (yjXi ) K
+dFX (Xi )
+FY jX (y + yjx) FY jX (yjx)
+hn
+Z
+FX (x) FX (Xi )
+log n
+fY jX (yjXi ) yK
+dFX (Xi ) fY jX (yjx) y + O
+hn
+nhn
+!
+!
+r
+log n
+log n 3=4
+h2n = op
+;
+nhn
+nhn
+34
+
+Hence it su¢ ces to characterize the stochastic order of the following term uniformly:
+! (x; y; hn ; "n ) =
+
+1 Xn
+[1fYi
+i=1
+nhn
+
+1 Xn
+[1fYi
+i=1
+nhn
+
+E
+
+y + yg
+
+y + yg
+1fYi
+
+1fYi
+
+yg] K
+
+FX (x)
+
+yg] K
+
+FX (x)
+
+FX (Xi )
+
+FX (Xi )
+hn
+:
+
+hn
+
+Notice that by Lipschitz continuity of FY ( ), the shrinkage along y axis could be translated to FY ( )
+upon multiplying some …nite Lipschitz constant L in front, we assume y is nonnegative w.l.o.g.
+j! (x; y; hn ; "n ) j
+Z
+Z
+M FY (y)+Ly
+FX (x) FX (X)
+K
+d jCn (FX (X) ; FY (Y ))
+hn FY (y)
+hn
+Z
+Z
+M FY (y)+Ly FX (x)+M hn
+d jCn (u; v) C (u; v)j ;
+hn FY (y)
+FX (x) M hn
+
+C (FX (X) ; FY (Y ))j
+
+where Cn and C denote the empirical and population copula function between (Y; X) respectively.
+The double integral term corresponds to the multivariate local oscillation of empirical process within
+a shrinking rectangle studied by Stute (1984b). By Theorem 1.5 or Theorem 3.1 in Stute (1984a)
+and existence and boundedness of the copula density we have
+Z FY (y)+Ly Z FX (x)+M hn
+d jCn (u; v) C (u; v)j
+sup
+y;x
+
+FX (x) M hn
+
+FY (y)
+
+q
+hn "n log (hn "n )
+p
+= Op @
+n
+0p
+
+Hence overall, we get:
+
+sup j! (x; y; hn ; "n ) j
+
+Op
+
+1
+hn
+
+1
+
+1
+
+p
+
+A = Op
+
+p p
+hn log n
+p
+n
+
+p
+hn log n
+p
+n
+
+log n
+nhn
+
+log n
+nhn
+
+1=4
+
+!
+
+1=4
+
+= Op
+
+!
+
+:
+
+3=4
+
+log n
+nhn
+
+!
+
+:
+
+Q.E.D
+˜ (S)(ii),
+˜
+Lemma A.8 Under Assumptions (H), (K), (X),
+and (B)(ii)(iii)(iv), we have
+Fbn 1 (p + "n jx)
+for any "n = O
+
+q
+
+1
+FY jX
+(pjx) =
+
+log n
+nhn
+
+1
+1
+(pjx) jx
+fY jX FY jX
+
+h
+p + "n
+
+1
+Fbn FY jX
+(pjx) jx
+
+, where Rn (x) satis…es: supx2J jRn (x) j = Op
+
+35
+
+(nhn )
+
+1
+
+i
+
+log n
+
++ Rn (x)
+
+3=4
+
+.
+
+Proof. Setting
+
+n
+
+= Fbn 1 (p + "n jx)
+
+1
+FY jX
+(pjx), we have the following successive approxima-
+
+tions similar as proving Theorem 2.2
+1
+Fbn FY jX
+(pjx) +
+
+1
+= Fen FY jX
+(pjx) +
+
+n jx
+
+= fY jX
+
++
+
+=
+
+h
+1
+FY jX FY jX
+(pjx) +
+p (x) jx
+
+n
+
+1
+Fbn FY jX
+(pjx) jx
+
+n jx
+
+n jx
+
+1
+Fen FY jX
+(pjx) jx + op
+1
+FY jX FY jX
+(pjx) jx
+
+n (x)
+
++
+
+0
+
+n (x)
+
++ op
+
+log n
+nhn
+
+i
+
+log n
+nhn
++
+
+n (x)
+
++ op
+
+log n
+nhn
+(A.4)
+
+where the …rst equality follows from Lemma A.6, the second from Lemma A.7, and
+1
+1
+= Fen FY jX
+(pjx) + n jx
+Fen FY jX
+(pjx) jx
+i
+h
+1
+1
+(pjx) jx ;
+FY jX FY jX
+(pjx) + n jx
+FY jX FY jX
+h
+i
+0
+1
+1
+1
+FY jX FY jX
+(pjx) + n jx
+FY jX FY jX
+(pjx) jx
+fY jX FY jX
+(pjx) jx
+n (x) =
+n (x)
+
+Thus we have supx2J j
+
+n (x)j
+
+= Op
+
+log n
+nh
+
+3=4
+
+and supx2J j
+
+0
+
+n (x)j
+
+= Op
+
+log n
+nh
+
+n:
+
+given uniform
+
+1
+(w.r.t x 2 J ) second order di¤erentiability of FY jX (yjx) when y = FY jX
+(pjx)(without the second
+q
+0
+log n
+order di¤erentiability supx2J j n (x)j = op
+, which does not a¤ect the asymptotic validity
+nh
+
+of our inference procedure whatsoever. This assumption is merely imposed in accordance with
+usual Bahadur Representation, see Theorem 2.5.1 in Ser‡ing, 1980). Overall Op
+
+log n
+nh
+
+3=4
+
+is
+
+the dominating term. The result follows from noting that the LHS expression in (A.4) becomes
+h
+i
+1
+p + "n Fbn FY jX
+(pjx) jx . Q.E.D
+
+Proof of Theorem 3.3. The following string of equalities shall be self-explaining:
+h
+i
+1
+Pr FY jX
+(pjx) Fbn 1 (p + cn ( ; K) np (K) jx) for all x 2 J
+h
+i
+1
+= Pr FY jX
+(pjx) Fbn 1 (pjx) Fbn 1 (p + cn ( ; K) np (K) jx) Fbn 1 (pjx) for all x 2 J
+3
+2
+!
+3=4
+log n
+1
+1
+cn ( ; K) np (K) + Op
+for all x 2 J 5
+= Pr 4FY jX
+(pjx) Fbn 1 (pjx)
+1
+nh
+fY jX FY jX (pjx) jx
+2
+3
+!
+r
+1
+log n
+1
+= Pr 4FY jX
+(pjx) Fen 1 (pjx)
+cn ( ; K) np (K) + op
+for all x 2 J 5
+1
+nh
+f
+F
+(pjx) jx
+Y jX
+
+Y jX
+
+1
+= Pr (2 log n)1=2 sup fY jX FY jX
+(pjx) jx
+x2J
+
+Similarly,
+h
+1
+Pr FY jX
+(pjx)
+
+Fbn 1 (p
+
+cn ( ; K)
+
+np (K) jx)
+
+1
+= Pr (2 log n)1=2 sup fY jX FY jX
+(pjx) jx
+x2J
+
+1
+np (K)
+
+for all x 2 J
+
+1
+np (K) (
+
+36
+
+1
+FY jX
+(pjx)
+
+i
+
+Fen 1 (pjx)
+
+Fen 1 (pjx)
+
+1
+FY jX
+(pjx)
+
+dn
+
+dn
+
+c( ) :
+
+c( ) :
+
+Hence the result follows from Lemma 2.4. Q.E.D
+Proof of Lemma 3.4. The proof follows from Lemma A.4 and Lemma A.8 with "n = 0.
+Therefore uniformly over x 2 J , we have
+
+=
+
+Fbn 1 (pjx)
+
+1
+FY jX
+(pjx)
+
+1
+
+1 X
+1fYi
+nhn
+
+p
+
+1
+fY jX FY jX
+(pjx) jx
+
+1
+FY jX
+
+(pjx)gK
+
+FX (x)
+
+FX (Xi )
+hn
+
+log n
+nhn
+
++ op
+
+Hence we could apply the strong approximation result in Hardle and Song (2010). For completeness
+we give sketch on the successive approximation steps in Appendix C. Q.E.D
+
+Appendix B. Technical Proofs For Section 3.2
+Because the constructions of both con…dence intervals and bands only involve the …nite dimensional
+parameter …xed at level p, we would drop the argument in terms of p for notational brevity. We
+…rst present a lemma used in the proof of Theorem 3.5.
+Lemma B.1 Under Assumptions (H), (K), and (PL), the following class of functions indexed by
+s = ( ; y) is P -Donsker, where
+Fn:s =
+
+2B
+
+1
+yg p K
+hn
+
+0
+
+fn;s = 1fYi
+
+Rd and y 2 Y
+
+Zi
+
+R:
+
+FX (x0 )
+
+FX (Xi )
+hn
+
+:
+
+2 B and y 2 Y :
+0
+
+yg and fs 2 Fs =
+Proof. We denote fn;s = fs p1h K FX (x0 )hnFX (Xi ) , with fs = 1fYi Zi
+n o
+n
+0
+1fYi Zi
+yg : 2 B and y 2 Y . Fs is uniformly bounded and of VC type because fs could
+be written as the composition of a monotone function 1fYi
+
+0
+
+g and a linear function Zi + y,
+
+applying Lemma 2.6.18 (viii) in Van der Vaart and Wellner (1996). Hence we have the following
+entropy bound for any probability measure Q:
+N (Fs ; L2 (Q) ; ")
+
+M
+
+1
+"
+
+v
+
+where M is a universal …nite constant.
+Now we are ready to use Theorem 2.11.22 in Van der Vaart and Wellner (1996) to prove that
+Fn:s is P -Donsker. We begin by verifying three conditions in (2.11.21).
+
+(i) The envelope function is Fn = p1h K FX (x0 )hnFX (Xi ) satisfying P Fn2 =
+n
+R
+p
+2
+p
+(ii) P Fn2 1fFn >
+ng
+K(u)> nhn K (u) du ! 0; 8 > 0, as n ! 1;
+
+37
+
+R
+
+K 2 (u) du < 1;
+
+1=2
+
+!
+
+:
+
+(iii) Let
+
+(s; t) be the usual Euclidean norm in Rd+1 , further denote s = ( ; y) and t =
+
+and the conditional measure as dQ jX . Then
+ZZ
+1
+P (fn;s fn;t )2 =
+(fs ft )2 dQ jX K 2
+hn
+ZZ
+jy yj + jZ1 j 1
+M
+
+FX (x0 )
+
+ft j2
+
+O jy
+
+dFX
+
+hn
+1
+
+1 2 FX (x0 ) FX (X)
+K
+hn
+hn
+M R (K) (s; t)
+
+where we have used the fact that jfs
+
+FX (X)
+
++
+
++ jZd j
+
+;y
+
+d
+
+d
+
+dQ jX
+
+dFX
+
+yj + jZ1 j
+
+1
+
+1
+
++
+
++ jZd j
+
+d
+
+d
+
+and
+
+M is a …nite constant The last equality follows from assumption (PL) as Z has …nite conditional
+(on X) absolute moment. Therefore sup
+
+(s;t)<
+
+P (fn;s
+
+n
+
+fn;t )2 ! 0 as
+
+n
+
+! 0:
+
+When it comes to the L2 (Q) entropy, for any probability measure Q, we have
+log NP (Fn;s ; L2 (Q) ; "jjKjj2 )
+by the simple fact that
+
+R
+
+(fn;s
+
+p
+log N Fs ; L2 Q jX ; "
+
+fn;t )2 dQ =
+
+RR
+
+ft )2 dQ jX h1n K 2
+
+(fs
+
+1
+"
+
+M log
+
+FX (x0 ) FX (X)
+hn
+
+dFX :
+
+In sum, the conditions in Theorem 2.11.22 in Van der Vaart and Wellner (1996) is satis…ed for
+Fn:s . Q.E.D
+
+Proof of Theorem 3.5. Let
+Pn
+0
+Zi 0
+i=1 1fYi
+Fn;PL (yjx0 ) =
+Pn
+i=1 K
+
+ygK
+
+Fn (x0 ) Fn (Xi )
+hn
+
+Fn (x0 ) Fn (Xi )
+hn
+
+:
+
+We will complete the proof in two steps:
+h
+i
+p
+Step 1. We show that nhn Fbn;PL ( jx0 ) F(Y Z 0 0 )jX ( jx0 ) converges weakly to the same
+p
+Gaussian process as nhn Fn;PL ( jx0 ) F(Y Z 0 0 )jX ( jx0 ) ;
+0
+0
+1
+1
+Step 2. We show that (Fbn;PL
+p z =2 np (K) jx0 + z0 b ; Fbn;PL
+p + z =2 np (K) jx0 + z0 b ] is
+h 0
+i
+.
+an asymptotically valid con…dence interval for z0 0 + g(x0 ) with con…dence level 1
+
+Proof of Step 1. As the denominator will converge to 1 in probability as in Stute (1986), it
+
+is su¢ cient to show that
+1 Xn h
+p
+1fYi
+i=1
+nhn
+
+0
+
+Zi b
+
+yg
+
+Again taking the second order Taylor
+1 Xn
+0
+p
+[1fYi Zi b
+i=1
+nhn
+X
+n
+1
+0
++p
+[1fYi Zi b
+i=1
+nhn hn
+Xn
+1
+0
++p
+[1fYi Zi b
+2
+i=1
+nhn hn
+=
+
+1fYi
+
+0
+
+Zi
+
+i
+yg K
+
+0
+
+Fn (x0 )
+
+Fn (Xi )
+hn
+
+= op (1) :
+
+(B.1)
+
+expansion, the left hand side of (B.1) becomes:
+0
+
+yg
+
+1fYi
+
+Zi
+
+yg
+
+1fYi
+
+Zi
+
+yg
+
+1fYi
+
+Zi
+
+0
+
+0
+
+FX (Xi )
+
+yg]K
+
+0
+
+yg]K
+
+0
+
+yg]K ( ) Bn2 (x0 ; Xi )
+
+An1 + An2 + An3 :
+38
+
+FX (x0 )
+
+0
+
+0
+
+hn
+FX (x0 ) FX (Xi )
+hn
+
+Bn (x0 ; Xi )
+
+00
+
+(B.2)
+
+Again An3 is the easiest term to handle by applying the bound of local oscillation on empirical
+process in Lemma A.1:
+n
+hn
+
+jAn3 j
+
+sup
+jFX (x0 ) FX (Xi )j M hn
+
+Bn2 (x0 ; Xi )
+
+!
+
+00
+
+2jK ( ) j
+p 3=2 = op (1) :
+nhn
+
+It converges to zero in probability following our assumption on the bandwidth and boundedness of
+the second order derivatives of the kernel function.
+Similar as the proof of Lemma A.3, we write the rescaled An2 as a U-statistics plus the diagonal
+term which is of smaller order:
+p
+
+h
+1
+1
+An2 = 2 U2n fb3
+hn
+nhn
+
+i
+f3 + Op
+
+1
+nh2n
+
+with symmetric kernel function
+
+=
+
+f3 ( ; )
+0 h
+1B
+B
+2@
+
+0
+
+1fYi Zi
+h
+0
++ 1fYj Zj
+
+yg
+yg
+
+1fYi
+1fYj
+
+0
+
+Zi
+
+0
+0
+
+Zj
+
+0
+
+i 0
+yg K
+i 0
+yg K
+
+FX (x0 ) FX (Xi )
+hn
+FX (x0 ) FX (Xj )
+hn
+
+1fXj x0 g FX (x0 )
+1fXj Xi g + FX (Xi )
+1fXi x0 g FX (x0 )
+1fXi Xj g + FX (Xj )
+
+and we de…ne fb3 by plugging b into . To see the functional class F3 containing f3 is of VC type
+it su¢ ces to consider the following three subclasses:
+
+F3;2
+F3;3
+
+0
+
+0
+
+Zi
+yg 1fYi Zi 0 yg : ( ; y) 2 Rd+1 g;
+FX (x0 ) FX (Xi )
+0
+= fK
+; hn > 0g;
+hn
+= f[1fXi Xj g FX (Xj )]g,
+
+F3;1 = f1fYi
+
+which are indeed uniformly bounded and of VC type recalling what have been shown in Lemma
+A.4 and Lemma B.1
+
+39
+
+1
+
+C
+C:
+A
+
+Now by the moment bound in Lemma A.2 we have sup h12 jU2n f3 2U1n
+n
+
+1 f3 j
+
+= Op
+
+1
+nh2n
+
+= op (1)
+
+under Assumption (H). Proceed as in Lemma A.4 we work with the projection term:
+h
+i
+1
+n
+b3
+2U
+f
+f
+1
+1
+3
+1
+h2n
+n Z
+h
+i 0 F (x ) F (X )
+1 X
+0
+i
+X 0
+X
+b yg 1fYi Z 0
+E
+[1fY
+Z
+yg]jX
+K
+=
+i
+i
+0
+i
+i
+2
+nhn
+hn
+j=1
+
+[1fFX (Xj ) FX (x0 )g FX (x0 ) 1fFX (Xj )
+n Z
+h
+1 X
+0
+0
+=
+E [1fYi Zi b yg 1fYi Zi 0
+nhn
+j=1
+
+[1fUj
+
+=
+
+1
+nhn
+
+u0
+
+1fUj
+
+n Z
+X
+
+h
+E [1fYi
+
+1
+p
+n
+
+op
+
+j=1
+
+[1fUj
+= Op
+
+u0 g
+
+u0 g
+
+u0
+
+p
+
+0
+
+Zi b
+
+1fUj
+
+1
+nhn
+
+u0
+
+Ui g + Ui ] dK
+yg
+u0
+
+1fYi
+
+FX (Xi )g + FX (Xi )] dFX (Xi )
+i
+yg]jXi
+
+Ui
+
+hn
+0
+
+Zi
+
+0
+
+vhn g + u0
+
+yg]jXi
+
+i
+
+vhn ] dK (v)
+
+:
+
+When it comes to An1 , we make use of Lemma B.1 which states that the class of functions Fn;s
+
+below is Donsker:
+Fn;s =
+
+1
+yg p K
+hn
+
+0
+
+fn;s = 1fYi
+
+Zi
+
+FX (x0 )
+
+FX (Xi )
+hn
+
+:
+
+2 B and y 2 Y :
+
+Let
+1
+FX (x0 ) FX (Xi )
+yg p K
+and
+hn
+hn
+FX (x0 ) FX (Xi )
+1
+0
+f0 = 1fYi Zi 0 yg p K
+:
+hn
+hn
+h
+i
+2 ! 0, by Lemma 19.24 in van der Vaart (1998), we have
+b
+Because b
+=
+o
+(1)
+and
+E
+(
+f
+f
+)
+p
+n
+0
+0
+b
+Gn (fn f0 ) !p 0; where Gn denotes the empirical process operator.
+0
+
+fbn = 1fYi
+
+Zi b
+
+An1 = Gn (fbn
+p
+nE 1fYi
+
+f0 ) +
+
+= E E
+
+hp
+
+0
+
+Zi b
+
+n[1fYi
+
+1
+= Op (1) E p K
+hn
+
+yg
+0
+
+Zi b
+
+1fYi
+yg
+
+FX (x0 )
+
+0
+
+Zi
+
+1fYi
+FX (Xi )
+
+1
+FX (x0 ) FX (Xi )
+yg p K
+hn
+hn
+i
+1
+FX (x0 ) FX (Xi )
+0
+Zi 0 yg]jXi p K
+hn
+hn
+0
+
+hn
+
+where the third equality follows from E
+
+hp
+
++ oP (1)
+
++ oP (1) = oP (1) ;
+n[1fYi
+
+Zi b
+0
+
+yg
+
+1fYi
+
+0
+
+Zi
+
+0
+
+i
+yg]jXi = Op (1)
+
+1
+as b
+by Assumption (PL) and the last equality follows from the fact that
+0 = Op pn
+h
+i
+p
+E p1h K FX (x0 )hnFX (Xi ) = O( hn ).
+n
+
+40
+
+Proof of Step 2. It follows from the same proof as that of Theorem 2.1 that
+1
+Pr g (x0 ) 2 (Fbn;PL
+p
+
+So
+
+0
+
+Pr z0
+=
+
+0
+
+Pr z0
+
+! 1
+
+0
+0
+
+;
+
+z
+
+=2 np (K) jx0
+
+0
+1
++ g (x0 ) 2 (z0 b + Fbn;PL
+p
+
+0
+1
++ g (x0 ) 2 (z0 b + Fbn;PL
+p
+
+1
+; Fbn;PL
+p+z
+
+z
+
+=2 np (K) jx0
+
+z
+
+=2 np (K) jx0
+
+where in the …rst equality above, we have replaced
+
+0
+
+valid since the length of the interval is of order (nhn )
+
+=2 np (K) jx0
+
+] !1
+
+0
+1
+; z0 b + Fbn;PL
+p
+
+0
+1
+; z0 b + Fbn;PL
+p
+
+:
+
+z
+
+=2 np (K) jx0
+
+z
+
+=2 np (K) jx0
+
++ o (1)
+
+with its root-n consistent estimator. This is
+1=2
+
+, wider than n
+
+1=2 .
+
+Q.E.D
+
+The following lemma is used in the proof of Theorem 3.3.
+Lemma B.2 (Stute and Zhu, 2005) Referring to the notation in Section 3.2, given Assumptions
+(Z2), (HS) and a root-n consistent estimator b in the single index model, uniformly for any z,
+sup
+
+n1=2 jj ^
+
+0 jj
+
+M;n1=2
+
+1=
+
+0
+
+jZi b z 0
+
+0j
+
+M
+
+0
+0
+0
+jFn (z b ) Fn (Zi b ) F (z
+
+0
+
+0 )+F (Zi 0 )j
+
+= Op n
+
+3=4+1=2
+
+p
+
+ln n :
+
+Proof. We refer the readers to Lemma 4.2 and its proof in Stute and Zhu (2005). Q.E.D
+Proof of Theorem 3.7. We will prove the result focusing on the estimator without the
+denominator, as it would follow along the proof that the denominator converges to 1 in probability.
+First we claim that
+"
+Xn
+1
+p
+1fYi
+i=1
+nhn
+
+Fn (z0 b )
+0
+
+yg K
+
+Fn (Zi b )
+0
+
+hn
+
+!
+
+0
+
+K
+
+F (z0
+
+0
+
+0)
+
+F (Zi
+hn
+
+0)
+
+!!#
+
+= op (1) :
+(B.3)
+
+Given (B.3), after normalizing, our conditional empirical process converges to the same Brownian
+0
+0
+Pn
+0
+F (z0 0 ) F (Zi 0 )
+1
+1fY
+ygK
+FY jX~ ( j~
+x0 ) does, where x
+~0 = z0 0 . Going
+Bridge as pnh
+i
+i=1
+hn
+n
+
+1
+over the proofs of Theorems 2.1 and 3.1, we have (Fbn;SI
+p
+
+z
+
+=2 np (K) jz0
+
+as the con…dence interval for g(~
+x0 ) with asymptotic nominal size 1
+
+:
+
+1
+; Fbn;SI
+p+z
+
+=2 np (K) jz0
+
+Now we show the claim in (B.3). Taking a second order Taylor expansion, we obtain:
+"
+!
+!#
+0
+0
+0
+0
+Xn
+1
+Fn (z0 b ) Fn (Zi b )
+F (z0 0 ) F (Zi 0 )
+p
+K
+K
+i=1
+hn
+hn
+nhn
+!
+0
+0
+1 Xn 1 0 F (z0 0 ) F (Zi 0 ) h
+0
+0
+0
+0
+= p
+K
+Fn (z0 b ) Fn (Zi b ) F (z0 0 ) + F (Zi
+i=1 hn
+hn
+nhn
+h
+i2
+X
+n
+1
+1 00
+0
+b ) Fn (Z 0 b ) F (z 0 ) + F (Z 0 )
++p
+K
+(
+)
+F
+(z
+n
+0
+i
+0 0
+i 0
+i=1 h2
+nhn
+n
+41
+
+i
+)
+0
+
+]
+
+According to Lemma 4.1 in Stute and Zhu (2005) and under the moment conditions in (Z2), it
+n 0 on
+su¢ ces to control the oscillation of the induced empirical process on Z b
+for observations
+i
+
+0
+
+locally around z0
+
+0
+
+within a distance of order n1=
+
+1=2 .
+
+i=1
+
+Now use Lemma B.2 at point z0 , under
+
+our assumptions we have,
+
+0
+
+sup
+n1=2 jj ^
+
+1=2
+0 jj M;n
+
+1=
+
+Hence,
+
+=
+
+0
+
+jZi b z 0
+
+0j M
+
+0
+
+0
+
+jFn (z0 b ) Fn (Zi b ) F (z0
+
+0
+
+0 )+F (Zi 0 )j
+
+= Op n
+
+3=4+1=2
+
+p
+
+ln n :
+
+!
+0
+0
+1 0 F (z0 0 ) F (Zi 0 )
+1 Xn
+0
+0
+0
+0
+p
+K
+jFn (z0 b ) Fn (Zi b ) F (z0 0 ) + F (Zi 0 )j
+i=1
+hn
+hn
+nhn
+"
+!#
+p
+0
+0
+p
+1 Xn
+n 1=4+1=2 ln n
+F (z0 0 ) F (Zi 0 )
+0
+p
+= Op hn 1=2 n 1=4+1=2 ln n
+K
+i=1
+nhn
+hn
+hn
+
+= op (1) ;
+
+where the second equality use the fact that
+
+1
+nhn
+
+kernel convergence result.
+
+Pn
+
+i=1
+
+K
+
+0
+
+F (z0
+
+0
+
+0
+
+F (Zi
+hn
+
+0)
+
+0)
+
+= Op (1) by standard
+
+The last equality follows from the assumption of the bandwidth.
+h
+i2
+1 Xn 1 00
+0
+0
+0
+0
+b
+b
+p
+K
+(
+)
+F
+(z
+)
+F
+(Z
+)
+F
+(z
+)
++
+F
+(Z
+)
+n 0
+n
+i
+0 0
+i 0
+i=1 h2
+nhn
+n
+!
+1
+= Op p 5=2 n 3=2+1= ln n = Op hn 5=2 n 1+1= ln n = op (1) :
+nhn
+Hence the claim is indeed satis…ed.
+In the above proof, take y = 1, we also get the desired convergence (to 1 in probability) for
+
+the denominator. Q.E.D
+
+We now sketch the changes needed here. It su¢ ces to show that Fbn;PL (yjx) and Fbn;SI (yjz) can
+be uniformly approximated well by the corresponding Fen;PL (yjx) and Fen;SI (yjz). Then the results
+
+would follow after going over Lemmas A.3-A.8. Notice that the sup-norm convergence rate is in
+p
+fact slower by a factor of log n, which corresponds to the compensating factor along these uniform
+approximations.
+Proof of Theorems 3.8.
+following notations:
+fbU ,SI (z) =
+
+feU ,SI (z) =
+
+1 Xn
+K
+i=1
+nhn
+1 Xn
+K
+i=1
+nhn
+
+Similar to fbU (x) and feU (x) de…ned earlier, we introduce the
+0
+Fn (z b )
+
+F (z
+
+0
+
+0)
+
+Fn (Zi b )
+0
+
+hn
+
+0
+
+F (Zi
+
+hn
+
+42
+
+!
+
+0)
+
+!
+
+and
+:
+
+For Theorem 3.8, we have:
+
+=
+
+Fbn;SI (yjz) Fen;SI (yjz)
+h
+i
+1 Pn
+K
+1fY
+yg
+F
+(yj~
+x
+)
+~
+i
+i=1
+Y jX
+nhn
+1 Xn h
+1fYi
+i=1
+nhn
+
+with x
+~ = z
+
+0
+
+0,
+
+0
+0
+Fn (z b) Fn (Zi b)
+hn
+
+fbU ,SI (z)
+
+i
+FY jX~ (yj~
+x) K
+
+yg
+
+F (z
+
+0
+
+K
+
+F (Zi
+
+0)
+
+hn
+
+The proof about switching from Fn (Zi b ) to F (z
+0
+
+0
+
+0
+
+0
+
+F (Zi
+
+0)
+
+0)
+
+hn
+
++
+0
+
+0)
+
+F (z
+
+0)
+
+!
+
+1
+
+1
+
+fbU ,SI (z)
+
+feU ,SI (z)
+
+!
+
+follows directly, since when
+
+we characterize the two smaller terms, the bound
+in Lemma B.2 holds uniformly in x
+~: Also the
+q
+log n
+denominator converges to 1 with a rate Op
+nhn : The rest would be the same.
+Proof of Theorem 3.6. First we take the following decomposition:
+
+=
+
+=
+
+Fbn;PL (yjx)
+h
+1 Pn
+nhn
+
+i=1
+
+Fen;PL (yjx)
+
+1fYi
+
+Zi b
+0
+
+ih
+FY~ jX (~
+y jx) K
+
+yg
+
+fbU (x)
+i
+FY~ jX (~
+y jx) K
+
+1 Xn h
+0
+1fYi Zi b yg
+i=1
+nhn
+h
+P
+0
+n
+1
+Zi b yg 1fYi
+i=1 1fYi
+nhn
++
+
+1
+nhn
+
+Pn h
+i=1
+
+1fYi
+
+1 Xn h
++
+1fYi
+i=1
+nhn
++
+
+1 Xn h
+1fYi
+i=1
+nhn
+
+0
+
+Zi
+
+0
+
+Zi b
+0
+
+yg
+
+= Pn1 + Pn2 + Pn3 + Pn4
+where y~ = y
+
+z
+
+0
+
+0.
+
+1fYi
+
+yg
+
+0
+
+0
+
+Zi
+
+FX (x)
+
+ih
+yg K
+
+0
+
+fbU (x)
+ih
+FY~ jX (~
+y jx) K
+
+yg
+
+0
+
+Zi
+
+Fn (x) Fn (Xi )
+hn
+
+fbU (x)
+0
+
+Zi
+
+0
+
+i
+FY~ jX (~
+y jx) K
+
+FX (Xi )
+hn
+Fn (x) Fn (Xi )
+hn
+
+Fn (x) Fn (Xi )
+hn
+
+i
+yg K
+
+FX (x)
+
+FX (x)
+
+i
+
+FX (x) FX (Xi )
+hn
+
+K
+
+1
+
+1
+
+fbU (x)
+
+feU (x)
+
+K
+
+K
+
+FX (Xi )
+hn
+
+!
+
+i
+
+FX (x) FX (Xi )
+hn
+
+FX (x) FX (Xi )
+hn
+
+i
+
+1
+
+1
+
+fbU (x)
+
+feU (x)
+!
+
+FX (Xi )
+hn
+
++
+
+1
+b
+fU (x)
+
+1
+e
+fU (x)
+
+The terms Pn2 and Pn4 could be dealt with just as in the univariate nonpara-
+
+metric case.
+When it comes to Pn3 ; change occurs at the …rst order Taylor expansion term where the approximation of the U-statistic by the Hajek-Hoe¤ding projection holds uniformly in x, i.e., we need
+to incorporate the class F3;2 = fK
+00
+
+0
+
+FX (x) FX (Xi )
+hn
+0
+
+; x 2 J ; hn > 0g indexed by x as well now. As
+
+K exists and is bounded, hence K has bounded variation, overall we still get the functional class
+
+of VC type and the U-statistic is approximated by Lemma A2 once we incorporate the additional
+p
+factor log n. Now for the dominating term in Pn1 and Pn3 , everything boils down to show the
+
+43
+
+!
+
+negligibility of
+1
+Pn fn;t
+hn
+i
+1 Xn h
+FX (x) FX (Xi )
+0
+0
+=
+:
+1fYi Zi
+yg 1fYi Zi 0 yg K
+i=1
+nhn
+hn
+p
+0 = O (1= n). Unlike Lemma B.1 we no longer have Donsker property would not hold
+
+Pn0 =
+
+when
+
+for the class Fn;t when x changes too
+h
+(
+0
+0
+fn;t = 1fYi Zi
+yg 1fYi Zi
+Fn;t =
+y 2 R; x 2 J ; hn > 0;
+
+0
+0
+
+i
+yg K
+
+FX (x) FX (Xi )
+hn
+
+p
+= O (1= n)
+
+:
+
+)
+
+Instead we resort to the Talagrand’s inequality presented in Einmahl and Mason (2005). Let f i gni=1
+
+be a sequence of independent Rademacher r.v., independent of the sample fYi ; Zi ; Xi gni=1 . Since
+
+2 =O
+sup Efn;t
+
+1p
+hn n
+
+, hence Proposition in Einmahl and Mason (2005) or our Lemma A.2 gives
+
+n
+X
+1
+E
+i fn;t (Yi ; Zi ; Xi )
+nhn
+i=1
+
+What is more,
+
+1
+hn
+
+k(Pn
+
+=O
+Fn;t
+
+r
+
+log n
+nhn
+
+1
+n1=4
+
+!
+
+P) fn;t kFn;t is of the same order of
+
+.
+
+1
+nhn E
+
+k
+
+Pn
+
+i=1 i fn;t (Yi ; Zi ; Xi )kFn;t
+
+q
+
+by
+
+nhn
+the concentration inequality in Einmahl and Mason (2005). Finally for any fn;t ,
+log n Pfn;t =
+q
+q
+log n
+hn
+uniformly.
+=
+o
+(1)
+as
+in
+the
+proof
+of
+Theorem
+3.5.
+Overall
+we
+have
+P
+=
+o
+O
+n0
+p
+log n
+nhn
+
+Q.E.D
+
+7
+
+Appendix C. Strong Approximation Results
+
+The strong approximation used in this paper follows from Hardle and Song (2010) upon changing
+X to FX (X) and removing the X’s density fX ( ). For completeness we sketch the successive
+approximation steps according to our notation, and refer the readers to Hardle and Song (2010)
+for a detailed proof.
+Recall our conditional quantile estimator admits the following linear representation uniformly
+over x 2 J , after replacing Fn ( ) with FX ( ) inside the kernel function and applying Bahadur
+representation:
+
+=
+
+Fbn 1 (pjx)
+fY jX
+
+F
+
+1
+
+(pjx)
+2
+1 Pn
+p 1fYi
+1
+p (x)g K
+nh
+4 n i=1
+1
+E p 1fYi
+p (x) jx
+p (x)g hn K
+
+De…ne the dominating linear term times
+
+q
+
+nhn
+p(1 p)
+
+3
+
+5 + op
+
+r
+
+log n
+nhn
+
+!
+
+:
+
+as Yn (u), with u = FX (x): Also let T (v; y) =
+
+FU jy (vjy) ; FY (y) be the Rosenblatt transformation and
+44
+
+FX (x) FX (Xi )
+hn
+FX (x) FX (Xi )
+hn
+
+(s) = p
+
+1fs
+
+0g. Now we have the
+
+following successive approximating processes:
+ZZ
+1
+u v
+Y0;n (u) = p
+K
+hn
+hn g (u)
+n
+ZZ
+1
+u v
+Y1;n (u) = p
+K
+hn
+hn g (u)
+n
+ZZ
+u v
+1
+K
+Y2;n (u) = p
+hn
+hn g (u)
+n
+ZZ
+1
+u v
+Y3;n (u) = p
+K
+hn
+hn g (u)
+n
+p
+Z
+p(1 p)
+u v
+Y4;n (u) = p
+K
+dW
+hn
+hn g (u)
+Z
+1
+u v
+Y5;n (u) = p
+K
+dW (v) ;
+hn
+hn
+where
+
+n
+
+= fjyj
+
+an g and g (u) = E
+
+y
+
+p
+
+y
+
+p
+
+FX 1 (u)
+
+dZn (v; y) ;
+
+y
+
+p
+
+FX 1 (u)
+
+dBn [T (v; y)] ;
+
+y
+
+p
+
+FX 1 (u)
+
+dWn [T (v; y)] ;
+
+y
+
+p
+
+FX 1 (v)
+
+dWn [T (v; y)] ;
+
+(v) ;
+
+FX 1 (u)
+
+1fjyj
+
+an gjU = u : Zn ( ; ) denotes
+
+bivariate empirical processes, fBn g being a sequence of Brownian bridges, fWn g being a sequence
+of Wiener processes and W ( ) being the Wiener process.
+
+The proof goes by approximating the linear term by Y0;n (u) up to Y3;n (u), con…rming Y3;n (u)
+and Y4;n (u) having the same distribution, and …nally approximating Y4;n (u) by Y5;n (u). The limiting distribution and normalizing and centering sequences are from Bickel and Rosenblatt (1973),
+and Hardle (1989).
+
+References
+[1] Bhattacharya, P.K. and A.K. Gangopadhyay (1990), “Kernel and Nearest-Neighbor estimation
+of a conditional quantile,” The Annals of Statistics 18, 1400-1415.
+[2] Bickel, P. and M. Rosenblatt (1973), “On some global measures of the deviation of density
+function estimators,” The Annals of Statistics 1, 1071-1095.
+[3] Buchinsky, M. (1994), “Changes in the U.S. wage structure 1963-1987: application of quantile
+regression,” Econometrica 62, 405-458.
+[4] Buchinsky, M. (1995), “Estimating the asymptotic covariance matrix for quantile regression
+models: a Monte Carlo study,” Journal of Econometrics 68, 303-338.
+[5] Buchinsky, M. and J. Hahn (1998), “An alternative estimator for the censored quantile regression model,” Econometrica 66, 653-671.
+[6] Chen, S. and S. Khan (2001), “Semiparametric e¢ cient estimation of a partially linear censored
+regression model,” Econometric Theory 17, 567-590.
+45
+
+[7] Chernozhukov, V., Fernandez-Val, I., and A. Galichon (2010), “Quantile and probability curves
+without crossing,” Econometrica 78, 1093-1125.
+[8] Chernozhukov, V., C. Hansen, and M. Jansson (2009), “Finite sample inference for quantile
+regression models,” Journal of Econometrics 152, 93-103.
+[9] Chesher, A. (2003), “Identi…cation in nonseparable models,” Econometrica 71, 1405-1441.
+[10] Chaudhuri, P. (1991), “Nonparametric estimates of regression quantiles and their local Bahadur representation,” The Annals of Statistics 19, 760-777.
+[11] Chaudhuri, P., K. Doksum, and A. Samarov (1997), “On average derivative quantile regression,” The Annals of Statistics 25, 715-744.
+[12] Csorgo, M. (1983), Quantile Processes with Statistical Applications, SIAM, Philadelphia.
+[13] Dabrowska, D.M. (1987), “Non-parametric regression with censored survival time data,”Scandiavian Journal of Statistics 14, 181-197.
+[14] De Angelis, D., P. Hall, and G.A. Young (1993), “Analytical and bootstrap approximations to
+estimator distributions in L1 regressions,”Journal of the American Statistical Association 88,
+1310-1316.
+[15] Dette, H. and S. Volgushev (2008), “Non-crossing non-parametric estimates of quantile curves,”
+Journal of the Royal Statistical Society, Series B 70, 609-627.
+[16] Donald, S. G., Yu-Chin Hsu, and G. F. Barrett (2012), “Incorporating covariates in the measurement of welfare and inequality: methods and applications,” Econometrics Journal 15,
+C1-C30.
+[17] Einmahl, U. and D.M. Mason (2005), “Uniform in bandwidth consistency of kernel-type function estimators,” The Annals of Statistics 33, 1380-1403.
+[18] Fan, J., T.-C. Hu, and Y.K. Truong (1994), “Robust non-parametric function estimation,”
+Scandianvian Journal of Statistics 21, 433-446.
+[19] Fan, Y. and R. Liu (2011), “Symmetrized multivariate k-NN estimators,” forthcoming in
+Econometric Reviews.
+[20] Fan, Y. and S. Park (2011), “Con…dence intervals for the quantile of treatment e¤ects in
+randomized experiments,” Journal of Econometrics 167, 330-344.
+[21] Figueroaf-Lopez, J. (2011), “Sieve-based con…dence intervals and bands for Levy densities,”
+Bernoulli, 17, 643–670.
+46
+
+[22] Firpo, S. (2007), “E¢ cient semiparametric estimation of quantile treatment e¤ects,” Econometrica 75, 259–276.
+[23] Gine, E., and D.M. Mason (2007), “On local U-statistic processes and the estimation of densities of functions of several sample variables,” The Annals of Statistics 35, 1105-1145.
+[24] Gutenbrunner, C. and J. Jureckova (1992), “Regression quantile and regression rank score
+process in the linear model and derived statistics,” The Annals of Statistics 20, 305-330.
+[25] Gutenbrunner, C., J. Jureckova, R. Koenker, and S. Portnoy (1993), “Test of Linear Hypotheses Based on Regression Rank Scores,” Journal of Nonparametric Statistics 2, 307-331
+[26] Goh, S.C. and K. Knight (2009), “Nonstandard quantile-regression inference,” Econometric
+Theory 25, 1415-1432.
+[27] Guerre, E. and C. Sabbah (2012), “Uniform bias study and Bahadur representation for local
+polynomial estimators of the conditional quantile function,” Econometric Theory 28, 87-129.
+[28] Hall, P., Wol¤, R., and Q. Yao (1999), “Methods of estimating a conditional distribution
+function,” Journal of the American Statistical Association, 94, 154-163.
+[29] Hardle W.K. (1989), “Asymptotic maximal deviation of M-smoothers,”Journal of Multivariate
+Analysis 29, 163–179.
+[30] Hardle W.K. and S. Song (2010), “Con…dence bands in quantile regression,” Econometric
+Theory 26, 1180-1200.
+[31] Holderlein, S. and E. Mammen (2007), “Identi…cation of marginal e¤ects in nonseparable
+models without monotonicity,” Econometrica 75, 1513-1518.
+[32] Honoré, B., S. Khan, and J. Powell (2002), “Quantile regression under random censoring,”
+Journal of Econometrics 64, 241-278.
+[33] He, X. (1997), “Quantile curves without crossing,” The American Statistician 51, 186-191.
+[34] He, X. and F. Hu (2002), “Markov chain marginal bootstrap,”Journal of American Statistical
+Association 97, 783-795.
+[35] He, X., P. Ng, and S. Portnoy (1998), “Bivariate quantile smoothing splines,”Journal of the
+Royal Statistical Society, Series B 60, 537-550.
+[36] Horowitz, J. (1998), “Bootstrap methods for median regression models,” Econometrica 66,
+1327-1352.
+
+47
+
+[37] Kaplan, D.M. (2013), “IDEAL inference on conditional quantiles via interpolated duals of
+exact analytic L-statistics,” working paper.
+[38] Kocherginsky, M., X. He, and Y. Mu (2005), “Practical con…dence intervals for regression
+quantiles,” Journal of Computational and Graphical Statistics 14, 41-55.
+[39] Koenker, R. (2005). Quantile Regression. Cambridge University Press.
+[40] Koenker, R. and G. Bassett (1978), “Regression quantiles,” Econometrica 46, 33-50.
+[41] Koenker, R. and Z. Xiao (2002), “Inference on the quantile regression process,”Econometrica
+70, 1583-1612.
+[42] Koenker, R. and Z. Xiao (2004), “Unit root quantile autoregression inference,” Journal of
+American Statistical Association 99, 775-787.
+[43] Kong, E. and Y. Xia (2012), “A single-index quantile regression model and its estimation,”
+forthcoming in Econometric Theory.
+[44] Kong, E., O. Linton, and Y. Xia (2013), “Global Bahadur representation for nonparametric
+censored regression quantiles and its applications,” forthcoming in Econometric Theory.
+[45] Leadbetter, M.R., G. Lindgren and H. Rootzen (1983), Extremes and Related Properties of
+Random Sequences and Processes, Springer, New York.
+[46] Lee, S. (2003), “E¢ cient semiparametric estimation of a partially linear quantile regression
+model,” Econometric Theory 19, 1-31.
+[47] Li, Q. and J.S. Racine (2008), “Nonparametric estimation of conditional CDF and quantile
+functions with mixed categorical and continuous data,” Journal of Business and Economic
+Statistics 26, 423-434.
+[48] Liu, W. and W.B. Wu (2010), “Simultaneous nonparametric inference of time series,” The
+Annals of Statistics 38, 2388-2421.
+[49] Marmer, V. and A. Shneyerov (2012), “Quantile-Based Nonparametric Inference for First-Price
+Auctions,” Journal of Econometrics 167(2), 345-357.
+[50] Nolan, D. and D. Pollard (1987), “U-processes: rates of convergence,”The Annals of Statistics
+15, 780-799.
+[51] Ostu, T. (2008), “Conditional empirical likelihood estimation and inference for quantile regression models,” Journal of Econometrics 142, 508–538.
+
+48
+
+[52] Polonik, W. and Q. Yao (2002), “Asymptotics of set-indexed conditional empirical processes
+based on dependent data,” Journal of Multivariate Analysis 80, 234-255.
+[53] Portnoy, S. (2012), “Nearly root-n approximation of regression quantile processes,”The Annals
+of Statistics 40, 1714-1736.
+[54] Powell, J. L. (1986), “Censored regression quantiles,” Journal of Econometrics 32, 143-155.
+[55] Ser‡ing, R.J. (1980), Approximation Theorems of Mathematical Statistics, Wiley, New York.
+[56] Song, S., Y. Ritov, and W.K. Hardle (2012), “Partial linear quantile regression and bootstrap
+con…dence bands,” Journal of Multivariate Analysis 107, 244-262.
+[57] Stute, W. (1982), “The oscillation behavior of empirical processes,”The Annals of Probability
+10, 86-107.
+[58] Stute, W. (1984a), “The oscillation behavior of empirical processes: the multivariate case,”
+The Annals of Probability 12, 361-379.
+[59] Stute, W. (1984b), “Asymptotic normality of nearest neighbor regression function estimates,”
+The Annals of Statistics 12, 917-926.
+[60] Stute, W. (1986), “Conditional empirical processes, ” The Annals of Statistics 14, 638-647.
+[61] Stute, W. and L.-X. Zhu (2005), “Nonparametric checks for single-index models,”The Annals
+of Statistics 33, 1048-1083.
+[62] Su, L. and H. White (2011), “Conditional independence speci…cation testing for dependent
+processes with local polynomial quantile regression,”forthcoming in Advances in Econometrics.
+[63] Truong, Y.K. (1989), “Asymptotic properties of kernel estimators based on local medians,”
+The Annals of Statistics 17, 606-617.
+[64] Thompson, W.R. (1936), “On con…dence ranges for the median and other Expectation distributions for populations of unknown distribution form,”The Annals of Mathematical Statistics
+3, 122-128.
+[65] Tsybakov, A. (2008), Introduction to Nonparametric Estimation, Springer, New York.
+[66] van der Vaart, A. W. (1998), Asymptotic Statistics, Cambridge University Press.
+[67] van der Vaart, A.W. and J.A. Wellner (1996), Weak Convergence and Empirical Processes:
+With Application to Statistics, Springer-Verlag, New York.
+
+49
+
+[68] Whang, Y.J. (2006), “Smoothed empirical likelihood methods for quantile regression models,”
+Econometric Theory 22, 173-205.
+[69] Wu, W. B. (2005), “On the Bahadur representation of sample quantiles for dependent sequences,” The Annals of Statistics 33, 1934-1963.
+[70] Wu, T.Z., K. Yu, and Y. Yu (2010), “Single-index quantile regression,”Journal of Multivariate
+Analysis 101, 1607-1621.
+[71] Xu, K.-L. (2012), “Nonparametric inference for conditional quantiles of time series,” forthcoming in Econometric Theory.
+[72] Yang, S.S. (1981), “Linear functions of concomitants of order statistics with application to
+nonparametric estimation of a regression function,”Journal of the American Statistical Association 76, 658-662.
+[73] Yu, K. and M.C. Jones (1998), “Local linear quantile regression,” Journal of the American
+Statistical Association 93, 228-237.
+[74] Zhou, K.Q. and S. Portnoy (1996), “Direct use of regression quantiles to construct con…dence
+sets in linear models,” The Annals of Statistics 24, 287-306.
+
+Q-Level
+x
+Model-1
+Asy NW
+Asy CI
+New NW
+New CI
+Boot Nm
+Boot Perc
+Model-2
+Asy NW
+Asy CI
+New NW
+New CI
+Boot Nm
+Boot Perc
+
+Table 1: Coverage Rate in Nonparametric
+p = 0:25
+p = 0:5
+0
+0:75
+1:5
+0
+0:75
+Curvy Homo
+0:9674 0:9514 0:9358 0:9834 0:9894
+0:9832 0:9546 0:9350 0:9884 0:9918
+0:9232 0:9630 0:9386 0:9434 0:9498
+0:9372 0:9656 0:9678 0:9508 0:9558
+0:8824 0:8670 0:8586 0:8938 0:8844
+0:9584 0:9466 0:9320 0:9096 0:9600
+Linear Hetero
+0:9556 0:9424 0:9068 0:9650 0:9532
+0:9610 0:9452 0:8918 0:9756 0:9582
+0:9518 0:9550 0:9606 0:9546 0:9566
+0:9534 0:9582 0:9358 0:9566 0:9582
+0:8952 0:9066 0:8958 0:8964 0:9026
+0:9552 0:9576 0:9532 0:9534 0:9552
+
+50
+
+Models (n = 200)
+p = 0:75
+1:5
+0
+0:75
+
+1:5
+
+0:9846
+0:9552
+0:9678
+0:9566
+0:884
+0:8968
+
+0:9692
+0:9738
+0:9598
+0:9682
+0:8602
+0:9584
+
+0:9316
+0:9380
+0:9632
+0:9654
+0:856
+0:931
+
+0:9556
+0:9398
+0:9074
+0:9436
+0:879
+0:8586
+
+0:9254
+0:9084
+0:9554
+0:9454
+0:8988
+0:9486
+
+0:9550
+0:9532
+0:9594
+0:9646
+0:8884
+0:9390
+
+0:9294
+0:9382
+0:9584
+0:9598
+0:8860
+0:9456
+
+0:8920
+0:8850
+0:9568
+0:9524
+0:8808
+0:9246
+
+Q-Level
+x
+Model-1
+Asy NW
+Asy CI
+New NW
+New CI
+Boot Nm
+Boot Perc
+Model-2
+Asy NW
+Asy CI
+New NW
+New CI
+Boot Nm
+Boot Perc
+
+Table 2: Coverage Rate in Nonparametric
+p = 0:25
+p = 0:5
+0
+0:75
+1:5
+0
+0:75
+Curvy Homo
+0:9664 0:9440 0:9430 0:9870 0:9780
+0:9814 0:9516 0:9474 0:9892 0:9808
+0:9382 0:9580 0:9634 0:9492 0:9546
+0:9548 0:9570 0:9594 0:9580 0:9584
+0:8944 0:8944 0:8810 0:9030 0:8986
+0:9626 0:9532 0:9418 0:9608 0:9660
+Linear Hetero
+0:9514 0:9476 0:9278 0:9642 0:9540
+0:9544 0:9462 0:9148 0:9672 0:9612
+0:9396 0:9420 0:9542 0:9546 0:9484
+0:9528 0:9558 0:9428 0:9568 0:9586
+0:907
+0:9136 0:903
+0:9086 0:9158
+0:953
+0:9556 0:943
+0:9568 0:9612
+
+Q-Level
+x
+Model-1
+Asy NW
+Asy CI
+New NW
+New CI
+Boot Nm
+Boot Perc
+Model-2
+Asy NW
+Asy CI
+New NW
+New CI
+Boot Nm
+Boot Perc
+
+Table 3: Coverage Rate in Nonparametric Models (n = 1000)
+p = 0:25
+p = 0:5
+p = 0:75
+0
+0:75
+1:5
+0
+0:75
+1:5
+0
+0:75
+Curvy Homo
+0:9602 0:9494 0:9508 0:9896 0:9704 0:9832 0:9864 0:9536
+0:9714 0:9518 0:9572 0:9910 0:9748 0:9700 0:9838 0:9536
+0:9512 0:9598 0:9634 0:9512 0:9570 0:9474 0:9578 0:9560
+0:9540 0:9618 0:9612 0:9538 0:9582 0:9620 0:9632 0:9600
+0:9092 0:8894 0:8916 0:9068 0:9140 0:9052 0:9000 0:9066
+0:9614 0:9554 0:9480 0:9566 0:9614 0:9596 0:9444 0:9572
+Linear Hetero
+0:9602 0:9518 0:9302 0:9522 0:9642 0:9540 0:9622 0:9526
+0:9642 0:9552 0:9254 0:9572 0:9672 0:9612 0:9602 0:9554
+0:9526 0:9504 0:9602 0:9602 0:9586 0:9630 0:9586 0:9572
+0:9548 0:9516 0:9460 0:9604 0:9602 0:9518 0:9600 0:9616
+0:9186 0:9170 0:9025 0:9146 0:9178 0:9098 0:9138 0:9166
+0:9633 0:9546 0:9418 0:9576 0:9560 0:9488 0:9516 0:9538
+
+51
+
+Models (n = 500)
+p = 0:75
+1:5
+0
+0:75
+
+1:5
+
+0:9890
+0:9646
+0:9422
+0:9582
+0:8908
+0:9544
+
+0:9830
+0:9836
+0:9584
+0:9608
+0:8940
+0:9322
+
+0:9432
+0:9466
+0:9570
+0:9626
+0:8986
+0:9534
+
+0:9536
+0:9402
+0:9598
+0:9526
+0:8998
+0:9618
+
+0:9486
+0:9362
+0:9610
+0:9532
+0:8986
+0:9446
+
+0:9606
+0:9574
+0:9520
+0:9538
+0:9088
+0:9506
+
+0:9460
+0:9452
+0:9584
+0:9610
+0:9086
+0:9562
+
+0:9170
+0:9090
+0:9652
+0:9522
+0; 8998
+0:9336
+
+1:5
+0:9574
+0:9554
+0:9598
+0:9554
+0:9094
+0:9628
+0:9398
+0:9280
+0:9606
+0:9488
+0:9004
+0:9434
+
+Table 4: Coverage Rate
+Q-Level
+p = 0:25
+x
+0
+0:75
+Model-1
+Curvy Homo
+Asy NW 0:7858 0:7488
+Asy CI
+0:7728 0:7470
+New NW 0:9522 0:9626
+New CI
+0:9540 0:9618
+Model-2
+Linear Hetero
+Asy NW 0:9522 0:9416
+Asy CI
+0:9508 0:9414
+New NW 0:9516 0:9502
+New CI
+0:9548 0:9516
+
+Q-Level
+x
+z
+
+in Nonparametric Models (n = 1000, One Bandwidth)
+p = 0:5
+p = 0:75
+1:5
+0
+0:75
+1:5
+0
+0:75
+1:5
+0:5634
+0:6980
+0:9672
+0:9612
+
+0:8000
+0:7894
+0:9518
+0:9538
+
+0:7748
+0:7778
+0:9598
+0:9582
+
+0:5906
+0:7260
+0:9572
+0:9620
+
+0:7852
+0:7772
+0:9582
+0:9632
+
+0:7464
+0:7484
+0:9594
+0:9600
+
+0:5560
+0:7084
+0:9672
+0:9554
+
+0:9162
+0:9204
+0:9610
+0:9460
+
+0:9518
+0:9570
+0:9612
+0:9604
+
+0:9442
+0:9480
+0:9586
+0:9602
+
+0:9264
+0:9234
+0:9644
+0:9518
+
+0:9518
+0:9472
+0:9588
+0:9600
+
+0:9408
+0:9448
+0:9578
+0:9616
+
+0:9116
+0:9140
+0:9602
+0:9488
+
+Table 5: Coverage Rate in Partial Linear Model (n = 500)
+p = 0:25
+p = 0:5
+p = 0:75
+0:25
+0:5
+
+0:5
+1
+
+Asy NW
+Asy CI
+New NW
+New CI
+Boot Nm
+Boot Perc
+
+0:9278
+0:9262
+0:9536
+0:9496
+0:9394
+0:9800
+
+0:9382
+0:9414
+0:9530
+0:9532
+0:9536
+0:9782
+
+0:9282
+0:9284
+0:9564
+0:9534
+0:947
+0:972
+
+0:25
+0:5
+
+0:9324
+0:9328
+0:9502
+0:9506
+0:9418
+0:9762
+
+0:5
+1
+
+0:9410
+0:9434
+0:9604
+0:9566
+0:954
+0:978
+
+0:9272
+0:9276
+0:9512
+0:9506
+0:9478
+0:9714
+
+0:25
+0:5
+
+Table 6: Coverage Rate in Partial Linear Model (n = 1000)
+p = 0:25
+p = 0:5
+p=0.75
+0:75
+1:5
+
+0:9384
+0:9422
+0:9582
+0:9558
+0:9490
+0:9796
+
+0:75
+1:5
+
+Q-Level
+
+0:5
+1
+
+0:9278
+0:9262
+0:9506
+0:9502
+0:9366
+0:9816
+
+0:5
+1
+
+0:9180
+0:9192
+0:9486
+0:9482
+0:9370
+0:9822
+
+0:25
+0:5
+
+0:9172
+0:9224
+0:9482
+0:9460
+0:9484
+0:9708
+
+0:25
+0:5
+
+Asy NW
+Asy CI
+New NW
+New CI
+Boot Nm
+Boot Perc
+
+x
+z
+
+0:9334
+0:9320
+0:9612
+0:9600
+0:9448
+0:9800
+
+0:75
+1:5
+
+0:75
+1:5
+
+0:9382
+0:9368
+0:9514
+0:9492
+0:9470
+0:9722
+
+0:9164
+0:9152
+0:9502
+0:9510
+0:9290
+0:9804
+
+0:25
+0:5
+
+0:9274
+0:9282
+0:9484
+0:9512
+0:9410
+0:9766
+
+0:5
+1
+
+0:9288
+0:9286
+0:9568
+0:9560
+0:9486
+0:9798
+
+0:5
+1
+
+0:9374
+0:9344
+0:9598
+0:9570
+0:9506
+0:9778
+
+0:75
+1:5
+
+0:9196
+0:9174
+0:9462
+0:9494
+0:9412
+0:9712
+
+0:75
+1:5
+
+0:9290
+0:9302
+0:9482
+0:9462
+0:9464
+0:9716
+
+Table 7: Coverage Rate in Partial Linear Model (n = 1000, One Bandwidth)
+Q-Level
+p = 0:25
+p = 0:5
+p = 0:75
+x
+z
+
+Asy NW
+Asy CI
+New NW
+New CI
+
+0:25
+0:5
+
+0:7972
+0:8060
+0:9526
+0:9496
+
+0:5
+1
+
+0:8040
+0:8014
+0:9534
+0:9532
+
+0:75
+1:5
+
+0:7946
+0:7940
+0:9562
+0:9534
+
+0:25
+0:5
+
+0:8142
+0:8164
+0:9512
+0:9506
+
+52
+
+0:5
+1
+
+0:8266
+0:8276
+0:9598
+0:9566
+
+0:75
+1:5
+
+0:8168
+0:8168
+0:9524
+0:9492
+
+0:25
+0:5
+
+0:7982
+0:8002
+0:9498
+0:9512
+
+0:5
+1
+
+0:8068
+0:8096
+0:9594
+0:9570
+
+0:75
+1:5
+
+0:7962
+0:7980
+0:9470
+0:9462
+
+

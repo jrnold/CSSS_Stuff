@@ -1,0 +1,1553 @@
+A hierarchical eigenmodel for pooled covariance estimation
+Peter D. Hoff
+
+1
+
+Working Paper no. 86
+Center for Statistics and the Social Sciences
+University of Washington
+Seattle, WA 98195-4322.
+March 31, 2008
+
+1
+
+Departments of Statistics and Biostatistics and the Center for Statistics and the Social Sciences. University of Washington, Seattle, Washington 98195-4322. Web: http://www.stat.washington.edu/hoff/.
+This research was partially supported by NSF grant SES-0631531. The author thanks Michael Perlman for
+helpful discussions.
+
+Abstract
+While a set of covariance matrices corresponding to different populations are unlikely to be exactly
+equal they can still exhibit a high degree of similarity. For example, some pairs of variables may
+be positively correlated across most groups, while the correlation between other pairs may be
+consistently negative. In such cases much of the similarity across covariance matrices can be
+described by similarities in their principal axes, the axes defined by the eigenvectors of the covariance
+matrices. Estimating the degree of across-population eigenvector heterogeneity can be helpful for
+a variety of estimation tasks. Eigenvector matrices can be pooled to form a central set of principal
+axes, and to the extent that the axes are similar, covariance estimates for populations having
+small sample sizes can be stabilized by shrinking their principal axes towards the across-population
+center. To this end, this article develops a hierarchical model and estimation procedure for pooling
+principal axes across several populations. The model for the across-group heterogeneity is based
+on a matrix-valued antipodally symmetric Bingham distribution that can flexibly describe notions
+of “center” and “spread” for a population of orthonormal matrices.
+Some key words: Bayesian inference, copula, Markov chain Monte Carlo, principal components,
+random matrix, Stiefel manifold.
+
+1
+
+Introduction
+
+Principal component analysis is a well-established procedure for describing the features of a covariance matrix. Letting UΛUT be the eigenvalue decomposition of the covariance matrix of a
+p-dimensional random vector y, the principal components of y are the elements of the transformed
+mean-zero vector UT (y − E[y]). From the orthonormality of U it follows that the elements of the
+principal component vector are uncorrelated, with variances equal to the diagonal of Λ. Perhaps
+more importantly, the matrix U provides a natural coordinate system for describing the orientation
+of the multivariate density of y: Letting uj denote the jth column of U, y can be expressed as
+y − E[y] = z1 u1 + · · · + zp up , where (z1 , . . . , zp )T is a vector of uncorrelated mean-zero random
+variables with diagonal covariance matrix Λ.
+Often the same set of variables are measured in multiple populations. Even if the covariance
+matrices differ across populations, it is natural to expect that they share some common structure,
+such as the correlations between some pairs of variables having common signs across the populations.
+With this situation in mind, Flury [1984] developed estimation and testing procedures for the
+“common principal components” model, in which a set of covariance matrices {Σ1 , . . . , ΣK } have
+common eigenvectors, so that Σj = UΛj UT for each j ∈ {1, . . . , K}. A number of variations of
+this model have since appeared: Flury [1987] and Schott [1991, 1999] consider cases in which only
+certain columns or subspaces of U are shared across populations, and Boik [2002] describes a very
+general model in which eigenspaces can be shared between all or some of the populations.
+These approaches all assume that certain eigenspaces are either exactly equal or completely
+distinct across a collection of covariances matrices. In many cases these two alternatives are too
+extreme, and it may be desirable to recognize situations in which eigenvectors are similar but
+not exactly equal. To this end, this article develops a hierarchical model to assess heterogeneity
+of principal axes across a set of populations. This is accomplished with the aid of a probability
+distribution over the orthogonal group Op which can be used in a hierarchical model for sample
+covariance matrices, allowing for pooling of covariance information and a description of similarities
+and differences across populations. Specifically, this article develops a sampling model for acrosspopulation covariance heterogeneity in which
+p(U|A, B, V) = c(A, B)etr(BUT VAVT U)
+U1 , . . . , UK
+
+(1)
+
+∼ i.i.d. p(U|A, B, V)
+
+Σk = Uk Λk UTk ,
+where A and B are diagonal matrices and V ∈ Op . The above distribution is a type of generalized Bingham distribution [Khatri and Mardia, 1977, Gupta and Nagar, 2000] that is appropriate
+for modeling principal component axes. Section 2 of this article describes some features of this
+distribution, in particular how A and B represent the variability of {U1 , . . . , UK } and how V
+1
+
+represents the mode. Parameter estimation is discussed in Section 3, in which a Markov chain
+Monte Carlo algorithm is developed which allows for the joint estimation of {A, B, V} as well as
+{(Uk , Λk ), k = 1, . . . , K}. The estimation scheme is illustrated with two example data analyses in
+Sections 4 and 5. The first dataset, previously analyzed by Flury [1984] and Boik [2002] among
+others, involves skull measurement data on four populations of voles. Model diagnostics and comparisons indicate that the proposed hierarchical model represents certain features of the observed
+covariance matrices better than do less flexible models. The second example involves survey data
+from different states across the U.S.. The number of observations per state varies a great deal, and
+many states have only a few observations. The example shows how the hierarchical model shrinks
+correlation estimates towards the across-group center when within-group data is limited. Section
+6 provides a discussion of the hierarchical model and a few of extensions of the approach.
+
+2
+
+A generalized Bingham distribution
+
+The eigenvalue decomposition of a positive definite covariance matrix Σ is given by Σ = UΛUT ,
+where Λ is a diagonal matrix of positive numbers (λ1 , . . . , λp ) and U is an orthonormal matrix,
+Pp
+T
+so that UT U = UUT = I. Writing UΛUT =
+j=1 λj uj uj , we see that multiplication of a
+column of U by -1 does not change the value of the covariance matrix, highlighting the fact that
+that the columns of U represent not directions of variation, but axes. As such, any probability
+model representing variability across a set of principal axes should be antipodally symmetric in the
+columns of U, meaning that U is equal in distribution to US for any diagonal matrix S having
+diagonal elements equal to plus or minus one, since U and US represent the same axes.
+Bingham [1974] described a probability distribution having a density proportional to exp{uT Gu}
+for normal vectors {u : uT u = 1}. This density has antipodal symmetry, making it a candidate
+model for a random axis. Khatri and Mardia [1977] and Gupta and Nagar [2000] discuss a matrixvariate version of the Bingham distribution,
+p(U|G, H) ∝ etr(HUT GU)
+
+(2)
+
+where G and H are p×p symmetric matrices. Using the eigenvalue decompositions G = VAVT and
+H = WBWT , this density can be rewritten as p(U|A, B, V, W) ∝ etr(B[WT UT V]A[VT UW]).
+A well-known feature of this density is that it depends on A and B only through the differences
+among their diagonal elements. This is because for any orthonormal matrix X (such as VT UW),
+we have
+tr([B + dI]XT [A + cI]X) = tr(BXT AX) + d × tr(XT AX) + c × tr(BXT X) + cd × tr(XT X)
+= tr(BXT AX) + d × tr(A) + c × tr(B) + cdp
+
+2
+
+and so the probability densities p(U|A, B) and p(U|A + cI, B + dI) are proportional as functions
+of U and therefore equal. By convention A and B are usually taken to be non-negative. In what
+follows we will set the smallest eigenvalues ap and bp to be equal to zero.
+Although a flexible class of distributions for orthonormal matrices, densities of the form (2) are
+not necessarily antipodally symmetric. However, we can identify conditions on G and H which
+give the desired symmetry. If either G or H have only one unique eigenvalue, then tr(HUT GU)
+is constant in U and therefore trivially antipodally symmetric in the columns of U. Otherwise, we
+have the following result:
+Proposition 1. If G and H both have more than one unique eigenvalue, then a necessary and
+sufficient condition for tr(HUT GU) to be antipodally symmetric in the columns of U is that H be
+a diagonal matrix.
+Proof. The symmetry condition requires that tr(HUT GU) = tr(SHSUT GU) for all U ∈ Op and
+diagonal sign matrices S. If H is diagonal then SHS = H and so diagonality is a sufficient condition
+for antipodal symmetry. To show that it is also a necessary condition, first let V and A be the
+eigenvector and eigenvalue matrices of G. Then for any orthonormal X we have X = UT V if
+U = VXT . Therefore the symmetry condition is that
+tr([H − SHS]XAXT ) = 0 for all X ∈ Op and S ∈ {diag(s), s ∈ {±1}p } .
+If we let diag(S) = (−1, 1, 1, . . . , 1) then D = H − SHS is zero except for possibly D[1,−1] and
+D[−1,1] , the first row and column of D absent d1,1 . Additionally, if not all entries are zero then D
+√
+is of rank two with eigenvectors e and Se, where e = (|H[−1,1] |, h2,1 , h3,1 , . . . , hp,1 )/( 2|H[−1,1] |),
+and corresponding eigenvalues ±d, where d = 2|H[−1,1] |. Writing the symmetry condition in terms
+of the eigenvalues and vectors of D gives
+T
+
+0 = tr(DXAX ) = d
+
+p
+X
+
+
+ai xTi eeT − SeeT S xi .
+
+i=1
+
+The symmetry condition requires that this hold for all orthonormal X. Now if k and l are the
+indices of any two unequal eigenvalues of G, we can let xk = e and xl = −Se, giving
+0 = tr(DXAXT ) = d[ak (1 − eT SeeT Se) + al (eT SeeT Se − 1)]
+= d(1 − [eT Se]2 )(ak − al ).
+Since ak 6= al by assumption, this means that either d = 0 or (eT Se)2 = 1. Neither of these
+conditions are met unless all entries of D are zero, implying that the off-diagonal elements in the
+first row and column of H must be zero. Repeating this argument with the diagonal of S ranging
+over all p-vectors consisting of one negative-one and p − 1 positive ones shows that all off-diagonal
+elements of H must be zero.
+3
+
+Based on this results we fix the eigenvector matrix of H to be I and our column-wise antipodally
+symmetric model for U ∈ Op is
+pB (U|A, B, V) = c(A, B)etr(BUT VAVT U)
+
+(3)
+
+where A and B are diagonal matrices with a1 ≥ a2 ≥ · · · ≥ ap = 0, b1 ≥ b2 ≥ · · · ≥ bp = 0 and
+V ∈ Op . Interpreting these parameters is made easier by writing X = VT U and expanding out
+the exponent of pB as
+tr(BUT VAVT U) =
+
+p X
+p
+X
+
+ai bj (vTi uj )2 =
+
+p X
+p
+X
+
+i=1 j=1
+
+ai bj x2i,j = aT (X ◦ X)b,
+
+(4)
+
+i=1 j=1
+
+where “◦” is the Hadamard product denoting element-wise multiplication. The value of x2i,j describes how close column i of V is to column j of U. Since both a and b are in decreasing order,
+a1 b1 is the largest term and the density will be large when x21,1 is large. However, due to the
+orthonormality of X, a large x21,1 restricts x21,2 and x22,1 to be small, which then allows x22,2 to be
+large. Continuing on this way suggests that the density is maximized if X ◦ X is the identity, i.e.
+U = VS for some diagonal sign matrix S.
+Proposition 2. The modes of pB include V and {VS : S = diag(s), s ∈ {±1}p }. If the diagonal
+elements of A and B are distinct then these are the only modes.
+Proof. The matrix X ◦ X is an element of the set of orthostochastic matrices, a subset of the doubly
+stochastic matrices. The set of doubly stochastic matrices is a compact convex set whose extreme
+points are the permutation matrices. Since every element of this compact convex set can be written
+as a convex combination of the extreme points, we have
+X
+max aT (X ◦ X)b ≤ max aT (
+θk Pk )b
+θ
+X∈Op
+for probability distributions θ over the finite set of permutation matrices. If the elements of a and
+b are distinct and ordered it is easy to show that aT Pb is uniquely maximized over permutation
+matrices P by P = I, and so the right-hand side is maximized when θ is the point-mass measure
+on I. Since I is orthostochastic, the maximum on the left-hand side is achieved at (X ◦ X) = I.
+If two adjacent eigenvalues are equal then the density has additional maxima. For example,
+if b1 = b2 then aT Zb is maximized over doubly stochastic matrices Z by any convex combination
+of the matrices corresponding to the permutations {1, 2, 3, . . . , p} and {2, 1, 3, . . . , p}. In terms of
+U, this would mean that modes are such that uTi vi = ±1 for i > 2, with u1 and u2 being any
+orthonormal vectors in the null space of {v3 , . . . , vp }. More generally, how the parameters (A, B)
+
+4
+
+control the variability of U around V can be seen by rewriting the exponent of (3) a few different
+ways. For example, equation (4), can be expressed as
+T
+
+T
+
+tr(BU VAV U) =
+
+=
+
+p X
+p
+X
+
+ai bj (vTi uj )2
+
+i=1 j=1
+p
+X
+
+bj uTj (VAVT )uj
+
+(5)
+
+j=1
+d
+
+From equations (4) and (5) it is clear that bj = bj+1 implies that uj = uj+1 and ai = ai+1 implies
+d
+
+vTi uj = vTi+1 uj . In this way the model can represent eigenspaces of high probability, not only
+eigenvectors, providing a probabilistic analog to the common space models of Flury [1987]. To
+illustrate this further, Figure 1 shows the expectations of the squared elements of X = VT U for
+two different values of (A, B) (calculations were based on a Monte Carlo approximation scheme
+described in Hoff [2007b]). The plot in the first panel is based on the generalized Bingham distribution in which diag(A) = diag(B) = (7, 5, 3, 0, 0, 0). For this distribution, u1 , u2 and u3 are highly
+concentrated around v1 , v2 and v3 respectively. Since b4 = b5 = b6 , the vectors u4 , u5 and u6
+are equal in distribution and close to being uniformly distributed on the null space of (v1 , v2 , v3 ).
+These particular values of (A, B) could represent a situation in which the first three eigenvectors
+are conserved across populations but the others are not. The second panel of Figure 1 represents a
+more complex situation in which diag(A) = (7, 5, 3, 0, 0, 0) and diag(B) = (7, 7, 0, 0, 0, 0). For these
+parameter values the following components of X = VT U are equal in distribution: columns 1 and
+2; columns 3, 4, 5 and 6; rows 2 and 3; rows 4, 5 and 6. Such a distribution might represent a
+situation in which a vector v1 is shared across populations, but it is equally likely to be represented
+within a population by either u1 or u2 .
+
+3
+
+Pooled estimation of covariance eigenstructure
+
+In the case of normally distributed data the sampling model for Sk = YTk (I −
+
+1
+T
+nk 11 )Yk ,
+
+the
+
+observed sum of squares matrix in population k, is a Wishart distribution. Combining this with
+the model for principal axes developed in the last section gives the following hierarchical model for
+covariance structure:
+U1 , . . . , UK
+
+∼ i.i.d. p(U|A, B, V)
+
+(across-population variability)
+
+Sk ∼ Wishart(Uk Λk UTk , nk − 1) (within-population variability)
+The unknown parameters to estimate include {A, B, V} as well as the within-population covariance
+matrices, parameterized as {(U1 , Λ1 ), . . . , (UK , ΛK )}. In this section we describe a Markov chain
+Monte Carlo algorithm that generates approximate samples from the posterior distribution for these
+5
+
+row
+
+1
+
+1
+
+2
+
+2
+
+3
+
+3
+
+4
+
+4
+
+5
+
+5
+
+6
+
+6
+1
+
+2
+
+3
+4
+column
+
+5
+
+6
+
+1
+
+2
+
+3
+4
+column
+
+5
+
+6
+
+Figure 1: Expected values of the squared entries of X = VT U under two different Bingham
+distributions. Light shading indicates high values.
+parameters, allowing for estimation and inference. The Markov chain is constructed with Gibbs
+sampling, in which each parameter is iteratively resampled from its full conditional distributions.
+We first describe conditional updates of the across-population parameters {A, B, V}, then describe
+pooled estimation of each Uk , which combines the population-specific information Sk with the
+across-population information in {A, B, V}.
+
+3.1
+
+Estimation of across-population parameters
+
+Letting the prior distribution for V be the uniform (invariant) measure on Op , we have
+p(V|A, B, U1 , . . . , UK ) ∝ p(V)
+
+K
+Y
+
+p(Uk |A, B, V)
+
+k=1
+K
+X
+
+BUTk VAVT Uk )
+
+∝ etr(
+
+k=1
+K
+X
+X
+= etr(
+AVT Uk BUTk V) = etr(AVT [
+Uk BUTk ]V),
+k=1
+
+and so the full conditional distribution of V is a generalized Bingham distribution, of the same
+form as described in the previous section. Conditional on the values {A, B, U1 , . . . , UK }, pairs of
+columns of V can be sampled from their full conditional distributions using a method described in
+Hoff [2007b].
+Obtaining full conditional distributions for A and B is more complicated. The joint density of
+
+6
+
+P
+{U1 , . . . , UK } is c(A, B)K etr( AVT Uk BUTk V). From the terms in the exponent we have
+p X
+p
+K
+K X
+X
+X
+X
+T T
+T
+T
+T
+tr(
+BUk V AV Uk ) =
+tr(BUk VAV Uk ) =
+ai bj (vTi uj,k )2 = aT Mb
+k=1 i=1 j=1
+
+k=1
+
+where M is the matrix M =
+
+PK
+
+k=1 (V
+
+T
+
+Uk ) ◦ (VT Uk ). The normalizing constant c(A, B) is equal
+
+to 0 F0 (A, B)−1 , where 0 F0 (A, B) is a type of hypergeometric function with matrix arguments
+[Herz, 1955]. Exact calculation of this quantity is problematic, although approximations have
+been discussed in Anderson [1965], Constantine and Muirhead [1976] and Muirhead [1978]. The
+first-order term in these approximations is
+p
+T
+c(A, B) ≈ c˜(A, B) = 2−p π −(2) e−a b
+
+Y
+(ai − aj )1/2 (bi − bj )1/2 .
+i<j
+
+This gives the following approximation to the likelihood for A, B:
+p(U1 , . . . , UK |A, B, V) ≈ c˜(A, B)K etr(aT Mb)
+∝ exp{−aT (KI − M)b}
+
+Y
+(ai − aj )K/2 (bi − bj )K/2
+
+(6)
+
+i<j
+
+However, there is an identifiability issue with this likelihood: As seen above, since A and B are
+P P
+diagonal, tr(BXT AX) simplifies to aT (X ◦ X)b = i j ai bj x2i,j . This means that for any c > 0,
+p(U|A, B, V) = p(U|cA, c−1 B, V), and so the scale of A and B are not separately identifiable. To
+account for this, we parameterize A and B as follows:
+diag(A) = (a1 , . . . , ap ) =
+diag(B) = (b1 , . . . , bp ) =
+
+√
+√
+
+w(α1 , . . . , αp )
+
+w(β1 , . . . , βp )
+
+where w > 0, 1 = α1 > α2 > · · · > αp−1 > αp = 0 and 1 = β1 > β2 > · · · > βp−1 > βp = 0.
+Rewriting (6) in terms of these parameters and multiplying by a prior distribution p(α, β, w) gives
+p
+
+p(α, β, w|M) ∝ p(α, β, w) × exp{−wαT (KI − M)β}w(2)K/2
+
+Y
+(αi − αj )K/2 (βi − βj )K/2 .
+
+(7)
+
+i<j
+
+In what follows we take the prior distribution p(α, β, w) such that 1 > α2 > · · · > αp−1 > 0 and
+1 > β2 > · · · > βp−1 > 0 are two independent sets of order statistics of uniform random variables
+on [0, 1], and w has a gamma distribution. With these priors, the values of α and β can be sampled
+from their full conditional distributions on a grid of [0, 1], and the full conditional distribution of
+w is a gamma distribution. For example, if w ∼gamma(η0 /2, τ02 /2) a priori, then p(w|α, β, M) is
+
+gamma(η0 /2 + p2 K/2, η0 τ02 /2 + αT (KI − M)β).
+We should keep in mind that this full conditional distribution is based on an approximation to
+the normalizing constant c(A, B) (although it is a “bona fide” full conditional distribution under
+7
+
+the prior p˜(A, B) = p(A, B)[˜
+c(A, B)/c(A, B)]K ). Results from Anderson [1965] show that in terms
+of the parameters {α, β, w},
+c(A, B)
+1 X
+1
+≈1+
+[(αi − αj )(βi − βj )]−1 + O( 2 )
+c˜(A, B)
+4w
+w
+
+(8)
+
+i<j
+
+Further terms in the expansion are available in Anderson [1965]. In problems where w is large then
+the approximation is likely to be a good one. In cases where the differences between consecutive
+αi ’s or βj ’s is small compared to 1/w then it may be desirable to correct for the approximation
+using a few additional terms from (8) via a Metropolis-Hastings procedure. For example, letting
+P
+h(α, β, w) = 1 + i<j [4w(αi − αj )(βi − βj )]−1 , if ws is the current value of w in the Markov chain
+and w
+˜ is sampled from the approximate full conditional distribution of w based on (7), then the
+correction can be implemented as follows:
+1. sample a proposal w
+˜ from the full conditional of w based on (7);
+2. sample u ∼ uniform(0,1) and compute r = [h(α, β, w)/h(α,
+˜
+β, ws )]K ;
+3. if u < r then set ws+1 = w,
+˜ otherwise set ws+1 = ws .
+A similar procedure using one more order in the expansion is used in the example data analyses of
+the next section.
+Finally, we note that there has been some recent progress in computing 0 F0 (A, B) exactly. Koev
+and Edelman [2006] provide an algorithm that is fast enough to be used in MCMC algorithms for
+problems in which p roughly 5 or less and the values of A and B are not too large. For other
+problems the approximations based on (7) and (8) still seem necessary.
+
+3.2
+
+Estimation of population-specific principal axes
+
+As described above, the within-population sampling model for the sample sum-of-squares matrix
+Sk is Wishart(Uk Λk UTk , nk − 1), so that as a function of Sk , Uk and Λk ,
+1
+UTk Sk Uk ).
+p(Sk |Uk , Λk ) ∝ |Λk |−(nk −1)/2 |Sk |(nk −p−2)/2 × etr(− Λ−1
+2 k
+
+(9)
+
+In the absence of information from other populations, a uniform prior distribution on Uk would
+yield a generalized Bingham full conditional distribution for Uk . However, combining (9) with the
+across-population information p(Uk |A, B, V) gives a non-standard full conditional distribution for
+Uk :
+p(Uk |Sk , Λk , A, B, V) ∝ p(Sk |Uk , Λk ) × p(Uk |A, B, V)
+1
+∝ etr(− Λ−1
+UTk Sk Uk ) × etr(BUTk VAVT Uk ).
+2 k
+8
+
+The terms in the exponents are difficult to combine as they are both quadratic in Uk . Writing out
+the expression in terms of the columns {u1,k , . . . , up,k } yields some insight:
+tr(BUTk VAVT Uk
+
+
+
+p
+X
+1 −1 T
+1 −1
+T
+T
+− Λk Uk Sk Uk ) =
+uj,k bj VAV − λj,k Sk uj,k
+2
+2
+j=1
+
+This suggests that the full conditional distribution of the jth column vector of Uk is a vectorvalued Bingham distribution. This is true in a very limited sense: Since Uk is an orthonormal
+matrix the full conditional distribution of uj,k given the other columns of Uk must have support
+˜ represents the null space of the vectors {u1,k , . . . , uj−1,k , uj+1,k , . . . , up,k }.
+only on ±˜
+u, where u
+Iteratively sampling the columns of Uk from their full conditional distributions would therefore
+produce a reducible Markov chain which would not converge to the target posterior distribution.
+One remedy to this situation, used by Hoff [2007b] in the context of sampling from the Bingham
+distribution, is to sample from the full conditional distribution of columns taken two at a time.
+Conditional on {u3,k , . . . , up,k }, the vectors {u1,k , u2,k } are equal in distribution to NZ, where N
+is any p × 2 dimensional orthonormal basis for the null space of {u3,k , . . . , up,k } and Z is a random
+2 × 2 orthonormal matrix whose density with respect to the uniform measure is proportional to
+
+p(Z) ∝ etr zT1 Gz1 + zT2 Hz2 ,
+−1
+T
+T
+where G = NT (b1 VAVT −λ−1
+1,k Sk )N, H = N (b2 VAV −λ2,k Sk )N and z1 and z2 are the columns
+
+of Z. Since Z is orthogonal, we can parameterize it as
+Z=
+
+cos φ
+
+s sin φ
+
+!
+
+sin φ −s cos φ
+
+for some φ ∈ (0, 2π) and s = ±1. The uniform density on the circle is constant in φ, so the joint
+density of (φ, s) is simply p(Z(φ, s)). Sampling from this distribution can be accomplished by first
+sampling φ ∈ (0, 2π) from a density proportional to
+p(φ) ∝ exp([g1,1 + h2,2 ] cos2 φ + [h1,1 + g2,2 ] sin2 φ + [g1,2 + g2,1 − h1,2 − h2,1 ] cos φ sin φ),
+and then sampling s uniformly from {−1, +1}.
+
+3.3
+
+Estimation of eigenvalues
+
+From (9) we see that the conditional distribution of Λk given Uk and Sk has the following form:
+1
+UTk Sk Uk )
+p(Λk |Uk , Sk ) ∝ p(Λk )|Λk |−(nk −1)/2 etr(− Λ−1
+2 k
+p
+p
+Y
+1 X −1 T
+−(n −1)/2
+= p(Λk )
+λj,k k
+exp{−
+λj,k uj,k Sk uj,k }
+2
+j=1
+
+j=1
+
+9
+
+The part not involving the prior distribution has the form of an inverse-gamma density, and indeed,
+if p(Λk ) were the product of inverse-gamma densities with parameters (ν0 /2, ν0 σ02 /2) then the full
+conditional distribution of λj,k would be inverse-gamma[(ν0 + n − 1)/2, (ν0 σ02 + uTj,k Sk uj,k )/2].
+However, it may be desirable to add more structure to the estimation of the eigenvalues. In
+usual one-sample principal component analysis the eigenvalues are labeled in order of decreasing
+magnitude and attention is focused on the “first few” eigenvectors, i.e. those corresponding to the
+largest eigenvalues. In terms of making comparisons of eigenvectors across groups, restricting the
+eigenvalues to be ordered means that the ordered columns of V refer to the ordered columns of
+U. One concern about such a restriction would be how it might affect inference in the case of
+a shared eigenvector that is the first principal axes in some groups, and possibly the second or
+third in other groups. This sort of heterogeneity can in fact be represented with the generalized
+Bingham distribution even if the eigenvalues are order-restricted. For example, the distribution
+with diag(A) = (a, 0, 0, . . .) and diag(B) = (b, b, 0, . . .) represents a population in which, with equal
+frequency, one of the first two columns of U is near the first column of V. Because of this flexibility,
+in what follows we estimate the eigenvalues in each group as being ordered. A convenient prior
+distribution is that p(Λk ) is the product of inverse-gamma densities described above, but restricted
+to the space λ1,k > λ2,k > · · · > λp,k . The full conditional distribution of λj,k is then inversegamma[(ν0 + n − 1)/2, (ν0 σ02 + uTj,k Sk uj,k )/2] but restricted to the interval (λj+1,k , λj−1,k ).
+
+3.4
+
+Summary of MCMC algorithm
+
+The unknown parameters in the hierarchical model are the group-specific eigenvectors and values
+{U1 , Λ1 }, . . . , {UK , ΛK } and the parameters {A, B, V} describing the across-group heterogeneity
+of eigenvector matrices. The diagonal matrices A and B are parameterized as
+diag(A) = (a1 , . . . , ap ) =
+diag(B) = (b1 , . . . , bp ) =
+
+√
+√
+
+w(α1 , . . . , αp )
+
+w(β1 , . . . , βp )
+
+with 1 = α1 > · · · > αp = 0 and 1 = β1 > · · · > βp = 0. Convenient prior distributions are V ∼
+uniform Op , (α2 , . . . , αp−1 ) and (β2 , . . . , βp−1 ) are uniform on [0, 1] subject to the ordering restriction, w ∼ gamma(η0 /2, τ02 /2) and (1/λ1,k , . . . , 1/λp,k ) are the order statistics of a sample from a
+gamma(ν0 /2, σ02 /2) distribution. With these prior distributions, a Markov chain in the unknown parameters that converges to the posterior distribution p({U1 , Λ1 }, . . . , {UK , ΛK }, A, B, V|Y1 , . . . , Yk )
+can be constructed by iteration of the following sampling scheme:
+1. Update the within-group parameters:
+(a) Update {U1 , . . . , UK }: For each k and a randomly selected pair {j1 , j2 } ⊂ {1, . . . , p};
+i. let N be the null space of the columns {uj,k : j 6∈ {j1 , j2 }};
+10
+
+−1
+T
+T
+ii. compute G = NT (bj1 VAVT − λ−1
+j1 ,k Sk )N, H = N (bj2 VAV − λj2 ,k Sk )N;
+
+iii. sample Z = (z1 , z2 ) ∈ O2 from the density proportional to exp(zT1 Gz1 + zT2 Hz2 )
+iv. set uj1 ,k to be the first column of NZ and uj2 ,k to be the second.
+(b) Update {Λ1 , . . . , ΛK }: Iteratively for each j ∈ {1, . . . , p} and k ∈ {1, . . . , K}, sample
+λj,k ∼inverse-gamma[(ν0 + nk − 1)/2, (ν0 σ02 + uTj,k Sk uj,k )/2], but constrained to be in
+(λj−1,k , λj+1,k ).
+2. Update the across-group parameters:
+P
+(a) Update V: Sample V from the Bingham density proportional to etr(AVT [ Uk BUTk ]V).
+P
+T
+T
+(b) Update w, α and β: Compute M = K
+k=1 (V Uk ) ◦ (V Uk ) and
+
+i. sample w ∼ gamma(η0 /2 + p2 K/2, η0 τ02 /2 + αT [KI − M]β)
+ii. for each i ∈ {2, . . . , p − 1} sample αi ∈ (αi−1 , αi+1 ) from the density proportional to
+Q
+exp{−αi (wβ T M[i,] )} j:j6=i |ai − aj |K/2 .
+iii. for each j ∈ {2, . . . , p − 1} sample βj ∈ (βj−1 , βj+1 ) from the density proportional
+Q
+to exp{−βj (wMT[,j] α)} i:i6=j |βj − βi |K/2 .
+As discussed in section 3.1, it may be desirable to make Metropolis-Hastings adjustments to the
+steps in 2(b) to account for the approximation to the normalizing constant c(A, B). Functions and
+example code for this algorithm, written in the R programming environment, are available at my
+website, http://www.stat.washington.edu/hoff/.
+
+4
+
+Example: Vole measurements
+
+Flury [1987] describes an analysis of skull measurements on four different groups of voles. The four
+groups, defined by species and sex, are male and female Microtus californicus and male and female
+Microtus ochrogaster, having sample sizes of 82, 70, 58 and 54 respectively. Flury provides the
+sample covariance matrices of four log-transformed measurements corresponding to skull length,
+toothrow length, cheekbone width and interorbital width. The eigenvectors of the four empirical
+covariance matrices are given in Table 1. The first eigenvector in each group can roughly be
+interpreted as measuring overall size variation, and its values seem fairly similar across groups.
+The remaining eigenvectors also display a high degree of similarity across groups. By performing
+statistical tests of various hypotheses regarding the four population covariance matrices, Flury
+concludes that although the sample covariance matrices appear similar, there is enough evidence
+to reject exact equality of the population matrices. Furthermore, Flury rejects a hypotheses that
+the population covariances are proportional to each other, and then suggests a model in which
+the the covariance matrices share a single eigenvector (interpreted as corresponding to size), with
+11
+
+M. californicus
+males
+
+females
+
+36.31
+
+27.01
+
+8.05
+
+2.78
+
+52.44
+
+21.14
+
+3.75
+
+3.17
+
+0.49
+
+-0.31
+
+-0.19
+
+0.79
+
+0.53
+
+-0.31
+
+-0.29
+
+0.74
+
+0.60
+
+-0.10
+
+0.76
+
+-0.24
+
+0.56
+
+-0.06
+
+0.82
+
+-0.11
+
+0.55
+
+-0.12
+
+-0.63
+
+-0.54
+
+0.57
+
+-0.14
+
+-0.48
+
+-0.65
+
+0.30
+
+0.94
+
+-0.06
+
+0.17
+
+0.30
+
+0.94
+
+-0.11
+
+0.14
+
+M. ochrogaster
+males
+
+females
+
+36.30
+
+9.67
+
+7.97
+
+2.80
+
+35.61
+
+12.35
+
+8.32
+
+3.38
+
+0.58
+
+0.04
+
+-0.38
+
+0.71
+
+0.56
+
+0.06
+
+0.05
+
+0.82
+
+0.45
+
+0.72
+
+0.51
+
+-0.13
+
+0.47
+
+0.02
+
+0.80
+
+-0.38
+
+0.51
+
+-0.08
+
+-0.51
+
+-0.69
+
+0.66
+
+-0.25
+
+-0.58
+
+-0.40
+
+0.45
+
+-0.68
+
+0.58
+
+-0.02
+
+0.13
+
+0.97
+
+-0.17
+
+-0.14
+
+Table 1: Eigenvalues and eigenvectors of empirical covariance matrices. Eigenvalues are given in
+the first row for each group.
+the remaining eigenvectors and all of the eigenvalues being distinct across groups. In this section
+we reanalyze these data using the hierarchical eigenmodel discussed above, and compare it to the
+model in Flury [1987] and a few others. In particular, we show that allowing information-sharing
+across the groups where appropriate, but not forcing any of the eigenvectors to be exactly equal,
+results in a model that better represents features of the observed dataset.
+Using the sample sizes and sample covariance matrices provided in Flury [1987], centered versions of YTk Yk for each group k ∈ {1, . . . , 4} were reconstructed and used as data for the model
+described in Section 3. The prior distribution of w was taken to be a diffuse exponential with a
+mean of 1000, and the prior distribution for the inverse-eigenvalues was exponential with a mean
+of 1. A Markov chain consisting of 10,000 iterations was constructed, for which parameter values
+were saved every 10th iteration giving a total of 1000 posterior samples for each parameter. Mixing
+of the Markov chains was monitored via a variety of parameter summaries computed at each saved
+iteration. For example, for each saved value of A and B the average and standard deviation of the
+logs of the (p − 1) × (p − 1) = 9 non-zero values of A ◦ B were obtained and plotted sequentially
+in the first panel of Figure 2.
+A posterior point estimate of V can be obtained from the eigenvector matrix of the posterior
+mean of VAVT , obtained by averaging across samples of the Markov chain. This produces the
+
+12
+
+hierarchical model estimate
+
+empirical estimate
+
+0.54
+
+-0.27
+
+-0.19
+
+0.77
+
+0.55
+
+-0.25
+
+-0.17
+
+0.78
+
+0.54
+
+-0.10
+
+0.80
+
+-0.22
+
+0.53
+
+-0.10
+
+0.81
+
+-0.23
+
+0.56
+
+-0.15
+
+-0.56
+
+-0.59
+
+0.57
+
+-0.16
+
+-0.56
+
+-0.57
+
+0.30
+
+0.95
+
+-0.06
+
+0.10
+
+0.30
+
+0.95
+
+-0.05
+
+0.08
+
+Table 2: Model-based and empirical estimates of V.
+matrix in Table 2, which is nearly identical to the eigenvector matrix of the pooled covariance matrix
+P T
+Yk Yk /(nk − 1), which is also given in the table. Posterior mean estimates of the eigenvalue
+matrices {Λ1 , . . . , ΛK } were all within 1.0 of their corresponding values based on the the empirical
+covariance matrices.
+Table 1 suggests that the first and fourth eigenvectors are the most preserved across groups,
+ˆ k be the eigenvector matrix of YT Yk and
+whereas the other two are less well-preserved. Letting U
+k
+P
+T
+ˆ
+V the eigenvector matrix of
+Yk Yk /(nk − 1), the differential heterogeneity of the eigenvectors
+ˆTU
+ˆ k )2 and averaging each of the
+can be described numerically by computing the value of diag(V
+p entries of this vector across the K groups. This p-dimensional function of the observed data
+gives t(YT1 Y1 , . . . , YT4 Y4 ) = (0.98, 0.85, 0.86, 0.96), indicating that by this metric the first and
+last eigenvectors are most preserved across groups. To examine how well the model represents this
+observed heterogeneity, the value of t(YT1 Y1 , . . . , YT4 Y4 ) can be compared to its posterior predictive
+T
+˜ 1, . . . , Y
+˜TY
+˜4
+distribution under the model. This was done by generating simulated values Y˜1 Y
+4
+
+every 10th iteration of the Markov chain and computing the statistic t() described above, resulting
+T
+˜ 1, . . . , Y
+˜TY
+˜ 4 ) from the posterior predictive distribution. For simplicity
+in 1000 samples of t(Y˜1 Y
+4
+
+we present below only the minimum and maximum values of this statistic, which for our observed
+data are (0.85, 0.98).
+The top of the second panel of Figure 2 shows the posterior predictive distributions of this
+statistic on a logit scale under the hierarchical model which pools information across eigenvector
+matrices. The observed values are well within the predicted range, indicating that the model is
+able to represent the differential amounts of eigenvector preservation among the observed covariance
+matrices. In contrast, the lower part of the plot shows a posterior predictive distribution generated
+under a one-shared-eigenvector model similar to the one in Flury [1987], obtained obtained by
+fixing w = 1000, α1 = β1 = 1 and αj = βj = 0 for j > 1. This model accurately predicts
+the highest degree of preservation across eigenvectors, but underestimates the preservation among
+other eigenvectors. This is not surprising, as this model shares information only across a single
+eigenvector.
+Lastly we fit two other related models: a “no pooling” model in which no information was shared
+
+13
+
+8
+
+common covariance matrix
+
+one shared vector
+
+no pooling
+
+0
+
+2
+
+4
+
+6
+
+hierarchical
+
+0
+
+2000
+
+4000 6000
+iteration
+
+8000
+
+−2
+
+0
+
+2
+4
+log t/(1 − t)
+
+6
+
+−2
+
+0
+
+2
+4
+log t/(1 − t)
+
+6
+
+Figure 2: MCMC and model diagnostics for the Vole example. The first panel shows averages
+(black) and standard deviations (gray) of the log entries of A ◦ B at every 10th scan of the Markov
+chain. The second and third panels show posterior predictive distributions of the minimum and
+maximum similarity statistics under a variety of models, with the observed value of each statistic
+represented by a vertical line.
+across groups and a common covariance matrix model in which it is assumed that the covariances
+are exactly identical across groups. Not surprisingly these two models under- and over-represent
+the similarity across eigenvectors of observed covariance matrices, as shown in the third panel of
+Figure 2. Taken together, these results indicate that assuming complete equality, or completely
+ignoring similarity, can misrepresent the variability of covariance structure across groups.
+
+5
+
+Example: National Health Communication Study
+
+The 2005 Annenberg National Health Communication Survey (anhcs.asc.upenn.edu) gathered
+self-reported health and lifestyle data from 2,989 members of the adult U.S. population under the
+age of 65. Among the variables recorded were the following:
+
+14
+
+state:
+
+state of residency (including the District of Columbia)
+
+fruitveg:
+
+typical number of servings of fruit and vegetables per day
+
+exercise:
+
+typical weekly frequency of exercise
+
+bmi:
+alcohol:
+smoke:
+age:
+
+body mass index
+number of days in the month consuming five or more alcoholic drinks
+typical number of cigarettes smoked per day
+in years
+
+female:
+
+indicator of being female
+
+income:
+
+household income (19 ordered categories)
+
+edu:
+
+education level (no degree, high school, some college, Bachelor’s degree or higher)
+
+In this section we estimate state-specific correlation matrices in a Gaussian copula model for the
+p = 9 ordinal variables above. More specifically, we model the observed data vectors y1 , . . . , yn
+within a particular state as monotone functions of latent Gaussian random variables, so that
+z1 , . . . , zn ∼ i.i.d. multivariate normal(0, Σ)
+yi,j
+
+= gj (zi,j ).
+
+The non-decreasing functions {g1 , . . . , gp } are state-specific as is the covariance matrix Σ. We
+compare two models for Σ1 , . . . , ΣK , the first being one in which no information is shared and
+U1 , . . . , UK are a priori independent and uniformly distributed on Op . The second is the hierarchical eigenmodel in which U1 , . . . , UK ∼ i.i.d. pB (U|A, B, V), with the parameters {A, B, V}
+unknown and estimated from the data, using the same prior distributions as in the previous
+section. For both models, the prior distribution on the eigenvalues in each group is such that
+{1/λ1 < · · · < 1/λp } are the order statistics of p independent exponential(1) random variables.
+We note that both of these models ignore the possibility that heterogeneity in correlation matrices
+might be associated with state-specific characteristics such as population size or geographic location
+(although some ad-hoc exploratory analyses suggest these effects are small).
+Parameter estimation for this hierarchical copula model can be accomplished by iterative sampling of the parameters from their full conditional distributions as in Section 3 with the latent
+z’s taking the roles of the observed y’s, along with iterative sampling of the z’s from their full
+conditional distributions (which are constrained normal distributions). This latter step is described for a one-group discrete-data copula model in Hoff [2007a]. We note that this is a type
+of parameter-expanded estimation scheme [Gelman et al., 2008] in that the scale of each variable
+j can be represented by both gj and Σj,j , and so these quantities are not separately identifiable.
+However, the posterior distribution of {Σ1 , . . . , ΣK } induces a posterior distribution over statespecific correlation matrices {C1 , . . . , CK }, which are the parameters of primary interest in copula
+models. In the posterior analysis that follows we focus mostly on comparing the hierarchical and
+15
+
+7
+
+bmi
+bmi
+
+0e+00
+
+2e+04
+
+4e+04 6e+04
+iteration
+
+8e+04
+
+1e+05
+
+age
+age
+fruitveg
+fruitveg
+
+smoke
+smoke
+
+−0.6
+
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+second principal component loadings
+−0.4 −0.2
+0.0
+0.2
+0.4
+
+female
+female
+
+exercise
+exercise
+edu
+edu
+income
+income
+alcohol
+alcohol
+
+−0.6
+
+−0.4
+−0.2
+0.0
+0.2
+0.4
+first principal component loadings
+
+Figure 3: The first panel shows averages (black) and standard deviations (gray) of the log entries
+of A ◦ B. The second panel shows the first two principal component loadings for the hierarchical
+(black) and non-hierarchical (gray) models.
+non-hierarchical posterior mean estimates of the state-specific correlation matrices.
+Markov chains consisting of 105,000 iterations were constructed for each of the two models,
+with results from the first 5000 iterations being discarded to allow for burn-in. Parameter values
+from the remaining iterations were saved every 50th iteration, leaving 2000 Monte Carlo samples
+for approximating the posterior distributions. The correlation parameters mixed reasonably well:
+In the hierarchical model, the effective sample sizes for 90% of the parameters was greater than
+500, and for 50% it was greater than 1200 (effective sample size is an estimate of the number of
+independent samples required to estimate the mean to the same precision as with a given autocorrelated sample). Mixing of the hierarchical parameters was slower: The first panel of Figure 5
+plots the mean and standard deviation of the logs of the 64 non-zero values of the matrix A ◦ B
+at every 50th scan of the Markov chain for the hierarchical model. The effective sample sizes for
+these two functions of the parameters were both just over 100.
+The second panel of Figure 5 plots the first two eigenvectors of the posterior mean of the stateP
+averaged correlation matrix K
+k=1 Ck /K for each of the two models. The results are quite similar,
+indicating that the main correlations across states are described by smoking and drinking behavior
+being negatively correlated with education level, income, fruit and vegetable intake and exercise. In
+terms of state-specific correlation matrices however, the two models produce quite different results:
+The top and bottom plots of Figure 5 give posterior mean estimates of state-specific correlations
+from the non-hierarchical and hierarchical models, respectively. For each pair of variables, a boxplot
+16
+
+smoke.edu
+exercise.smoke
+female.alcohol
+smoke.income
+fruitveg.smoke
+exercise.bmi
+fruitveg.alcohol
+bmi.edu
+alcohol.age
+bmi.income
+exercise.alcohol
+alcohol.edu
+female.income
+female.bmi
+fruitveg.bmi
+bmi.smoke
+bmi.alcohol
+female.smoke
+alcohol.income
+exercise.age
+smoke.age
+female.exercise
+fruitveg.age
+female.age
+age.edu
+female.edu
+age.income
+exercise.income
+fruitveg.income
+female.fruitveg
+bmi.age
+exercise.edu
+fruitveg.edu
+fruitveg.exercise
+alcohol.smoke
+income.edu
+●
+●
+
+●
+
+● ●
+●
+●
+● ● ●
+● ● ●
+●
+
+●
+●
+● ● ● ●
+● ●
+
+● ●
+● ●
+● ●
+●
+● ●
+●
+
+●
+
+17
+
+●
+
+●
+● ●
+
+● ●
+
+hierarchical model, the bottom from the hierarchical eigenmodel.
+●
+●
+
+● ●
+● ● ●
+
+●
+
+●
+● ● ● ●
+
+●
+
+●
+●
+● ●
+● ●
+●
+●
+● ● ● ●
+●
+●
+●
+●
+● ● ●
+● ●
+●
+● ●
+● ●
+● ● ●
+●
+●
+● ● ●
+●
+●
+●
+●
+●
+● ● ● ●
+● ● ● ● ● ● ●
+●
+
+Figure 4: Posterior mean estimates of state-specific correlations. The top row are from the non-
+
+indicates the across-state heterogeneity among the K = 51 parameter estimates for each correlation
+coefficient. The number of observations per state varies widely, with North Dakota and the District
+of Columbia having 3 respondents each, whereas Texas and California have 225 and 312 respondents
+respectively. Generally speaking, the estimates for states with lower sample sizes appear at the
+extremes of the boxplots, which is not surprising as these estimates have a higher degree of sampling
+variability. Also of note is the fact that there is no coefficient that is estimated as either positive
+across all states or negative across all states. For example, among the highest correlations is that
+between income and education, with an across-state median estimate of 0.28 based on the nonhierarchical model. However, there were four states (VT, AK, WY, NE) which were estimated as
+having a negative correlation between these variables. The sample sizes from these states were 5,
+9, 5 and 15 respectively, suggesting that these low correlations may be due to unrepresentative
+samples. In contrast, the hierarchical model recognizes that much of the across-state heterogeneity
+in correlation estimates may be due to sampling variability, and shrinks estimates from low-sample
+size states towards the across-state center. For example, the hierarchical model gives positive point
+estimates for the correlation between income and education for all of the states, including VT, AK,
+WY and NE. As shown in the lower half of Figure 5, across-state heterogeneity among the other
+correlation coefficients is similarly reduced, with nearly two-thirds (23 of 36) of the correlation
+coefficients having sign-consistent estimates across all 51 states.
+The effects of hierarchical estimation are explored further in Figure 5. We have two estimates of
+ˆ k from the hierarchical model
+the eigenvectors for each of the k state-specific correlation matrices: U
+ˇ k from the non-hierarchical model. We can compute a similarity between these two matrices
+and U
+ˆ k )2 . The first panel of Figure 5 shows that the relationship
+ˇTU
+as the average of the p values of diag(U
+k
+
+between the similarity and the within-state sample size is positive as expected: Covariance matrices
+for states with large sample sizes are well-estimated based on within-state data alone, and their
+eigenvector estimates are largely unaffected by hierarchical estimation. In contrast, the amount of
+information from states with low sample sizes is small, and so the estimates for the hierarchical
+ˇ k . The effects of this shrinkage on
+model are pulled towards the population mode and away from U
+the principal axes of the correlation matrices are shown graphically in the second and third panels
+ˇ k onto the first
+of Figure 5. The second panel plots the projections of the first two columns of each U
+two columns of the eigenvector matrix of the pooled correlation matrix. Although heterogeneous,
+the vectors are generally in the same direction, and further inspection shows that outliers tend to be
+states with low sample sizes. The third panel of the figure shows the same plot for the projections
+ˆ k from the hierarchical model. The heterogeneity here represents the
+of the columns of each U
+estimated across-state variability in eigenvectors after accounting for the within-state sampling
+variability. The axis in this plot that is furthest from the center is that representing Wisconsin,
+which has relatively high sample size of 69 but some extreme correlations: For example, among
+
+18
+
+●
+
+●
+
+●
+
+●
+●
+●
+●
+● ●●
+●● ● ●
+●
+●
+● ● ●●●
+● ●
+●●
+●●
+●
+●● ● ●
+●
+●
+●
+●●●
+●●●
+●●●
+●●
+
+0
+
+50
+
+150
+250
+sample size
+
+second principal component
+
+●
+●
+
+second principal component
+
+eigenvector similarity
+0.2
+0.4
+0.6
+0.8
+
+●
+
+first principal component
+
+first principal component
+
+Figure 5: Effects of shrinkage on the estimated principal axes. The first panel shows the similarity
+between non-hierarchical and hierarchical estimates as a function of sample size. The second and
+third show heterogeneity across the first two principal axes in the non-hierarchical and hierarchical
+models, respectively.
+states with sample sizes greater than 20, Wisconsin has the lowest non-hierarchical estimate of the
+correlation for (income, education) and (female, bmi), and the highest non-hierarchical estimate
+of the correlation for (income, alcohol). These correlations make Wisconsin somewhat of an outlier
+in terms of the correlations represented by the first two principal components. The relatively large
+sample size for Wisconsin suggests these extreme correlations cannot be soley attributed to withinstate sampling variability, and this is reflected in the state-specific estimated correlation matrix
+from the hierarchical model.
+
+6
+
+Discussion
+
+As an alternative to the Bingham distribution, a simpler model for across-group covariance heterogeneity would be that Σ1 , . . . , ΣK are i.i.d. samples from an inverse-Wishart distribution. For many
+applications however, such a model may be too simple: The inverse-Wishart distribution has only
+one parameter to represent heterogeneity around the mean covariance matrix, and cannot represent
+differential amounts of eigenvector heterogeneity as the Bingham distribution can. Additionally,
+the inverse-Wishart model cannot distinguish between across-group eigenvector heterogeneity and
+across-group eigenvalue heterogeneity, as these quantities are modeled simultaneously.
+As we are pooling eigenvector information across groups it is natural to consider pooling eigenvalues as well. This would entail modeling {Λ1 , . . . , ΛK } as being samples from a common population, and estimating the parameters of this population using the data from all K groups. One
+simple approach to doing this would be to estimate the parameters (ν0 , σ02 ) in the prior distribu-
+
+19
+
+tion for the eigenvalues, thus treating the distribution as a sampling model. As with the other
+unknown parameters, this can be done by iteratively updating these parameters based on their
+full conditional distributions. Straightforward calculations show that a gamma prior distribution
+for σ02 results in a gamma full conditional distribution. The full conditional distribution for ν0 is
+non-standard, but if ν0 is restricted to the integers then its full conditional distribution can easily
+be sampled from.
+Another possible model extension is to situations where the number of variables is larger than
+any of the within-group sample sizes. In these cases, full-rank covariance estimation can become
+unstable and computationally intractable. A remedy to this problem is to use a factor analysis
+model, in which a covariance matrix Σk is assumed equal to Uk Dk UTk + σk2 I, where Dk is a positive
+diagonal matrix and Uk is a p×r orthonormal matrix with r < p, an element of the Stiefel manifold
+Sr,p . As before, heterogeneity across covariance matrices can be expressed by heterogeneity in these
+matrix components, and a Bingham model on Sr,p , similar to the one used in this paper, can be
+used to express heterogeneity among U1 , . . . , UK .
+Computer code and data for the examples in this article are available at
+http://www.stat.washington.edu/hoff/.
+
+References
+George A. Anderson. An asymptotic expansion for the distribution of the latent roots of the
+estimated covariance matrix. Ann. Math. Statist., 36:1153–1173, 1965. ISSN 0003-4851.
+Christopher Bingham. An antipodally symmetric distribution on the sphere. Ann. Statist., 2:
+1201–1225, 1974. ISSN 0090-5364.
+Robert J. Boik. Spectral models for covariance matrices. Biometrika, 89(1):159–182, 2002. ISSN
+0006-3444.
+A. G. Constantine and R. J. Muirhead. Asymptotic expansions for distributions of latent roots in
+multivariate analysis. J. Multivariate Anal., 6(3):369–391, 1976. ISSN 0047-259x.
+Bernhard K. Flury. Two generalizations of the common principal component model. Biometrika,
+74(1):59–69, 1987. ISSN 0006-3444.
+Bernhard N. Flury. Common principal components in k groups. J. Amer. Statist. Assoc., 79(388):
+892–898, 1984. ISSN 0162-1459.
+Andrew Gelman, David A. van Dyk, Zaiying Huang, and John W. Boscardin. Using redundant
+parameterizations to fit hierarchical models. Journal of Computational and Graphical Statistics,
+17(1):95–122, March 2008.
+20
+
+A. K. Gupta and D. K. Nagar. Matrix variate distributions, volume 104 of Chapman & Hall/CRC
+Monographs and Surveys in Pure and Applied Mathematics. Chapman & Hall/CRC, Boca Raton,
+FL, 2000. ISBN 1-58488-046-5.
+Carl S. Herz. Bessel functions of matrix argument. Ann. of Math. (2), 61:474–523, 1955. ISSN
+0003-486X.
+Peter D. Hoff. Extending the rank likelihood for semiparametric copula estimation. Ann. Appl.
+Statist., 1(1):265–283, 2007a.
+Peter D. Hoff. Simulation of the matrix Bingham-von Mises-Fisher distribution, with applications
+to multivariate and relational data. Technical report, University of Washington, 2007b.
+C. G. Khatri and K. V. Mardia. The von Mises-Fisher matrix distribution in orientation statistics.
+J. Roy. Statist. Soc. Ser. B, 39(1):95–106, 1977. ISSN 0035-9246.
+Plamen Koev and Alan Edelman. The efficient evaluation of the hypergeometric function of a
+matrix argument. Math. Comp., 75(254):833–846 (electronic), 2006. ISSN 0025-5718.
+Robb J. Muirhead. Latent roots and matrix variates: a review of some asymptotic results. Ann.
+Statist., 6(1):5–33, 1978. ISSN 0090-5364.
+James R. Schott.
+
+Some tests for common principal component subspaces in several groups.
+
+Biometrika, 78(4):771–777, 1991. ISSN 0006-3444.
+James R. Schott. Partial common principal component subspaces. Biometrika, 86(4):899–908,
+1999. ISSN 0006-3444.
+
+21
+
+

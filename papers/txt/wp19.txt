@@ -1,0 +1,382 @@
+Discussion of paper by Peter McCullagh
+To appear in The Annals of Statistics, 2002, 30.
+
+By JULIAN BESAG
+University of Washington
+January 2002
+Center for Statistics and the Social Sciences
+Working Paper No. 19
+
+1
+
+Introduction
+I am glad of the opportunity to discuss some aspects of Peter McCullagh’s paper. Parametric statistical formulations have recently come under intense attack (e.g. Breiman, 2001)
+but I strongly disagree with the notion that they are no longer relevant in contemporary
+data analysis. On the contrary, they are essential in a wealth of applications where one
+needs to compensate for the paucity of the data. Personally, I see the various approaches to
+data analysis (frequentist, Bayesian, machine learning, exploratory, or whatever) as complementary to one another rather than as competitors for outright domination. Unfortunately,
+parametric formulations become easy targets for criticism when, as occurs rather often, they
+are constructed with too little thought. The lack of demands on the user made by most statistical packages does not help matters and, despite my enthusiasm for Markov chain Monte
+Carlo (MCMC) methods, their ability to fit very complicated parametric formulations can
+be a mixed blessing. So, in that sense, McCullagh’s paper is timely and of course it makes
+many valid points but I also think it is misconceived, both in its general aims and in the
+agricultural application discussed in Section 8.
+General comments
+My overall impression of McCullagh’s framework is that it really concerns mathematical
+models, whereas statistical models are more subtle, which is what makes the subject in
+some ways more difficult and more rewarding. That said, I have always disliked the term
+‘statistical model’ because I think it accords a status to formulations that is seldom earned in
+practice. In spatial statistics, I failed to convince anyone to adopt the term ‘scheme’ (Besag,
+1974) or ‘prescription’ (Besag, 1975) and these days often fall back on ‘representation’ (with
+or without its Bayesian connotations). I prefer to reserve the term ‘model’ for something
+that has a physical justification, such as the Poisson process in certain applications. I doubt
+whether generalized linear models, for example, usually fall into this category, any more
+than do spatial autoregressions. McCullagh seems to demand the universality of a physical
+model, but without doing any of the physics, and surely this is too much to ask? A statistical
+formulation can still be very useful without universality, so long as one restricts inferences
+to what might loosely be described as ‘interpolation’ rather than ‘extrapolation’. Is this not
+what we teach our students? Yet several of McCullagh’s criticisms and examples involve
+‘extrapolation’ to parts of a space in which there is no claim that the original formulation
+holds. This is different from the valid points that are made about ensuring consistency
+between different measurement scales, say.
+Moreover, if I was forced by law to call something a statistical model, then I would insist
+that it must be useable for and assessable by data analysis, whereas a McCullagh statistical
+model is a mathematical object involving data but not necessarily data analysis. As a
+concrete example, I think McCullagh views the formulation in Section 8.6 as a lattice–based
+approximation to a previous statistical model, whereas I would interpret it as a statistical
+scheme motivated by a previous (I believe untenable) mathematical model.
+2
+
+Maybe the above point is a minor one but it is related to another that to me is crucial and
+yet seems absent from McCullagh’s framework, namely the role of approximation. Indeed,
+he writes, “Algebra does not easily deal with approximations or inequalities”. It seems
+to me that, except for some rather limited randomization analyses, the initial choice of an
+appropriate level of approximation is a vital ingredient in almost any statistical investigation
+(though maybe requiring review in the light of the available data) and is perhaps the most
+creative aspect of our subject. McCullagh seeks to produce rules within which creativity
+must operate but it is not obvious that his formalism takes us constructively beyond sound
+common sense. Furthermore, it can impose quite unreasonable constraints. Obviously, I
+agree that one should always recognize and seek to rectify mathematical inconsistencies but
+not slavishly so if this means abandoning a scientifically useful approximation in favor of a
+formulation that is universally self–consistent but unsustainable in the region of interest.
+Although, in principle, the purpose of an investigation should govern the formulation and
+the type and the amount of data collected, practice is often harsher and the specification
+one adopts depends qualitatively on the available sample size. Fisher (1922) wrote, “More
+or less elaborate forms will be suitable according to the volume of the data.” Indeed, this
+interdependence provides the salvation of frequentist p–values against the argument that
+failure to ‘reject’ a model occurs merely because the sample size is too small. That is, the
+argument becomes irrelevant if one recognizes that the generality of statistical formulations
+should normally increase with sample size, until ultimately one may indeed be allowed the
+luxury of machine learning. I may need to add that my interpretation of a p–value is
+merely as an exploratory device that quantifies inconsistency between the observed data
+and a particular formulation. McCullagh seems not to accept that sample size should be
+an important ingredient in statistical modeling; see Section 4.2. Of course, I agree that
+generally there should be coherence between formulations in going from sample size n to
+n + 1 but this process also takes us from n to n2 and then there will often be overriding
+concerns and a need for greater flexibility.
+Markov random fields
+Markov random fields (MRF’s) are distributions specified via their full conditionals (originally called local characteristics). The identification between any particular MRF and a
+corresponding Gibbs distribution and vice versa follows from the Hammersley–Clifford theorem (e.g. Besag, 1974). The only restriction on either class is a minor positivity condition,
+so Gibbs (say) distributions are not required to have the property McCullagh ascribes to
+them in Section 6.6.
+Exercise 7 is supposedly an example of the inconsistencies that plague MRF’s but seems
+badly chosen. I agree of course that the formulation is bizarre but, without a context,
+there is no reason why the distribution of Y in a cluster of size k, marginalized over its kth
+component, should be required to coincide with that of Y in a cluster of size k − 1. For
+example, suppose that k refers to the litter sizes in a study of piglets and that a measurement
+3
+
+is made on each piglet. Then exchangeability within litters might be a reasonable assumption
+but marginalizing over a piglet in a litter of size k does not produce a litter of size k − 1. And
+whatever the formulation, it seems reckless even to contemplate drawing inferences about
+litters of size eight from data merely on litters of size two!
+A better example of the contradictions that arise in MRF formulations is mentioned
+in McCullagh’s discussion of Exercise 11. That is, a parametric MRF on a grid (say) is
+generally inconsistent with the corresponding MRF on a subset of the grid. In principle,
+consistency can be restored by conditioning on an appropriate boundary but this is usually
+too wasteful in practice. Partial fixes may be available by using marginalizations of MRF’s
+on Z 2 or otherwise; see Besag and Kooperberg (1995), Besag and Higdon (1999) and Rue
+and Tjelmeland (2002). However, spatial effects are often of secondary importance, as in
+variety trials, and the main intention is to absorb an appropriate level of spatial variation
+in the formulation, rather than produce a spatial model with scientifically interpretable
+parameters. Nevertheless, McCullagh’s basic point is well taken. For example, I view the
+use of MRF’s in geographical epidemiology (e.g. Besag, York and Molli´e, 1991) as mainly of
+exploratory value, in suggesting additional spatially related covariates whose inclusion would
+ideally dispense with the need for a spatial formulation; see Byers and Besag (2000) for an
+example on prostate cancer and ethnicity. A particularly blatant abuse of MRF’s occurs in
+the analysis of social networks, where the parameters in Markov random graphs are often
+ascribed substantive interpretations that are meaningless, if only because they depend on the
+size of the system. I anticipate that MRF’s will play a diminishing role in statistical analysis
+but, currently, they still have useful computational advantages when MCMC is used.
+Agricultural field experiments
+Although field experiments no longer feature in most graduate programs, their design and
+analysis comprise an important area of application for statistics. Variety trials usually involve
+say 25 to 75 varieties of a crop, with very limited replication, perhaps three or, even worse,
+only two plots being assigned to each variety. Here I exclude early generation trials, often
+having very large numbers of varieties and no replication but with regularly spaced check
+plots of a standard variety used as controls.
+It has always been recognized that generally a crop will perform much more similarly on
+two plots close together than on plots further apart. Thus, Fisher (1928, p. 229) wrote, “...
+the peculiarity of agricultural field experiments lies in the fact, verified in all careful uniformity trials, that the area of ground chosen may be assumed to be markedly heterogeneous,
+in that its fertility varies in a systematic, and often a complicated manner from point to
+point”. Soil measurements, such as pH, are not generally available to make adjustments for
+fertility. Fisher’s solution to the problem resulted in the design and analysis of experiments,
+an approach that provides rigorous inference via randomization analysis but, for modern–day
+experiments, can be very inefficient when compared to model–based analysis.
+McCullagh refers frequently to agricultural experiments and, in Section 8, proposes a
+4
+
+spatial formulation based on harmonic functions. Despite initial resistance, spatial methods
+have become increasingly popular: for example, frequentist spatial analysis is now used in
+some 5000 experiments annually in Australia alone (Gilmour, Cullis, Smith and Verbyla,
+1999). In several places, McCullagh mentions Besag and Higdon (1999), henceforth BH,
+though with no obvious enthusiasm. As background, BH describes a Bayesian approach to
+statistical analysis, with some emphasis on variety trials, and examines several complicated
+data sets; easier examples are analyzed in Besag and Higdon (1993), in Besag, Green, Higdon
+and Mengersen (1995, Section 5) and in the rejoinder to discussion in BH. A first–order
+Gaussian intrinsic autoregression is used as a simple but flexible baseline representation of
+the spatial variation in fertility. BH does not pretend to provide a complete solution and
+indeed discusses some current deficiencies. Below I will confine my comments to points raised
+by McCullagh.
+Response scale (Section 3.2). McCullagh makes the basic point that statistical analysis
+should not depend on response scale. BH achieves this by standardizing the raw data, which
+is effective but rather untidy in a Bayesian framework.
+Covariate space (Section 3.2). McCullagh states that, for a trial in which fertilizer is
+applied at rates in the range 0–300 kg/ha, he requires the inferential universe to extend to
+all non–negative rates. Yet this seems pointless without a corresponding extension of the
+model itself, even though any such extension cannot be assessed. Indeed, I presume that
+McCullagh himself would be unwilling to draw inferences at a rate of, say, 400 kg/ha, without
+additional information. Similarly, in his example on potatoes, I would not address varieties
+that are not in the experiment or remain yet to be invented. Of course, this is not the case
+if the tested varieties form a random sample from a definite population.
+Experimental units (Section 3.2). In discussing variety trials, McCullagh claims, “It is
+invariably understood, though seldom stated explicitly, that the purpose of such a trial is to
+draw conclusions concerning variety differences, not just for plots of this particular shape,
+size and orientation, but for comparable plots of various shapes, sizes and orientations.”
+Here I would replace “invariably” by “almost never”. McCullagh seems to confuse variety
+trials with uniformity trials in which a single variety is grown. Uniformity trials (e.g. the
+Mercer and Hall data in Section 8.6) were used long ago to investigate optimal plot size
+for genuine experiments but they are performed very rarely now and plot dimensions are
+often determined by management practice rather than by statistical criteria. However, in
+passing, I note that the asymptotic logarithmic behavior of the variogram for the BH intrinsic
+autoregression is in good agreement with the empirical findings from uniformity trials in
+Fairfield Smith (1938) and Pearce (1976).
+Of course, in a genuine variety trial, one might want to predict what the aggregate yield
+over the entire field would have been for a few individual varieties but this does not require
+any extension of the formulation to McCullagh’s conceptual plots. Indeed, such calculations
+are especially well suited to the Bayesian paradigm, both theoretically, because one is sup-
+
+5
+
+posed to deal with potentially observable quantities rather than merely with parameters,
+and in practice, via MCMC, because the posterior predictive distributions are available rigorously. That is, for the aggregate yield of variety A, one uses the observed yields on plots
+that were sown with A and generates a set of observations from the likelihood for those
+that were not for each MCMC sample of parameter values, hence building a corresponding
+distribution of total yield. One may also construct credible intervals for the difference in
+total yields between varieties A and B and easily address all manner of questions in ranking
+and selection that simply cannot be considered in a frequentist framework; for example, the
+posterior probability that the total yield obtained by sowing any particular variety (perhaps
+chosen in the light of the experiment) would have been at least 10% greater than that of
+growing any other test variety in the field.
+I am aware that the previous paragraph may be misconstrued. David Higdon and I
+are primarily ‘spatialists’ rather than card–carrying Bayesians and BH merely explores some
+consequences of a Bayesian approach. There are other caveats. The above arguments assume
+that the formulation is correct, though one can and should carry out sensitivity analysis; also
+any model–based formulation should leave room for outliers and other aberrations, which BH
+discusses via hierarchical–t’s and other robust procedures that relax the baseline Gaussian
+distributions.
+More to the point, neither the agronomists who make recommendations nor the farmers
+themselves care too much about the difference in yield between varieties A and B grown
+on one particular experimental field. I presume McCullagh would include other ‘similar’
+fields in his inferential universe, something I feel is useful only if there is additional external
+information. Ideally, and often in practice, several trials are carried out in a range of environments, in which case progress can be made, perhaps invoking a hierarchical formulation;
+see BH for an example on corn (maize) grown at six different sites in North Carolina. This
+also downgrades the importance of the specific assumptions that are made at plot level (and
+at any finer scale). If trials are not conducted at several sites, then recommendations need
+to be moderated appropriately. Incidentally, the use of posterior predictive distributions,
+with their additional variability, might be helpful in curbing the frustration of plant breeders
+when the “best” variety experimentally does not subsequently perform as well.
+Fertility (Section 8). Some care is required in what is meant by ‘fertility’: both McCullagh
+and BH are rather vague. Fertility does not exist in abstraction, nor even in a particular field,
+because it means different things for different crops. To me, ‘fertility’ represents the plot–
+to–plot variation due to the environment, if a single variety in the trial is grown throughout.
+This is well defined only if one can make the usual assumption that variety effects are
+additive, perhaps after a transformation of yield. My version of fertility usually includes
+standard fixed effects caused by human intervention, such as those due to blocks (if these
+have a physical presence) or to boustrophedon harvesting, but here I shall assume such fixed
+effects are taken into account separately. However, fertility must also cater for all other
+environmental (usually thought of as random) effects and it is generally recognized that
+
+6
+
+these include indeterminate plot–aligned effects due to management practice. McCullagh
+writes “It is absolutely essential to take account of the geometry of the plots” but he ignores
+the influence of other effects that destroy any assumed isotropy in the natural variation of
+the soil; and underlying isotropy is itself a somewhat dubious assumption in the first place. I
+agree that McCullagh’s rule would often be adequate in practice (e.g. for the Mercer and Hall
+data); indeed, many trials these days use plots that are sufficiently long and narrow for one–
+dimensional representations to suffice. However, I would still prefer to include a parameter
+for directionality, as in BH, rather than rely on the rule. This may involve a substantial
+computational overhead, which McCullagh conveniently avoids, but it sacrifices negligible
+information even when the rule holds. For an example where one–dimensional adjustment
+suffices but in the opposite direction to that expected, see Besag and Higdon (1993, Section
+1). McCullagh’s “absolutely essential” seems to me to indulge an inappropriate mathematical
+assumption.
+Variety effects (Section 8.3). McCullagh claims, “variety effects must be multiplicative”,
+as a result of certain mathematical assumptions. This would lead me to reject the assumptions! Variety effects cannot be perfectly additive on yield itself, because yields cannot be
+negative, but this is a different point and is usually irrelevant in practice. Of course, I agree
+that one often needs to transform the data to achieve approximate additivity.
+Incidentally, the need to attach a prior to variety effects in a Bayesian analysis will be
+seen by many as a handicap but I think this is mistaken. Experience suggests close numerical
+agreement between frequentist and Bayesian results for corresponding spatial formulations
+when an approximately uniform variety prior is adopted. However, in practice, varieties
+within known groups may be genetically very similar, in which case it is natural to adopt
+appropriate Gaussian (or perhaps t) priors, which result in appropriate shrinkage of the
+estimates, particularly when there is little replication. This would again help prevent the
+frustration of plant breeders mentioned above.
+Stationarity (Section 8.3). McCullagh agrees that stationarity of the environmental (random) effects is dubious (at the scale of the experiment). My experience in fitting stationary
+lattice schemes is that typically one obtains parameter values on the non–stationary edge of
+the parameter space, a finding that is not restricted to agricultural data. Thus, following
+K¨
+unsch (1986), I have preferred instead to use limiting intrinsic versions. For example, in one
+spatial dimension, a first–order stationary autoregression becomes a random walk, with an
+arbitrary level rather than being tied down somewhere. The increments need not be Gaussian. In two dimensions, a first–order Gaussian intrinsic autoregression can be interpreted in
+terms of locally planar interpolation, in the same sense that a Gaussian random walk, viewed
+bilaterally, is locally linear. Again the level is arbitrary, in accordance with a definition of
+fertility based on variation. Mathematically, the scheme is an independent increments process, subject to the logical constraint that the increments on any loop sum to zero. This
+may be a useful interpretation in devising non–Gaussian versions. BH also discusses locally
+quadratic representations that do not attenuate peaks and troughs but suggests that these
+7
+
+may overfit fertility.
+Spatial scale (Section 8). Scale invariance, at least to a very good approximation, is a
+requirement for any genuine model of ‘fertility’ and so it is natural to begin in continuous
+space, even if eventual interest is in discrete plots. However, it is less clear whether one
+should work in 4–d space–time, in 3–d space or merely in 2–d. Even in 2-d, there has been
+rather limited success in devising plausible formulations that are amenable to integration. In
+geography, the issue of invariance is referred to as the modifiable areal unit problem and has
+a long history. In statistics, early references are Heine (1955), Whittle (1962) and Mat´ern
+(1986), first published (remarkably) in 1960. However, it seems extremely unlikely that
+any formulation can be thought of as an accurate model for variation in fertility without
+additional measurements of factors that influence the growth of the particular crop under
+study. These could be in the form of extensive soil measurements, such as pH levels, or the
+use of check plots of a standard variety, dispersed over the experimental site, as occurs in
+single–replicate early generation trials.
+Fortunately, the sole purpose of variety trials is to compare varieties, not to assess spatial
+variation, which enters the formulation merely as a nuisance factor. With the benefit of some
+replication, it seems reasonable to expect that an approximate representation of ‘fertility’ is
+generally adequate for statistical analysis. All the investigations that I know of support this
+view. Such investigations usually involve uniformity data to which dummy variety effects
+are added, so that the true values are known to be zero. An early example is in Besag
+and Kempton (1986). The findings typically suggest that the gains from spatial analysis in
+a badly designed experiment provide improvements commensurate with standard analysis
+and optimal design. This is not a reason to adopt poor designs but the simple fact is that,
+despite the efforts of statisticians, many experiments are carried out using nothing better
+than randomized complete blocks.
+It is highly desirable that the representation of fertility is flexible but is also parsimonious because there are many variety effects to be estimated, with very limited replication.
+McCullagh’s use of discrete approximations to harmonic functions in Section 8 fails on both
+counts: first, local maxima or minima cannot exist except (artificially) at plots on the edge
+of the trial; second, the degrees of freedom lost in the fit equals the number of such plots and
+is therefore substantial (in fact, four less in a rectangular layout because the corner plots are
+ignored throughout the analysis!).
+Nevertheless, there is something appealing about the averaging property of harmonic
+functions, if only it were a little more flexible. What is required is a random effects (in
+frequentist terms) version and that is precisely the thinking behind the use of intrinsic
+autoregressions in BH and elsewhere. Indeed, such schemes fit McCullagh’s discretized
+harmonic functions perfectly, except for edge effects (because BH embeds the array in a
+larger one to cater for such effects); and they also provide a good fit to more plausible
+fertility functions. For specific comments on the Mercer and Hall data, see below.
+Of course, spatial scale remains an important issue for variety trials and indeed is dis-
+
+8
+
+cussed empirically in Section 2.3 and in the rejoinder of BH. For 1–d adjustment, the simplest
+plausible continuum process is Brownian motion with an arbitrary level, for which the necessary integrations can be implemented rigorously in the analysis. In the example in BH,
+there is close agreement between the estimates from the discrete and continuous formulations
+(which are not quite consistent mathematically). In 2-d, one can experiment with splitting
+the plots and comparing the results obtained from the fertility priors at the two scales. This
+can be done rigorously via MCMC by treating the yields in each pair of half plots as unknown but summing to the observed value. The few examples I have tried again suggest
+close agreement but, of course, I would much rather see a sound mathematical justification
+of approximate closure under spatial aggregation. This might be available via an appropriate
+extension of McCullagh’s harmonic processes.
+Mercer and Hall data (Section 8.6). McCullagh does not draw a clear distinction between
+the purposes of analyzing data from uniformity trials and from genuine variety trials. He also
+comments on a purely illustrative analysis of mine from more than 25 years ago about which
+I wrote (Besag, 1974), “it cannot be claimed that the present auto–normal schemes have
+been successful in reflecting the overall probabilistic structure of the wheat plots process”.
+The perhaps definitive discussion of the Mercer and Hall data is McBratney and Webster
+(1981), which uses the original records from Rothamsted Experimental Station to explain
+the characteristics noted by McCullagh, in terms of a previous ridge and furrow system.
+McCullagh’s formulation includes fixed effects for rows and columns in addition to those
+for the harmonic approximation, so that more than 120 parameters are fitted. This type of
+approach does not seem well suited to variety trials. The BH formulation fits two parameters,
+one of which provides data–driven directional flexibility, which McCullagh does not allow.
+Although, after 90 years, the Mercer and Hall data are now very tired indeed and deserve
+a decent burial, it might be worth noting that the basic BH fit at least retains all of the
+peaks and troughs in McBratney and Webster’s Table 1, though it is certainly not a physical
+model.
+Spatial design (Section 8.7). McCullagh proposes the development of a theory of efficient
+harmonic designs for agricultural experiments. Such designs would be very close to those
+that exist already for more relevant spatial formulations. For a recent review, see Atkinson
+and Bailey (2001), especially Section 10.
+Conclusion
+Although McCullagh’s paper makes many valuable points, I believe that the approach is
+too rigid and places an emphasis on pure mathematics that is inappropriate for applied
+statistics. The paper promotes a universality in statistical modeling that is seldom present
+or necessary in practice. The role of approximation and its interrelationship with sample
+size seem to be ignored. As regards spatial statistics, the paper rediscovers old problems but
+does not yet provide effective solutions. Nevertheless, I am glad to end on a positive note
+9
+
+by agreeing that the generalized covariance function in Section 8.6, known as the de Wijs
+model in geostatistics and dating back to the early 1950’s, may be useful in developing more
+coherent spatial formulations for the analysis of agricultural field experiments.
+Acknowledgements
+I am grateful to Ted Harding for very helpful discussions on this topic and to Peter McCullagh
+for his patience in arguing about specific points. This research was supported by the Center
+for Statistics and the Social Sciences with funds from the University Initiatives Fund at the
+University of Washington.
+References
+Atkinson, A. C. and Bailey, R. A. (2001). One hundred years of the design of experiments
+on and off the pages of Biometrika. Biometrika 88 53–97.
+Besag, J. E. (1974). Spatial interaction and the statistical analysis of lattice systems (with
+Discussion). J. R. Statist. Soc. B 36 192–236.
+Besag, J. E. (1975). Statistical analysis of non-lattice data. The Statistician 24 179–195.
+Besag, J. E., Green, P. J., Higdon, D. M. and Mengersen, K. L. (1995). Bayesian computation and stochastic systems (with Discussion). Statist. Sci. 10 3–66.
+Besag, J. E. and Higdon, D. M. (1993). Bayesian inference for agricultural field experiments.
+Bull. Internat. Statist. Inst. 55 121–136.
+Besag, J. E. and Higdon, D. M. (1999). Bayesian analysis of agricultural field experiments
+(with Discussion). J. R. Statist. Soc. B 61 691–746.
+Besag, J. E. and Kempton, R. A. (1986). Statistical analysis of field experiments using neighbouring plots. Biometrics 78 301–304.
+Besag, J. E. and Kooperberg, C. L. (1995). On conditional and intrinsic autoregressions. Biometrika
+82 733–746.
+Besag, J. E., York, J. C. and Molli´e, A. (1991). Bayesian image restoration, with two applications in spatial statistics (with Discussion). Ann. Inst. Statist. Math. 43 1–59.
+Breiman, L. (2001). Statistical modeling: the two cultures (with Discussion). Statist. Sci.
+16 199–231.
+Byers, S. D. and Besag, J. E. (2000). Inference on a collapsed margin in disease mapping.
+Statist. Med. 19 2243–2249.
+10
+
+Fairfield Smith, H. (1938). An empirical law describing heterogeneity in the yields of agricultural crops. J. Agric. Sci. 28 1–23.
+Fisher, R. A. (1922). On the mathematical foundations of theoretical statistics. Phil. Trans.
+R. Soc. Lond. A 222 309–368.
+Fisher, R. A. (1928). Statistical Methods for Research Workers. Oliver and Boyd, Edinburgh.
+Gilmour, A. R., Cullis, B. R., Smith, A. B. and Verbyla, A. P. (1999). Discussion of paper
+by J. E. Besag and D. M. Higdon. J. R. Statist. Soc. B 61, 731–732.
+Heine, V. (1955). Models for two–dimensional stationary stochastic processes. Biometrika
+42, 170–178.
+K¨
+unsch, H. R. (1987). Intrinsic autoregressions and related models on the two–dimensional
+lattice. Biometrika 74 517–524.
+Mat´ern, B. (1986). Spatial Variation. Springer–Verlag, New York.
+McBratney, A. B. and Webster, R. (1981). Detection of ridge and furrow pattern by spectral analysis of crop yield. Internat. Statist. Rev. 49 45–52.
+Pearce, S. C. (1976). An examination of Fairfield Smith’s law of environmental variation. J.
+Agric. Sci. 87 21–24.
+Rue, H. and Tjelemeland, H. (2002) . Fitting Gaussian Markov random fields to Gaussian
+fields. Scand. J. Statist. 29 To appear.
+Whittle, P. (1962). Topographic correlation, power–law covariance functions, and diffusion.
+Biometrika, 49, 305–314.
+
+11
+
+

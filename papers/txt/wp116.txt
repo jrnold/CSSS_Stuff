@@ -1,0 +1,1902 @@
+Disaster Response on September 11, 2001
+Through the Lens of Statistical Network Analysis1
+Michael Schweinberger
+Pennsylvania State University
+
+Miruna Petrescu-Prahova
+University of Washington
+
+Duy Quang Vu
+University of Melbourne
+
+Working Paper no. 116
+Center for Statistics and the Social Sciences
+University of Washington
+August 27, 2012
+
+1 Michael
+
+Schweinberger is Postdoctoral Researcher in the Department of Statistics, Pennsylvania
+State University. E-mail: michael.schweinberger@stat.psu.edu. We acknowledge support from
+the Office of Naval Research (ONR grant N00014-08-1-1015) (MS, MPP, DQV) and the National
+Institutes of Health (NIH grant 1R01HD052887-01A2) (MS, DQV). We are grateful to Kathleen
+Tierney and Christine Bevc for sharing the data used here and valuable comments on the data,
+and to David R. Hunter, Mark S. Handcock, and Christine Bevc for valuable comments on the
+manuscript.
+
+Abstract
+The rescue and relief operations triggered by the September 11, 2001 attacks on the World
+Trade Center in New York City demanded collaboration among hundreds of organisations.
+To shed light on the response to the September 11, 2001 attacks and to help to plan and prepare the response to future disasters, we study the inter-organisational network that emerged
+in response to the attacks. Studying the inter-organisational network can help to shed light
+on (1) whether some organisations dominated the inter-organisational network and were able
+to coordinate the disaster response; (2) whether the dominating organisations were supposed
+to coordinate disaster response or emerged as coordinators in the wake of the disaster; and (3)
+the degree of network redundancy and sensitivity of the inter-organisational network to disturbances. We introduce a Bayesian framework which can answer the substantive questions
+of interest while being as simple and parsimonious as possible. The framework allows organisations to have varying propensities to collaborate, while taking covariates into account,
+and allows to assess whether the inter-organisational network had network redundancy—in
+the form of transitivity—by using a test which may be regarded as a Bayesian score test.
+We discuss implications in terms of disaster management.
+KEY WORDS: discrete exponential families, hierarchical models, mixture models, modelbased clustering, social networks, stochastic block models
+
+1
+
+Introduction
+
+Large-scale disasters can strike without warning, leaving death and destruction behind. Examples are natural disasters, such as earthquakes and tsunamis, and man-made disasters,
+such as industrial accidents and terrorist attacks (e.g., Topper and Carley, 1999; Butts et al.,
+2007; Petrescu-Prahova and Butts, 2008). When disasters strike, governmental as well as
+private organisations converge at the scene of the disaster to conduct rescue and relief operations (Auf der Heide, 1989). The scale of operations may overtax the resources of individual
+organisations and may compel organisations to collaborate (Haas and Drabek, 1973). In
+addition, organisations may be forced to collaborate in order to coordinate operations. As a
+result, inter-organisational networks of collaboration tend to emerge in response to disasters.
+Studying the topological structure of inter-organisational networks is important with a view
+to understanding the weaknesses and strengths of the response to past disasters and planning
+and preparing the response to future disasters.
+We consider here data on the massive rescue and relief operations triggered by the September 11, 2001 attacks on the World Trade Center in New York City, which involved n = 717
+organisations (Tierney and Trainor, 2004; Bevc, 2010). The network of collaborations between the 717 organisations is interesting for at least three reasons. First, an important
+question is whether some organisations were more involved in the disaster response than
+others. The presence of such organisations is considered critical to the disaster response,
+because in the unstructured and changing environment in which rescue and relief operations are conducted such organisations are able to receive and widely spread information
+and advice and coordinate the disaster response (e.g., Auf der Heide, 1989). Second, if such
+organisations were present, then the question is whether those organisations were supposed
+to coordinate disaster response or emerged as coordinators in the wake of the disaster. The
+possible presence of emergent coordinators has implications in terms of disaster management (Petrescu-Prahova and Butts, 2008). Third, while the presence of established and
+emergent coordinators can improve the disaster response, it can make the disaster response
+more vulnerable to disturbances which follow the initial disaster and can disrupt the disaster
+response (e.g., Topper and Carley, 1999). Such disturbances are not uncommon, e.g., earthquakes may be followed by aftershocks, and terrorists may attack responders on purpose by
+first detonating explosive devices to attract by-standers and responders and then detonating
+more explosive devices to harm them (see, e.g., the Bali bombing in 2002 and the Madrid
+bombing in 2004, Koschade, 2006). In particular, the impact of the second airplane into the
+South Tower of the World Trade Center on September 11, 2001 disrupted the response to the
+September 11, 2001 attacks. Therefore, it is important to assess how much network redun-
+
+1
+
+dancy inter-organisational network possess and how sensitive inter-organisational networks
+are to disturbances.
+These questions can be framed as questions about the organisations and the topological
+structure of the network of organisations, first and foremost the propensities of organisations
+to collaborate as well as the redundancy of the network in the form of transitivity, while
+taking available covariates into account.
+A simple approach to answer some of these questions is based on clustering organisations
+by using deterministic clustering methods in social network analysis (e.g., Borgatti et al.,
+2002), physics (e.g., Girvan and Newman, 2002), and computer science (e.g., Leskovec et al.,
+2008). However, deterministic clustering methods are not model-based and ignore the uncertainty about the clustering; neglect covariates and all other features of the network (e.g.,
+transitivity); and lack desirable statistical properties: e.g., Bickel and Chen (2009) showed
+that the Girvan-Newman modularity (Girvan and Newman, 2002)—which has attracted
+much attention—is not consistent.
+An alternative approach is based on models of degrees, corresponding to the numbers
+of collaborations of organisations (e.g, Erd¨os and R´enyi, 1959; Barab`asi and Albert, 1999;
+Newman et al., 2001; Jones and Handcock, 2004). However, such one- and two-parameter
+models are not flexible models of the degrees and may not be able to account for the heterogeneity in the degrees. In addition, such models ignore covariates and all other features
+of networks (e.g., transitivity).
+A second, alternative approach is based on mixture models and other latent variable
+models, such as stochastic block models (e.g., Nowicki and Snijders, 2001; Tallberg, 2005;
+Airoldi et al., 2008), random effect models (e.g., van Duijn et al., 2004; Hoff, 2005), and
+latent space models (e.g., Hoff et al., 2002; Schweinberger and Snijders, 2003; Handcock
+et al., 2007). However, some of those models make strong model assumptions about the
+data: e.g., latent space models assume that organisations are embedded in a metric space,
+which is a strong model assumption and is not needed to answer the substantive questions
+of interest. In addition, the computing time of most of them scales with n2 . Indeed, most
+of the statistical software which implements these statistical models and methods is either
+not publicly available (e.g., Tallberg, 2005) or cannot handle networks with n ≫ 200: e.g.,
+neither the statistical software BLOCKS (Snijders and Nowicki, 2007) implementing the
+stochastic block models of Nowicki and Snijders (2001) nor the R package lda (Chang,
+2011) implementing the extended stochastic block models of Airoldi et al. (2008) can handle
+networks with n ≫ 200 organisations.
+A third, alternative approach is based on exponential-family models with so-called kstars as sufficient statistics (Frank and Strauss, 1986) and curved exponential-family models
+
+2
+
+with so-called geometrically weighted degree terms (Hunter and Handcock, 2006; Snijders
+et al., 2006; Hunter, 2007). However, these exponential-family models are, at present, not
+well-understood and sometimes possess undesirable properties, e.g., model degeneracy, and
+in accordance have attracted much critisism (Strauss, 1986; Jonasson, 1999; Snijders, 2002;
+Handcock, 2003; Bhamidi et al., 2008; Rinaldo et al., 2009; Butts, 2011; Schweinberger, 2011;
+Chatterjee and Diaconis, 2012).
+To overcome the shortcomings of existing approaches, we introduce a Bayesian framework
+which helps to answer the substantive questions of interest and is as simple and parsimonious
+as possible. The framework allows us to incorporate covariates as well as variation in the
+propensities of organisations to collaborate. In addition, the framework allows us to test
+whether there is network redundancy in the form of transitivity by using a test which can
+be considered to be a Bayesian analogue of the score test (Rao and Poti, 1946; Rao, 1948;
+Bera and Bilias, 2001a,b). The advantage of using the Bayesian score test is that models
+with transitivity—which are hard to estimate—need not be estimated, while the question of
+primary interest—whether there is an excess of transitivity—can be answered. An additional
+advantage of the framework is that the computing time scales with n rather than n2 and
+thus the framework can be applied to the inter-organisational network with n = 717.
+The paper is structured as follows. We describe the data and the substantive questions of
+interest in Section 2 and introduce Bayesian models in Section 3. We discuss Bayesian model
+estimation and model selection in Section 4. We shed light on the substantive questions of
+interest by using the Bayesian framework in Section 5 and discuss implications in terms of
+disaster management in Section 6.
+
+2
+2.1
+
+Data
+The inter-organisational network
+
+On September 11, 2001, the United States experienced one of the deadliest and costliest
+events in its history: The attacks on the World Trade Center in New York City killed 2,749
+individuals and resulted in immeasurable psychological, social, and economic costs (Tierney
+and Trainor, 2004; Bevc, 2010).
+We consider here data on the massive rescue and relief operations triggered by the September 11, 2001 attacks. A detailed description of the data can be found in Tierney and Trainor
+(2004) and Bevc (2010). The data were collected during the first 12 days following September 11, 2001 and represent the rescue and relief phase of operations as well as the transition
+into the less communication-intensive recovery phase of operations. The resulting data set
+includes 717 organisations and two organisational attributes: scale of operations, which in3
+
+Figure 1: Inter-organisational network of 717 organisations, excluding 226 organisations
+which do not collaborate with others. The shape of the symbol represents the scale of
+operations, the colour represents the type of organisation, and the size scales with the number
+of collaborations involved
+
+local
+
+state
+
+collective
+
+governmental
+
+national
+
+non−profit
+
+international
+
+profit
+
+cludes the categories of local, state, national, and international; and type of organisation,
+which includes the categories of collective, governmental, non-profit, and profit. Table 1
+
+= 256,686
+reports the number of organisations with these two attributes. Data on the 717
+2
+
+(possible) collaborations among the 717 organisations were collected by content analysis of
+field documents and newspaper articles. The collaborations are binary—i.e., either present
+or absent—and undirected. Figure 1 shows the collaborations among the 717 organisations.
+Table 1: Scale of operations and type of 717 organisations
+collective governmental non-profit profit total
+local
+3
+86
+67
+68
+224
+state
+5
+67
+6
+9
+87
+national
+23
+157
+32
+88
+300
+international
+1
+8
+20
+77
+106
+total
+32
+318
+125
+242
+717
+
+4
+
+Figure 2: Network statistics of interest, where circles represent organisations and lines represent collaborations between organisations
+
+t
+
+t
+
+a) edge
+
+2.2
+
+t
+✁❆
+✁ ❆
+
+❆
+❆t
+
+t
+✁❆
+✁ ❆
+✁
+❆
+t✁ t ❆t
+
+t
+✁❆
+✁ ❆
+✁
+❆
+❆t
+t✁
+
+b) 2-star
+
+c) 3-star
+
+d) triangle
+
+✁
+t
+✁
+
+Substantive questions of interest
+
+A large body of data is hard to comprehend and Figure 1 shows as much as it hides. Despite
+the size and complexity of the data set, it is evident that the inter-organisational network
+is dominated by a small number of organisations which are involved in a large number
+of collaborations. Such organisations are of great interest, because they can (a) receive
+information and advice from many other organisations, directly and indirectly; (b) rapidly
+spread information and advice to many other organisations, directly and indirectly; (c)
+encourage organisations which do not collaborate with each other to start collaborating; and
+(d) coordinate rescue and relief activities of organisations.
+Second, an interesting question is whether these dominating organisations were supposed
+to coordinate disaster response or emerged as coordinators in the wake of the disaster. The
+possible presence of emergent coordinators implies that, e.g., organisations which are supposed to respond to disasters should be prepared to collaborate with emergent coordinators,
+and disaster management should allocate resources in accordance (Petrescu-Prahova and
+Butts, 2008).
+Third, it is important to assess whether the inter-organisational network possessed network redundancy which could help to absorb the impact of disturbances which follow the
+initial disaster and have the potential to disrupt the disaster response. An important form
+of network redundancy is transitivity. Transitivity is represented by the triangle in Figure
+2, where circles represent organisations and lines represent collaborations between organisations. If, for example, one edge of the triangle were removed, then every organisation
+could still reach every other organisation either directly or indirectly, through the third organisation. If one of the organisations were removed, then the remaining two organisations
+could still reach each other directly. In general, network redundancy can help to absorb disturbances by providing alternative channels of communication through which information
+and advice could spread and which could be used to coordinate the disaster response. In
+particular, network redundancy can help to absorb disturbances that reduce the ability of
+5
+
+organisations to coordinate the disaster response. It is therefore of interest to assess whether
+there is network redundancy in the form of transitivity.
+In Section 3, we introduce a Bayesian framework which helps to shed light on the substantive questions of interest while being as simple and parsimonious as possible.
+
+3
+
+Bayesian model
+
+We consider a set of n nodes (organisations), indexed by integers 1, . . . , n, and random
+variables Yij ∈ {0, 1}, where Yij = 1 indicates that there is an edge (collaboration) between
+nodes (organisations) i and j and Yij = 0 otherwise. The observed outcome of Yij is denoted
+by yij . Since collaborations are undirected and self-collaborations are meaningless, we assume
+that edges are undirected, yij = yji (1 ≤ i < j ≤ n), and exclude self-edges, yii = 0
+(1 ≤ i ≤ n). We denote by Y the set of random variables Yij (1 ≤ i < j ≤ n) and by Y the
+sample space of Y.
+The distribution of Y can be parameterised in exponential-family form (Besag, 1974;
+Frank and Strauss, 1986):
+
+
+P (Y = y | η) = exp η ⊤ s(y) − ψ(η) , y ∈ Y,
+
+(1)
+
+where η is a d-vector of natural parameters, s(y) is a d-vector of sufficient statistics, and
+ψ(η) ensures that P (Y = y | η) sums to 1.
+While exponential families of distributions of the form (1) constitute a general modelling
+framework and admit the specification of countless models, from simple models with one
+
+parameter (e.g., Erd¨os and R´enyi, 1959) to the saturated model with exp[ n2 log 2] − 1 pa-
+
+rameters (Handcock, 2003), it is desirable to narrow down the set of possible models to a
+subset of models which are deemed interesting on substantive grounds and acceptable on
+computational and statistical grounds.
+Motivated by the substantive questions of interest on the one hand and model parsimony
+on the other hand, we introduce models in Sections 3.1—3.3 and discuss priors in Section
+3.4.
+
+3.1
+
+Modelling degrees
+
+To model the propensities of organisations to collaborate, we model the sequence of degrees
+Pn
+d1 (y), . . . , dn (y), where di (y) =
+j6=i yij is the degree of organisation i, i.e., the number
+of collaborations in which organisation i is involved. A natural model of the sequence of
+
+6
+
+degrees is given by the exponential family of distributions
+)
+( n
+X
+δi di (y) − ψ(δ) ,
+P (Y = y | δ) = exp
+
+(2)
+
+i=1
+
+where the sufficient statistics d1 (y), . . . , dn (y) are the degrees of organisations, the natural
+parameters δ1 , . . . , δn can be interpreted as the propensities of organisations to collaborate—
+which are unconstrained and may thus vary from organisation to organisation, and ψ(δ)
+ensures that P (Y = y | δ) sums to 1. The exponential-family form of (2) can be motivated
+by the principle of maximum entropy and the attractive properties of exponential families
+(e.g., Barndorff-Nielsen, 1978). It is worth noting that the exponential family (2), which is
+designed to model the sequence of degrees of undirected networks, is the natural relative of
+the exponential family proposed by Holland and Leinhardt (1981) to model the sequence of
+in-degrees and out-degrees of directed networks. The properties of the exponential family
+(2) were studied by Diaconis et al. (2011).
+A convenient property of the exponential family (2) is that the probability mass function
+can be factorised according to
+)
+( n
+n
+X
+Y
+δi di (y) − ψ(δ)
+=
+exp {λij (δ) yij − ψij (δ)} ,
+P (Y = y | δ) = exp
+i=1
+
+(3)
+
+i<j
+
+where
+λij (δ) = δi + δj
+
+(4)
+
+ψij (δ) = log [1 + exp {λij (δ)}] .
+
+(5)
+
+and
+Model (3) arises as a natural model of the sequence of degrees as well as the assumption that
+the Yij are independent Bernoulli(πij ) random variables with probability πij and log odds
+δi + δj . The first derivation clarifies that the exponential family is designed to model the
+sequence of degrees, while the second derivation clarifies that the log odds of the probability
+of a collaboration between organisations i and j is additive in the propensities of i and j to
+collaborate.
+A second convenient property of the exponential family is that the sufficient statistics are
+linear in yij . In contrast, conventional exponential-family models with Markov dependence
+(Frank and Strauss, 1986) include sufficient statistics, called k-star statistics, of the form
+Pn di (y)
+P n Pn
+, which are functions of the sequence of
+sk (y) =
+j1 <···<jk yij1 · · · yijk =
+i=1
+i=1
+k
+degrees, but are non-linear in yij and tend to suffer from model degeneracy (Strauss, 1986;
+Handcock, 2003; Schweinberger, 2011). The model degeneracy in turn tends to impede
+simulation and statistical inference (Snijders, 2002; Handcock, 2003; Rinaldo et al., 2009;
+Butts, 2011; Schweinberger, 2011; Chatterjee and Diaconis, 2012).
+7
+
+3.2
+
+Modelling degrees and covariates
+
+In addition to modelling the propensities of organisations to collaborate, it is desirable to
+take available covariates into account.
+A natural extension of the exponential family (2) to include covariates is given by
+)
+( n
+n
+X
+X
+f (xi , xj ) yij − ψ(β, δ) ,
+δi di (y) + β ⊤
+P (Y = y | β, δ) = exp
+
+(6)
+
+i<j
+
+i=1
+
+where f (xi , xj ) is a vector-valued function of covariates xi and xj —which may be vectors, β
+is a vector of parameters, and ψ(β, δ) ensures that P (Y = y | β, δ) sums to 1. An example
+of f (xi , xj ) is given by an indicator of whether the values of organisations i and j on some
+covariate match. Other examples are discussed in Handcock et al. (2010).
+The extended model (6) shares with (2) the convenient property that the probability
+mass function factorises according to
+(
+P (Y = y | β, δ) = exp
+
+=
+
+n
+Y
+
+n
+X
+
+δi di (y) + β
+
+⊤
+
+n
+X
+
+f (xi , xj ) yij − ψ(β, δ)
+
+i<j
+
+i=1
+
+)
+
+(7)
+
+exp {λij (β, δ) yij − ψij (β, δ)} ,
+
+i<j
+
+where
+λij (β, δ) = δi + δj + β ⊤ f (xi , xj )
+
+(8)
+
+ψij (β, δ) = log [1 + exp {λij (β, δ)}] .
+
+(9)
+
+and
+
+3.3
+
+Modelling degrees, covariates, and transitivity
+
+To assess whether there is network redundancy in the form of transitivity, we extend the
+exponential family (6) to include transitivity:
+)
+( n
+n
+X
+X
+f (xi , xj ) yij + γg(y) − ψ(β, γ, δ) ,
+δi di (y) + β ⊤
+P (Y = y | β, γ, δ) = exp
+i<j
+
+i=1
+
+where the sufficient statistic g(y) =
+
+Pn
+
+i<j<k
+
+yij yjk yik
+
+(10)
+is the number of triangles, the natural
+
+parameter γ is the weight of g(y), and ψ(β, γ, δ) ensures that P (Y = y | β, γ, δ) sums to 1.
+A drawback of the exponential family (10) is that its probability mass function cannot be
+factorised. As a result, the likelihood function is intractable and the posterior distribution is
+doubly intractable, requiring time-consuming auxiliary-variable Markov chain Monte Carlo
+methods (e.g., Koskinen et al., 2010; Caimo and Friel, 2011).
+8
+
+We are here less interested in estimating model (10)—which would be time-consuming—
+than in assessing the evidence against the null hypothesis
+H0 : γ = 0.
+
+(11)
+
+In a frequentist framework, a test—which would not require to estimate model (10)—
+could be based on the vector-valued score function
+
+
+∇η log P (Y = y | η)
+= s(y) − Eηˆ0 [s(Y)],
+(12)
+ηˆ0
+
+where η is the vector of all parameters, s(y) is the vector of all sufficient statistics, P (Y =
+
+y | η) is the likelihood function corresponding to (10), and the gradient of the log-likelihood
+function ∇η log P (Y = y | η) is evaluated at the restricted maximum likelihood estimate
+of η under H0 : γ = 0, which is denoted by ηˆ0 . By definition of the restricted maximum
+likelihood estimate, the elements of the vector s(y) − Eηˆ0 [s(Y)] vanish, with the exception
+of
+
+∂
+
+= g(y) − Eηˆ0 [g(Y)].
+log P (Y = y | η)
+(13)
+ˆ0
+∂γ
+η
+Therefore, a test of H0 : γ = 0 could be based on test statistics of the form
+t(y) ∝ g(y) − Eηˆ0 [g(Y)].
+
+(14)
+
+Test statistics based on the score function are natural, because estimators and tests based
+on the score function possess attractive properties (e.g., Bera and Bilias, 2001a,b; Lehmann
+and Romano, 2005). The goodness-of-fit test of Pearson (1900), the score tests of Rao
+and Poti (1946) and Rao (1948), and countless other tests are based on the score function
+(e.g., Bera and Bilias, 2001a,b). In exponential families, the score function is given by
+the difference between observed and expected values of the sufficient statistics—see, e.g.,
+(14)—and therefore score-based tests can be interpreted as goodness-of-fit tests. The classic
+example is the goodness-of-fit test of Pearson (1900).
+In a Bayesian framework, the evidence against H0 : γ = 0 can be assessed by the posterior
+predictive p-value (Meng, 1994) given by
+pt = Pr(t(Y⋆ ) ≥ t(y) | Y = y, H0 ),
+
+(15)
+
+where Y⋆ is a posterior prediction of the network and t(Y⋆ ) is a test statistic. A Bayesian
+analogue of (14) is given by the score-based test statistic
+t(y⋆ ) = g(y⋆ ) − E[g(Y⋆ ) | Y = y, H0 ],
+where
+E[g(Y⋆ ) | Y = y, H0 ] =
+
+X
+
+g(y⋆ ) P (Y⋆ = y⋆ | Y = y, H0 )
+
+y⋆
+
+9
+
+(16)
+
+(17)
+
+is the posterior predictive expectation of g(Y⋆ ) under H0 : γ = 0 and
+Z
+⋆
+⋆
+P (Y = y | Y = y, H0 ) =
+P (Y⋆ = y⋆ | η0 , H0 ) p(η0 | Y = y, H0 ) d η0
+
+(18)
+
+η0
+
+is the posterior predictive distribution of Y⋆ under H0 : γ = 0. In contrast to the frequentist
+approach, the Bayesian approach averages over the unspecified parameters β and δ1 , . . . , δn
+and thus takes the uncertainty about the unspecified parameters into account. In addition,
+the Bayesian approach does not require approximations relying on large-n asymptotics.
+The most important advantage of using posterior predictive p-values based on the scorebased test statistic (16) is that the evidence against H0 : γ = 0 can be assessed by generating
+posterior draws from model (10) under H0 : γ = 0, which possesses the convenient factorisation property (7)—in contrast to model (10) with γ 6= 0. In other words, the advantage is
+that model (10)—which is hard to estimate—needs not be estimated, while the question of
+primary interest—whether there is more transitivity than expected—can be answered.
+
+3.4
+
+Prior
+
+We assume that the natural parameters δ1 , . . . , δn of the exponential families (2), (6), and
+(10) are governed by truncated Dirichlet process priors, which approximate Dirichlet process
+priors and have computational advantages relative to Dirichlet process priors (Ishwaran and
+James, 2001).
+We assume that the set of organisations is partitioned into subsets, called blocks. The
+maximum number of blocks K is assumed to be known and can be selected by the Bayesian
+model selection method described in Section 4.2. We assume that organisations which are
+members of the same block have the same propensity to collaborate:
+δi = θ ⊤ Zi , i = 1, . . . , n,
+
+(19)
+
+where the elements θk of the vector θ are block-dependent degree weights,
+iid
+
+θk | µ, σ 2 ∼ N (µ, σ 2 ), k = 1, . . . , K,
+
+(20)
+
+and the vectors Zi are organisation-dependent indicators of block membership,
+iid
+
+Zi | ω1 , . . . , ωK ∼ Multinomial(1; ω1 , . . . , ωK ), i = 1, . . . , n.
+
+(21)
+
+The multinomial parameters ω1 , . . . , ωK are constructed by truncated stick-breaking (Ish-
+
+10
+
+waran and James, 2001):
+ω1
+ωk
+
+= V1
+= Vk
+
+k−1
+Y
+
+(1 − Vj ), k = 2, . . . , K − 1
+
+j=1
+
+ωK = 1 −
+
+K−1
+X
+
+(22)
+
+ωk ,
+
+k=1
+
+where
+iid
+
+Vk | α ∼ Beta(1, α), k = 1, . . . , K − 1.
+
+(23)
+
+Truncated Dirichlet process priors approximate Dirichlet process priors and imply that the
+multinomial parameters ω1 , . . . , ωK are governed by a generalised Dirichlet distribution (Ishwaran and James, 2001).
+Since the posterior distribution may be sensitive to the choice of the parameters α, µ,
+and σ 2 of the truncated Dirichlet process prior and the parameters cannot be specified with
+confidence, it makes sense to express the uncertainty about the parameters by specifying
+hyper-priors as follows:
+α | A1 , B1
+
+∼ Gamma(A1 , B1 )
+
+µ | M, S 2
+
+∼ N (M, S 2 )
+
+(24)
+
+σ −2 | A2 , B2 ∼ Gamma(A2 , B2 ),
+where A1 , B1 , M, S 2 , A2 , B2 are specified constants.
+The covariate weights β can be assigned Gaussian priors, while the transitivity weight γ
+is assigned a degenerate prior placing all of its probability mass at γ = 0.
+
+4
+
+Bayesian inference
+
+We discuss the estimation of the Bayesian model given K blocks in Section 4.1 and the
+selection of the number of blocks K in Section 4.2.
+
+4.1
+
+Bayesian model estimation
+
+We approximate the posterior distribution of the Bayesian model given K blocks by combining the following Markov chain Monte Carlo steps by means of cycling or mixing (Tierney,
+1994; Liu, 2008). We assume throughout that the null hypothesis H0 : γ = 0 holds, so that
+the Bayesian model possesses the convenient factorisation properties (3) and (7).
+
+11
+
+Scaling parameter α.
+
+If the hyper-prior distribution of scaling parameter α is
+
+Gamma(A1 , B1 ), we can sample α from its full conditional distribution:
+α | A1 , B1 , ω1 , . . . , ωK ∼ Gamma(A1 + K − 1, B1 − log ωK ).
+
+(25)
+
+Mean parameter µ. If the hyper-prior distribution of mean parameter µ is N (M, S 2 ), we
+can sample µ from its full conditional distribution:
+!
+PK
+−2
+−2
+S
+M
++
+σ
+θ
+1
+k=1 k
+µ | M, S 2 , σ 2 , θ1 , . . . , θK ∼ N
+, −2
+.
+(26)
+−2
+−2
+S + Kσ
+S + Kσ −2
+Precision parameter σ −2 . If the hyper-prior distribution of precision parameter σ −2 is
+given by Gamma(A2 , B2 ), we can sample σ −2 from its full conditional distribution:
+!
+K
+X
+σ −2 | A2 , B2 , µ, θ1 , . . . , θK ∼ Gamma A2 + K/2, B2 +
+(θk − µ)2 /2 .
+(27)
+k=1
+
+Multinomial parameters ω1 , . . . , ωK . We sample ω1 , . . . , ωK from the full conditional
+distribution by sampling
+!
+K
+X
+ind
+Vk⋆ | α, Z1 , . . . , Zn ∼ Beta 1 + nk , α +
+nj , k = 1, . . . , K − 1
+(28)
+j=k+1
+
+and setting
+ω1 = V1⋆
+Vk⋆
+
+ωk =
+
+k−1
+Y
+
+(1 − Vj⋆ ), k = 2, . . . , K − 1
+
+(29)
+
+j=1
+
+ωK = 1 −
+
+K−1
+X
+
+ωk ,
+
+k=1
+
+where nk denotes the number of organisations in block k.
+Indicators Z1 , . . . , Zn . We sample indicator Zi from its full conditional distribution:
+Zi | {Zj }nj6=i , ω1 , . . . , ωK , β, θ1 , . . . , θK , y ∼ Multinomial(1; ωi,1 , . . . , ωi,K ),
+where
+ωk
+ωi,k =
+
+n
+Y
+
+P (Yij = yij | β, δi = θk , {δh }nh6=i )
+
+i6=j
+
+K
+X
+l=1
+
+(
+
+ωl
+
+(30)
+
+n
+Y
+
+P (Yij = yij | β, δi = θl , {δh }nh6=i )
+
+i6=j
+
+12
+
+).
+
+(31)
+
+Degree weights θ1 , . . . , θK and covariate weights β. The full conditional distribution of
+θ1 , . . . , θK and β is intractable. We update θ1 , . . . , θK and β by Metropolis-Hastings steps,
+where proposals are generated from random-walk, independence, or autoregressive proposal
+distributions (Tierney, 1994).
+The so-called label-switching problem, arising from the invariance of the likelihood function to the labelling of the blocks and resulting in symmetric and multi-modal posterior
+distributions and Markov chain Monte Carlo samples with multiple labellings, can be solved
+by using the Bayesian decision-theoretic approach of Stephens (2000).
+
+4.2
+
+Bayesian model selection
+
+We are interested in selecting the number of blocks K of the Bayesian model. Markov chain
+Monte Carlo-based approaches to Bayesian model selection (e.g., Richardson and Green,
+1997; Chib and Jeliazkov, 2001) are time-consuming. Computing time is an important con
+cern, because the number of units of analysis—i.e., 717
+= 256,686 possible collaborations—
+2
+is large and estimating models can take between 1 and 3 weeks. We propose a variational
+
+approach (Blei and Jordan, 2005), which tends to be much faster than Markov chain Monte
+Carlo-based approaches and has been explored elsewhere as attractive alternatives to Markov
+chain Monte Carlo-based approaches (e.g., McGrory and Titterington, 2006).
+Variational methods can be motivated by observing that the marginal likelihood, the
+most important obstacle to Bayesian model selection, can be represented by
+Z
+P (Y = y | η) p(η)
+P (Y = y) =
+q(η | ϑ) d η,
+q(η | ϑ)
+
+(32)
+
+where η denotes the vector of all parameters, P (Y = y | η) denotes the likelihood function,
+p(η) denotes the prior distribution, and q(η | ϑ) is a member of a family of auxiliary
+distributions (to be specified). The idea of variational methods is to translate the intractable
+integration problem (32) into a tractable optimisation problem by lower bounding log P (Y =
+y) and making the lower bound on log P (Y = y) as tight as possible. A lower bound on
+log P (Y = y) can be obtained by Jensen’s inequality:
+
+Z 
+P (Y = y | η) p(η)
+q(η | ϑ) d η.
+(33)
+log
+log P (Y = y) ≥
+q(η | ϑ)
+The best lower bound on log P (Y = y) is obtained by maximising the lower bound on
+log P (Y = y) with respect to ϑ:
+Z 
+
+
+P
+(Y
+=
+y
+|
+η)
+p(η)
+ˆ = arg max
+ϑ
+log
+q(η | ϑ) d η .
+(34)
+q(η | ϑ)
+ϑ
+13
+
+The geometry of the maximisation problem is simple: The difference between the left-hand
+side of (33) and the right-hand side of (33) is equal to the Kullback-Leibler divergence from
+the auxiliary distribution q(η | ϑ) indexed by ϑ to the posterior distribution p(η | Y = y):
+
+Z 
+q(η | ϑ)
+log
+KL {q(η | ϑ); p(η | Y = y)} =
+q(η | ϑ) d η.
+(35)
+p(η | Y = y)
+Therefore, maximising the lower bound on log P (Y = y) with respect to ϑ amounts to
+minimising the Kullback-Leibler divergence from the auxiliary distribution q(η | ϑ) indexed
+by ϑ to the posterior distribution p(η | Y = y).
+In practice, it is important that the optimisation problem (34) is tractable, which depends
+first and foremost on the choice of the family of auxiliary distributions. To make the optimisation problem (34) tractable, we choose a family of fully factorised auxiliary distributions
+of the form
+q(η | ϑ) = q(α|ϑα,1 , ϑα,2 ) q(µ|ϑµ,1 , ϑµ,2 ) q(σ −2 |ϑσ−2 ,1 , ϑσ−2 ,2 )
+)
+)( K
+)( n
+(K−1
+Y
+Y
+Y
+q(θk |ϑθk ,1 , ϑθk ,2 ) ,
+q(Zi |ϑZi )
+q(Vk |ϑVk ,1 , ϑVk ,2 )
+×
+k=1
+
+i=1
+
+(36)
+
+k=1
+
+where the marginal auxiliary distributions q(α|ϑα,1 , ϑα,2 ) and q(σ −2 |ϑσ−2 ,1 , ϑσ−2 ,2 ) are Gamma
+distributions,
+q(µ|ϑµ,1 , ϑµ,2 ) and q(θk |ϑθk ,1 , ϑθk ,2 ) are Gaussian distributions,
+q(Vk |ϑVk ,1 , ϑVk ,2 ) are Beta distributions, and q(Zi |ϑZi ) are multinomial distributions. The
+implementation of the variational approach is discussed in more detail in the supplement.
+If the posterior correlations are weak, the fully factorised auxiliary distribution q(η | ϑ)
+ˆ can be expected to be close to the posterior distribution p(η | Y =
+under the maximiser ϑ
+y) in terms of Kullback-Leibler divergence and the lower bound on log P (Y = y) can be
+expected to be tight. In practice, as long as the posterior correlations are not too strong,
+one would expect that large changes of log P (Y = y) due to increases in the number of
+blocks K are reflected by large changes of the variational approximations of log P (Y = y).
+In terms of computing time, in the application in Section 5, the variational approximations
+of log P (Y = y) consumed .5 hours (K = 2 blocks) to 15 hours (K = 10 blocks), based
+on 1,000 runs to address the issue of local maxima, which is much less than Markov chain
+Monte Carlo-based approaches would consume (i.e., weeks).
+
+5
+
+Application
+
+We exploit the Bayesian framework introduced in Sections 3—5 to answer the substantive
+questions of interest described in Section 2.2. We start by assessing whether some of the
+717 organisations that responded to the September 11, 2001 attacks were more involved in
+14
+
+−7500
+−9000
+
+−8500
+
+−8000
+
+log P(Y = y)
+
+−7000
+
+−6500
+
+Figure 3: Approximations of log P (Y = y) under the Bayesian model with 1, . . . , 10 blocks
+
+2
+
+4
+
+6
+
+8
+
+10
+
+#blocks
+
+collaboration than others. We compare competing models capturing the heterogeneity of
+organisations with respect to collaboration in Section 5.2. We shed light on which organisations were primary coordinators and whether the primary coordinators were established or
+emergent coordinators in Section 5.3. We assess whether the inter-organisational network
+possessed network redundancy in the form of transitivity in Section 5.4. Last, we study the
+vulnerability of the inter-organisational network to disturbances in Section 5.5.
+
+5.1
+
+Assessing heterogeneity
+
+To assess whether some of the 717 organisations that responded to the September 11, 2001
+attacks were more involved in collaboration than others, we compare model (2) with one
+block to model (2) with more than one block. We use the truncated Dirichlet process prior
+with hyper-prior α ∼ Gamma(1, 1), µ ∼ N (0, 25), and σ −2 ∼ Gamma(5, 5). We compare
+the model with K blocks in terms of the marginal likelihood P (Y = y). Figure 3 shows
+the approximations of log P (Y = y) under the model with 1, . . . , 10 blocks. The difference
+in log P (Y = y) between the model with K and K + 1 blocks can be interpreted as log
+Bayes factor (Kass and Raftery, 1995). There are dramatic increases in log P (Y = y) by
+going from 1 to 4 blocks, small changes by going from 4 to 9 blocks, and a large decrease
+by going from 9 to 10 blocks. Therefore, according to Kass and Raftery (1995), there is
+decisive evidence against the model with 1 block. In other words, some organisations were
+more involved in collaboration than others.
+To select the number of blocks, we observe that, according to Figure 3, model (2) with 4
+or more blocks is preferable to model (2) with 1, 2, or 3 blocks. In view of model parsimony,
+15
+
+Figure 4: Goodness of fit of models M1—M4 in terms of statistics S1—S2, centred at observed
+values, where vertical lines indicate .025 and .975 quantiles
+M3
+
+0.030
+
+−200
+
+0
+
+200
+
+−200
+
+0
+
+200
+
+0.00
+
+0.000
+
+0.00
+
+0.00
+
+0.05
+
+0.01
+
+0.010
+
+0.10
+
+0.02
+
+0.15
+
+0.020
+
+0.20
+
+0.03
+
+0.25
+
+0.05
+0.04
+0.03
+0.02
+0.01
+
+M4
+0.04
+
+M2
+0.30
+
+M1
+
+−400
+
+0
+
+400
+
+−40
+
+0
+
+40
+
+#components
+
+#components
+
+M1
+
+M2
+
+M3
+
+M4
+
+0.08
+
+0.30
+200
+
+0.01
+
+0.04
+0.00
+−200
+
+0
+
+200
+
+0.00
+
+0.02
+
+0.10
+0.05
+0.00
+0
+
+0.02
+
+0.06
+
+0.20
+0.15
+
+0.03
+0.02
+0.01
+0.00
+−200
+
+max(component size)
+
+0.03
+
+0.25
+
+0.04
+
+0.04
+
+#components
+
+0.05
+
+#components
+
+−400
+
+max(component size)
+
+0
+
+400
+
+−40
+
+max(component size)
+
+0
+
+20
+
+max(component size)
+
+we select the model with 4 blocks.
+
+5.2
+
+Accounting for heterogeneity
+
+There are multiple models which can capture the heterogeneity of organisations with respect to collaboration, take the available covariates into account, and can be estimated in
+reasonable time. We compare the Bayesian framework introduced above to three competing
+exponential-family models of the form (1) in terms of goodness-of-fit. The three competing
+exponential-family models include sufficient statistics which are functions of the sequence of
+degrees d1 (y), . . . , dn (y):
+M1: The exponential family with the number of edges
+
+Pn
+
+i<j
+
+yij =
+
+Pn
+
+i=1
+
+di (y)/2 as sufficient
+
+statistic, which is equivalent to assuming that the edges are independent Bernoulli
+random variables.
+M2: The exponential family with the number of edges
+16
+
+Pn
+
+i<j
+
+yij and the number of 2-stars
+
+Figure 5: Goodness of fit of models M1—M4 in terms of statistics S3—S4, centred at observed
+values, where vertical lines indicate .025 and .975 quantiles
+250
+0
+
+50
+
+100
+
+150
+
+200
+
+250
+200
+0
+
+50
+
+100
+
+150
+
+200
+0
+
+50
+
+100
+
+150
+
+200
+150
+100
+50
+0
+
+1 21 44 67 90
+
+degree
+
+degree
+
+degree
+
+degree
+
+M1
+
+M2
+
+M3
+
+M4
+
+20000
+
+j1 <j2
+
+yij1 yij2 =
+
+0.030
+0.020
+0.010
+0.000
+
+8e−04
+6e−04
+4e−04
+2e−04
+0e+00
+
+0
+
+−20000 0
+
+20000
+
+−30000
+
+#2−stars
+
+Pn
+
+i=1
+
+0.00000 0.00005 0.00010 0.00015 0.00020
+
+1 21 44 67 90
+
+0e+00 2e−04 4e−04 6e−04 8e−04 1e−03
+
+1 21 44 67 90
+
+#2−stars
+
+i=1
+
+M4
+
+1 21 44 67 90
+
+−30000
+
+Pn Pn
+
+M3
+
+250
+
+M2
+
+250
+
+M1
+
+di (y)
+2
+
+
+
+0
+
+#2−stars
+
+30000
+
+−5000
+
+5000
+
+#2−stars
+
+as sufficient statistics, which is a special case of the
+
+exponential family with Markov dependence of Frank and Strauss (1986).
+P
+M3: The curved exponential family with the number of edges ni<j yij as sufficient statistic
+and geometrically weighted degree terms (Hunter and Handcock, 2006; Hunter, 2007),
+P
+corresponding to the n − 1 sufficient statistics dk (y) = ni=1 1 {di (y) = k}, the number
+of organisations with degree k, and the n−1 natural parameters δk (θ) = θ1 exp(θ2 ) [1−
+{1 − exp(−θ2 )}k ] (k = 1, . . . , n − 1), which are non-linear functions of two parameters
+θ1 and θ2 .
+
+We refer to model (2) with 4 blocks as model M4. To take the covariates scale of operations
+and type of organisation into account, we add the two covariates to models M1—M4 along
+the lines of Bevc (2010). That is, for each of the two covariates and each pair of categories,
+P
+we include sufficient statistics of the form ni<j 1(xi = k, xj = l) yij , where 1(xi = k, xj =
+
+l) is an indicator function, taking value 1 if xi = k and xj = l and 0 otherwise. To
+17
+
+Table 2: Model M4: Posterior medians and 95% credibility intervals (CIs) of sizes nk and
+parameters θk of blocks k = 1, 2, 3, 4
+k nk : median nk : 95% CI θk : median
+θk : 95% CI
+1
+13
+(12, 14)
+.074
+(-.146, .308)
+2
+49
+(34, 64)
+-1.38 (-1.596, -1.104)
+3
+252 (231, 275)
+-2.732 (-2.938, -2.492)
+4
+402 (376, 429)
+-4.852 (-5.114, -4.554)
+ensure that the model is identifiable, we restrict the natural parameters corresponding to
+the combinations local—local (scale of operations) and governmental—governmental (type
+of organisation) to 0. We note that model M1 is equivalent to the logistic regression model
+of Bevc (2010), though we transformed the covariate scale of operations by aggregating
+some small categories (cf. Bevc, 2010, and Table 1). Models M1—M3 were estimated by
+Monte Carlo maximum likelihood algorithms (Handcock, 2003; Hunter and Handcock, 2006)
+implemented in the R package ergm (Handcock et al., 2010). The posterior distribution of
+model M4 was approximated by Markov chain Monte Carlo methods, using 40,000 burnin iterations, 200,000 post-burn iterations, and keeping track of every 200-th post-burn-in
+iteration. To solve the so-called label-switching problem, the Markov chain Monte Carlo
+sample was relabelled along the lines of Stephens (2000). While it would be preferable to
+estimate models M1—M3 by Bayesian methods as well, models M2 and M3 lack conditional
+independence of edges, implying that special Markov chain Monte Carlo methods along the
+lines of Koskinen et al. (2010); Caimo and Friel (2011) would be needed, which tend to
+consume excessive amounts of computing time.
+We compare models M1—M4 by comparing the goodness-of-fit of the models in terms of
+the following simple, but fundamental functions of the data (Wasserman and Faust, 1994;
+Hunter et al., 2008): (S1) the number of components (maximal subsets of organisations such
+that every organisation is connected by a finite path to every other organisation); (S2) the
+size of the largest component; (S3) the degrees d1 (y), . . . , dn (y); and (S4) the number of
+P P
+2-stars ni=1 nj1 <j2 yij1 yij2 .
+Figures 4 and 5 show the goodness-of-fit of models M1—M4 in terms of statistics S1—
+S4. The lack of fit of models M1—M3 is striking. Model M1, which assumes that edges are
+independent Bernoulli random variables conditional on covariates, implies too short-tailed
+degree distributions and is therefore too restrictive to model long-tailed degree distributions
+and other fundamental functions of the data. Model M2, on the other hand, tends to suffer
+from model degeneracy (Strauss, 1986; Handcock, 2003; Schweinberger, 2011). The model
+degeneracy of model M2 impedes Monte Carlo maximum likelihood algorithms, because such
+algorithms generate samples of networks and sampled networks from degenerate models do
+18
+
+Figure 6: Proportion of observed collaborations within and between blocks, represented by
+colour, ranging from white (proportion 0) to black (proportion .4)
+
+not tend to cluster around the observed network in terms of the sufficient statistics (Snijders,
+2002; Handcock, 2003; Schweinberger, 2011). As a result, Monte Carlo maximum likelihood
+estimators may not exist (Handcock, 2003; Rinaldo et al., 2009), resulting in computational
+failure and lack of fit (Handcock, 2003; Hunter et al., 2008; Rinaldo et al., 2009). In light
+of model degeneracy, the lack of fit of model M2 is therefore not surprising. In the case
+of model M3, the geometric sequence on which the natural parameters δk (θ) are based
+may be too restrictive to model the degree distribution and in addition the estimation of
+curved exponential-family models tends to be challenging. In contrast, model M4 clearly
+outperforms models M1—M3 in terms of goodness-of-fit. The most notable fact is that the
+goodness-of-fit of model M4 with respect to the number of 2-stars is excellent—in sharp
+contrast to model M2 with the number of 2-stars as sufficient statistic. In other words, even
+when k-stars are of primary interest, it seems to be preferable to use degrees rather than
+k-stars as sufficient statistics.
+To examine how much the propensities to collaborate vary across organisations, we
+present in Table 2 the posterior medians and 95% credibility intervals of the sizes nk and
+the parameters θk of blocks 1, 2, 3, 4. The 95% posterior credibility intervals do not overlap
+and indicate that the organisations which responded to the September 11, 2001 attacks had
+varying propensities to collaborate. In addition, the number of organisations which tends
+to collaborate is small: e.g., fewer than 2% of the organisations is member of block 1 and
+fewer than 10% of the organisations is member of blocks 1 and 2, which have the highest
+propensities to collaborate.
+
+19
+
+Table 3: Organisations which are predicted to be primary coordinators, where
+coordinator; F: formal coordinator; and O: owner
+organisation
+coordinator
+Centers for Disease Control and Prevention
+F
+Centers for Medicare and Medicaid Services
+E
+Department of Health and Human Services
+F
+Emergency Support Function 9—Urban Search and Rescue
+F
+Federal Emergency Management Agency (FEMA)
+F
+Health Care Financing Administration
+E
+New York City (NYC)
+F
+NYC Emergency Operations Center
+F
+NYC Emergency Management
+F
+NYC Fire Department
+F
+NYC Police Department
+F
+Port Authority of New York and New Jersey
+O
+Verizon
+E
+
+5.3
+
+E: emergent
+entropy
+< .001
+< .001
+< .001
+< .001
+< .001
+< .001
+< .001
+.010
+< .001
+.479
+< .001
+.006
+< .001
+
+Established and emergent coordinators
+
+To detect organisations which were critical to coordinating the response to the September 11,
+2001 attacks and to answer the question of whether primary coordinators were established
+or emergent coordinators, we predict the block membership of organisations by assigning
+every organisation to the block of which it is member with maximum posterior probability.
+Based on these predictions, blocks 1, 2, 3, and 4 include 13, 39, 234, and 431 organisations,
+respectively, and the mean observed degree of organisations in block 1, 2, 3, and 4 is given
+by 56.54, 18.41, 5.07, and .62, respectively. The core of the network is made up by the
+collaborations within and between the organisations in block 1, 2, and 3, which we interpret
+as primary, secondary, and tertiary coordinators, respectively, while the organisations in
+block 4 are peripheral to the network. To gain more insight into the collaborations within
+and between blocks, we show the proportion of observed collaborations within and between
+blocks in Figure 6.
+It is evident that primary coordinators dominate the network: Collaboration is most
+intense among primary coordinators; secondary coordinators tend to collaborate with primary coordinators rather than other secondary coordinators; and tertiary coordinators tend
+to collaborate most with primary coordinators, less with secondary coordinators, and least
+with other tertiary coordinators. The presence of primary coordinators had the potential
+to improve the disaster response, but at the same time may have made disaster response
+vulnerable to disturbances.
+Considering the importance of primary coordinators, it is worthwhile to shed more light
+20
+
+on the subset of primary coordinators. The organisations which are predicted to be primary
+coordinators are shown in Table 3 along with the uncertainty about the prediction in terms
+of the entropy of the posterior distribution (re-scaled to [0, 1]) and the classification as formal
+or emergent coordinator. The classification as formal coordinators is based on the rules laid
+out by the National Response Framework (see http://www.fema.gov/emergency/nrf/).
+Organisations which are not classified as formal coordinators are classified as emergent coordinators. The Port Authority of New York and New Jersey is an exception and is neither
+classified as formal nor emergent coordinator, beause it was the owner of the World Trade
+Center complex. As the owner, it had the floor plans of the entire World Trade Center
+complex and it is thus not surprising that is was a primary coordinator. Last, the entropy
+reflects the uncertainty about the prediction of the block memberships, which is ignored
+by deterministic clustering methods (e.g., Borgatti et al., 2002; Girvan and Newman, 2002;
+Leskovec et al., 2008).
+An interesting fact is that all of the emergent coordinators turn out to have operated
+offices close to the World Trade Center. An example is given by Verizon, which was headquartered in the so-called Verizon building. The Verizon building is located on the edge
+of the World Trade Center and withstood the September 11, 2001 attacks. Verizon was
+therefore as close as it could be to the site of the disaster and, owing to the nature of its
+business, was able to serve as a communication hub in the days following September 11,
+2001 (The Washington Post, September 13, 2001). A second example is given by the Health
+Care Financing Administration, which operated a regional office in Manhattan close to the
+World Trade Center. The Health Care Financing Administration assisted in the shifting of
+non-critical patients from hospitals to nursing homes and, in so doing, freed up beds which
+could be used to serve the wounded of the September 11, 2001 attacks (Comfort et al., 2004,
+p. 300).
+
+5.4
+
+Network redundancy
+
+We argued in Section 2.2 that network redundancy in the form of transitivity can help to
+absorb disturbances by providing alternative channels of communication. An extension of
+model M4, which takes an excess of transitivity into account, is given by model (10). To
+assess whether there is an excess of transitivity, we follow the approach advocated in Section
+3.3 and assess the evidence against the null hypothesis
+H0 : γ = 0,
+
+21
+
+(37)
+
+0.000
+
+0.001
+
+0.002
+
+0.003
+
+0.004
+
+Figure 7: Posterior predictive distribution of score-based test statistic (16) under H0 : γ = 0,
+where the red line indicates the observed value
+
+−400
+
+−200
+
+0
+
+200
+
+400
+
+test statistic
+
+where γ is the transitivity parameter of model (10). We can assess the evidence against
+H0 : γ = 0 by the posterior predictive p-value (Meng, 1994) given by
+pt = Pr(t(Y⋆ ) ≥ t(y) | Y = y, H0 ),
+
+(38)
+
+where t(Y⋆ ) is given by the score-based test statistic (16). A Markov chain Monte Carlo
+approximation of the posterior predictive distribution of the score-based test statistic (16)
+under H0 : γ = 0 is presented in Figure 7 and the corresponding posterior predictive p-value
+is given by pˆt = .0006. In other words, there is more transitivity than expected, which
+suggests that the inter-organisational network possessed network redundancy.
+To see where in the network the transitivity “resides”—i.e., whether the transitivity is
+concentrated in the core or the periphery of the network or both, we compute the number
+of triangles in which organisations in blocks 1, 2, 3, and 4 are involved. The number of
+triangles in which organisations in blocks 1, 2, 3, and 4 on average are involved turn out to
+be 112.33, 53.45, 4.62, and .08, respectively. Therefore, the transitivity is first and foremost
+where the primary and secondary coordinators are, i.e., in the core of the inter-organisational
+network. These results are in line with Butts et al. (2012), who argued that transitivity more
+often than not is concentrated in the core of the network.
+
+5.5
+
+Network vulnerability
+
+To gain more insight into how vulnerable the inter-organisational network was to additional
+disturbances, we simulate disturbances. We note that, while the impact of the second airplane into the South Tower of the World Trade Center can be thought of as a disturbance,
+22
+
+Figure 8: Sensitivity of inter-organisational network to deleting 1, . . . , 10 organisations from
+block 1, 2, and 3 in terms of statistics S1—S3: 5%, 50%, and 95% quantiles of statistics
+S1—S3 in % plotted against number of deleted organisations; red lines indicate values of
+statistics S1—S3 based on the complete network
+connectedness
+
+2
+
+4
+
+6
+
+8
+
+#deleted organisations per block
+
+10
+
+20
+
+45
+
+30
+
+25
+
+50
+
+35
+
+30
+
+55
+
+40
+
+35
+
+60
+
+45
+
+40
+
+65
+
+45
+
+max(component size)
+
+50
+
+#components
+
+2
+
+4
+
+6
+
+8
+
+#deleted organisations per block
+
+10
+
+2
+
+4
+
+6
+
+8
+
+10
+
+#deleted organisations per block
+
+the cross-sectional data at the disposal do not allow us to assess the impact of the second
+airplane on the disaster response.
+We generate 1,000 disturbances as follows. For 1,000 sample points from the posterior
+distribution of model M4, we sample i = 1, . . . , 10 organisations from block 1, 2, and 3,
+excluding block 4 which is peripheral and thus ignored; note that, by using the posterior
+distribution of blocks, we take the uncertainty about the block memberships of organisations
+into account. We consider the worst-case scenario in which each sampled organisation is
+rendered inoperational by the disturbances and all of its edges are deleted. We assess the
+sensitivity of the inter-organisational network to the disturbances in terms of three statistics:
+(S1) the number of components and (S2) the size of the largest component, as defined above;
+and (S3) Krackhardt’s connectedness (Krackhardt, 1994) defined by 1 − I/ max(I), where
+I is the number of pairs of organisations which are not connected by a finite path and
+
+max(I) = n2 is the maximum of I. The results are in Figure 8, which plots the 5%, 50%,
+
+and 95% quantiles of statistics S1—S3 against the number of deleted organisations per block.
+The results indicate that the inter-organisational network was very vulnerable to deleting
+
+a small number of organisations. Deleting more than 5 primary, secondary, and tertiary
+coordinators can, in the worst case, break the inter-organisational network into many more
+disconnected components. In particular, by deleting 30 out of 717 organisations—i.e., no
+more than 5% of the organisations—Krackhardt’s connectedness can drop by 50%, which
+represents a dramatic reduction in connectedness.
+A possible explanation is that network redundancy is concentrated in the core of the
+inter-organisational network, and reducing the core reduces network redundancy. Therefore,
+while small reductions of the core can be compensated, additional reductions of the core
+
+23
+
+cannot.
+That underscores that the primary, secondary, and tertiary coordinators, while small in
+number, were vital to the inter-organisational network and the disaster response.
+
+6
+
+Discussion
+
+The results suggest that a small number of organisations dominated the inter-organisational
+network that emerged in response to the September 11, 2001 attacks. Some of the dominating
+organisations were supposed to respond to disasters and may be called formal coordinators,
+such as FEMA, while others were emergent coordinators, first and foremost Verizon and the
+Health Care Financing Administration. The emergent coordinators were not supposed to
+respond to the disaster, but may have become involved due to their proximity to the World
+Trade Center, the nature of their business, and the desire of their management to help.
+The number of formal and emergent coordinators was small and had both advantages and
+disadvantages. On the one hand, it had the potential to improve the spread of information
+and advice and increase the coordination of rescue and relief operations, thus improving
+the disaster response. On the other hand, it made the disaster response more vulnerable to
+disturbances. To some extent, the increased vulnerability of the disaster response to disturbances was counterbalanced by network redundancy, which provided alternative channels of
+communication which could be used in the event of disturbances. A potential problem with
+network redundancy, however, is that the network redundancy was concentrated in the core
+of the inter-organisational network, which was made up by key coordinators and associates.
+Therefore, the inter-organisational network was vulnerable to disturbances harming key coordinators, because reducing the operational capabilities of key coordinators tends to reduce
+network redundancy.
+With a view to planning and preparing the response to future disasters, these results
+suggest that authorities are well-advised to support formal coordinators. At the same time,
+formal coordinators cannot be expected to carry the entire burden of the disaster response
+and must be prepared to cooperate with other organisations, first and foremost emergent
+coordinators. Formal coordinators should plan, prepare, and train employees in accordance.
+During disasters, disaster management should take into account the possible presence of
+emergent coordinators and should allocate resources in accordance. After disasters, the role
+of formal coordinators in the disaster response, which may or may not have been in line with
+the expectations of those who fund them, should be evaluated and emergent coordinators
+should be acknowledged. With regard to possible disturbances, network redundancy can
+help to alleviate the impact of disturbances on the disaster response, but the results suggest
+
+24
+
+that key coordinators should be protected against anything that could reduce the operational
+capacity of key coordinators to avoid negative effects on the disaster response.
+Last, the Bayesian framework introduced here seems to be a simple and useful starting
+point in situations where degrees or functions of degrees, such as k-stars, are of primary interest. We have demonstrated that, despite its simple and parsimonious design, the Bayesian
+framework outperforms competing exponential-family models in terms of goodness-of-fit. Indeed, the Bayesian framework was not only superior in terms of goodness-of-fit, but preferable in terms of simplicity and computational burden as well. An excess of transitivity and
+other network characteristics can be tested by using a Bayesian score test as proposed here.
+An additional advantage of the Bayesian framework is that the computing time is O(n K 2 )
+Q
+without covariates, O(n K 2 Ii=1 Ci ) with categorical covariates, where I is the number of
+covariates and Ci is the number of categories of the i-th covariate, and O(n2 K 2 ) with realvalued covariates. In contrast, the computing time of Nowicki and Snijders (2001); Airoldi
+et al. (2008) without covariates is O(n2 K 2 ). As a result, the Bayesian framework—with or
+without categorical covariates—can be applied to networks with n ≫ 200, in contrast to
+competing approaches.
+An R package implementing the Bayesian framework will be made publicly available.
+
+References
+Airoldi, E., D. Blei, S. Fienberg, and E. Xing (2008). Mixed membership stochastic blockmodels. Journal of Machine Learning Research 9, 1981–2014.
+Auf der Heide, E. (1989). Disaster Response: Principles of Preparation and Coordination.
+C. V. Mosby.
+Barab`asi, A. L. and R. Albert (1999). Emergence of scaling in random networks. Science 286,
+509–512.
+Barndorff-Nielsen, O. E. (1978). Information and Exponential Families in Statistical Theory.
+New York: Wiley.
+Bera, A. K. and Y. Bilias (2001a). On some optimality properties of Fisher-Rao score function
+in testing and estimation. Communications in Statistics—Theory and Methods 30, 1533–
+1559.
+Bera, A. K. and Y. Bilias (2001b). Rao’s score, Neyman’s C (α) and Silvey’s LM tests: an
+essay on historical developments and some new results. Journal of Statistical Planning
+and Inference 97, 9–44.
+25
+
+Besag, J. (1974). Spatial interaction and the statistical analysis of lattice systems. Journal
+of the Royal Statistical Society, Series B 36, 192–225.
+Bevc, C. (2010). Working on the Edge: A Study of Multiorganizational Networks in the
+Spatiotemporal Context of the World Trade Center Attacks on September 11, 2001. Ph.
+D. thesis, Department of Sociology, University of Colorado, Boulder.
+Bhamidi, S., G. Bresler, and A. Sly (2008). Mixing time of exponential random graphs.
+In 2008 IEEE 49th Annual IEEE Symposium on Foundations of Computer Science, pp.
+803–812.
+Bickel, P. and A. Chen (2009). A nonparametric view of network models and Newman-Girvan
+and other modularities. In Proceedings of the National Academy of Sciences, Volume 106,
+pp. 21068–21073.
+Blei, D. and M. Jordan (2005). Variational inference for Dirichlet process mixtures. Journal
+of Bayesian Analysis 1, 121–144.
+Borgatti, S. P., M. Everett, and L. Freeman (2002). UCINET. Harvard, MA.
+Butts, C. T. (2011). Bernoulli graph bounds for general random graph models. Sociological
+Methodology 41, 299–345.
+Butts, C. T., R. M. Acton, and C. S. Marcum (2012). Interorganizational collaboration in
+the hurricane Katrina response. Journal of Social Structure 13, 1–37.
+Butts, C. T., M. Petrescu-Prahova, and B. R. Cross (2007). Responder communication
+networks in the world trade center disaster: Implications for modeling of communication
+within emergency settings. Journal of Mathematical Sociology 31, 121–147.
+Caimo, A. and N. Friel (2011). Bayesian inference for exponential random graph models.
+Social Networks 33, 41–55.
+Chang, J. (2011). lda: Collapsed Gibbs sampling methods for topic models. R package version
+1.3.1.
+Chatterjee, S. and P. Diaconis (2012). Estimating and understanding exponential random
+graph models. Annals of Statistics. In press.
+Chib, S. and I. Jeliazkov (2001). Marginal likelihood from the Metropolis–Hastings output.
+Journal of the American Statistical Association 96, 270–281.
+
+26
+
+Comfort, L. K., K. Ko, and A. Zagorecki (2004). Coordination in rapidly evolving disaster
+response systems: The role of information. American Behavioral Scientist 48, 295–313.
+Diaconis, P., S. Chatterjee, and A. Sly (2011). Random graphs with a given degree sequence.
+Annals of Applied Probability 21, 1400–1435.
+Erd¨os, P. and A. R´enyi (1959). On random graphs. Publicationes Mathematicae 6, 290–297.
+Frank, O. and D. Strauss (1986). Markov graphs. Journal of the American Statistical
+Association 81 (395), 832–842.
+Girvan, M. and M. Newman (2002). Community structure in social and biological networks.
+In Proceedings of the National Academy of Sciences, Volume 99, pp. 7821–7826.
+Haas, J. and T. Drabek (1973). Complex Organizations: A Sociological Perspective. Macmillan.
+Handcock, M. (2003). Assessing degeneracy in statistical models of social networks. Technical report, Center for Statistics and the Social Sciences, University of Washington.
+http://www.csss.washington.edu/Papers.
+Handcock, M. S., D. R. Hunter, C. T. Butts, S. M. Goodreau, M. Morris, and P. Krivitsky (2010). R package ergm version 2.2-2: A Package to Fit, Simulate and Diagnose
+Exponential-Family Models for Networks. http://CRAN.R-project.org/package=hergm.
+Handcock, M. S., A. E. Raftery, and J. M. Tantrum (2007). Model-based clustering for social
+networks. Journal of the Royal Statistical Society, Series A 170, 301–354. with discussion.
+Hoff, P. (2005). Bilinear mixed-effects models for dyadic data. Journal of the American
+Statistical Association 100 (469), 286–295.
+Hoff, P. D., A. E. Raftery, and M. S. Handcock (2002). Latent space approaches to social
+network analysis. Journal of the American Statistical Association 97, 1090–1098.
+Holland, P. W. and S. Leinhardt (1981). An exponential family of probability distributions
+for directed graphs. Journal of the American Statistical Association 76 (373), 33–65.
+Hunter, D. R. (2007). Curved exponential family models for social networks. Social Networks 29, 216–230.
+Hunter, D. R., S. M. Goodreau, and M. S. Handcock (2008). Goodness of fit of social network
+models. Journal of the American Statistical Association 103 (481), 248–258.
+27
+
+Hunter, D. R. and M. S. Handcock (2006). Inference in curved exponential family models
+for networks. Journal of Computational and Graphical Statistics 15, 565–583.
+Ishwaran, H. and L. F. James (2001). Gibbs sampling methods for stick-breaking priors.
+Journal of the American Statistical Association 96 (453), 161–173.
+Jonasson, J. (1999). The random triangle model. Journal of Applied Probability 36, 852–876.
+Jones, J. H. and M. Handcock (2004). Likelihood-based inference for stochastic models of
+sexual network formation. Population Biology 65, 413–422.
+Kass, R. E. and A. E. Raftery (1995). Bayes factors. Journal of the American Statistical
+Association 90, 773–795.
+Koschade, S. (2006). A social network analysis of Jemaah Islamiyah: The applications to
+counter-terrorism and intelligence. Studies in Conflict and Terrorism 29, 559–575.
+Koskinen, J. H., G. L. Robins, and P. E. Pattison (2010). Analysing exponential random
+graph (p-star) models with missing data using Bayesian data augmentation. Statistical
+Methodology 7 (3), 366–384.
+Krackhardt, D. (1994). Graph Theoretical Dimensions of Informal Organizations, pp. 89–
+111. Hillsdale, NJ: Lawrence Erlbaum.
+Lehmann, E. L. and J. P. Romano (2005). Testing Statistical Hypotheses (3rd ed.). New
+York: Springer.
+Leskovec, J., K. Lang, A. Dasgupta, and M. Mahoney (2008). Community structure in large
+networks: Natural cluster sizes and the absence of large well-defined clusters. CoRR,
+abs/0810.1355 .
+Liu, J. S. (2008). Monte Carlo Strategies in Scientific Computing. New York: Springer.
+McGrory, C. A. and D. M. Titterington (2006). Variational approximations in Bayesian
+model selection for finite mixture distributions. Computational Statistics and Data Analysis 51, 5352–5367.
+Meng, X.-L. (1994). Posterior predictive p-values. Annals of Statistics 22, 1142–1160.
+Newman, M. E. J., S. H. Strogatz, and D. J. Watts (2001). Random graphs with arbitrary
+degree distributions and their applications. Physical Reviews 64.
+
+28
+
+Nowicki, K. and T. A. B. Snijders (2001). Estimation and prediction for stochastic blockstructures. Journal of the American Statistical Association 96 (455), 1077–1087.
+Pearson, K. (1900). On the criterion that a given system of observations from the probable
+in the case of a correlated system of variables is such that it can be reasonably supposed
+to have arisen from random sampling. Philosophical Magazine 50, 157–175.
+Petrescu-Prahova, M. and C. Butts (2008). Emergent coordinators in the World Trade
+Center Disaster. International Journal of Mass Emergencies and Disasters 28, 133–168.
+Rao, C. R. (1948). Large sample tests of statistical hypotheses concerning several parameters
+with applications to problems of estimation. Proceedings of the Cambridge Philosophical
+Society 44, 50–57.
+Rao, C. R. and S. J. Poti (1946). On locally most powerful tests when alternatives are one
+sided. Sankhy¯
+a 7, 439.
+Richardson, S. and P. J. Green (1997). On Bayesian analysis of mixtures with an unknown
+number of components. Journal of the Royal Statistical Society, Series B 59, 731–792.
+Rinaldo, A., S. E. Fienberg, and Y. Zhou (2009). On the geometry of discrete exponential
+families with application to exponential random graph models. Electronic Journal of
+Statistics 3, 446–484.
+Schweinberger, M. (2011). Instability, sensitivity, and degeneracy of discrete exponential
+families. Journal of the American Statistical Association 106 (496), 1361–1370.
+Schweinberger, M. and T. A. B. Snijders (2003). Settings in social networks: A measurement
+model. In R. M. Stolzenberg (Ed.), Sociological Methodology, Volume 33, Chapter 10, pp.
+307–341. Boston & Oxford: Basil Blackwell.
+Snijders, T. A. B. (2002). Markov chain Monte Carlo estimation of exponential random
+graph models. Journal of Social Structure 3, 1–40.
+Snijders, T. A. B. and K. Nowicki (2007).
+http://www.gmw.rug.nl/ stocnet/.
+
+Manual for BLOCKS version 1.8.
+
+Snijders, T. A. B., P. E. Pattison, G. L. Robins, and M. S. Handcock (2006). New specifications for exponential random graph models. Sociological Methodology 36, 99–153.
+Stephens, M. (2000). Dealing with label-switching in mixture models. Journal of the Royal
+Statistical Society, Series B 62, 795–809.
+29
+
+Strauss, D. (1986). On a general class of models for interaction. SIAM Review 28, 513–527.
+Tallberg, C. (2005). A Bayesian approach to modeling stochastic blockstructures with covariates. Journal of Mathematical Sociology 29, 1–23.
+Tierney, K. J. and J. Trainor (2004). Networks and resilience in the world trade center
+disaster. In Research Progress and Accomplishments 2003–2004, pp. 157–172. Buffalo,
+NY: State University of New York at Buffalo, Multidisciplinary Center for Earthquake
+Engineering Research.
+Tierney, L. (1994). Markov chains for exploring posterior distributions. The Annals of
+Statistics 22, 1701–1728.
+Topper, C. M. and K. Carley (1999). A structural perspective on the emergence of network
+organizations. Journal of Mathematical Sociology 24 (1), 67–96.
+van Duijn, M. A. J., T. A. B. Snijders, and B. J. H. Zijlstra (2004). P2: a random effects
+model with covariates for directed graphs. Statistica Neerlandica 58, 234–254.
+Wasserman, S. and K. Faust (1994). Social Network Analysis: Methods and Applications.
+Cambridge: Cambridge University Press.
+
+30
+
+

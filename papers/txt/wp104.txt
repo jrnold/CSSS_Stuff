@@ -1,0 +1,1153 @@
+Separable covariance arrays via the Tucker product, with
+applications to multivariate relational data
+Peter D. Hoﬀ
+
+1
+
+Working Paper no. 104
+Center for Statistics and the Social Sciences
+University of Washington
+Seattle, WA 98195-4322.
+August 12, 2010
+
+1
+
+Departments of Statistics and Biostatistics , University of Washington, Seattle, Washington 98195-4322.
+
+Web: http://www.stat.washington.edu/hoff/.
+
+Abstract
+Modern datasets are often in the form of matrices or arrays, potentially having correlations along
+each set of data indices. For example, data involving repeated measurements of several variables
+over time may exhibit temporal correlation as well as correlation among the variables. A possible
+model for matrix-valued data is the class of matrix normal distributions, which is parametrized by
+two covariance matrices, one for each index set of the data. In this article we describe an extension
+of the matrix normal model to accommodate multidimensional data arrays, or tensors. We generate a class of array normal distributions by applying a group of multilinear transformations to an
+array of independent standard normal random variables. The covariance structures of the resulting
+class take the form of outer products of dimension-specific covariance matrices. We derive some
+properties of these covariance structures and the corresponding array normal distributions, discuss
+maximum likelihood and Bayesian estimation of covariance parameters and illustrate the model in
+an analysis of multivariate longitudinal network data.
+Some key words: Gaussian, matrix normal, multiway data, network, tensor, Tucker decomposition.
+
+1
+
+Introduction
+
+This article provides a construction of and estimation for a class of covariance models and Gaussian
+probability distributions for array data consisting of multi-indexed values Y = {yi1 , . . . , yiK :
+ik ∈ {1, . . . , mk }, k = 1, . . . , K}. Such data have become common in many scientific disciplines,
+
+including the social and biological sciences. Researchers often gather relational data measured
+on pairs of units, where the population of units may consist of people, genes, websites or some
+other set of objects. Data on a single relational variable is often represented by a “sociomatrix”
+Y = {yi,j , i ∈ {1, . . . , m}, j ∈ {1, . . . , m}, i �= j}, a square matrix with an undefined diagonal, where
+yi,j represents the relationship between nodes i and j.
+
+Multivariate relational data include multiple relational measurements on the same node set,
+possibly gathered under diﬀerent conditions or at diﬀerent time points. Such data can be represented as a multiway array. For example, in this article we will analyze data on trade of several
+commodity classes between a set of countries over several years. These data can be represented
+as a four-way array Y = {yi,j,k,t }, where yi,j,k,t records the volume of exports of commodity k
+
+from country i to country j in year t. For such data it is often of interest to identify similarities
+or correlations among data corresponding to the objects of a given index set. For example, one
+may want to identify nodes of a network that behave similarly across levels of the other factors of
+the array. For temporal datasets it may be important to describe correlations among data from
+adjacent time points. In general, it may be desirable to estimate or account for dependencies along
+each index set of the array.
+For matrix valued data, such considerations have led to the use of separable covariance estimates,
+whereby the covariance of a population of matrices is estimated as being Cov[vec(Y)] = Σ2 ⊗ Σ1 .
+In this parameterization Σ1 and Σ2 represent covariances among the rows and columns of the
+
+matrices, respectively. Such a covariance model may provide a stable and parsimonious alternative
+to an unrestricted estimate of Cov[vec(Y)], the latter being unstable or even unavailable if the
+dimensions of the sample data matrices are large compared to the sample size. The family of
+matrix normal distributions with separable covariance matrices is studied in Dawid [1981], and an
+iterative algorithm for maximum likelihood estimation is given by Dutilleul [1999]. Testing various
+hypotheses regarding the separability of the covariance structure, or the form of the component
+matrices, is considered in Lu and Zimmerman [2005], Roy and Khattree [2005], Mitchell et al. [2006]
+among others. Beyond the matrix-variate case, Galecki [1994] considers a separable covariance
+model for three-way arrays, but where the component matrices are assumed to have compound
+symmetry or an autoregressive structure.
+In this article we show that the class of separable covariance models for random arrays of
+arbitrary dimension can be generated with a type of multilinear transformation known as the Tucker
+product [Tucker, 1964, Kolda, 2006]. Just as a zero-mean multivariate normal vector with a given
+1
+
+covariance matrix can be represented as a linear transformation of a vector of independent, standard
+normal entries, in Section 2 we show that a normal array with separable covariance structure can be
+represented by a multilinear transformation of an array of independent, standard normal entries.
+As a result, the calculations involved in obtaining maximum likelihood and Bayesian estimates
+are made simple via some basic tools of multilinear algebra. In Section 3 we adapt the iterative
+algorithm of Dutilleul [1999] to the array normal model, and provide a conjugate prior distribution
+and posterior approximation algorithm for Bayesian inference. Section 4 presents an example data
+analysis of trade volume data between pairs of 30 countries in 6 commodity types over 10 years. A
+discussion of model extensions and directions for further research follows in Section 5.
+
+2
+
+Separable covariance via array-matrix multiplication
+
+2.1
+
+Array notation and basic operations
+
+An array of order K, or K-array, is a map from the product space of K index sets to the real
+numbers. The diﬀerent index sets are referred to as the modes of the array. The dimension vector
+of an array gives the number of elements in each index set. For example, for a positive integer m1 , a
+vector in Rm1 is a one-array with dimension m1 . A matrix in Rm1 ×m2 is a two-array with dimension
+(m1 , m2 ). A K-array Z with dimension (m1 , . . . , mK ) has elements {zi1 ,...,iK : ik ∈ {1, . . . , mk }, k =
+1, . . . , K}.
+
+Array unfolding refers to the representation of an array by an array of lower order via combinations of various index sets of an array. A useful unfolding is the k-mode matrix unfolding, or
+k-mode matricization [De Lathauwer et al., 2000], in which a K-array Z is reshaped to form a
+�
+matrix Z(k) with mk rows and j:j�=k mk columns. Each column corresponds to the entries of Z in
+
+which the kth index ik varies from 1 to mk and the remaining indices are fixed. The assignment
+of the remaining indices {ij : j �= k} to columns of Z(k) is determined by the following ordering
+
+on index sets: Letting i = (i1 , . . . , iK ) and j = (j1 , . . . , jK ) be two sets of indices, we say i < j if
+ik < jk for some k and il ≤ jl for all l > k. In terms of ordering the columns of the matricization,
+
+this means that the index corresponding to a lower-numbered mode “moves faster” than that of a
+higher-numbered mode.
+De Lathauwer et al. [2000] define an array-matrix product via the usual matrix product as
+applied to matricizations. The k-mode product of an m1 × · · · × mK array Z and a n × mk matrix
+A is obtained by forming the m1 × · · · × mk−1 × n × mk+1 × · · · × mK array from the inversion of the
+
+k-mode matricization operation on the matrix AZ(k) . The resulting array is denoted by Z ×k A.
+Letting F and G be matrices of the appropriate sizes, important properties of this product include
+the following:
+• (Z ×j F) ×k G = (Z ×k G) ×j F = Z ×j F ×k G
+2
+
+• (Z ×j F) ×j G = Z ×j (GF)
+• Z ×j (F + G) = Z ×j F + Z ×j G.
+[De Lathauwer et al., 2000]. A useful extension of the k-mode product is the product of an array
+Z with each matrix in a list A = {A1 , . . . , AK } in which Ak ∈ Rnk ×mk , given by
+Z × A = Z ×1 A1 ×2 · · · ×K AK .
+This has been called the “Tucker operator” or “Tucker product”, [Kolda, 2006], named after the
+Tucker decomposition for multiway arrays [Tucker, 1964, 1966], and is used for a type of multiway
+singular value decomposition [De Lathauwer et al., 2000]. A useful calculation involving the Tucker
+operator is that if Y = Z × A, then
+Y(k) = Ak Z(k) (AK ⊗ · · · ⊗ Ak+1 ⊗ Ak−1 ⊗ · · · ⊗ A1 ).
+Other properties of the Tucker product can be found in De Lathauwer et al. [2000] and Kolda
+[2006].
+
+2.2
+
+Separable covariance via the Tucker product
+
+Recall that the general linear group GLm of nonsingular real matrices A acts transitively on the
+space Sm of positive definite m × m matrices Σ via the transformation AΣAT . It is convenient to
+think of Sm as the set of covariance matrices {Cov[Az] : A ∈ GLm } where z is an m-variate mean-
+
+zero random vector with identity covariance matrix. Additionally, if z is a vector of independent
+standard normal random variables, then the distributions of y = Az as A ranges over GLm
+constitute the family of mean-zero vector-valued multivariate normal distributions, which we write
+as y ∼ vnorm(0, Σ).
+
+Analogously, let A = {A1 , A2 } ∈ GLm1 ,m2 ≡ GLm1 × GLm2 , and let Z be a m1 × m2 random
+
+matrix with uncorrelated mean-zero variance-one entries. The covariance structure of the random
+
+matrix Y = A1 ZAT2 can be described by the m1 × m1 × m2 × m2 covariance array Cov[Y] for which
+the (i1 , i2 , j1 , j2 ) entry is equal to Cov[yi1 ,j1 , yi2 ,j2 ]. It is straightforward to show that Cov[Y] =
+
+Σ1 ◦ Σ2 , where Σj = Aj ATj , j = 1, 2 and “◦” denotes the outer product. This is referred to as a
+
+“separable” covariance structure, in which the covariance among elements of Y can be described by
+the row covariance Σ1 and the column covariance Σ2 . Letting “tr()” be matrix trace and “⊗” the
+Kronecker product, well-known alternative ways to describe the covariance structure are as follows:
+E[YYT ] = Σ1 × tr(Σ2 )
+E[YT Y] = Σ2 × tr(Σ1 )
+
+Cov[vec(Y)] = Σ2 ⊗ Σ1 .
+3
+
+(1)
+
+As {A1 , A2 } ranges over GLm1 ,m2 the covariance array of Y = A1 ZAT2 ranges over the space of
+
+separable covariance arrays Sm1 ,m2 = {Σ1 ◦ Σ2 : Σ1 ∈ Sm1 , Σ2 ∈ Sm2 } [Browne and Shapiro, 1991].
+
+If we additionally assume that the elements of Z are independent standard normal random variables,
+then the distributions of {Y = A1 ZAT2 : {A1 , A2 } ∈ GLm1 ,m2 } constitute what are known as the
+mean-zero matrix normal distributions [Dawid, 1981], which we write as Y ∼ mnorm(0, Σ1 ◦ Σ2 ).
+Thinking of the matrices Y and Z as two-way arrays, the bilinear transformation Y = A1 ZAT2
+
+can alternatively be expressed using array-matrix multiplication as Y = Z ×1 A1 ×2 A2 = Z × A.
+Extending this idea further, let Z be an m1 × · · · × mK random array with uncorrelated mean-zero
+
+variance-one entries, and define GLm1 ,...,mK to be the set of lists of matrices A = {A1 , . . . , AK }
+with Ak ∈ GLmk . The Tucker product Z × A induces a transformation on the covariance structure
+of Z which shares many features of the analogous bilinear transformation for matrices:
+
+˜ are as above, and let Σk = Ak AT . Then
+Proposition 2.1 Let Y = Z × A, where Z and A
+k
+1. Cov[Y] = Σ1 ◦ · · · ◦ ΣK ,
+2. Cov[vec(Y)] = ΣK ⊗ · · · ⊗ Σ1 ,
+3. E[Y(k) YT(k) ] = Σk ×
+
+�
+
+j:j�=k
+
+tr(Σj ).
+
+The following result highlights the relationship between array-matrix multiplication and separable covariance structure:
+Proposition 2.2 If Cov[Y] = Σ1 ◦ · · · ◦ ΣK and X = Y ×k G, then
+Cov[X] = Σ1 ◦ · · · ◦ Σk−1 ◦ (GΣk GT ) ◦ Σk+1 ◦ · · · ◦ ΣK .
+This indicates that the class of separable covariance arrays can be obtained by repeated singlemode array-matrix multiplications starting with an array Z of uncorrelated entries, i.e. for which
+Cov[Z] = Im1 ◦ · · · ◦ ImK . The class of separable covariance arrays is therefore closed under this
+group of transformations.
+
+3
+3.1
+
+Covariance estimation with array normal distributions
+Construction of an array normal class of distributions
+
+Normal probability distributions are useful statistical modeling tools that can represent mean and
+covariance structure. A family of normal distributions for random arrays with separable covariance
+structure can be generated as in the vector and matrix cases: Let Z be an array of independent
+standard normal entries, and let Y = M + Z × A with M ∈ Rm1 ×···×mK and A ∈ GLm1 ,...,mK .
+We say that Y has an array normal distribution, denoted Y ∼ anorm(M, Σ1 ◦ · · · ◦ ΣK ), where
+Σk = Ak ATk .
+
+4
+
+Proposition 3.1 The probability density of Y is given by
+�K
+�
+�
+p(Y|M, Σ1 , . . . , ΣK ) = (2π)−m/2
+|Σk |−m/(2mk ) × exp(−||(Y − M) × Σ−1/2 ||2 /2),
+k=1
+
+�K
+
+−1
+2
+mk , Σ−1/2 = {A−1
+1 , . . . , AK } and the array norm ||Z|| = �Z, Z� is derived from
+�
+�
+the inner product �X, Y� = i1 · · · iK xi1 ,...,iK yi1 ,...,iK .
+
+where m =
+
+1
+
+iid
+
+Also important for statistical modeling is the idea of replication. If Y1 , . . . , Yn ∼ anorm(M, Σ1 ◦
+
+· · · ◦ ΣK ), then the array m1 × · · · × mK × n array formed by stacking the Yi ’s together also has
+iid
+
+an array normal distribution: If Y1 , . . . , Yn ∼ anorm(M, Σ1 ◦ · · · ◦ ΣK ), then
+Y = (Y1 , . . . , YmK ) ∼ anorm(M ◦ 1n , Σ1 ◦ · · · ◦ ΣK ◦ In ).
+
+This can be shown by computing the joint density of Y1 , . . . , Yn and comparing it to the array
+normal density.
+An important feature of the multivariate normal distribution is that it provides a conditional
+model of one set of variables given another. Recall, if y ∼ vnorm(µ, Σ) then the conditional
+distribution of one subset of elements yb of y given another ya is vnorm(µb|a , Σb|a ), where
+µb|a = µ[b] + Σ[b,a] (Σ[a,a] )−1 (ya − µ[a] )
+
+Σb|a = Σ[b,b] − Σ[b,a] (Σ[a,a] )−1 Σ[a,b] ,
+
+with Σ[b,a] , for example, being the matrix made up of the entries in the rows of Σ corresponding
+to b and columns corresponding to a.
+A similar result holds for the array normal distribution: Let a and b be non-overlapping subsets
+of {1, . . . , m1 }. Let Yb = {yi1 ,...,iK : i1 ∈ b} and Ya = {yi1 ,...,iK : i1 ∈ a} be arrays of dimension
+m1b × m2 × · · · × mK and m1a × m2 × · · · × mK , where m1a and m1b are the lengths of a and b
+
+respectively. The arrays Ya and Yb are made up of non-overlapping “slices” of the array Y along
+the first mode.
+Proposition 3.2 Let Y ∼ anorm(M, Σ1 ◦ · · · ◦ ΣK ). The conditional distribution of Yb given Ya
+is array normal with mean Mb|a and covariance Σ1,b|a ◦ Σ2 ◦ · · · ◦ ΣK , where
+Mb|a = Mb + (Ya − Ma ) ×1 (Σ1[b,a] (Σ1[a,a] )−1 )
+Σb|a = Σ1[b,b] − Σ1[b,a] (Σ1[a,a] )−1 Σ1[a,b] .
+
+Since the conditional distribution is also in the array normal class, successive applications of Proposition 3.2 can be used to obtain the conditional distribution of any subset of the elements of Y of
+the form {yi1 ,...,iK : ik ∈ bk }, conditional upon the other elements of the array.
+5
+
+3.2
+
+Estimation for the array normal model
+
+Maximum likelihood estimation:
+
+iid
+
+Let Y1 , . . . , Yn ∼ anorm(M, Σ1 ◦ · · · ◦ ΣK ), or equivalently,
+
+Y ∼ anorm(M ◦ 1, Σ1 ◦ · · · ◦ ΣK ◦ In ). For any value of Σ = {Σ1 , . . . , ΣK }, the value of M that
+maximizes p(Y|M, Σ) is the value that minimizes the residual mean squared error:
+n
+
+n
+
+1�
+||(Yi − M) × Σ−1/2 ||2 =
+n
+i=1
+
+1�
+�Yi − M, (Yi − M) × Σ−1 �
+n
+i=1
+
+¯ × Σ−1 � + c1 (Y, Σ)
+= �M, M × Σ−1 � − 2�M, Y
+¯ (M − Y)
+¯ × Σ−1 � + c2 (Y, Σ)
+= �M − Y,
+
+¯ × Σ−1/2 ||2 + c2 (Y, Σ).
+= ||(M − Y)
+¯ = � Yi /n, and so M
+ˆ =Y
+¯ is the MLE of M. The MLE of Σ
+This is uniquely minimized in M by Y
+does not have a closed form expression. However, it is possible to maximize p(Y|M, Σ) in Σk , given
+values of the other covariance matrices. Letting E = Y − M ◦ 1n , the likelihood as a function of Σk
+−1/2
+
+can be expressed as p(Y|M, Σ) ∝ |Σk |−nm/(2mk ) exp{−||E × {Σ1
+
+−1/2
+
+, . . . , ΣK
+
+, In }||2 /2}. Since
+
+for any array Z and mode k we have ||Z||2 = ||Z(k) ||2 = tr(Z(k) ZT(k) ), the norm in the likelihood
+can be written as
+
+˜ ×k Σ
+||E × Σ−1/2 ||2 = ||E
+k
+
+−1/2 2
+
+=
+=
+
+˜ = E×{Σ
+where E
+1
+
+−1/2
+
+−1/2
+
+||
+
+−1/2 ˜
+˜ T −1/2 )
+tr(Σk E
+(k) E(k) Σk
+˜ ˜T
+tr(Σ−1
+k E(k) E(k) ),
+
+−1/2
+
+−1/2
+
+, . . . , Σk−1 , Ik , Σk+1 , . . . , ΣK , In } is the residual array standardized along
+˜ (k) E
+˜ T , we have
+each dimension except k. Writing Sk = E
+(k)
+p(Y|M, Σ) ∝ |Σk |−nm/(2mk ) etr{−Σ−1
+k Sk /2}
+as a function of Σk , and so if Sk is of full rank then the unique maximizer in Σk is given by
+ˆ k = Sk /nk , where nk = nm/mk = n × �
+Σ
+j�=k mj is the number of columns of Y(k) , i.e. the
+“sample size” for the kth mode. This suggests the following iterative algorithm for obtaining the
+¯ ◦ 1n and given an initial value of Σ, for each k ∈ {1, . . . , K}
+MLE of Σ: Letting E = Y − Y
+˜ = E × {Σ−1/2 , . . . , Σ−1/2 , Ik , Σ−1/2 , . . . , Σ−1/2 , In } and Sk = E
+˜ (k) E
+˜T ;
+1. compute E
+(k)
+1
+K
+k−1
+k+1
+�
+2. set Σk = Sk /nk , where nk = n × j�=k mj .
+
+Each iteration increases the likelihood, and so the procedure can be seen as a type of block coordinate descent algorithm [Tseng, 2001]. For the matrix normal case, this algorithm was proposed
+by Dutilleul [1999] and is sometimes called the “flip-flop” algorithm. Note that the scales of
+{Σ1 , . . . , ΣK } are not separately identifiable from the likelihood: Replacing Σ1 and Σ2 with cΣ1
+
+and Σ2 /c yield the same probability distribution for Y, and so the scales of the MLEs will depend
+on the initial values.
+6
+
+Bayesian estimation:
+
+Estimation of high-dimensional parameters often benefits from a com-
+
+plexity penalty, e.g. a penalty on the magnitude of the parameters. Such penalties can often be
+expressed as prior distributions, and so penalized likelihood estimation can be done in the context
+of Bayesian inference. With this in mind, we consider semiconjugate prior distributions for the
+array normal model, and their associated posterior distributions.
+iid
+
+A conjugate prior distribution for the for the multivariate normal model y1 . . . yn ∼ vnorm(µ, Σ)
+
+is given by p(µ, Σ) = p(µ|Σ)p(Σ), where p(Σ) is an inverse-Wishart density and p(µ|Σ) is multi-
+
+variate normal density with prior mean µ0 and prior (conditional) covariance Σ/κ0 . The parameter
+κ0 can be thought of as a “prior sample size,” as the the prior covariance Σ/κ0 for µ is the same as
+that of a sample average based on κ0 observations. Under this prior distribution, the conditional
+distribution of µ given the data and Σ is multivariate normal, and the condition distribution of Σ
+given the data is inverse-Wishart. An analogous result holds for the array normal model: If
+M|Σ ∼ anorm(M0 , Σ1 ◦ · · · ◦ ΣK /κ0 )
+Σk ∼ inverse-Wishart(S−1
+0k , ν0k )
+
+and Σ1 , . . . , ΣK are independent, then straightforward calculations show that
+¯
+M|Y, Σ ∼ anorm([κ0 M0 + nY]/[κ
+0 + n], Σ1 ◦ · · · ◦ ΣK /[κ0 + n])
+
+Σk |Y, Σ−k ∼ inverse-Wishart([S0k + Sk + R(k) RT(k) ]−1 , ν0k + nk ),
+
+where Sk and nk are as in the coordinate descent algorithm for maximum likelihood estimation,
+�
+−1/2
+−1/2
+−1/2
+−1/2
+n ¯
+and R = κκ00+n
+(Y − M0 ) × {Σ1 , . . . , Σk−1 , I, Σk+1 , . . . , ΣK }.
+
+As noted above, the scales of {Σ1 , . . . , ΣK } are not separately identifiable from the likelihood.
+
+This makes the prior and posterior distributions of the scales of the Σk ’s diﬃcult to specify or
+
+interpret. As a remedy, we consider reparameterizing the prior distribution for Σ1 , . . . , ΣK to
+include a parameter representing the total variance in the data. Parameterizing S0k = γΣ0k for
+each k ∈ {1, . . . , K}, the prior expected total variation of Yi , tr(Cov[vec(Yi )]), is
+E[tr(Cov[vec(Y)])] = E[tr(ΣK ⊗ · · · ⊗ Σ1 )]
+= E[
+=
+
+K
+�
+
+tr(Σk )]
+
+k=1
+K
+�
+
+tr(E[Σk ]) = γ K
+
+k=1
+
+K
+�
+
+k=1
+
+tr(Σ0k )/(ν0k − mk − 1).
+
+A simple default choice for Σ0k and ν0k would be Σ0k = Imk /mk and ν0,k = mk + 2, for which
+E[tr(Σk )] = γ and the expected value for the total variation is γ K . Given prior expectations about
+the total variance, the value of γ could be set accordingly. Alternatively, a prior distribution could
+7
+
+be placed on γ: If γ ∼ gamma(a, b) with prior mean a/b, then conditional on Σ1 , . . . , ΣK , we have
+�
+�
+�
+�
+γ|Σ1 , . . . ΣK ∼ gamma a +
+ν0k mk /2, b +
+tr(Σ−1
+Σ
+)/2
+.
+0k
+k
+The full conditional distributions of {M, Σ1 , . . . , ΣK , γ} can be used to implement a Gibbs
+
+sampler, in which each parameter is sampled in turn from its full conditional distribution, given
+the current values of the other parameters. This algorithm generates a Markov chain having a
+stationary density equal to p(M, Σ1 , . . . , ΣK , γ|Y), samples from which can be used to approximate
+posterior quantities of interest. Such an algorithm is implemented in the data analysis example in
+the next section.
+
+4
+
+Example: International trade
+
+The United Nations gathers yearly trade data between countries of the world and disseminates this
+information at the UN Comtrade website http://comtrade.un.org/. In this section we analyze
+trade among pairs of countries over several years and in several diﬀerent commodity categories.
+Specifically, the data take the form of a four-mode array Y = {yi,j,k,t } where
+• i ∈ {1, . . . , 30 = m} indexes the exporting nation;
+• j ∈ {1, . . . , 30 = m} indexes the exporting nation;
+• k ∈ {1, . . . , 6 = p} indexes the commodity type;
+• t ∈ {1, . . . , 10 = n} indexes the year.
+The thirty countries were selected to make the data as complete as possible, resulting in a set of
+mostly large or developed countries with high gross domestic products and trade volume. The six
+commodity types include (1) chemicals, (2) inedible crude materials not including fuel, (3) food
+and live animals, (4) machinery and transport equipment, (5) textiles and (6) manufactured goods.
+The years represented in the dataset include 1996 through 2005. As trade between countries is
+relatively stable across years, we analyze the yearly change in log trade values, measured in 2000
+US dollars. For example, y1,2,1,1 is the log-dollar increase in the value of chemicals exported from
+Australia to Austria from 1995 to 1996. We note that exports of a country to itself are not defined,
+so yi,i,j,t is “not available” and can be treated as missing at random.
+We model these data as Y = M ◦ 1n + E , where M is an m × m × p array of means specific to
+
+exporter-importer-commodity combinations, and E is an m×m×p×n array of residuals. Of interest
+here is how the deviations E of the data from the mean may be correlated across exporters, importers
+and commodities. One possible model for this residual variation would be to treat the p-dimensional
+residual vectors corresponding to each of the m × (m − 1) × n = 8700 exporter-importer-year
+8
+
+combinations as independent samples from a p-variate multivariate normal distribution. However,
+to accommodate potential temporal correlation (beyond that already accounted for by taking Y
+to be the lagged log trade values), the p × n residual matrices corresponding to each of the m ×
+(m − 1) = 870 exporter-importer pairs could be modeled as independent samples from a matrix
+
+normal distribution, with two separate covariance matrices representing commodity and temporal
+correlation. This latter model can be described by an array normal model as
+Y ∼ anorm(M ◦ 1n , Im ◦ Im ◦ Σ3 ◦ Σ4 ),
+
+(2)
+
+where Σ3 and Σ4 describe covariance among commodities and time points, respectively. However,
+it is natural to consider the possibility that there will be correlation of residuals attributable to
+exporters and importers. For example, countries with similar economies may exhibit correlations
+in their trade patterns. With this in mind, we will also fit the following model:
+Y ∼ anorm(M ◦ 1n , Σ1 ◦ Σ2 ◦ Σ3 ◦ Σ4 ).
+
+(3)
+
+We consider Bayesian analysis for both of these models based on the prior distributions described
+at the end of the last section. The prior distribution for each Σk matrix being estimated is given
+by Σk ∼ inverse-Wishart(mk Imk /γ, mk + 2), with the hyperparameter γ set so that γ K = ||Y −
+¯ ◦ 1n ||2 . As described in the previous section, this weakly centers the total variation of Y under
+Y
+the model around the the empirically observed value, similar to an empirical Bayes approach or
+
+unit information prior distribution [Kass and Wasserman, 1995]. The prior distribution for M
+conditional on Σ is M ∼ anorm(0, Σ1 ◦ Σ2 ◦ Σ3 ), where Σ1 = Σ2 = Im for model 2.
+
+Posterior distributions of parameters for both model 2 and 3 can be obtained using the results of
+
+the previous section with minor modifications. Under both models the m×m×p arrays Y1 , . . . , Yn
+corresponding to the n = 10 time-points are not independent, but correlated according to Σ4 . The
+full conditional distribution of M is still given by an array normal distribution, but the mean and
+variance are now as follows:
+E[M|Y, Σ] =
+
+�
+˜i
+κ0 M0 + ni=1 ci Y
+� 2
+κ0 + ci
+
+Var[M|Y, Σ] = Σ1 ◦ Σ2 ◦ Σ3 ◦ Σ4 /(κ0 +
+
+�
+
+c2i )
+
+˜ 1, . . . , Y
+˜ n are the m × m × p arrays obtained from the first three modes of the transformed
+where Y
+˜ = Y ×4 Σ−1/2 , and c1 , . . . , cn are the elements of the vector c = Σ−1/2 1. Additionally,
+array Y
+4
+4
+the time dependence makes it diﬃcult to integrate p(M, Σ|Y) as was possible in the independent
+
+case. As a result, we use a Gibbs sampler that proceeds by sampling Σk from its full conditional
+distribution p(Σk |Y, M, Σ−k ) as opposed to the p(Σk |Y, Σ−k ) as before. This full conditional
+distribution is still a member of the inverse-Wishart family:
+
+Σk |Y, M, Σ−k ∼ inverse-Wishart([S0k + E(k) ET(k) + R(k) RT(k) ]−1 , ν0k + nk × [1 + 1/n]),
+9
+
+−1/2
+
+where E(1) , for example, is the k-mode matricization of (Y − M ◦ 1n ) × {Im , Σ2
+and R(1) is the k-mode matricization of (M − M0 ) ×
+
+−1/2
+−1/2
+{I, Σ2 , Σ3 }.
+
+−1/2
+
+, Σ3
+
+−1/2
+
+, Σ4
+
+}
+
+Separate Markov chains for each of the two models were generated using 205,000 iterations of
+
+the Gibbs sampler discussed above. The first 5,000 iterations were dropped from each chain to
+allow for convergence to the stationary distribution, and parameter values were saved every 40th
+iteration thereafter, resulting in 5,000 parameter values with which to approximate the posterior
+distributions. Mixing of the Markov chain was assessed by computing the “eﬀective sample size”,
+or equivalent number of independent simulations, of several summary parameters. For the full
+model, eﬀective sample sizes of γ0 = tr(Σ1 ⊗ · · · ⊗ Σ4 ), γ1 = tr(Σ1 ), . . . , γ4 = tr(Σ4 ) were computed
+to be 2,545, 904, 960, 548 and 1,734. Note that γ1 , . . . , γ4 are not separately identifiable from the
+data, resulting in poorer mixing than γ0 , which is identifiable. For the reduced model, the eﬀective
+
+0
+
+5
+
+10
+t1(Y)
+
+15
+
+density
+6
+8
+4
+0
+
+0.0
+
+0.0
+
+2
+
+0.2
+
+0.4
+
+0.5
+
+density
+
+density
+0.6 0.8
+
+1.0
+
+10
+
+1.0
+
+12
+
+1.2
+
+1.5
+
+14
+
+sample sizes of γ0 , γ3 and γ4 were 4,281, 1,194 and 1,136.
+
+0
+
+2
+
+4
+
+6
+t2(Y)
+
+8
+
+10
+
+0.0
+
+0.2
+
+0.4
+0.6
+t3(Y)
+
+0.8
+
+Figure 1: Posterior predictive distributions for summary statistics. The gray density represents is
+under the reduced model, the black under the full. The vertical dashed line is the observed value
+of the statistic.
+The fits of the two models can be compared using posterior predictive evaluations [Rubin, 1984]:
+To evaluate the fit of a model, the observed value of a summary statistic t(Y) can be compared
+˜ for which Y
+˜ is simulated from the posterior predictive distribution. A discrepancy
+to values t(Y)
+˜ indicates that the model is not capturing the aspect of
+between t(Y) and the distribution of t(Y)
+the data represented by t(·). For illustration, we use such checks here to evaluate evidence that Σ1
+and Σ2 are not equal to the identity, or equivalently, that model 1 exhibits lack of fit as compared
+to model 2. To obtain a summary statistic evaluating evidence of a non-identity covariance matrix
+¯ and then
+for Σ1 , we first subtract the sample mean from the data array to obtain E = Y − Y,
+compute S1 = (E(1) ET(1) ). The m×m matrix S1 is a sample measure of covariance among exporting
+˜ 1 = S1 /tr(S1 ), and compare it to a scaled version of
+countries. We then obtain a scaled version S
+10
+
+1.4
+1.2
+
+3.5
+
+1.3
+
+4
+
+1.1
+
+2.5
+
+3
+
+0.9
+
+1.5
+
+1.0
+
+2
+
+0.5
+
+1
+
+25
+
+SINKOR CHN
+HKG
+MEX JPN
+BRA TUR
+USA
+IRE
+NZL
+CZE NLD ITA
+AUS
+NOR
+SPN
+DEN
+SWI
+UKG
+CAN
+FRNDEU
+GRC
+SWE
+FINAUT
+
+0.05
+
+0.15
+
+0.25
+
+0.35
+
+−0.2
+
+IDN
+THA
+MYS
+
+0.0
+
+0.2
+
+0
+
+−0.4
+
+0.4
+0.2
+0.0
+−0.4 −0.2
+
+30
+
+5
+
+10
+
+15
+
+20
+
+25
+
+IRE GRC
+AUT SPN
+FRN
+ITA
+DEU
+DEN
+SWE
+UKG
+FIN
+MEXNOR
+SWI CANNLD
+AUS
+CZE USA
+TUR
+BRA
+NZL
+CHN
+HKG
+JPN
+SIN
+IDN
+MYS
+KOR
+THA
+
+30
+
+1
+
+2
+
+3
+
+0.5
+
+20
+
+4
+
+5
+
+6
+
+machinery
+mfg goods
+
+0.0
+
+15
+
+food
+
+textiles
+chemicals
+
+−0.5
+
+10
+
+crude materials
+
+−1.0
+
+5
+
+0.6
+
+0
+
+0.05
+
+0.15
+
+0.25
+
+0.2
+
+0.3
+
+0.4
+
+0.5
+
+Figure 2: Estimates of correlation matrices corresponding to Σ1 , Σ2 and Σ3 . The first panel in
+each row plots the eigenvalues of each correlation matrix, the second plots the first two eigenvectors.
+the identity matrix:
+˜ 1 | − log |I/m| = log |S
+˜ 1 | + m log m.
+t1 (Y) = log |S
+
+˜ 1 = I/m, and so in some sense it
+Note that the minimum value of this statistic occurs when S
+provides a simple scalar measure of how the sample covariance among exporters diﬀers from a
+scaled identity matrix. Similarly, we construct t2 (Y) and t3 (Y) measuring sample covariance along
+the second and third modes of the data array. We include t3 to contrast with t1 and t2 , as both
+the full and reduced models include covariance parameters for the third dimension of the array.
+˜ t2 (Y)
+˜ and t3 (Y)
+˜ under both the full and
+Figure 1 plots posterior predictive densities for t1 (Y),
+reduced models, and compares these densities to the observed values of the statistics. The reduced
+model exhibits substantial lack of fit in terms of its inability to predict datasets that resemble the
+observed in terms of t1 and t2 . In other words, a model that assumes i.i.d. structure along the first
+two modes of the array does not fit the data. In terms of covariance among commodities along the
+third mode, neither model exhibits substantial lack of fit as measured by t3 .
+11
+
+Figure 2 describes posterior mean estimates of the correlation matrices corresponding to Σ1 ,
+Σ2 and Σ3 . The two panels in each column plot the eigenvalues and the first two eigenvectors each
+of the three correlation matrices. The eigenvalues for all three suggest the possibility of modeling
+the covariances matrices with factor analytic structure, i.e. letting Σk = AAT + diag(b21 , . . . , b2mk ),
+where A is an mk × r matrix with r < mk . This possibility is described further in the Discussion.
+
+The second row of Figure 2 describes correlations among exporters, importers and commodities.
+The first two plots show that much of the correlation among exporters and among importers is
+related to geography, with countries having similar eigenvector values typically being near each
+other geographically. The third plot in the row indicates correlation among commodities of a
+similar type: Moving up and to the right from “crude materials,” the commodities are essentially
+in order of the extent to which they are finished goods.
+
+5
+
+Discussion
+
+This article has proposed a class of array normal distributions with separable covariance structure
+for the modeling of array data, particularly multivariate relational arrays. It has been shown that
+the class of separable covariance models can be generated by a type of array-matrix multiplication
+known as the Tucker product. Maximum likelihood estimation and Bayesian inference in Gaussian
+versions of such models are feasible using relatively simple properties of array-matrix multiplication.
+These types of models can be useful for describing covariance within the index sets of an array
+dataset. In an example involving longitudinal trade data, we have shown that a full array normal
+model provides a better fit than a matrix normal model, which includes a covariance matrix for
+only two of the four modes of the data array.
+One open area of research is finding conditions for the existence and uniqueness of the MLE
+for the array normal model. In fact, such conditions for even the simple matrix normal case are
+not fully established. Each step of the iterative MLE algorithm of Dutilleul [1999] is well defined
+as long as n ≥ max{m1 /m2 , m2 /m1 } + 1, suggesting that this condition might be suﬃcient to
+provide existence. Unfortunately, it is easy to find examples where this condition is met but the
+
+likelihood is unbounded, and no MLE exists. In contrast, Srivastava et al. [2008] show the MLE
+exists and is essentially unique if n > max{m1 , m2 }, a much stronger requirement. However, they
+do not show that this condition is necessary. Unpublished results of this author suggest that this
+latter condition can be relaxed, and that the existence of the MLE depends on the minimal possible
+�
+rank of ni=1 Yi Uk UTk YTi for k ≤ min{m1 , m2 }, where Uk is an m2 × k matrix with orthonormal
+
+columns. However, such conditions are somewhat opaque, and it is not clear that they could easily
+be generalized to the array normal case.
+
+A potentially useful model variation would be to consider imposing simplifying structure on the
+
+12
+
+component matrices. For example, a normal factor analysis model for a random vector y ∈ Rp posits
+that y = µ + Bz + D� where z ∈ Rr , r < p and � ∈ Rp are uncorrelated standard normal vectors
+
+and D is a diagonal matrix. The resulting covariance matrix is given by Cov[y] = BBT + D2 ,
+in which the “interesting” part BBT is of rank r. The natural extension to random arrays is
+Yi = M + Z × {B1 , . . . , BK } + E × {D1 , . . . , DK } where Z ∈ Rr1 ×···×rK and E ∈ Rp1 ×···×pK are
+
+uncorrelated standard normal arrays. This induces the covariance matrix Cov[vec(Y)] = (BK BTK )⊗
+· · · ⊗ (B1 B1 )T + D2K ⊗ · · · ⊗ D21 . This is essentially the model-based analogue of the higher-order
+SVD of De Lathauwer et al. [2000], in the same way that the usual factor analysis model for vector-
+
+valued data is analogous to the matrix SVD. Alternatively, in some cases it may be desirable to fit
+a factor-analytic structure for the covariances of some modes of the array while estimating others
+as unstructured. This can be achieved with a model of the following form:
+1/2
+
+1/2
+
+1/2
+
+1/2
+
+Y = M + Z × {Σ1 , . . . , Σk , Bk+1 , . . . , BK } + E × {Σ1 , . . . , Σk , Dk+1 , . . . , DK }
+where Z ∈ Rp1 ×···pk ×rk+1 ×···rK , and E ∈ Rp1 ×···×pK . The resulting covariance for Y is given by
+Cov[vec(Y)] = (BK BTK + D2K ) ⊗ · · · ⊗ (Bk+1 Bk+1 + D2k+1 )T ⊗ Σk ⊗ · · · ⊗ Σ1 ,
+which is separable, and so is in the array normal class. Such a factor model may be useful if some
+modes of the array have very high dimensions, and rank-reduced estimates of the corresponding
+covariance matrices are desired.
+An additional model extension would be to accommodate non-normal continuous or discrete
+array data, for example, dynamic binary networks. This can be done by embedding the array
+normal model within a generalized linear model, or within an ordered probit model for ordinal
+response data. For example, if Y is a three-way binary array, an array normal probit model would
+posit a latent array Z ∼ anorm(M, Σ1 ◦ Σ2 ◦ Σ3 ) which determines Y via yi,j,k = δ(0,∞) (zi,j,k ).
+
+Computer code and data for the example in Section 5 is available at my website: http://www.
+
+stat.washington.edu/~hoff.
+
+Appendix
+Proof of Proposition 3.1. Let Y = Z × A where the elements of Z are uncorrelated, have
+
+expectation zero and variance one. Using the fact that Y(1) = A1 Z(1) BT where B = (AK ⊗· · ·⊗A2 )
+[Kolda, 2006, Proposition 4.3], we have
+
+vec(Y) = vec(Y(1) ) = vec(A1 Z(1) BT )
+= (B ⊗ A1 )vec(Z(1) ) = (B ⊗ A1 )vec(Z).
+
+13
+
+The covariance of vec(Y) is then
+E[vec(Y)vec(Y)T ] = (B ⊗ A1 )E[vec(Z)vec(Z)T ](B ⊗ A1 )T
+= (AK ⊗ · · · ⊗ A1 )I(AK ⊗ · · · ⊗ A1 )T
+= (AK ATK ) ⊗ · · · ⊗ (A1 AT1 )
+= ΣK ⊗ · · · ⊗ Σ1 ,
+
+where Σk = Ak ATk . This proves the second statement in the proposition. The first statement
+follows from how the “vec” operation is applied to arrays. For the third statement, consider the
+calculation of E[Y(1) YT(1) ], again using the fact that Y(1) = A1 Z(1) BT :
+E[Y(1) YT(1) ] = A1 E[Z(1) BT BZT(1) ]AT1
+= A1 E[XXT ]AT1 ,
+
+(4)
+
+where X = Z(1) BT . Because the elements of Z are all independent, mean zero and variance one,
+the rows of X are independent with mean zero and variance BBT . Thus E[XXT ] = tr(BBT )I.
+Combining this with (4) gives
+E[Y(1) YT(1) ] = A1 AT1 tr(BBT )
+= A1 AT1 tr([AK ⊗ · · · ⊗ A2 ][ATK ⊗ · · · ⊗ AT2 ]
+= Σ1 tr(ΣK ⊗ · · · ⊗ Σ1 )
+= Σ1
+
+K
+�
+
+tr(Σk ).
+
+k=2
+
+Calculation of E[Y(k) YT(k) ] for other values of k is similar. �
+Proof of Proposition 3.2. We calculate E[vec(X)vec(X)T ] for the case that X = Y ×1 G:
+vec(X) = vec(X(1) ) = vec(GY(1) )
+= vec(GY(1) I)
+= (I ⊗ G)vec(Y) , so
+
+E[vec(X)vec(X)T ] = (I ⊗ G)E[vec(Y)vec(Y)T ](I ⊗ G)T
+= (I ⊗ G)(ΣK ⊗ · · · ⊗ Σ1 )(I ⊗ GT )
+
+= [(ΣK ⊗ · · · ⊗ Σ2 ) ⊗ (GΣ1 )][I ⊗ GT ]
+= (ΣK ⊗ · · · ⊗ Σ2 ) ⊗ (GΣ1 GT ).
+
+Calculation for the covariance of X = Y ×k G for other values of k proceeds analogously. �
+
+Proof of Proposition 4.1 The density can be obtained as a re-expression of the density
+
+of e = vec(E) = vec(Y − M), which has a multivariate normal distribution with mean zero and
+14
+
+covariance ΣK ⊗ · · · ⊗ Σ1 . The re-expression is obtained using the following identities,
+||(Y − M) × Σ−1/2 ||2 = �E, E × Σ−1 �
+
+= vec(E)T vec(E × Σ−1 )
+
+= eT (ΣK ⊗ · · · ⊗ Σ1 )−1 e , and
+|ΣK ⊗ · · · ⊗ Σ1 | =
+where nk =
+
+�
+
+j:j�=k
+
+K
+�
+
+k=1
+
+|Σk |nk ,
+
+mj is the number of columns of Y(k) , i.e. the “sample size” for Σk . �
+
+Proof of Proposition 4.3. We first obtain the full conditional distributions for the matrix
+normal case. Let Y ∼ anorm(0, Σ ⊗ Ω) and Σ−1 = Ψ. Let (a, b) form a partition of the row
+indices of Y, and assume the rows of Y are ordered according to this partition. The quadratic term
+in the exponent of the density can then be written as
+�
+�
+��
+��
+Ψ
+Ψ
+Y
+aa
+a
+ab
+tr(Ω−1 YT ΨY) = tr Ω−1 (YTa YTb )
+Ψba Ψbb
+Yb
+= tr(Ω−1 YTa Ψaa Ya ) + 2tr(Ω−1 YTb Ψba Ya ) + tr(Ω−1 YTb Ψbb Yb ).
+As a function of Yb , this is equal to a constant plus the quadratic term of the matrix normal density
+−1
+with row and column covariance matrices of Ψ−1
+bb and Ω , and a mean of −Ωbb Ωba Y a . Standard
+
+−1
+results on inverses of partitioned matrices give the row variance as Ψ−1
+bb = Σbb − Σba (Σaa ) Σab =
+−1
+Σb|a and the mean as −Ω−1
+bb Ωba Y a = Σb|a (Σaa ) Y b . To obtain the result for the array case,
+
+note that if Y ∼ anorm(0, Σ1 ◦ · · · ◦ ΣK ) then the distribution of Y(1) is matrix normal with
+row covariance Σ1 and column covariance ΣK ⊗ · · · ⊗ Σ2 . The conditional distribution can then
+
+be obtained by applying the result for the matrix normal case to Y(1) with Σ = Σ1 and Ω =
+ΣK ⊗ · · · ⊗ Σ2 . �
+
+References
+M. W. Browne and A. Shapiro. Invariance of covariance structures under groups of transformations.
+Metrika, 38(6):345–355, 1991. ISSN 0026-1335. doi: 10.1007/BF02613631. URL http://dx.doi.
+org/10.1007/BF02613631.
+A. P. Dawid. Some matrix-variate distribution theory: notational considerations and a Bayesian
+application. Biometrika, 68(1):265–274, 1981. ISSN 0006-3444. doi: 10.1093/biomet/68.1.265.
+URL http://dx.doi.org/10.1093/biomet/68.1.265.
+L. De Lathauwer, B. De Moor, and J. Vandewalle. A multilinear singular value decomposition.
+SIAM Journal on Matrix Analysis and Applications, 21(4):1253–1278, 2000.
+15
+
+P Dutilleul. The mle algorithm for the matrix normal distribution. Journal of Statistical Computation and Simulation, 64(2):105–123, 1999.
+A.T. Galecki. General class of covariance structures for two or more repeated factors in longitudinal
+data analysis. Communications in Statistics-Theory and Methods, 23(11):3105–3119, 1994.
+Robert E. Kass and Larry Wasserman. A reference Bayesian test for nested hypotheses and its
+relationship to the Schwarz criterion. J. Amer. Statist. Assoc., 90(431):928–934, 1995. ISSN
+0162-1459.
+Tamara G. Kolda.
+
+Multilinear operators for higher-order decompositions.
+
+Technical Report
+
+SAND2006-2081, Sandia National Laboratories, Albuquerque, NM and Livermore, CA, April
+2006.
+Nelson Lu and Dale L. Zimmerman. The likelihood ratio test for a separable covariance matrix.
+Statist. Probab. Lett., 73(4):449–457, 2005. ISSN 0167-7152. doi: 10.1016/j.spl.2005.04.020. URL
+http://dx.doi.org/10.1016/j.spl.2005.04.020.
+Matthew W. Mitchell, Marc G. Genton, and Marcia L. Gumpertz. A likelihood ratio test for
+separability of covariances. J. Multivariate Anal., 97(5):1025–1043, 2006. ISSN 0047-259X. doi:
+10.1016/j.jmva.2005.07.005. URL http://dx.doi.org/10.1016/j.jmva.2005.07.005.
+Anuradha Roy and Ravindra Khattree. On implementation of a test for Kronecker product covariance structure for multivariate repeated measures data. Stat. Methodol., 2(4):297–306, 2005. ISSN
+1572-3127. doi: 10.1016/j.stamet.2005.07.003. URL http://dx.doi.org/10.1016/j.stamet.
+2005.07.003.
+Donald B. Rubin. Bayesianly justifiable and relevant frequency calculations for the applied statistician. Ann. Statist., 12(4):1151–1172, 1984. ISSN 0090-5364. doi: 10.1214/aos/1176346785. URL
+http://dx.doi.org/10.1214/aos/1176346785.
+M.S. Srivastava, T. von Rosen, and D. Von Rosen. Models with a kronecker product covariance
+structure: estimation and testing. Mathematical Methods of Statistics, 17(4):357–370, 2008.
+P. Tseng. Convergence of a block coordinate descent method for nondiﬀerentiable minimization.
+J. Optim. Theory Appl., 109(3):475–494, 2001. ISSN 0022-3239. doi: 10.1023/A:1017501703105.
+URL http://dx.doi.org/10.1023/A:1017501703105.
+L. R. Tucker. The extension of factor analysis to three-dimensional matrices. Contributions to
+mathematical psychology, pages 109–127, 1964.
+L.R. Tucker. Some mathematical notes on three-mode factor analysis. Psychometrika, 31(3):279–
+311, 1966.
+16
+
+

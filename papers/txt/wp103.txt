@@ -1,0 +1,1582 @@
+Estimating the Size of Populations at High Risk of HIV
+in Bangladesh Using a Bayesian Hierarchical Model
+Le Bao and Adrian E. Raftery
+
+Amala Reddy
+
+University of Washington
+
+UNAIDS
+
+∗
+
+Working Paper no. 103
+Center for Statistics and the Social Sciences
+University of Washington
+Seattle, WA 98195-4322, USA.
+
+August 10, 2010
+
+Le Bao is Graduate Research Assistant and Adrian E. Raftery is Blumstein-Jordan Professor of Statistics
+and Sociology, both at the Department of Statistics, Box 354322, University of Washington, Seattle, WA
+98195-4322. Amala Reddy is Regional Program Advisor for Strategic Information, UNAIDS Regional Support Team for Asia and the Pacific, UN Building, Rajdamnern-nok Avenue, Phra Nakorn, Bangkok 10200,
+Thailand. This work was supported by NICHD Grant HD054511. Its contents are solely the responsibility
+of the authors and do not necessarily represent the oﬃcial views of the National Institute of Child Health
+and Human Development or those of the United Nations. Its contents have not been formally edited and
+cleared by the United Nations. The authors are grateful to Peter Ghys for helpful discussions.
+∗
+
+i
+
+Abstract
+In most countries in the world outside of sub-Saharan Africa, HIV is largely concentrated in sub-populations whose behavior puts them at high risk for contracting
+and transmitting HIV, such as injecting drug users, commercial sex workers and men
+who have sex with men. Estimating the size of these sub-populations is important for
+assessing overall HIV prevalence and designing eﬀective interventions. We present a
+Bayesian hierarchical model for estimating the sizes of local and national HIV at-risk
+populations. It incorporates multiple commonly used data sources including mapping
+data, surveys, interventions, capture-recapture data, estimates or guesstimates from organizations, and expert opinion. The proposed model is used to estimate the numbers
+of injecting drug users and female sex workers in Bangladesh.
+
+Contents
+1 Introduction
+
+1
+
+2 Methods
+
+3
+
+2.1
+
+Bayesian hierarchical model . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+3
+
+2.2
+
+Markov chain Monte Carlo algorithm . . . . . . . . . . . . . . . . . . . . . .
+
+6
+
+3 Estimating the Number of Intravenous Drug Users in Bangladesh in 2004
+
+7
+
+3.1
+
+Results from the multiplier method . . . . . . . . . . . . . . . . . . . . . . .
+
+7
+
+3.2
+
+Results from the Bayesian hierarchical model . . . . . . . . . . . . . . . . . .
+
+9
+
+4 Estimating the Number of Street-Based Sex Workers
+
+13
+
+4.1
+
+Results from the multiplier method . . . . . . . . . . . . . . . . . . . . . . .
+
+15
+
+4.2
+
+Results from the Bayesian hierarchical model . . . . . . . . . . . . . . . . . .
+
+16
+
+5 Simulated Examples: Dependence Among Capture Probabilities
+ii
+
+17
+
+6 Discussion
+
+21
+
+List of Figures
+1
+
+Posterior distribution of the number of male IDUs. . . . . . . . . . . . . . .
+
+10
+
+2
+
+Posterior distribution of parameters in Bayesian hierarchical model for IDUs.
+
+11
+
+3
+
+Posterior distributions of district-level parameters for IDU model. . . . . . .
+
+12
+
+4
+
+Posterior distribution of the number of street-based sex workers. . . . . . . .
+
+17
+
+5
+
+Marginal posterior distributions of important parameters in SBSW size estimation: upper panels are pairs plots, lower panels are Pearson correlations,
+diagonal panels are histograms. . . . . . . . . . . . . . . . . . . . . . . . . .
+
+6
+
+18
+
+Posterior distribution of district-leve parameters of Bayesian hierarchical model
+for street-based sex workers. . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+19
+
+List of Tables
+1
+
+Data for Estimating the Number of Male Intravenous Drug Users. The last
+column shows the number of adult males in each district, from the 2001
+Bangladesh Census. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+8
+
+2
+
+Comparison of IDU estimates for diﬀerent Bayesian hierarchical models . . .
+
+13
+
+3
+
+Data for Estimating the Number of Street-Based Sex Workers. For Tangail and Dinajpur, the capture-recapture data were incomplete. The districts
+were classified into headquarters (HQ), old districts (OLD), and new districts
+(NEW). The last column shows the size of adult males in each district. . . .
+
+14
+
+4
+
+Comparison of SBSW estimates for diﬀerent Bayesian hierarchical models . .
+
+20
+
+5
+
+Percentiles of the Distribution of Relative Errors for the Simulated Examples
+With and Without Individual-level Heterogeneity of Capture Probabilities .
+
+iii
+
+21
+
+1
+
+Introduction
+
+In countries with low-level and concentrated epidemics, HIV has spread rapidly in the subpopulations that are most likely to acquire and transmit HIV, but is not well established
+in the general population. Unlike in countries where the epidemic has become generalized
+and data from pregnant women are used as a proxy for adult prevalence (Ghys et al. 2004),
+there is no set of representative data that can be used to estimate adult prevalence in many
+of these countries. Instead, the Workbook approach (Walker et al. 2004; Ghys, Walker and
+Garnett 2006) has been developed to produce national prevalence estimates for low-level and
+concentrated HIV epidemics.
+The Workbook approach is as follows:
+• The country is divided into regions for prevalence estimation based on political, practical and epidemiological considerations.
+
+• The groups or populations more at risk of HIV infection are defined for each region. The
+
+four default populations in the Workbook approach are injecting drug users (IDUs),
+men who have sex with men, female sex workers and clients of sex workers. Other
+country-specific groups can be added.
+
+• For each region and for each risk group in that region, high, medium and low estimates
+
+of the risk group size and HIV prevalence within it are obtained by whatever method
+is available. The estimated number of people living with HIV in that region and
+risk group is then the product of the medium estimates of risk group size and HIV
+prevalence.
+
+• The national estimate of prevalence is calculated as the sum across regions and risk
+groups of the estimated numbers of people living with HIV.
+
+• High and low national estimates are produced by combining the estimates based on
+the high and low estimates of risk group size and HIV prevalence.
+Few countries have good estimates of the sizes of populations most exposed to HIV
+infection, and what estimates there are are subject to large uncertainties. Therefore it is
+important to provide probabilistic estimations and projections for low-level and concentrated
+HIV epidemics. The Workbook approach requires high and low estimates of both population
+size and prevalence for at-risk groups, in addition to the best estimate. These high and low
+estimates are typically based on expert judgment. There is likely to be wide variation in
+how people decide on plausible bounds given the information they have available (Grassly
+1
+
+et al. 2004). Also, the plausibility bounds do not represent and should not be interpreted
+as formal statistical confidence intervals (Morgan et al. 2006).
+HIV at-risk populations such as IDUs and female sex workers are of great interest to researchers because their behavior aﬀects the spread of HIV and other diseases. Unfortunately,
+standard sampling and estimation techniques cannot be used for these populations because
+most of them require the researcher to select sample members with a known probability of
+selection. The World Health Organization (2000) cited the inability to monitor the behavior
+and HIV sero-prevalence of at-risk sub-populations as a major weakness of HIV prevention
+eﬀorts.
+Magnani et al. (2005) reviewed methods for sampling hard-to-reach and hidden populations for HIV surveillance, including snowball sampling, targeted sampling, facility-based
+sampling, time-location sampling, respondent-driven sampling and conventional cluster sampling. Mills et al. (2004) reviewed methodological obstacles in conducting surveillance with
+high-risk subpopulations, and proposed criteria for choosing a sampling strategy.
+Several methods are commonly used for estimating the size of populations at risk for
+HIV. The census and enumeration methods are based on counting individuals in the at-risk
+population. The capture-recapture method has typically been used with detailed mapping
+that identifies “hotspots” where at-risk populations are found. Then two independent samples are taken, the overlap is determined and population size is estimated using the standard
+Petersen estimate. The multiplier method uses two independent data sources, typically with
+one providing a count of the at-risk population in a service and the other providing an
+estimate of the proportion of the at-risk population enrolled in the service. The resulting
+population size estimate is given by the same formula as the capture-recapture estimate.
+Each method has its own advantages and disadvantages, and each data source provides
+information about the size of the at-risk population. However, it is hard to include all the
+information from diﬀerent methods for size estimation.
+Diﬀerent levels of estimate may be appropriate for diﬀerent goals. National estimates
+of the size of at-risk populations are needed for policy purposes such as estimation and
+projection of the number of people infected with HIV, response planning, resource allocation,
+and advocacy. Local estimates are often used for better program planning and management,
+such as assessing commodity and other needs, planning to meet those needs, measuring
+population coverage, and monitoring and evaluating interventions.
+Here we propose a Bayesian hierarchical model for estimating the size of at-risk populations at both local and national levels, as well as for assessing the uncertainty of the
+estimates. It incorporates multiple commonly used data sources, including mapping data,
+surveys, interventions, capture-recapture data, estimates or guesstimates from organizations,
+2
+
+and expert opinion. It can allow for heterogeneous capture probabilities, and incorporate the
+opinions of diﬀerent experts. We apply the approach to data used to estimate the number
+of IDUs and of street-based female sex workers (SBSWs) in Bangadesh, and we compare
+the results to what was obtained using the methods agreed on by the Bangladesh Technical
+Group.
+The first size estimation process in Bangladesh began in 2003 in response to the need
+to provide UNAIDS with a national estimate of the number of HIV-infected people. The
+key sub-populations at higher risk in the country are injecting drug users, female, male and
+transgender sex workers, clients of sex workers, men who have sex with men, and returnee
+external migrants. In order to produce national estimates of HIV-infected people to meet
+global requirements, as well as for planning and managing intervention programs, reliable
+estimates of the sizes of those at-risk populations were needed.
+Family Health International provided technical assistance to the Bangladesh Technical
+Group, a nationally constituted expert technical working group, which was chaired by the National AIDS/STD Programme, and included experts from the government, the International
+Centre for Diarrhoeal Disease Research, Bangladesh, the Centre for Health and Population
+Research, non-governmental organizations (NGOs) that carry out HIV interventions, and development partners. The goal was to reach consensus and produce data-informed estimates
+through a transparent collaborative process involving all the key stakeholders. The final
+results were obtained by November 2004, and received government approval in December
+2005.
+In Section 2 we present our Bayesian hierarchical model and the Markov chain Monte
+Carlo algorithm used for estimating it. Section 3 describes the estimation of the number of
+intravenous drug users in Bangladesh and Section 4 does the same for the number of streetbased sex workers. Section 5 shows results from simulated examples designed to assess the
+method and the potential impact of dependence between the probabilities of an individual
+being included in two diﬀerent lists. In Section 6 we discuss outstanding issues and possible
+extensions.
+
+2
+2.1
+
+Methods
+Bayesian hierarchical model
+
+There are 64 districts in Bangladesh and the availability of data for HIV at-risk population
+size estimation varies between districts and between at-risk populations. For the ith district,
+
+3
+
+let ni be the size of the target population we want to estimate, such as male IDUs. The data
+to be used for estimating ni fall into the following categories:
+• Ni : the size of a reference population, e.g. adult males as a reference population for
+male IDUs.
+
+• Xi = (Xi01 , Xi10 , Xi11 ): capture-recapture data, or two listings with known overlap,
+from the ith district. Xi01 is the number observed in the second list but not the
+
+first, Xi10 is the number observed in the first list but not the second, and Xi11 is the
+overlap, i.e. the number observed in both lists. Xi00 is the number not observed in
+either list and is unobserved. We denote by Xi1 = Xi11 + Xi10 the number in the
+first list and by Xi2 = Xi11 + Xi01 the number in the second list. By construction,
+Xi11 + Xi10 + Xi01 + Xi00 = ni .
+• Yi : an incomplete count of the target population such that Yi ≤ ni , for example a
+mapping observation, a survey or an intervention.
+
+• Zi : an estimate or guesstimate of ni from other sources, which could be greater or less
+than than ni .
+
+This diagram shows the data that may be available for size estimation:
+Ni
+φi
+ni
+pi1 , pi2
+Xi
+
+θi
+Yi
+
+4
+
+µ, σ 2
+Zi
+
+We use the following sampling models for the relationships between observed data and
+the target population size within the ith district:
+
+
+
+ni |Ni , φi
+
+
+
+
+
+
+
+Xi1 |ni , pi1
+
+
+
+
+
+ Xi2 |ni , pi2
+
+
+Xi00 |Xi11 + Xi10 + Xi01 , pi
+
+
+
+
+
+
+ Yi |ni , θi
+
+
+
+
+
+ log(Zi /ni )
+
+∼ Binomial(Ni , φi ),
+∼ Binomial(ni , pi1 ),
+∼ Binomial(ni , pi2 ),
+∼ Negative Binomial(Xi11 + Xi10 + Xi01 , 1 − (1 − pi1 )(1 − pi2 )),
+∼ Binomial(ni , θi ),
+∼ N (µ, σ 2 ),
+
+(1)
+
+where φi is the expected value of ni /Ni , pik is the probability of inclusion in the kth overlapping list for k = 1, 2, and θi is the probability of being included in Yi in the ith district.
+The parameter µ indicates the bias in Z and σ 2 indicates its variability, both of which are
+constant across districts. The conditional negative binomial distribution of Xi00 follows from
+the assumption of independence between the two lists (George and Robert 1992).
+To describe the heterogeneity of population proportions and inclusion probabilities across
+districts, we assume the following between-district sampling models:
+
+
+
+φi |a0 , b0
+
+
+
+
+
+ pi1 |a1 , b1
+
+
+pi2 |a2 , b2
+
+
+
+
+
+ θ |a , b
+i 3 3
+
+∼ Beta(a0 , b0 ),
+∼ Beta(a1 , b1 ),
+
+(2)
+
+∼ Beta(a2 , b2 ),
+∼ Beta(a3 , b3 ),
+
+where Beta(am , bm ) denotes the beta distribution with mean πm = am /(am + bm ) and variance πm (1 − πm )/(am + bm + 1). The hierarchical structure of our basic model represents
+the uncertainty in both the within-district sampling variability from equation (1) and the
+
+between-district sampling variability from equation (2).
+Finally, it is possible to incorporate expert knowledge by assigning prior distributions
+to am , bm , µ and σ 2 , making it a Bayesian hierarchical model. We use independent prior
+distributions for µ and σ 2 : µ ∼ N (µ0 , τ02 ), σ 2 ∼ InverseGamma(ν0 /2, ν0 σ02 /2). We set µ0 = 0
+
+and τ0 = log(10)/2 = 1.15, which implies that exp(µ) is likely to be in the range (0.1, 10),
+so that zi is unlikely to be systemmatically biased by a factor of more than 10 in either
+direction. We chose ν0 = 1 and σ0 = log(10)/2 = 1.15 to represent weak prior information
+5
+
+about σ 2 . We used the priors p(am , bm ) ∝ 1/(am + bm )2 I(am > 1, bm > 1) for m = 0, 1, 2, 3,
+to represent vague prior information about φ, p1 , p2 and θ.
+
+2.2
+
+Markov chain Monte Carlo algorithm
+
+We estimate the posterior distributions of parameters in our Bayesian hierarchical model by
+Markov chain Monte Carlo. Most of the parameters can be updated using Gibbs sampling.
+The algorithm is as follows.
+1. Initialization:
+(0)
+
+(0)
+
+(0)
+
+(0)
+
+(a) Choose an initial value (a0 , b0 ) = (2, 2000), (am , bm ) = (2, 2) for m = 1, 2, 3.
+(0)
+
+(0)
+
+(0)
+
+(b) For i = 1, . . . , d, sample φi ∼ Beta(a0 , b0 ), where d is the number of districts.
+(0)
+
+(c) Sample ni
+
+(0)
+
+(0)
+
+∼ Binomial(Ni , φi ). If ni
+
+is less than the minimum number
+
+that have been directly observed from the target population, namely n
+ˆ i max =
+(0)
+
+max(Xi11 +Xi10 +Xi01 , Yi ), then resample ni −ˆ
+ni max from NegativeBinomial(ˆ
+ni max , 0.9).
+(d) Set µ(0) = mean[log(Zi /ni )], σ 2(0) = var[log(Zi /ni )].
+We update the within-district parameters and between-district parameters iteratively to
+produce a “Gibbs sequence”:
+(0)
+
+(0)
+
+(0)
+
+(1)
+
+(1)
+
+pi1 , pi2 , θi , φi , ni , a(1) , b(1) , µ(1) , σ 2(1) , . . .
+
+(3)
+
+2. Update the within-district parameters, i = 1, . . . , d:
+(k−1)
+
+from Beta(Xi1 + a1
+
+(k−1)
+
+from Beta(Xi2 + a2
+
+(k−1)
+
+from Beta(Yi + a3
+
+(a) Update pi1
+(b) Update pi2
+(c) Update θi
+
+(k−1)
+
+, ni
+
+(k−1)
+
+, ni
+
+(k−1)
+
+(k−1)
+
+(k−1)
+
+, ni
+
+(k−1)
+
+).
+
+− Xi2 + b2
+
+(k−1)
+
+).
+
+(k−1)
+
+− Yi + b 3
+
+(k)
+
+by using the Metropolis-Hastings (MH) algorithm with proposal dis(k−1)
+
+tribution Poisson(ni
+
++ a0
+
+(k−1)
+
+).
+
+from Beta(ni
+
+(e) Update ni
+
+(k−1)
+
+− Xi1 + b1
+
+(k)
+
+(d) Update φi
+
+(k−1)
+
+(k−1)
+
+, Ni − ni
+
+(k−1)
+
++ b0
+
+).
+
+).
+
+3. Update the between-district parameters:
+We sample log(am /(am + bm )) and log(am + bm ) instead of am and bm . The prior
+density p(am , bm ) is then equivalent to p(log(am /(am + bm )), log(am + bm )) ∝
+am /(am + bm ).
+
+6
+
+(k)
+
+(k)
+
+(k)
+
+(a) For m = 0, 1, 2, 3, update log(am /(am + bm )) by using the MH algorithm with
+proposal distribution: Propose log(a∗m /(a∗m + b∗m )) from a truncated normal distribution such that a∗m > 1 and b∗m > 1.
+(k)
+
+(k)
+
+(b) For m = 0, 1, 2, 3, update log(am +bm ) by using the MH algorithm with proposal
+distribution: Propose log(a∗m +b∗m ) from a truncated normal distribution such that
+a∗m > 1 and b∗m > 1.
+
+�
+(c) Update µ(k) from N ( i log(Zi /ni )τ 2(k) /σ 2(k−1) , τ 2(k) ), where τ 2(k) = 1/(1/τ02 +
+
+l/σ 2(k−1) ) and l is the number of districts that have Zi available.
+�
+(d) Update σ 2(k) from InverseGamma((ν0 + l)/2, (ν0 σ02 + i (log(Zi /ni ) − µ(k) )2 )/2).
+
+We ran the above algorithm for 500,000 iterations, dropped the first 5000 iterations, and
+kept every 100th scan, to get 4950 MCMC samples. We used the districts where at least
+one dataset was available to estimate the model parameters. For the remaining districts, we
+(k)
+(k)
+imputed ni from the hierarchical structure as follows: sample φi ∼ Beta(a(k) , b(k) ), and
+(k)
+
+then sample ni
+
+(k)
+
+∼ Binomial(Ni , φi ). To obtain the posterior distribution of the total size
+
+of the at-risk population, we summed ni over all districts for each MCMC iteration.
+
+3
+
+Estimating the Number of Intravenous Drug Users
+in Bangladesh in 2004
+
+We applied the Bayesian hierarchical model to data on the number of intravenous drug
+users (IDUs) in Bangladesh in 2004 from several sources and sampling methods. IDUs were
+defined as male drug users who had taken drugs primarily by injecting in the previous three
+to six months. Female IDUs were excluded because the data indicated that there were few
+of them, and because many of them would have been counted as female sex workers.
+
+3.1
+
+Results from the multiplier method
+
+Reddy, Hoqueb, and Kelly (2008) described the 2004 size estimation procedure of IDUs in
+Bangladesh using a multiplier method that led to an estimate of 20,000 to 40,000. The data
+used are shown in Table 1, and the multiplier method is briefly summarized here.
+The most nationally comprehensive data on IDUs at the time were from the National
+Assessment of the Situation and Response to Opioid/Opiate Use in Bangladesh (NASROB)
+which surveyed 24 districts out of the 64 in the country. For NASROB, information was
+7
+
+Table 1: Data for Estimating the Number of Male Intravenous Drug Users. The last column
+shows the number of adult males in each district, from the 2001 Bangladesh Census.
+Index
+
+District
+
+1
+
+Dhaka
+
+2
+3
+4
+5
+6
+7
+8
+
+Gazipur (Tongi)
+Narayanganj
+Manikganj
+Narsingdi
+Kishoreganj
+Mymensingh
+Faridpur
+
+9
+10
+11
+12
+
+Chittagong
+Chandpur
+Brahmanbaria
+Cox’s Bazaar
+
+13
+14
+
+Rajshahi
+Chapai Nawabganj
+
+15
+16
+17
+18
+19
+20
+21
+
+Pabna
+Sirajganj
+Bogra
+Dinajpur
+Rangpur
+Naogaon
+Joypurhat
+
+22
+23
+24
+25
+
+Khulna
+Jhenaidah
+Jessore
+Satkhira
+
+26
+
+Barisal
+
+27
+28
+
+Sylhet
+Maulvi Bazar/Srimongal
+
+NASROB
+
+BSS 2002
+
+NEP 2001
+
+Dhaka Division, 8 districts
+2748
+1759 IDUs
+3436
+(46% in NEP)
+258
+85
+12
+0
+0
+0
+2
+Chittagong Division, 4 districts
+67
+202
+161
+2
+1
+Rajshahi Division, 9 districts
+770
+710 IDUs
+376
+400
+201 IDUs
+191
+(60% in NEP)
+99
+103
+20
+35
+NA
+NA
+NA
+Khulna Division, 4 districts
+14
+9
+72
+7
+Barisal Division, 1 district
+46
+Sylhet Division, 2 districts
+0
+NA
+
+8
+
+CARE RSA
+
+Population Size
+(Adult Males)
+
+4287
+
+2,364,000
+
+76
+
+524,500
+562,500
+316,500
+480,00
+635,00
+1,123,500
+433,500
+
+1000
+50
+
+400 ∼ 500
+500
+
+1,707,000
+538,000
+585,500
+452,500
+579,000
+355,500
+
+140
+18
+18
+350
+350
+550
+180
+
+551,000
+692,000
+759,500
+669,000
+645,000
+602,000
+215,500
+605,500
+397,500
+625,000
+465,500
+
+500
+
+582,500
+
+162
+
+652,000
+402,000
+
+collected in 2001 from drug-using key informants at mapped public drug spots and secondary
+sources to derive a sampling frame of IDUs for further survey. An estimate was made that
+there were 4,952 injectors in the 24 districts surveyed (Panda et al. 2002). However, this
+was known to be an underestimate since the NASROB was not intended as a size estimation
+exercise, and also based on comparison with the number of IDUs reached by interventions.
+CARE Bangladesh was the only NGO with IDU interventions at that time, and it provided service delivery data from a Needle Exchange Program (NEP), which contained the
+numbers of enrolled IDUs in three cities from 2001 to 2003. The 2002 Behavioral Surveillance
+Surveys (BSS) in four cities included IDUs who reported that they had enrolled in an NEP
+intervention in the preceding year. Hence, 2001 CARE NEP intervention enrollments and
+2002 BSS formed two independent sources of data on IDUs, where the intervention coverage
+data from BSS could be used to calculate a multiplier to inflate the NASROB estimates for
+Dhaka, Rajshahi and Chapai Nawabganj.
+The NASROB counts for the remaining districts were also multiplied, using the Dhakaderived multiplier 2.7 to inflate the NASROB counts in districts whose population densities
+were higher than 1,000 persons per km2 , and using the NASROB figure directly for districts
+with lower population densities. The resulting estimate was that there were approximately
+13,000 IDUs in the 24 districts with a NASROB survey.
+To make IDU size estimates for the remaining 40 districts of Bangladesh, the average
+number of IDUs as a proportion of the adult male population (0.03%) was calculated from
+the 24 NASROB districts. Using this prevalence of injection drug use, an additional 5,000
+IDUs were assigned to the remaining districts. After combining the district estimates, the
+Bangladesh Technical Group settled on a national size range of 10, 000 ∼ 20, 000 IDUs.
+The range was further multiplied by 2 using CARE Bangladesh RSA data to raise the final
+national size range to 20, 000 ∼ 40, 000 IDUs in Bangladesh in 2004.
+
+3.2
+
+Results from the Bayesian hierarchical model
+
+We used the data on IDUs from 28 districts in Bangladesh, shown in Table 1. For district i, we
+let ni be the number of adult male IDUs and Ni be the size of the adult male population. Let
+φi be the expected prevalence of intravenous drug use among adult males, Xi the multiplier
+data consisting of Xi1 the number of IDUs who participated in the BSS 2002 survey and Xi2
+the number of IDUs enrolled in the NEP program, Yi the number of IDUs included in the
+NASROB survey, and Zi the RSA estimate.
+Figure 1 shows the estimated posterior distribution of the total number of male IDUs
+in Bangladesh in 2004. The posterior median is 23,511 and the 95% Bayesian confidence
+9
+
+Figure 1: Estimated Posterior Density of the Number of Adult Male IDUs. The 95%
+Bayesian confidence interval is shown by the shadow. The dashed horizontal line indicates
+the Bangladesh Technical Group’s size estimate.
+interval is 17, 962 ∼ 33, 692; the half length of the interval is 7,864. The Bayesian interval is
+narrower than the Bangladesh Technical Group’s estimate of 20, 000 ∼ 40, 000, but overlaps
+with it substantially.
+
+The histograms and pairs plots in Figure 2 show the marginal posterior distributions
+of several parameters of interest including the total number of IDUs, the prevalence of
+intravenous drug use in the adult male population, E(φi ), with mean 0.62/1000 and standard
+deviation 0.16/1000, the probability of participation in the BSS survey E(pi1 ), with mean
+0.51 and standard deviation 0.09, the probability of enrollment in the NEP intervention
+E(pi2 ), with mean 0.46 and standard deviation 0.03, the probability of participation in the
+NASROB survey E(θi ), with mean 0.40 and standard deviation 0.06, and the bias parameter
+for the RSA estimates, µ, with mean -0.119 and standard deviation 0.272.
+Figure 3 shows the posterior distribution of the IDU prevalence rates φi and the rates
+of participation in NASROB, θi , BSS, pi1 , and the NEP, pi2 , in each district. The districts
+are ordered by adult male population size, with the biggest population at the top and the
+one with the smallest population at the bottom. The IDU prevalence rate is highest in the
+capital, Dhaka, where it is well estimated. The participation rates in NASROB and BSS
+varied widely, while the participation rate in the NEP varied little between the three districts
+where the NEP was active.
+To understand the eﬀects of putting informative prior on µ and using heterogenous capture probabilities, we run the Bayesian hierarchical model without using RSA information
+or without assuming the heterogeneity of inclusion probabilities across districts. Table 2
+10
+
+Figure 2: Marginal Posterior Distributions of Parameters in the Bayesian Hierarchical Model
+for Estimating the Number of IDUs. The upper panels are pairs plots, the lower panels are
+Pearson correlations, and the panels on the diagonal are histograms.
+
+11
+
+Figure 3: Posterior distributions: (a) IDU prevalences φi : blue for districts where multiplier
+data were available, green for districts with NASROB survey data but no capture-recapture
+data, yellow for districts with only RSA estimate; (b) NASROB participation rates θi ; (c)
+BSS participation rates pi1 ; (d) NEP participation rates pi2 . For each boxplot, the box shows
+the posterior interquartile range and the dashed line goes from the .025 posterior quantile
+to the .975 posterior quantile.
+
+12
+
+compares the parameter estimates from diﬀerent models. The total number of IDUs estimated from heterogeneous inclusion probability model is less than the one estimated from
+the constant inclusion probability model. Including the RSA estimates Z into the analysis
+does not significantly change the posterior mean of national IDU size but narrows the 95%
+Bayesian confidence interval.
+Table 2: Comparison of IDU estimates for diﬀerent Bayesian hierarchical models
+
+Capture Probabilities
+Using RSA estimates
+2.5
+national IDU size median
+97.5
+2.5
+E(φ)
+median
+97.5
+2.5
+µ
+median
+97.5
+2.5
+E(p1 )
+median
+97.5
+2.5
+E(p2 )
+median
+97.5
+2.5
+E(θ)
+median
+97.5
+
+4
+
+Identical
+No
+21,129
+25,642
+33,922
+0.00045
+0.00065
+0.00102
+NA
+0.31300
+0.33289
+0.35239
+0.21566
+0.22927
+0.24421
+0.32178
+0.34233
+0.36235
+
+Heterogeneous
+log 10 2
+)
+2
+
+µ ∼ N(0,
+21,085
+25,529
+33,396
+0.00044
+0.00065
+0.00100
+-0.1123
+0.4868
+1.0859
+0.31279
+0.33264
+0.35260
+0.21465
+0.22923
+0.24387
+0.32136
+0.34173
+0.36242
+
+No
+16,684
+21,821
+32,242
+0.00034
+0.00055
+0.00095
+NA
+0.32932
+0.51073
+0.68997
+0.37811
+0.45631
+0.49364
+0.28127
+0.40406
+0.50709
+
+2
+
+µ ∼ N(0, log210 )
+17,963
+23,511
+33,692
+0.00038
+0.00060
+0.00100
+-0.6317
+-0.1278
+0.4367
+0.32513
+0.51211
+0.69010
+0.39282
+0.45711
+0.49144
+0.27930
+0.40572
+0.50234
+
+Estimating the Number of Street-Based Sex Workers
+
+Street-based sex workers (SBSWs) are defined as female sex workers who negotiate clients
+on the street or at open public places such as parks, cinema halls, bus or launch terminals,
+railway stations, market places. When the estimation eﬀort started there were no comprehensive, national-level data on the number of SBSWs. Thus the size estimation of SBSWs
+was done with the numbers available from HIV prevention interventions, mainly from CARE
+Bangladesh. Some of the data were from capture-recapture mapping and some from intervention enrollment. Typically, CARE Bangladesh mapped SBSWs in a city before starting
+13
+
+2
+
+µ ∼ N(0, log2 2 )
+17,873
+23,066
+33,130
+0.00038
+0.00058
+0.00098
+-0.3987
+-0.0662
+0.2232
+0.32906
+0.51132
+0.69394
+0.39987
+0.45811
+0.49311
+0.28360
+0.40608
+0.50316
+
+Table 3: Data for Estimating the Number of Street-Based Sex Workers. For Tangail and
+Dinajpur, the capture-recapture data were incomplete. The districts were classified into
+headquarters (HQ), old districts (OLD), and new districts (NEW). The last column shows
+the size of adult males in each district.
+District
+Dhaka
+Mymensingh
+Tangail
+Chittagong
+Comila
+Bogra
+Dinajpur
+Rangpur
+Rajshahi
+Nilphamari
+Khulna
+Jessore
+Barisal
+Sylhet
+
+Capture-Recapture Mapping
+Intervention
+1st capture 2nd capture overlap 2001 ∼ 2003
+Dhaka Division, 3 districts
+2557
+2964
+1509
+4873
+527
+281
+NA
+162
+499
+Chittagong Division, 2 districts
+1156
+1408
+1032
+1500
+407
+Rajshahi Division, 5 districts
+248
+556
+NA
+NA
+408
+524
+438
+382
+332
+367
+163
+Khulna Division, 2 districts
+853
+719
+501
+1350
+108
+115
+79
+877
+Barisal Division, 1 district
+473
+Sylhet Division, 1 districts
+805
+865
+683
+1000
+
+District Type
+
+Population Size
+(Adult Males)
+
+HQ
+OLD
+OLD
+
+2,364,000
+1,123,500
+814,000
+
+HQ
+OLD
+
+1,707,000
+1,132,500
+
+OLD
+OLD
+OLD
+HQ
+NEW
+
+759,500
+669,000
+645,000
+579,000
+395,500
+
+HQ
+OLD
+
+605,500
+625,000
+
+HQ
+
+582,500
+
+HQ
+
+652,000
+
+an intervention in order to get an estimate of the number of sex workers that would need to
+be reached with services. The CARE data from 14 districts are shown in Table 3.
+The capture-recapture mapping and intervention data were obtained from the large cities.
+The estimates for those cities are used as proxy estimates for the whole districts, since most
+of the at-risk populations are concentrated in the major cities, and there are few IDUs
+and SBSWs outside the urban centers. For the Dhaka , Tangail and Jessore district, the
+CARE interventions were available in two cities which were combined to get the numbers
+participating in the intervention at the district level.
+
+14
+
+4.1
+
+Results from the multiplier method
+
+The Bangladesh Technical Group used a multiplier method to estimate the number of SBSWs. When the verified capture-recapture estimates based on CARE mapping data for eight
+cities (March 2001 to April 2003, except for Dhaka in 1997) were compared with the CARE
+intervention data on the number enrolled in their interventions established in those cities in
+2003, there was a clear relationship. In each case, the CARE mapping estimate was between
+1.1 to 1.4 times the corresponding number of SBSWs listed in interventions enrollment data.
+An average “CARE Multiplier” of 1.2 was used to inflate all interventions data. Mapping
+data from another NGO, HASAB, for Narsingdi, Pabna and Ishwardi were added to give a
+“CARE Multiplier Estimate” of 16,654 SBSWs in 17 districts.
+From the 2002 BSS, the proportion of SBSWs who reported being covered by interventions in the previous year was known in Dhaka (51%). CARE was the only NGO that
+enrolled SBSWs in interventions in Dhaka for the time period under study (2001–2003).
+There were an average of 4,355 SBSWs enrolled in Dhaka in 2001–2002. Hence, using the
+BSS 2002 multiplier there was an estimated total of 4,355/0.51=8,539 SBSWs in Dhaka.
+Comparing the 5,388 SBSWs from the CARE Multiplier Estimate with the BSS multiplier
+estimate, a “BSS-CARE Multiplier” of the CARE Multiplier Estimate was calculated as
+8,539/5,388=1.6. This BSS-CARE Multiplier was applied to all the CARE Multiplier Estimates to obtain an estimated 26,647 SBSWs in the 17 districts covered by mapping or
+interventions. For each of the 17 districts, a “Street Sex Workers Rate” (SSWR) was calculated as the estimated number of SBSWs per adult male aged 15-49 years. This was
+considered to reflect the demand for street sex workers from male clients.
+The 17 districts were categorized according to whether they were Divisional Headquarters,
+Old Districts or New Districts, based on the following rationale:
+• Divisional Headquarters have been the traditional business hubs in the country since
+
+1947. They are the largest commercial centers in the country, with more males living
+temporarily in these cities away from their families for employment purposes, and more
+women also coming to these places seeking work. They would be expected to have more
+SBSWs and high SSWR (0.0026).
+
+• Old Districts would be expected to have more SBSWs than New Districts, as they have
+
+been in existence longer, but less than the Divisional Headquarters. Many would have
+an old established sex work industry. The estimated SSWR was 0.0012.
+
+• New Districts would be expected to still have only the beginnings of street sex work, as
+
+they are emerging metropolitan areas, and thus would have comparatively low numbers
+15
+
+of SBSWs and low SSWR (0.0005).
+For the remaining 47 districts with no data on SBSWs, the number of adult males aged
+15–49 was multiplied by the appropriate average SSWR chosen according to its category
+(Old or New District). Summing the estimates from all the 64 districts in the country
+resulted in 37,068 SBSWs. In another attempt to estimate the number of SBSWs in the
+remaining districts with no direct SBSW size data, a linear regression model was fitted:
+number of SBSWs = 0.0012 × adult male population size. This led to an alternative total
+estimate of 66,678 SBSWs in the country.
+
+4.2
+
+Results from the Bayesian hierarchical model
+
+For district i, let ni be the number of SBSWs, Ni the size of the adult male population,
+φi the number of SBSWs per adult male, or “Street Sex Workers Rate” (SSWR), Xi the
+capture-recapture data from the CARE Mapping, Xi� the multiplier data from the BSS 2002
+survey and the CARE intervention in the corresponding period, and Yi the number of SBSWs
+included in the CARE intervention. Fourteen districts with CARE data were used here. The
+data from other NGOs were excluded because they were available in few districts and from
+diﬀerent data sources.
+Figure 4 shows the estimated posterior distribution of the total number of SBSWs. The
+median was 38,448, the 95% Bayesian confidence interval was 31, 119 ∼ 50, 583, and the
+half length of the interval was 9,732. The 2004 Bangladesh Technical Group size estimate
+
+of SBSWs was 37, 000 ∼ 66, 000. Thus, as for IDUs, the Bayesian estimate was somewhat
+lower than that of the Bangladesh Technical Group, and the Bayesian interval was somewhat
+narrower, but the two intervals overlapped substantially.
+
+The estimated “Street Sex Workers Rate” was 0.00118, which is very close to the Bangladesh
+Technical Group’s estimate of 0.00120. The 95% Bayesian confidence interval for the SSWR
+was 0.00086 ∼ 0.00173.
+The histograms and pairs-plots in Figure 5 show the marginal distributions of some
+�
+important parameters including: the estimated total number of SBSWs
+ni , the expected
+SBSWs rate E(φi ), the expected capture probability of CARE Mapping E(pi1 ) and E(pi2 ),
+the expected capture probability of BSS E(p�i1 ), the expected capture probability of CARE
+intervention E(p�i2 ), and the expected capture probability of CARE intervention E(θi ).
+
+To understand the eﬀects of allowing heterogenous capture probabilities, we also run the
+Bayesian hierarchical model with constant capture probability for each data source. Table
+4 compares the parameter estimates between two models.
+
+16
+
+Figure 4: Estimated Posterior Density of the Number of Street-Based Sex Workers. The 95%
+Bayesian confidence interval is shown by the shadow. The dashed horizontal line indicates
+the Bangladesh technical group size estimate.
+Figure 6 shows the posterior distribution of the SSWR and of the rates of participation
+in the CARE intervention and Mapping programs in each district. The districts are ordered
+by adult male population, from highest at the top to lowest at the bottom.
+
+5
+
+Simulated Examples: Dependence Among Capture
+Probabilities
+
+Otis et al. (1978) and Pollock (1991) discussed eight diﬀerent models from all possible combinations of the time eﬀect, individual eﬀect and behavioral response in capture probabilities.
+Our proposed model corresponds to what they called model Mt , which assumes independent capture probabilities between capture occasions, but equal capture probabilities on
+any particular occasion. An alternative model, Mht , assumes that the capture probabilities
+vary by occasion and individual but are independent of the capture history. This individual
+heterogeneity can induce dependence of capture probabilities between capture occasions.
+In two-occasion capture-recapture, there are three observed numbers, Xi11 , Xi10 , Xi01 ,
+and three parameters, pi1 , pi2 and ni to be estimated in Mt , so that there is not enough
+information to estimate individual heterogeneity. Therefore we used simulated examples,
+modeled on our IDU data, to investigate the potential bias caused by individual heterogeneity. We generated simulated IDU data by using the posterior mean of the Mt parameters
+17
+
+Figure 5: Marginal posterior distributions of important parameters in SBSW size estimation:
+upper panels are pairs plots, lower panels are Pearson correlations, diagonal panels are
+histograms.
+
+18
+
+Figure 6: Posterior Distributions: (a) SBSWs rate: green for districts with CARE Mapping data, yellow for districts with CARE intervention data, but no CARE Mapping data;
+(b) CARE intervention (service delivery) participation rates; (c) CARE Mapping round 1
+participation rates; (d) CARE Mapping round 2 participation rates. In the boxplots, the
+box shows the posterior interquartile range and the dashed lines go from the posterior .025
+quantile to the posterior .975 quantile.
+
+19
+
+Table 4: Comparison of SBSW estimates for diﬀerent Bayesian hierarchical models
+Capture Probabilities
+2.5
+national IDU size median
+97.5
+2.5
+E(φ)
+median
+97.5
+2.5
+E(p1 )
+median
+97.5
+2.5
+E(p2 )
+median
+97.5
+2.5
+E(p�1 )
+median
+97.5
+2.5
+E(p�2 )
+median
+97.5
+2.5
+E(θ)
+median
+97.5
+
+Heterogeneous
+32,300
+40,173
+51,632
+0.00090
+0.00124
+0.00175
+0.57483
+0.70382
+0.80361
+0.54380
+0.69722
+0.79967
+0.58921
+0.76279
+0.87580
+0.22527
+0.41452
+0.64109
+0.65757
+0.67725
+0.69680
+
+Identical
+32,515
+39,415
+50,056
+0.00091
+0.00123
+0.00174
+0.56721
+0.57774
+0.58767
+0.59098
+0.60203
+0.61283
+0.79218
+0.80339
+0.81444
+0.27561
+0.28617
+0.29681
+0.75668
+0.77099
+0.78446
+
+from our model, as follows.
+For districts i = 1, 2, . . . , 64:
+1. Sample φi , the expected prevalence, from Beta(1.2, 2000);
+2. Sample ni , the IDUs size, from Binomial(Ni , φi );
+3. If NASROB is available, sample Yi from Binomial(ni , θi );
+4. If CARE Bangladesh estimate is available, sample Zi from LogNormal(log(ni )−0.1, 1).
+In districts with capture-recapture data, individual heterogeneity was constructed similarly to the Mht experiments in Otis et al. (1978). Individuals were randomly assigned to one
+of four categories with multipliers c = (c1 , c2 , c3 , c4 ), and the capture probability on the tth
+occasion for an individual in the kth category was pikt = ck pit . We simulated datasets from
+two scenarios, each with a diﬀerent value of c. In the first scenario, c = (0.4, 0.8, 1.2, 1.6),
+corresponding to strong heterogeneity. In the second scenario, c = (0.1, 1.0, 1.3, 1.6), also
+20
+
+Table 5: Percentiles of the Distribution of Relative Errors for the Simulated Examples With
+and Without Individual-level Heterogeneity of Capture Probabilities
+No individual eﬀect
+Percentiles
+2.5%
+25%
+50%
+total number of IDUs -0.172 -0.068 -0.035
+
+75%
+0.003
+
+97.5%
+0.049
+
+Individual eﬀect: c = (0.4, 0.8, 1.2, 1.6)
+Percentiles
+2.5%
+25%
+50%
+75% 97.5%
+total number of IDUs -0.323 -0.180 -0.151 -0.119 -0.082
+Individual eﬀect: c = (0.1, 1.0, 1.3, 1.6)
+Percentiles
+2.5%
+25%
+50%
+75% 97.5%
+total number of IDUs -0.307 -0.234 -0.204 -0.177 -0.122
+
+corresponded to strong heterogeneity, but this time with particularly low capture probability
+in one category. For each scenario, we generated 100 datasets and then applied the Bayesian
+hierarchical model to each dataset. We considered the posterior median as the point estimate
+and calculated the relative error for the estimated total number of IDUs for each simulation.
+Table 5 shows the distribution of relative errors over the 100 simulations. The top panel
+confirms that in the absence of individual heterogeneity among capture probabilities, there is
+no significant bias. The lower two panels show that when there is strong heterogeneity among
+individuals, the proposed model does tend to underestimate the population size, so that the
+resulting estimates are conservative. The heterogeneity in both our simulated scenarios is
+fairly extreme, and in our experiments the population size was rarely underestimated by more
+than 30%, so this could be viewed as a practical bound on the amount of underestimation
+to be expected in situations like the one we are considering.
+
+6
+
+Discussion
+
+We have presented a Bayesian hierarchical model for estimating the size of populations at
+higher risk of HIV. The hierarchical approach is attractive because it pools local and national
+information, provides estimates for all districts with their uncertainties, and incorporates
+multiple data sources, including expert opinion.
+We have applied the method to estimating the number of intravenous drug users and
+street-based sex workers in Bangladesh using data from multiple listings and districts, namely
+
+21
+
+mapping data, behavioral surveillance survey, service delivery data and capture-recapture
+data. The model leads to narrower confidence intervals than the intervals produced by the
+Bangladesh Technical Group, but overlaps with them substantially.
+The Bangladesh Technical Group pointed out that there were fewer IDUs and SBSWs
+outside the urban centers, and much of the data used for estimation were collected in large
+cities instead of the whole district. Therefore, the participation rates in the data actually
+reflect both the participation rate in the urban area and the proportion of the district’s
+population that is urban. If the proportion urban in each district were available, the accuracy
+of our estimates could be further improved by including it in the Bayesian hierarchical model.
+Our model takes account of two major sources of heterogeneity between districts: in the
+at-risk population as a proportion of the total, and in the probability of members of the
+at-risk population being included in the available data sources. It does not take account of
+diﬀerences in inclusion probabilities between individuals, or individual-level heterogeneity,
+however. It is possible that individual-level heterogeneity may introduce biases, and we
+have done some simulations of fairly extreme levels of heterogeneity to explore this. These
+indicate that such heterogeneity may lead to downward biases in population size, and hence
+to conservative estimates; it does not lead to overestimates.
+Ideally, we would incorporate individual-level heterogeneity into our model and estimate
+it as part of our method, but data to do this are not generally available. We recommend
+that data allowing the estimation of individual-level heterogeneity be collected in the future,
+such as three overlapping lists, rather than two (Fienberg, Johnson, and Junker 1999).
+There has been considerable research on the use of capture-recapture data for population
+size estimation; see the reviews by Schwarz and Seber (1999), Pollock (2000), Chao (2001),
+and Amstrup, McDonald, and Manly (2005). Bayesian inference for capture-recapture data
+has been developed by Castledine (1981), Smith (1991), George and Robert (1992), Madigan and York (1997) and Wang, He, and Sun (2007). Basu and Ebrahimi (2001) studied
+individual heterogeneity and dependence. King and Brooks (2001) developed a Bayesian
+approach to model the capture-recapture data with covariates which could reduce the bias
+due to individual heterogeneity. King and Brooks (2008) used Bayesian model averaging
+to incorporate model uncertainty into population size estimation. Here we have developed
+methods for multiple data sources including capture-recapture data.
+Besides the commonly used data sources we have discussed, there are two recent networkbased methods that can provide data for population size estimation: respondent-drivent sampling (RDS) and the network scale-up method. RDS is a chain-referral sampling method introduced by Heckathorn (1997); see Volz and Heckathorn (2008) for recent work on inference
+from RDS data. Lansky et al. (2007) described the National HIV Behavioral Surveillance
+22
+
+System (NHBS), in which the U.S. Center for Disease Control is using RDS for behavioral
+surveillance of high-risk HIV related behaviors in the population of IDUs. RDS has the
+potential to provide information about population size as well as prevalence, although this
+has not yet been fully explored. It could be worth expanding our hierarchical model to incorporate information from RDS studies, although how to do this is not yet fully clear. Indeed,
+methods for inference about prevalence from RDS studies are not yet fully developed. For
+example, Goel and Salganik (2010) have shown that the true variance of RDS estimates may
+be much higher than previous research had suggested.
+The network scale-up method is a social network estimator for the size of hidden or hardto-count populations (Killworth et al. 1998; Zheng, Salganik and Gelman 2006). The basic
+idea is that people’s social networks are on average representative of the general population,
+and hence the average occurrence of any particular sub-population in personal networks
+reflects their prevalence in the general population. The method’s advantage is that the
+estimation of the sizes of HIV-risk populations does not involve reaching them, but can be
+done by surveying respondents in the general population. However, there are still various
+factors that aﬀect the accuracy of the final estimate that need to be resolved to make this
+method widely applicable. Once these issues are resolved, data from this method could be
+incorporated into our hierarchical approach.
+Estimates of the sizes of populations at high risk of HIV tend to be politically sensitive
+due to the stigmatized nature of these populations in many countries. Hence, various nondata related issues often aﬀect the final estimates (Pisani 2006; Reddy, Hoqueb, and Kelly
+2008). The Bayesian model may be useful for technical working groups in countries as it
+provides a tool that can be used on multiple, biased size-related data sets, with a statistical
+basis for size estimates with plausibility bounds.
+
+References
+Amstrup, S., T. McDonald, and B. Manly (2005). Handbook of Capture-Recapture Analysis. Princeton University Press.
+Basu, S. and N. Ebrahimi (2001). Bayesian capture-recapture methods for error detection
+and estimation of population size: heterogeneity and dependence. Biometrika 88, 269–
+279.
+Castledine, B. (1981). A Bayesian analysis of multiple-recapture sampling for a closed
+population. Biometrika 67, 197–210.
+Chao, A. (2001). An overview of closed capture-recapture models. Journal of Agricultural,
+23
+
+Biological, and Environmental Statistics 6, 158–175.
+Fienberg, S. E., M. Johnson, and B. W. Junker (1999). Classical multilevel and Bayesian
+approaches to population size estimation using multiple lists. Journal of the Royal
+Statistical Society, Series A 162, 383–405.
+George, E. I. and C. P. Robert (1992). Capture-recapture estimation via Gibbs sampling.
+Biometrika 79, 677–683.
+Ghys, P. D., T. Brown, N. C. Grassly, G. Garnett, K. A. Stanecki, J. Stover, and N. Walker
+(2004). The UNAIDS estimation and projection package: A software package to estimate and project national HIV epidemics. Sexual Transmitted Infections 80, i5–i9.
+Ghys, P. D., N. Walker, and G. P. Garnett (2006). Improving analysis of the size and
+dynamics of AIDS epidemics. Sexually Transmitted Infections 82, iii1–iii2.
+Goel, S. and M. J. Salganik (2010). Assessing respondent-driven sampling. Proceedings of
+the National Academy of Sciences 107, 6743–6747.
+Grassly, N. C., M. Morgan, N. Walker, G. Garnett, K. A. Stanecki, J. Stover, T. Brown,
+and P. D. Ghys (2004). Uncertainty in estimates of HIV/AIDS: the estimation and
+application of plausibility bounds. Sexually Transmitted Infections 80, i31–i38.
+Heckathorn, D. (1997). Respondent-driven sampling: A new approach to the study of
+hidden populations. Social Problems 44, 174–199.
+Killworth, P. D., E. C. Johnsen, C. McCarty, G. A. Shelley, and H. R. Bernard (1998).
+A social network approach to estimating seroprevalence in the United States. Social
+Networks 20, 23–50.
+King, R. and S. P. Brooks (2001). On the Bayesian analysis of population size.
+Biometrika 88, 317–316.
+King, R. and S. P. Brooks (2008). On the Bayesian estimation of a closed population size
+in the presence of heterogeneity and model uncertainty. Biometrics 64, 816–824.
+Lansky, A., P. S. Sullivan, K. M. Gallagher, and P. L. Fleming (2007). HIV behavioral
+surveillance in the U.S.: A conceptual framework. Public Health Reports 122, 16–23.
+Madigan, D. and J. C. York (1997). Bayesian methods for estimation of the size of a closed
+population. Biometrika 84, 19–31.
+Magnani, R., K. Sabin, T. Saidel, and D. Heckathorn (2005). Review of sampling hardto-reach and hidden populations for HIV surveillance. AIDS 19, s67–s72.
+
+24
+
+Mills, S., T. Saidel, R. Magnani, and T. Brown (2004). Surveillance and modelling of
+HIV, STI, and risk behaviours in concentrated HIV epidemics. Sexually Transmitted
+Infections 80, ii57–ii62.
+Morgan, M., N. Walker, E. Gouws, K. A. Stanecki, and J. Stover (2006). Improved plausibility bounds about the 2005 HIV and AIDS estimates. Sexually Transmitted Infections 82, iii71–iii77.
+Otis, D. L., K. P. Burnham, G. C. White, and D. R. Anderson (1978). Statistical inference
+from capture data on closed animal populations. Wildlife Monographs 62, 3–135.
+Panda, S., P. Mallick, M. Karim, M. Sharifuzzaman, A. H. Ahmed, and P. Baatsen (2002).
+... what will happen to us ...? national assessment on situation and responses on
+opioid/opiate use in Bangladesh (NASROB). Dhaka: FHI, CARE, and HASAB .
+Pisani, E. (2006). Estimating the number of drug injectors in indonesia. International
+Journal of Drug Policy 17, 35–40.
+Pollock, K. H. (1991). Modelling capture recapture, and removal statistics for estimation
+of demographic parameters for fish and wildlife populations: Past, present, and future.
+Journal of the American Statistical Association 86, 225–238.
+Pollock, K. H. (2000). Capture-recapture models. Journal of the American Statistical Association 95, 293–296.
+Reddy, A., M. Hoqueb, and R. Kelly (2008). HIV transmission in Bangladesh: An analysis
+of IDU programme coverage. International Journal of Drug Policy 19, 37–46.
+Schwarz, C. and G. Seber (1999). Estimating animal abundance: review III. Statistical
+Science 14, 427–456.
+Smith, P. J. (1991). Bayesian analyses for a multiple capture-recapture model.
+Biometrika 78, 399–408.
+Volz, E. and D. Heckathorn (2008). Probability based estimation theory for respondentdriven sampling. Journal of Oﬃcal Statistics 24, 79–97.
+Walker, N., J. Stover, K. Stanecki, A. E. Zaniewski, N. C. Grassly, J. M. Garcia-Calleja,
+and P. D. Ghys (2004). The workbook approach to making estimates and projecting
+future scenarios of HIV/AIDS in countries with low level and concentrated epidemics.
+Sexually Transmitted Infections 80, i10–i13.
+Wang, X., C. Z. He, and D. Sun (2007). Bayesian population estimation for small sample
+capture-recapture data using noninformative priors. Journal of Statistical Planning
+and Inference 137, 1099–1118.
+25
+
+World Health Organization (2000). Second-Generation Surveillance for HIV: The Next
+Decade. Geneva: World Health Organization.
+Zheng, T., M. J. Salganik, and A. Gelman (2006). How many people do you know in
+prison? Journal of the American Statistical Association 101, 409–423.
+
+26
+
+

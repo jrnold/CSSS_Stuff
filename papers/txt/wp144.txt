@@ -1,0 +1,922 @@
+!
+
+!
+!
+!
+!
+
+!
+
+!
+!
+!
+
+!
+
+!
+!
+!
+
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+!
+
+Online Information Behaviors During
+Disaster Events: Roles, Routines, and
+Reactions
+Harrison T. Reeder
+Carleton College
+Tyler H. McCormick
+University of Washington
+Emma Spiro
+University of Washington
+
+Working paper no. 144
+Center for Statistics and the Social Sciences
+University of Washington
+August 2014
+
+Online Information Behaviors During Disaster
+Events: Roles, Routines, and Reactions
+Harrison T. Reeder1 , Tyler H. McCormick2,3 , and Emma S. Spiro4
+1
+
+Department of Mathematics & Statistics, Carleton College, Northfield, MN 55057,
+USA
+2
+Department of Statistics, University of Washington, Seattle, WA 98159, USA
+3
+Department of Sociology, University of Washington, Seattle, WA 98159, USA
+4
+Information School, University of Washington, Seattle, WA 98159, USA
+
+Abstract. Social media and Internet-based messaging systems are increasingly important platforms for risk communication. A global audience turns to these tools to seek, disseminate, and curate time-sensitive,
+emergency information during periods of crisis. Moreover, emergency
+management organizations report adopting these tools to augment their
+typical public information functions. Here, we use unsupervised machine
+learning methods and text analysis to explore online communications
+from a set of state and Federal emergency management-related organizations over a period of 15 months. We compare communication during
+routine, non-event periods with communication during significant disaster events in order to evaluate di↵erences in the roles these organizations
+play. Findings indicate that communications from emergency management organizations align based on functional roles during routine situations, but during crisis events communication strategies converge on a
+mutual objective. These results have important practical consequences
+for organizational learning within this environment and could inform
+social media policies for emergency responders.
+Keywords: crisis informatics; microblogging; emergency response and
+recovery; social media; topic models
+
+1
+
+Introduction
+
+Social media and other Internet-based communication technologies have become
+critical components of emergency preparedness, response, and recovery. When
+crises occur these platforms are appropriated for many di↵erent purposes including but not limited to: exchanging emergency warnings/alerts; seeking, curating
+and disseminating event-related information; checking in with family and friends;
+and propagating misinformation [17][15][5]. Despite widespread use of social media during crises, both by the general public and government officials, research
+on information and communication behaviors in this context is still in its infancy.
+Preliminary work in this area has focused on descriptive analyses of usage
+during particular cases, demonstrating, for example, that Twitter has been effectively used during extreme events as a mechanism for resource mobilization,
+
+collaboration, and citizen reporting [20, 21][15, 16][13][4]. Other studies have explored the ways in which collaborative technologies have expanded the opportunities for citizens to become involved in disaster response and recovery e↵orts.
+Social media platforms have been e↵ectively used as venues for collective information gathering, collective sensemaking, and raising awareness of volunteering,
+aid, and support opportunities by population distributed across the globe [19].
+While existing work addresses important questions about the use of social
+media during crisis events, most prior studies are retrospective and case studybased, considering only data collected after a particular crisis has occurred.
+Moreover, there is a strong tendency for researchers to focus on the behaviors
+of the public. Studies of the behavioral patterns of emergency management officials are limited. Some notable exceptions exist. Sutton et al. [22], for example,
+examine content produced by local officials during a natural hazard event, exploring how features of these messages are associated with their retransmission
+by the public. In another study of official actors during severe weather, Carter
+et al. [3] found that government agencies rarely use social media as a source of
+information or to interact with constituents.
+Despite the fact that many government officials recognize the potential of
+social media platforms, and actively use these technologies to share information
+and connect with constituents during crisis events, relatively little is known
+about the online communication practices of emergency responders. Here we
+directly address this gap. In particular we analyze a longitudinal dataset of online
+communication from a national sample of official emergency management-related
+Twitter accounts. We compare communication behaviors during routine, nonevent periods with those during crisis events in order to evaluate di↵erences in
+the roles these organizations play. This work has important consequences forof
+emergency preparedness, response and recovery strategies and could potentially
+reduce human and economic losses, and mitigate long-term damage to disaster
+a↵ected communities [24][14][18][23].
+
+2
+
+Disaster Communication and Social Media
+
+While the public views social media platforms as yet another channel for communicating with emergency responders [9], government command-and-control
+protocols rarely integrate seamlessly with social media. Legal barriers, insufficient resources, and lack of training can all prevent emergency responders from
+e↵ectively engaging with constituents via social media [8]. Responding to these
+challenges, the U.S. Department of Homeland Security recently convened a Virtual Social Media Working Group to compile a series of reports designed to
+o↵er best practices to the emergency preparedness and response community
+on the “safe and sustainable use of social media technologies before, during,
+and after emergencies” [25]. In addition to describing significant advances in
+our understanding of social media practices for public safety, the group documented important gaps in the research literature. Many of the process and policy
+gaps identified center around developing standards, training, and guidance, along
+
+with strategies for collaboration across units and nontraditional partner entities.
+Learning to manage social media tools during all phases of emergency response,
+from preparedness to recovery, it vital for enhancing future e↵orts.
+Scholars have suggested that organizational use of social media for emergency
+response can be conceived of as falling into two broad categories: first, social media can be used to disseminate information, and second, these platforms could
+be used as a management tool itself, for example to receive victim requests for
+assistance [12]. Research in this area has demonstrated that in some cases responding agencies use social media solely for dissemination purposes, and rarely
+interact with other users [11][3]. In recent work about the Hurricane Sandy response, researchers found that some emergency responders changed their stance
+on appropriate Twitter protocols under extreme emergency circumstances, while
+at the same time trying to reinforce the use of official channels for aid requests
+[8]. Despite this progress, there is still a lack of empirical evidence about how and
+why government agencies use social media to communicate emergency-related
+information. Many open questions remain.
+The research described herein adds to our understanding of behavioral practices surrounding social media use by emergency responders during all phases of
+disaster response and recovery. In particular, we investigate longitudinal trends
+in communication by official emergency management-related organizations on
+the popular microblogging service Twitter. We begin by quantifying the information space spanned by message content. What do these agencies talk about?
+Moreover, we examine the temporal dynamics of these topics in relation to exogenous shocks - disaster incidents. How do communication practices during
+preparedness and response phases di↵er? We seek to fill a gap in the growing
+field of crisis informatics by o↵ering a systematic investigation of usage behavior
+over time.
+
+3
+
+Data
+
+This study focuses on online communication by emergency management-related
+organizations. There are many online communication platforms to consider; we
+focus on the popular microblogging platform Twitter. Our choice of data source
+was motivated by a number of particularly attractive features of this platform,
+including the fact that it is publicly available. More importantly, it is well suited
+to rapid information dissemination and di↵usion. It has also gained significant
+exposure over the past few years as a highly-used medium during disaster events.
+3.1
+
+Study Population:
+
+Constructing a sampling frame for all government, emergency-related Twitter
+accounts is a difficult task due to the dynamic nature of the environment and
+the lack of centralized information about which organizations have social media
+accounts. The data used here come from the Hazards, Emergency Response, and
+
+Online Informal Communication (HEROIC) Project5 [2]. As part of their data
+collection, HEROIC team members designed an account enumeration strategy
+that began in an o✏ine context. Subject experts listed all Federal and state
+government entities in the United States that are key actors in the alert and
+warning process for all types of hazards and threats. This criteria is purposefully
+general, not limited to a specific type of crisis or disaster nor a specific region
+of the country. This list of entities provided the starting point for constructing
+a study population.
+A search strategy was developed for identifying the Twitter usernames/accounts
+for each of the enumerated emergency-related government entities. The researchers
+used websites and other online resources to identify Twitter accounts. This sampling strategy ensures that a standard set of organizational actors from around
+the country were considered. It also prevents false identification of non-official
+accounts. A total of 216 Twitter accounts were identified through this procedure, encompassing national agencies like the Federal Emergency Management
+Agency (FEMA) and the Centers for Disease Control (CDC), as well as statelevel accounts representing state governments, law enforcement, public health
+and public safety agencies, divisions of the National Guard and Coast Guard,
+and personal accounts of governors. Eight accounts were inactive at the time of
+observation and were dropped from the sample.
+As the government entities represented in the dataset serve diverse functions
+within the emergency management ecosystem, we coded each account according
+to three designations representing aspects of individual roles and responsibilities:
+sector, functional role and scale of operations. For each categorization, the coding
+procedure was done by one of the researchers. Codes were then verified by a
+second coder and disagreements were resolved. The first categorization represents
+the broad sector of each account, and takes one of four levels: “safety,” “health,”
+“government,” and “environment.” The second represents the specific functional
+role of each entity in terms of their role in the disaster response and recovery
+process. We consider nine di↵erent functional roles: “coast guard,” “emergency,”
+“environment,” “government,” “governor,” “information technology,” “national
+guard,” “police,” and “public health.” Finally, we also classify each organization
+in terms of its scale of operations; recall we consider entities ranging from state
+to Federal agencies. Table 1 shows the number of Twitter accounts identified in
+each of the sector and sphere categories.
+3.2
+
+Online Communication:
+
+Using the sample of accounts described above, we use the Twitter REST API
+to collect all public messages (tweets) posted by these accounts over the 15
+month period from June 1st, 2010 through September 21st, 2011. Data collection
+occurred continually over time to ensure a complete dataset, without missing
+messages. A total of 171,729 tweets were gathered. In addition to collecting the
+text and creation timestamp of each message, basic attributes of the accounts,
+5
+
+http://heroicproject.org/
+
+Scale
+Federal Regional State
+Environment
+9
+0
+0
+Government
+3
+0
+63
+Health
+2
+0
+28
+Safety
+13
+12
+78
+Table 1. Distribution of accounts by sector and scale of operations.
+Sector
+
+including the number of incoming (followers) and outgoing (friends) social ties,
+total number of tweets, and account creation date were also obtained.
+3.3
+
+Extreme Events:
+
+The final data component of this project captures extreme crisis events occurring
+around the United States. To obtain timing, location, and severity information
+about notable disasters we use the Federal Emergency Management Agency’s
+(FEMA) database of disaster declarations.6 Each year, the FEMA helps to fund
+numerous state, county and local disaster response and relief e↵orts through its
+“Public Assistance” funding program. This funding covers responses to a broad
+constellation of extreme events, including severe storms, tornadoes and flooding,
+as well as earthquakes, wildfires, snowstorms, hurricanes and tsunamis. To examine the e↵ect that such extreme events have on communication behaviors of
+emergency management entities, we utilize public records of these declarations
+as a temporal index of events that were severe enough to require Federal institutional response. There were 120 disaster declarations during our observation
+period.
+
+4
+
+Methods: Topic Models and Topic Identification
+
+Our first goal in this research is to characterize the information space of online
+communication by our sample of emergency management-related organizations.
+Analysis of large-scale text corpora is a growing research topic. Here, we use
+topic models to understand and group the prominent themes within the set of
+government agency tweets [7][1]. Specifically, we use Latent Dirichlet Allocation
+[1], implemented using the topicmodels package in the R statistical computing
+language [6]. For a given document, LDA assumes that the document arises as
+a mixture of a finite set of “topics” or general themes. Topics then are defined
+as distributions over words. In our case, we use the weights associated with each
+topic to understand the information function of each tweet.
+A key challenge in our setting is the need to compare topic distributions
+across accounts and between event and non-event periods. Fitting separate topic
+6
+
+https://www.fema.gov/disasters/grid/year
+
+models to event and non-event periods, even with the same number of topics,
+would result in a di↵erent set of topic definitions for each setting. To address this
+issue, we fit a single model to the entire corpus, then generate results for specific
+actors or time periods using draws from the posterior predictive distribution.
+This approach learns the overall topic structure using all available data, then
+produces the mapping of that topic structure onto specific periods of time or
+accounts. We can then compare accounts and time periods by comparing the
+posterior predictive distribution over topics. In our results we use the Hellinger
+distance between posterior predictive distributions as our distance metric. This
+probabilistic framework leads to a natural clustering of actors based on similar
+information behaviors; moreover, our results show that this clustering turns out
+to align with functional roles in the emergency response ecosystem.
+Before modeling, the corpus of 171,729 tweets was pre-processed by removing
+stop words, stemming and removing extraneous spaces/punctuation. We then fit
+topic models using the LDA command with Gibbs sampling in the topicmodels
+package [6]. After some experimentation varying the number of topics used, we
+chose to fit a LDA topic model with 15 topics on the tweets, using each tweet as
+its own document. We show the top ten most probable words for each of the 15
+topics in Table 2 in Appendix A. These probable words were considered when
+assigning thematic titles to each topic; topic titles with be used throughout the
+remainder of the paper when referring to individual topics discovered.
+Considering the top words per topic provides some initial face validity that
+each topic is relatively internally coherent. Moreover, while some topics address
+facets of similar themes - “Severe Storm” and “Severe Weather,” for instance the topics also appear to be distinct. All subsequent analysis of individual behavioral patterns uses the 15-topic model to predict the distribution of these topics
+for by Twitter account; in other words, these 15 topics are the bases by which all
+subsequent actor similarities, di↵erences and distinctions are uncovered. In our
+analysis we explore the functional, geographical and temporal dynamics of topic
+use, focusing specifically on topics that match emergency response and recovery
+e↵orts.
+Recent work (e.g., [10]) raises questions about the suitability of topic models
+for Twitter data. Many of these limitations arise because tweets tend to be
+informal and have less predictable structure than other forms of communication.
+These issues are partially alleviated in our setting since official communications
+tend to be more formal and use fewer irregular text patterns (e.g., emoticons)
+than individuals tweeting.
+
+5
+
+Results
+
+Our focus here is to characterize the communication practices of organizational
+actors within the emergency response system in the United States. We explore
+the association between information behaviors (i.e., content produced) and functional designations within the disaster response ecosystem.
+
+Using an unsupervised learning model applied to a large-scale text corpus
+of tweets, we can estimate the “position” of each actor within the topic space.
+Using standard distance metrics, along with scaling and clustering methods, we
+can then identify groups of similar actors in terms of average content produced
+online. In particular, we aim to measure the association between these discovered clusters of similar actors and actor-based features such as organizational
+function, location or “importance” within the Twittersphere.
+In what follows, we demonstrate that similarity in terms of average content
+posted on Twitter seems to map to similarity in terms of functional role in response and recovery processes. However, we also show that everyday information
+behaviors di↵er from behavior during crisis periods, where entities local to the
+disaster itself tend to converge onto a mutual position within the information
+space; these event-driven roles significantly di↵er in terms of topical content.
+5.1
+
+Topics and Roles
+
+In Figure 1, we plot the mean probability of each topic by emergency response
+sector. This graph gives introductory insight into popular topics overall, but
+also about what kinds of actors talk about what kinds of topics. As seen, popular topics include public health and safety concerns, reflecting the fact that
+the majority of information content falls during pre-event, preparedness phases
+of disaster response. While Figure 1 illustrates that accounts from all sectors
+draw from all topics to some extent, there are evident trends in topic use across
+these sectors. These trends tend to intuitively reflect some expected di↵erentiation: public health agencies tweet more about “Public Health” and government
+accounts tweet more about “State Press,” “Press Release” and “Media & Holidays.”
+To address our primary research question, comparing online information behavior among emergency responders, we quantify the distance between accounts
+in topic space and use a multidimensional scale technique to visualize these distances in 2-dimensional space, as seen in Figure 2. Each point represents a single
+government entity, points that are physically closer to each other are more similar in terms of the information they posted on Twitter. In addition, we have
+colored each account according to its functional role category.
+We observe that accounts of similar function tend to cluster: emergency response accounts gravitate to one end, public health agency accounts to another,
+general government accounts to another, and National Guard and Coast Guard
+accounts to another. Some of the categories such as “police” and “environment”
+appear in less well-defined clusters, and this quality may arise simply because
+the categories themselves are less well-defined. The “police” category, for example, includes accounts for organizations as diverse as the TSA, the FBI press
+office and the New Jersey State Police. Likewise, the “environment” category
+consists of many national organizations with very di↵erent operating missions,
+like the USDA, the EPA, NOAA, and the NASA hurricane bureau, so these accounts naturally disperse based on their inclination towards regulation or policy
+formation or weather monitoring.
+
+Fig. 1. Mean estimated probability of topic use. Coded by relative proportion of topic
+used per sector.
+
+Fig. 2. Account topic similarities seem to cluster by functional role within the response
+and recovery framework.
+
+It is qualitatively clear, however, from the evident clustering that an organizations designated functional role is associated with tweet topic similarity; we
+
+also support this finding with a short numerical test. The goal here is to quantify
+if an account’s functional role could be identified using only its content, which
+fundamentally reflects the relationship between content and function.
+Using a k-means clustering algorithm we sort the accounts into 9 clusters equal to the number of distinct functional categories - which we then label by
+their majority-member function. We find that the learned categorizations were
+labeled with the correct function 73.1% of the time.7 This provides statistical
+evidence of an association between functional role and communication roles.
+5.2
+
+The Impact of Extreme Events
+
+Our second aim is to explore the ways in which information and communication
+behavior di↵ers based on context, that is: how do routine, everyday situations
+compare with periods of crisis? First, we examine di↵erences in content between
+tweets posted on days when at least one Federal disaster declaration was made
+versus tweets posted on days containing no declarations.8
+Our previously presented analyses aggregated all of the tweets produced by
+each account into a single “document” from which we predicted the topic distribution for that account. Now, we aggregate tweets into one of two “documents”
+per account: one comprised of every tweet produced on the day of an disaster
+declaration in its home state, and one collecting every tweet that the account
+produced on all other days. We then use the two predicted posterior topic distributions - a “non-event day” topic distribution and an “event day” topic distribution - to explore information dynamics. We restrict the scope to include only
+those accounts from states that have had at least one event in the observation
+period (103 accounts from 41 states) in order to perform matched comparisons
+by account between non-event and event days.
+First, we identify several topical shifts between non-event and event days,
+illustrated in Figure 3. Here we see a clear increase in response and recovery
+related topics, while preparedness topics are shown to decrease in occurrence.
+In combination these patterns reveal evidence of convergence towards eventoriented content:9 when extreme events occur, even emergency responders of
+all types, both directly and indirectly a↵ected, are more likely to tweet similar
+information. This behavioral pattern becomes even more clear when we visualize
+7
+
+8
+
+9
+
+By comparison, when we did a similar test clustering accounts by location using
+the 10 FEMA regions, the regions showed a closeness that was also statistically
+significant–but in absolute terms only 21.2% of the accounts were correctly labeled.
+This finding prefigures our subsequent analysis: clearly, function is a key determinant
+of Twitter content, but given small threads like this we also can begin to uncover
+geographic and temporal connections as well.
+In a follow-up analysis, included in Appendix B, we take a more nuanced look at topic
+probabilities over time to correlate the occurrence of extreme events with changes
+in Twitter content over a linear timescale.
+As illustrated by Figure 5 in Appendix A, amongst non-safety accounts in particular the di↵erences we observe between non-event messaging and event messaging
+magnify.
+
+distances between accounts by context of posting (event days versus non-event
+days) and geographical proximity.
+
+Fig. 3. Percent di↵erence in mean estimated topic probability for event days minus nonevent days. Darker colored bars represent statistically significant (↵ = 0.05) di↵erences.
+
+Figure 4 contains four panels illustrating mass convergence in topic space
+during extreme events. In the top left (a) we show account similarity during
+non-event periods. These results match those previously discussed - in general
+official accounts create content that matches their function within the emergency
+management ecosystem. We contrast routine positions within topic space with
+those during event-days, as seen in the lower left panel (c). While some rolebased cluster is still visible, emergency response have converged onto common
+ground within the topic space.
+As Figure 5 illustrates this is coupled with explicitly emergency-oriented
+content, evidence of a convergence towards common “event-oriented” content
+shared by organizations in an emergency. We additionally compare the average
+topical distance between accounts by state for non-event days versus event days,
+and found that on average, accounts from the same state are 25% closer on
+event days than on non-event days (see Table 3 in Appendix A), a statistically
+significant di↵erence. Figure 4(b and d) demonstrates this dynamic for a subset
+of states.
+
+(a) Non-Event Days
+
+(b) Non-Event Days Selected States
+
+(c) Event Days
+
+(d) Event Days Selected States
+
+Fig. 4. Account Similarity by Topics Tweeted on Event and Non-Event Days. Left
+panel (a and c) shows all accounts. Right panel (b and d) shows accounts in selected
+states.
+
+6
+
+Discussion and Conclusion
+
+Social media are an important tool for risk communication. In this research, we
+use unsupervised machine learning methods and text analysis to explore online
+communications from a set of nationally representative emergency managementrelated organizations over the period of 15 months. Our findings reveal a dichotomous set of information behaviors. On routine, non-event days, these official
+entities on Twitter post functional content that matches preparedness communication strategies, providing information and messaging on topics that reflect
+their designated operational roles in the emergency management space. However, when extreme events occur, these entities markedly adjust their messaging
+strategies, orienting towards a common event-focused communication strategy
+that explicitly addresses response and recovery activities. When an emergency
+impacts a particular area, we find that the accounts in that area demonstrate
+a significant degree of emergency-related convergence towards a common information space.
+To our knowledge, this is the first study to explore di↵erences in information behavior during emergencies and routine contexts over a long period of
+time. Our study quantifies average communication strategies employed by official emergency management-related organizations on social media. In addition,
+
+it o↵ers a more nuanced view of how these strategies change over time and in
+response to extreme events. Recognizing that everyday contexts di↵er from crisis
+periods is extremely important for social media policy. In particular, emergency
+management organizations play very di↵erent roles during di↵erent phases of
+disaster response. Information behaviors e↵ective during preparedness phases
+are likely not appropriate during immediate warning or response periods.
+These results also have important practical consequences for organizational
+learning within this environment. In particular, our results suggest that emergency response organizations new to social media should consider both functionally similar and geographically proximate others as role models for learning
+social and information behavior norms. Moreover, organizations should consider
+developing ties with both kinds of peer organizations during routine contexts, in
+order to foster collaboration and awareness before extreme events occur.
+While this research o↵ers insight into the communication patterns currently
+employed by emergency management organizations on Twitter, open questions
+remain. Our work motivates a number of directions for future work. One might
+consider how information and communication behavior di↵uses through the social network among emergency personnel. In particular, are entities who occupy
+similar positions in the information space closer in the network of social ties
+made explicit on many social media platforms? This is just one area we believe
+to be worth investigating.
+In summary, this research adds to our understanding of behavioral practices
+surrounding social media use by emergency responders during all phases of disaster response and recovery.
+Acknowledgements. The authors wish to thank members of the HEROIC
+Project team and the Center for Statistics and the Social Sciences at the University of Washington for supporting this work. This research was supported
+of the National Science Foundation under awards CMMI-1031853 and CMMI1031779. Partial support also provided by U.S. Army Research Office 62389-CSYIP. Additional support provided by the Carleton College Kolenkow-Reitz Fund
+for Undergraduate Research.
+
+7
+7.1
+
+Appendix A
+Topic Identification Details
+
+Here we provide a qualitative description of the 15 topics used in the subsequent
+analyses. Table 2 lists the top 10 most probable words for each topic, illustrating
+the key words that characterize each topic. Many of the resulting topics are
+clearly related to emergency management, such as weather-related or healthrelated topics, while others are more general. The “Social Media” topic, for
+example, collects the many words that Twitter accounts often use in attempts to
+engage users, such as “follow,” “post,” “photo,” “facebook,” and more. Others
+comprise the language typical of political or institutional messaging, such as
+“Media & Holiday,” “Press Release” and “State Press” and feature words like
+“announce,” “today,” “bill,” “great” “work,” and “thank.” Lastly, some specific
+emergency response functions are narrow enough to constitute their own topics,
+e.g., “Coast Guard & Law Enforcement” and “National Guard.”
+
+tip
+safeti
+take
+make
+use
+know
+safe
+can
+stay
+keep
+
+day
+thank
+great
+work
+year
+time
+one
+first
+good
+today
+
+issu
+week
+may
+advisori
+mdt
+expir
+azwx
+juli
+june
+wind
+
+health
+public
+school
+learn
+care
+depart
+protect
+educ
+prevent
+free
+
+new
+check
+photo
+post
+video
+facebook
+pleas
+see
+follow
+via
+
+Rank Safety Media
+Advisories Public Social
+Tips and Holiday
+Health Media
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+
+nation
+new
+support
+train
+job
+air
+nationalguard
+team
+honor
+secur
+
+weather
+flood
+nws
+counti
+warn
+servic
+sever
+watch
+statement
+winter
+
+Coast Guard National Guard Severe
+and Justice Guard
+Weather
+guard
+news
+coast
+releas
+district
+near
+general
+ice
+texa
+around
+
+area
+storm
+hurrican
+report
+iren
+tropic
+expect
+washington
+season
+move
+
+Event Damage Hurricane
+and Wildfires Hurricane
+updat
+fire
+power
+damag
+hous
+smoke
+investig
+fem
+line
+transport
+
+Press
+Release
+
+fema
+disast
+blog
+assist
+center
+communiti
+busi
+help
+usda
+recoveri
+
+Disaster
+Response
+
+state
+gov
+governor
+today
+announc
+kentucki
+job
+sign
+park
+offic
+
+State
+Press
+
+get
+emerg
+plan
+prepar
+help
+can
+need
+info
+inform
+call
+
+Disaster Storm
+Prep
+Travel
+
+water
+close
+now
+report
+polic
+road
+counti
+due
+activ
+open
+
+will
+today
+live
+meet
+join
+presid
+obama
+secclinton
+now
+tomorrow
+
+Table 2. Top 10 most probable words per topic. Thematic titles are assigned by considering this set of key words.
+
+7.2
+
+Additional Figures and Tables
+
+Fig. 5. Percent di↵erence in mean estimated topic probability for non-safety accounts,
+for event days minus non-event days. Darker colored bars represent statistically significant di↵erences.
+
+State
+Non-Event Distance Event Distance
+1 AK
+0.512
+0.365
+2 AL
+0.31
+0.221
+3 AZ
+0.471
+0.305
+4 AR
+0.267
+0.218
+5 CA
+0.327
+0.211
+6 CT
+0.378
+0.257
+7 GA
+0.437
+0.225
+8 IN
+0.35
+0.169
+9 IA
+0.366
+0.258
+10 KS
+0.289
+0.25
+11 KY
+0.39
+0.27
+12 ME
+0.512
+0.363
+13 MA
+0.243
+0.324
+14 MN
+0.374
+0.217
+15 MS
+0.463
+0.336
+16 NE
+0.448
+0.359
+17 NH
+0.404
+0.274
+18 NJ
+0.354
+0.225
+19 NY
+0.381
+0.283
+20 NC
+0.373
+0.272
+21 ND
+0.287
+0.294
+22 OH
+0.367
+0.22
+23 OK
+0.183
+0.248
+24 OR
+0.331
+0.207
+25 TN
+0.311
+0.383
+26 TX
+0.299
+0.249
+27 VT
+0.273
+0.324
+28 WA
+0.334
+0.12
+29 WI
+0.434
+0.33
+30 Mean
+0.361
+0.268
+31 Paired t-test t = 6.193
+p < 0.0001
+Table 3. Hellinger distances between topic distributions of accounts by state, for nonevent and event days. Includes results of paired t-test for di↵erence in means.
+
+8
+8.1
+
+Appendix B
+Impact of Extreme Events on Twitter Content over Linear
+Timescale
+
+Lastly, we draw on these findings in an illustrative case, demonstrating how
+a set of extreme events impact content in linear time. In the one month period from April 19 to May 19, 2011, there was a series of severe storm events
+that occurred across the American South. Over this interval, FEMA recorded
+providing assistance for 13 di↵erent storms in Alabama, Arkansas, Georgia, Kentucky, Missouri, Mississippi, North Carolina, Oklahoma and Tennessee. Given
+the condensed time frame of these storms, and the diverse set of accounts based
+in these states, this case o↵ers a clear illustration of the association between
+extreme events and Twitter content over time.
+To examine changes in topic use over time, we aggregate tweets for each
+account on a weekly basis and predict a topic distribution for each account for
+every week. The result is a linear timescale with weekly timesteps that illustrates
+changes in topic use. Figure 6 shows a line plot representing the probability
+of drawing from the “Disaster Response” topic over time for the official state
+government accounts from each of these states; the white interval is the period of
+interest, encompassing many severe weather events. While the the plot evidences
+the volatility of weekly topic distribution predictions, it also reveals that during
+the interval surrounding this particular set of severe weather events, there is
+a notable spike in the use of this topic among many of these accounts. This
+indicates a particular shift by state government accounts to emergency messaging
+in response to the set of storms.
+
+Fig. 6. Lineplot of probability of using “Disaster Response” topic by state government
+accounts, weekly. White band denotes April 19-May 19, 2011.
+
+Figure 7 isolates the trend observed above, showing a simplified line plot
+illustrating the weekly mean probability of using “Disaster Response” by all 27
+
+accounts in the a↵ected states.This graph reveals a sizeable spike in use of the
+topic for the a↵ected states during the interval of storms, deviating from the
+content of accounts in other states. This increase provides further evidence of
+accounts shifting to emergency event-oriented communications during extreme
+events. Moreover, Figure 8 reveals that a comparable topic spike is prominent
+even among only non-safety accounts, demonstrating that regardless of functional role, the accounts in these states respond to severe weather events by converging towards disaster-focused messaging. These dynamics extend our main
+results by illustrating that not only is a change in messaging present between
+emergency event days and routine days, but also that these di↵erentiated communication behaviors manifest on a continuous timescale.
+
+Fig. 7. Lineplot of mean probability of using “Disaster Response” topic for all accounts,
+weekly. White band denotes April 19-May 19, 2011.
+
+Fig. 8. Lineplot of mean probability of using “Disaster Response” topic for non-safety
+accounts, weekly. White band denotes April 19-May 19, 2011.
+
+References
+1. Blei, D.M., Ng, A.Y., Jordan, M.I.: Latent dirichlet allocation. the Journal of
+machine Learning research 3, 993–1022 (2003)
+2. Butts, C.T., Sutton, J., Spiro, E.S.: Hazards, Emergency Response, and Online
+Informal Communication Project Data (2011)
+3. Carter, L., Thatcher, J.B., Wright, R.: Social Media and Emergency Management:
+Exploring State and Local Tweets. In: 2014 47th Hawaii International Conference on System Sciences. pp. 1968–1977. IEEE Computer Society (Jan 2014),
+http://ieeexplore.ieee.org/lpdocs/epic03/wrapper.htm?arnumber=6758847
+4. Earl, J., Hurwitz, H.M., Mesinas, M., Tolan, M., Arlotti, A.: THIS PROTEST
+WILL BE TWEETED. Information , Communication & Society 16(May), 459–
+478 (2013)
+5. Fraustino, J., Liu, B., Jin, Y.: Social Media Use during Disasters. Tech. rep., College
+Park, MD (2012)
+6. Grn, B., Hornik, K.: topicmodels: An r package for fitting topic models. Journal
+of Statistical Software 40(13), 1–30 (5 2011), http://www.jstatsoft.org/v40/i13
+7. Hofmann, T.: Probabilistic latent semantic indexing. In: Proceedings of the 22nd
+annual international ACM SIGIR conference on Research and development in information retrieval. pp. 50–57. ACM (1999)
+8. Hughes, A., St. Denis, L., Palen, L., Anderson, K.: Online public communications
+by police & fire services during the 2012 Hurricane Sandy. In: CHI. ACM, Toronto,
+Ontario, Canada (2014), http://dl.acm.org/citation.cfm?id=2557227
+9. Kavanaugh, A., Fox, E.A., Sheetz, S., Yang, S., Li, L.T., Whalen, T., Shoemaker,
+D., Natsev, P., Xie, L.: Social Media Use by Government: From the Routine to the
+Critical. In: Proceedings of the 12th Annual International Conference on Digital
+Government Research. pp. 121–130. ACM, College Park, MD (2011)
+10. Kireyev, K., Palen, L., Anderson, K.: Applications of topics models to analysis of
+disaster-related twitter data. In: NIPS Workshop on Applications for Topic Models:
+Text and Beyond. vol. 1 (2009)
+11. Larsson, A.O., Agerfalk, P.J.: Snowing, freezing ... tweeting? Organizational Twitter use during crisis. First Monday 18(6) (2013)
+12. Lindsay, B.R.: Social Media and Disasters: Current Uses, Future Options, and
+Policy Considerations (2011)
+13. Liu, S.B., Palen, L., Sutton, J., Hughes, A.L., Vieweg, S.: In search of the bigger
+picture: The emergent role of on-line photo sharing in times of disaster. In: Fiedrich,
+F., de Walle, B.V. (eds.) Proceedings of the 5th International ISCRAM Conference.
+No. May, Citeseer, Washington DC (2008)
+14. Mileti, D.: Disasters by Design: A reassessment of natural hazards in the United
+States. National Academies Press (1999)
+15. Monroy-Hern´
+andez, A., Boyd, D., Kiciman, E., Counts, S.: Narcotweets: Social
+Media in Wartime. In: Proceedings of the Sixth International AAAI Conference
+on Weblogs and Social Media Narcotweets:. pp. 515–518. AAAI (2012)
+16. Monroy-Hern´
+andez, A., Boyd, D.M., Kiciman, E., Choudhury, Munmun De
+Counts, S.: The New War Correspondents: The Rise of Civic Media Curation in
+Urban Warfare. In: CSCW. ACM, San Antonio, Texas (2013)
+17. Palen, L.: Online Social Media in Crisis Events. Educause Quarterly 3, 76–78 (2008)
+18. Palen, L., Vieweg, S., Sutton, J.: Crisis informatics: Studying crisis in a networked
+world. In: Third International Conferece on e-Social Science. Ann Arbor, Michigan
+(2007)
+
+19. Starbird, K., Palen, L.: ”Voluntweeters”: Self-Organizing by Digital Volunteers in
+Times of Crisis. In: CHI. pp. 1071–1080. ACM, Vancouver, Canada (2011)
+20. Starbird, K., Palen, L.: Working & Sustaining the Virtual Disaster Desk. In:
+CSCW. ACM, San Antonio, Texas (2013)
+21. Starbird, K., Palen, L., Hughes, A., Vieweg, S.: Chatter on the red: what hazards
+threat reveals about the social life of microblogged information. In: Proceedings of
+the 2010 ACM conference on Computer supported cooperative work. pp. 241–250.
+ACM (2010), http://portal.acm.org/citation.cfm?id=1718965
+22. Sutton, J., Spiro, E.S., Johnson, B., Fitzhugh, S.M., Gibson, B., Butts, C.T.: Warning Tweets: Serial Transmission of Warning Messages During a Disaster Event.
+Information , Communication & Society (2013)
+23. Sutton, J.N., Johnson, B., Greczek, M., Spiro, E.S., Fitzhugh, S.M., Butts, C.T.:
+Connected Communication: Network Structures of Official Communications in a
+Technological Disaster. In: Rothkrants, L., Ristvej, J., Franceo, Z. (eds.) Proceedings of the 9th International Systems for Crisis Response and Management Conference. pp. 1–10. Vancouver, Canada (2012)
+24. Tierney, K.: Emergency medical preparedness and response in disasters: The
+need for interorganizational coordination. Public Administration Review 45, 77–84
+(1985), http://www.jstor.org/stable/10.2307/3135001
+25. Virtual Social Media Working Group: Lessons Learned: Social Media and Hurricane Sandy Virtual Social Media Working Group and. Tech. Rep. June, U.S.
+Department of Homeland Security, Science and Technology Directorate (2013)
+
+

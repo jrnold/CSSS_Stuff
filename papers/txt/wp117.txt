@@ -1,0 +1,2421 @@
+Bayesian Reconstruction of Past Populations and Vital
+Rates by Age for Developing and Developed Countries∗
+Mark C. Wheldon, Adrian E. Raftery, Samuel J. Clark
+University of Washington, Seattle
+Patrick Gerland
+United Nations Population Division
+
+Working Paper no. 117
+Center for Statistics and the Social Sciences
+University of Washington
+September 19, 2012
+
+Abstract
+We extend Bayesian population reconstruction, a recent method for estimating
+past populations by age, with fully probabilistic statements of uncertainty. It simultaneously estimates age-specific population counts, fertility rates, mortality rates and
+net international migration flows from fragmentary data while formally accounting for
+measurement error. As inputs, Bayesian reconstruction takes initial bias-reduced estimates of age-specific population counts, fertility rates, survival proportions and net
+international migration. We extend the method to apply to countries without censuses
+at regular intervals. We also develop a method for using it to assess the consistency
+between model life tables and available census data, and hence to compare different
+model life table systems. We show that the method works well in countries with widely
+∗
+Mark C. Wheldon is Ph.D. Candidate, Department of Statistics, University of Washington, Box 354320,
+Seattle, WA 98195 (e-mail: mwheldon@uw.edu). Adrian E. Raftery is Professor of Statistics and Sociology,
+University of Washington, Box 354322 (e-mail: raftery@uw.edu). Samuel J. Clark is Associate Professor of
+Sociology, University of Washington, Box 353340, Seattle, WA 98195 (e-mail: samclark@uw.edu). Patrick
+Gerland is Population Affairs Officer, United Nations Department of Economic and Social Affairs, Population
+Division, New York, NY 10017 (e-mail: gerland@un.org). This work was supported by grants R01 HD054511,
+R01 HD070936, K01 HD057246 and 5R24HD042828 from the Eunice Kennedy Shriver National Institute of
+Child Health and Human Development (NICHD). The first author received partial support from a Shanahan
+Endowment Fellowship and NICHD training grant 5T32HD007543 to the Center for Studies in Demography
+& Ecology at the University of Washington. The views and opinions expressed in this paper are those of
+the authors and do not necessarily represent those of the United Nations. This paper has not been formally
+edited and cleared by the United Nations.
+
+i
+
+varying levels of data quality by applying it to reconstruct the past female populations
+by age of Laos, a country with little vital registration data where population estimation
+depends largely on surveys, Sri Lanka, a country with some vital registration data, and
+New Zealand, a country with a highly developed statistical system and high-quality
+vital registration data.
+KEY WORDS:
+
+Bayesian hierarchical model, Fertility, International migration,
+Model life table, Mortality, Vital registration data.
+
+The release of World Population Prospects 2010 (WPP 2010; United Nations [UN] 2011a)
+coincided with considerable interest in the size of the world population in both the popular
+and academic literature (e.g. Gillis & Dugger 2011; Reuters 2011; Phillips 2011; Nagarajan 2011; Alberts 2011) perhaps due to the then imminent arrival of the seven billionth
+person. There was considerable uncertainty about when that person would be born. In this
+article, we extend and apply a new method, introduced by Wheldon, Raftery, Clark, and
+Gerland (2012), for estimating past and current population by age and sex and for assessing
+the associated uncertainty.
+Information about uncertainty can be conveyed by providing interval estimates, rather
+than simply point estimates as is done for many official statistical releases. Such intervals
+should have a probabilistic interpretation; they should contain the true value with some
+specified probability, conditional on the assumed statistical model. Wheldon et al.’s (2012)
+method produces such intervals. It reconstructs population structures of the past by embedding formal demographic relationships in a Bayesian hierarchical model. The outputs are
+joint probability distributions of demographic rates and population counts from which fully
+probabilistic interval estimates can be derived in the form of Bayesian confidence intervals
+(or “credible intervals”). The method has been designed to fit within the United Nations
+Population Division (UNPD)’s current work-flow and to deal with the lack of reliable data
+commonly experienced in many developing countries. Nevertheless, we hope it is general
+enough to be useful for other demographers interested in estimating population structures
+of the past. We will refer to the new method as “Bayesian reconstruction”.
+Our aims are as follows. We show that Bayesian reconstruction is useful in a wide range
+of data quality contexts by reconstructing the populations of countries for which data quality
+varies from poor to extremely good. In all cases, Bayesian reconstruction indicates when
+estimates of vital rates are inconsistent with census results. This means that the method can
+be used to compare competing model life tables. We also extend the method to unevenly
+spaced censuses.
+The remainder of the paper is structured as follows. In the next section we review existing
+methods of population reconstruction. Following that, we describe the method. Then we
+apply Bayesian reconstruction to the female populations of three countries: The People’s
+1
+
+Democratic Republic of Laos (Laos), Sri Lanka and New Zealand. The New Zealand case
+shows that the model performs sensibly for countries with very good data and the Laos
+case for fragmentary data. We use the case of Sri Lanka to demonstrate our extension to
+unevenly spaced censuses. Bayesian reconstruction detected inconsistencies between surveybased estimates of fertility and intercensal population changes, and provided a correction.
+There is relatively little mortality data for Laos and we use this case to illustrate how
+Bayesian reconstruction can be used to choose between competing model life tables. We
+conclude with a discussion.
+
+1
+
+Population Reconstruction Methods
+
+Many human population reconstructions in the demography literature fall into one of two
+categories: reconstruction of populations of the distant past using data of the kind commonly found in European parish registers (e.g. Lee 1971, 1974; Wrigley & Schofield 1981;
+Oeppen 1993a, 1993b; Bertino & Sonnino 2003) and reconstruction of population dynam´ Gr´ada 1986; Daponte,
+ics after extreme crises such as famine or genocide (e.g. Boyle & O
+Kadane, & Wolfson 1997; Heuveline 1998; Merli 1998; Goodkind & West 2001). General
+methodology has been primarily developed in the former context, the latter being necessarily focused on special cases. In some form or another, the cohort component model of
+population projection (CCMPP) (Lewis 1942; Leslie 1945, 1948) is central to almost all
+methods of population reconstruction.
+Two significant developments were Lee’s (1971, 1974) “inverse projection” and Wrigley
+and Schofield’s (1981) “back projection”. Inverse projection converts counts of births and
+deaths into the respective rates. Reconstruction proceeds forward in time. Counts of baseline
+population and model age patterns of fertility and mortality are also required. Where at
+least two independent estimates of population size are available, net migration can also be
+estimated (Lee 1985). In contrast, back projection takes counts at the terminal year and then
+moves backward in time, reconstructing population counts and net migration along the way.
+Several iterations might be required to produce a satisfactory result. There was considerable
+debate about the efficacy of back projection, centered partly around identifiability issues that
+arise from trying to “resurrect” members of the open ended age group and simultaneously
+estimate fertility, mortality and migration rates (Lee 1985, 1993). Further developments are
+described by Barbi, Bertino, and Sonnino (2004). Oeppen (1993a), Oeppen (1993b) and
+Bonneui and Fursa (2011) frame reconstruction as a high dimensional optimization problem.
+All of the above methods are deterministic and produce point estimates only.
+Stochastic inverse projection (SIP) was proposed by Bertino and Sonnino (2003). It incor-
+
+2
+
+porates a specific kind of stochastic variation into the reconstruction, taking inputs similar
+to those required by inverse projection. Model age patterns of fertility and mortality are
+treated as individual-level probabilities of death rather than fixed, population-level rates.
+Like its predecessors, stochastic inverse projection (SIP) was designed to work with accurate
+time-series of total births and deaths. The uncertainty in the final estimates comes only
+from modeling birth and death as stochastic processes at the level of the individual (Lee
+1998 called this “branching process uncertainty”). There is no allowance for measurement
+error in the data, nor is there any stochastic variation in the model fertility and mortality
+age patterns. For most developing and less-developed countries, information about births
+and deaths is not highly accurate, and age patterns of births and deaths are known only
+approximately. In these cases, the uncertainty is due mainly to measurement error. In fact,
+even for well-measured populations, at the national level where counts are large, Lee (2003)
+and E. Cohen (2006) note that uncertainty due to stochastic vital rates is likely to be small
+relative to uncertainty due to measurement error; see also Pollard (1968).
+The aim of Daponte et al. (1997) was to construct a counterfactual history of the Iraqi
+Kurdish population from 1977 to 1990, a period during which it was the target of considerable state-sponsored violence. A Bayesian approach was taken in which vital rates and
+population counts were modeled as probability distributions. Prior distributions for fertility and mortality rates based on survey data and beliefs about the uncertainty founded on
+studies of the data sources, historical information and knowledge of demographic processes.
+Conclusions from estimated posterior distributions took the form of fully probabilistic interval estimates. This approach took account of uncertainty due to measurement error and
+made use of contextual knowledge to make up for fragmentary, unreliable data. However,
+there were some restrictions, such as allowing mortality to vary only through the infant
+mortality rate and specifying fixed age patterns of fertility. Our approach is similar in spirit
+but more flexible as no model age patterns are assumed to hold throughout the period of
+reconstruction.
+
+2
+
+Method
+
+Mathematical details can be found in Wheldon et al. (2012) and the Appendix. Here we give
+a more conceptual overview. All computation was done using the freely available statistical
+software package R (R Development Core Team 2012); Bayesian population reconstruction
+is implemented in the package “popReconstruct”.
+
+3
+
+2.1
+
+Description of the Model
+
+The method reconciles two different estimates of population counts, those based on adjusted
+census counts (or similar data) and those derived by projecting initial estimates of the
+baseline population forward using initial estimates of vital rates. Adjusted census counts are
+raw counts which have been processed to reduce common biases such as undercount and age
+heaping. Since projection is done using the CCMPP, the parameters for which we require
+initial point estimates are the CCMPP inputs, namely population counts for the baseline
+year, fertility rates, survival proportions and the net number of migrants, all by age group,
+over the period of reconstruction. Migration is treated in the same way as fertility, mortality
+and baseline population counts.
+Estimates of the measurement error for each parameter are also required. These can be
+based on expert judgment or preliminary analyses such as post-enumeration surveys. Data
+and expert knowledge sufficient to generate these inputs are available for most countries from
+about 1960. The comparison is through a Bayesian hierarchical (or multilevel), statistical
+model which provides probabilistic posterior distributions of the inputs, as well as population
+counts at each projection step in the period of reconstruction.
+Initial point estimates of the input parameters are derived from data. Baseline population
+estimates come from adjusted census counts (or similar sources), fertility and mortality
+estimates from surveys such as the Demographic and Health Surveys (DHSs) and vital
+registration. The model defines a joint prior distribution over these parameters which is
+parameterized by the initial point estimates and standard deviations. Typically, the initial
+point estimates will serve as the marginal medians of this distribution, but this is not a
+requirement. The standard deviations represent measurement uncertainty about the point
+estimates. These distributions induce a probability distribution on the population counts at
+the end of each projection step within the period of reconstruction. Uncertainty about the
+true population numbers at the time of a census is also modeled by probability distributions.
+Adjusted census counts are taken as the median of these distributions and measurement
+uncertainty is represented analogously by standard deviations.
+It is important that counts (adjusted or otherwise) from censuses in years after the
+baseline year not be used to derive initial estimates of fertility, mortality and migration.
+This means, for example, that intercensal survival rates should not be used to estimate
+mortality, and that “residual” counts, the difference between census counts and counts based
+on a projection using fertility and mortality alone, should not be used to estimate migration.
+Doing so would amount to using the census data twice, once to derive initial estimates of
+vital rates and once to derive adjusted census counts, which would lead to an underestimate
+of uncertainty.
+4
+
+In standard Bayesian terms, treating the induced distribution of projected counts as a
+prior and the distribution of census counts as a likelihood, Bayesian reconstruction yields
+a posterior distribution of the inputs via Bayesian updating. This distribution can be usefully summarized by marginal Bayesian confidence intervals for each input parameter which
+express uncertainty probabilistically. Furthermore, confidence intervals for age-summarized
+parameters such as total fertility rate (TFR) and life expectancy at birth (e0 ) can be obtained.
+Using simulation, Wheldon et al. (2012) found that Bayesian reconstruction produced wellcalibrated marginal Bayesian confidence intervals. That is, p-percent Bayesian confidence
+intervals for each parameter of interest were found to contain the true value p percent of the
+time.
+Often, projected counts based on a sample from the joint prior on the input parameters
+will not equal the same-year adjusted census counts. This discrepancy is sometimes called
+an “error of closure” (Preston, Heuveline, & Guillot 2001). The discrepancy can be reduced
+by making appropriate adjustments to any, or all, of the CCMPP input parameters and
+census counts. Many different combinations of adjustments will have the same effect on
+the discrepancy; for example, adding a migrant of age x has the same effect on the age-x
+population count as removing a death to a person of age x. The posterior distribution is a
+distribution over all possible combinations of CCMPP input parameters which assigns higher
+probability to those combinations leading to larger reductions in the discrepancy. This means
+that each age-time specific component of the input parameters is not affected equally, but
+proportionately according to the effect it has on the joint posterior.
+In our case studies, the periods of reconstruction are delimited by the earliest and most
+recent censuses. Reconstruction can be done beyond the year of the most recent census
+if initial estimates of vital rates and international migration are available, but these latter
+initial estimates cannot be updated without a census.
+
+2.2
+
+Bias
+
+Estimates of vital rates and population counts from surveys and censuses are susceptible to
+bias. For example, fertility rate estimates based on birth histories suffer from omission and
+misplacement of births due to recall error and census counts may be biased due to undercount
+in certain age groups (Zitter & McArthur 1980; Preston et al. 2001). Bayesian reconstruction
+does not treat bias explicitly because demographic data differ markedly across parameters,
+time and countries. Many methods for estimating and reducing these biases have been
+proposed such as post-censal enumeration surveys (e.g., United Nations [UN] 2008, 2010),
+“indirect” methods (e.g., United Nations [UN] 1983), and Alkema, Raftery, Gerland, Clark,
+and Pelletier’s (2012) method for TFR. Methods appropriate for adjusting census data will
+5
+
+not, in general, be applicable to vital registration or survey data. Even within these broad
+categories, there is great variation among countries and time which makes development of
+a general approach infeasible. Therefore, the analyst applying Bayesian reconstruction will
+need to select bias reduction methods appropriate to the data being used. We illustrate
+some possibilities in the case studies.
+
+2.3
+
+Measurement Error Uncertainty
+
+Bias reduced initial point estimates of the CCMPP input parameters are still subject to
+measurement error; that is, variation that is non-systematic and cannot realistically be eliminated or otherwise modeled. In Bayesian reconstruction, measurement error is represented
+by the prior standard deviations of the initial estimates. In many cases there is not much
+data with which to estimate these parameters, but there is often a great deal of relevant
+expert knowledge. This can be included by giving the variances themselves prior distributions and using the expert knowledge to set the fixed hyperparameters of these distributions,
+thereby defining a hierarchical model. To do this, we require a value for p in statements of the
+form “there is a 90 percent probability that the true fertility rates are within plus-or-minus
+p percent of the initial point estimates”, and similarly for survival proportions, migration
+proportions and population counts. We asked UNPD analysts to provide p, which we refer
+to as the “elicited relative error”. See the Appendix for further details.
+
+3
+
+Case Studies
+
+To show that Bayesian reconstruction works in a variety of situations, we used the subjective
+but useful evaluations of UNPD analysts to select three countries based on the quality of
+their mortality rate data: 1) New Zealand, with complete vital rate data based on vital
+registration; 2) Sri Lanka with good vital rate data requiring only small adjustments; 3)
+Laos with only limited under-five mortality estimates available and fertility data from a few
+demographic surveys. Thus we analyze New Zealand with excellent data, Sri Lanka with
+intermediate data, and Laos with poor data. Wheldon et al. (2012) analyzed Burkina Faso
+which, in terms of data availability, sits between Laos and Sri Lanka, having data on both
+adult and under-five mortality.
+Each case is discussed separately below. We briefly describe the original data sources
+and the processes used to derive the initial estimates, and present results for four demographic parameters: TFR, net number of migrants, e0 and under-five mortality. We give the
+limits of 95 percent Bayesian confidence intervals of our initial estimates and the posterior
+distributions of selected parameters using the notation: “(lower, upper)”. We compare our
+6
+
+results for fertility and mortality to those published in WPP 2010 for years with comparable
+estimates. WPP 2010 was based on a different procedure but the same data, therefore the
+comparison is useful.
+We cover the highlights here; more detailed descriptions of the data sources, initial estimates and results are in the Appendix (Section B).
+
+3.1
+
+Laos, 1985–2005
+
+3.1.1
+
+Data and Initial Estimates
+
+National censuses were conducted in 1985, 1995 and 2005. These data allow us to reconstruct
+the female population between 1985 and 2005. We used the census year counts in WPP 2010;
+there were no post-enumeration surveys, but these counts were adjusted to compensate for
+undercount in certain age groups.
+Initial estimates of age-specific fertility rates were based on direct and indirect estimates from the available surveys. Age-specific initial estimates were obtained by multiplying
+smoothed estimates of TFR by smoothed estimates of the age-pattern of fertility. Due to
+the small number of data points, smoothing was done by taking medians across data source
+for each age- time-period.
+The only available mortality data are for infant and under-five mortality. Therefore our
+initial estimates came from the Coale and Demeny (1983) West (CD West) model life tables
+with values of 1 q0 and 5 q0 close to those estimated from available data.
+Elicited relative errors for population counts, fertility and mortality were set to 10 percent.
+There is not much information about migration. To model this, we set initial point
+estimates to zero for all ages and time periods, but used a large elicited relative error of 20
+percent.
+3.1.2
+
+Results
+
+Figure 1 shows our prior and posterior distributions for the four demographic parameters
+together with WPP 2012 estimates for fertility and mortality. The Bayesian reconstruction
+estimate of TFR differs from the initial estimates in the five-year periods beginning 1985,
+1990 and 2000. While both imply consistent decreases in fertility, the initial estimates appear
+to be too high in all but the third five-year period. Our posterior intervals suggest a level
+of fertility more similar to WPP 2010, except our estimates suggest that the acceleration in
+the decline begins one five-year period later.
+Migration is estimated simultaneously with fertility and mortality. Posterior uncertainty
+for the average annual total net number of migrants has been significantly reduced relative
+
+7
+
+to prior uncertainty (Figure 1b). The mean half-width of the posterior intervals is 6,099
+compared with 142,777) for the prior intervals.
+Figure 1a shows that the posterior intervals are not constrained to lie inside the prior
+intervals. Moreover, the posterior intervals can be wider than the prior intervals. This
+is the case for age-specific fertility rates for Laos. See the Appendix for further details
+(Section B.1.2).
+
+3.2
+3.2.1
+
+Sri Lanka, 1951–2001
+Data and Initial Estimates
+
+Censuses were conducted in Sri Lanka in 1953, 1963, 1971, 1981 and 2001 and so we reconstruct the female population between 1953 and 2001. We took population counts from
+WPP 2010 which were adjusted to account for underenumeration. Initial estimates of agespecific fertility rates were derived in a manner similar to that used for Laos, although at
+the level of TFR we used loess (Cleveland, Grosse, & Shyu 1992; Cleveland 1979) to smooth
+multiple data points across time-period. Initial estimates of age-specific survival proportions
+were based on abridged national life tables calculated form death registration and available
+surveys. Elicited relative errors for all of these parameters were set at 10 percent.
+We used the same default initial estimate of international migration as for Laos. Luther,
+Gaminirante, de Silva, and Retherford (1987) provide age-specific estimates for the periods
+1971–1975 and 1976–1980 using census data as well as information about vital rates. Their
+results are not suitable as a basis for initial estimates because they were derived, in part,
+from census counts, so we use them for comparison instead.
+3.2.2
+
+Interpolation to Handle Irregular Census Intervals
+
+Wheldon et al. (2012) assumed that censuses were taken at regular intervals but there is an
+irregular gap between the 1963 and 1971 censuses. Therefore, we propose interpolating the
+CCMPP outputs on the growth rate scale such that they coincide with the census years. We
+explain by way of an example.
+Consider the number in the population aged [x, x + 5] for which we have a census-based
+estimate at 1963 and another census-based estimate at 1971. Initial estimates for vital rates
+are available at 1963, 1968, 1973, and at subsequent five-year increments. The CCMPP can
+be used with these data to derive projected counts for this age group in 1968 and 1973. To
+compare the CCMPP output with the census counts at 1971, we assume that the growth
+rate for this age group, rx,1968 , was constant between 1968 and 1973, and estimate it from
+the projected counts. The estimate is then used to interpolate the CCMPP output to 1971.
+
+8
+
+300
+
+8
+
+TFR (children)
+
+●
+
+legend
+●
+
+●
+
+prior
+posterior
+
+6
+
+WPP 2010
+
+net no. migrants (000s)
+
+200
+7
+
+legend
+●
+
+100
+
+prior
+posterior
+
+●
+
+5
+●
+
+●
+
+1985
+
+1990
+
+0
+
+●
+
+●
+
+●
+
+1995
+
+2000
+
+4
+
+−100
+1985
+
+1990
+
+1995
+
+2000
+
+5−year period
+
+5−year period
+
+(a)
+
+(b)
+
+65
+
+●
+
+●
+
+deaths per 1,000 births
+
+e0 (years)
+
+60
+
+legend
+●
+●
+
+prior
+posterior
+WPP 2010
+
+55
+
+●
+
+150
+
+●
+
+legend
+●
+
+prior
+posterior
+
+●
+
+WPP 2010
+●
+
+100
+
+50
+●
+
+50
+1985
+
+1990
+
+1995
+
+2000
+
+1985
+
+5−year period
+
+1990
+
+1995
+
+2000
+
+5−year period
+
+(c)
+
+(d)
+
+Figure 1: Prior and posterior medians and 95 percent Bayesian confidence intervals of selected parameters for the reconstructed female population of Laos, 1985–2004. Prior medians
+correspond to initial estimates. (a) Total fertility rate. (b) Total net number of female migrants (average annual). (c) Female life expectancy at birth. (d) Female under-five mortality
+rate (deaths to 0–5 year olds per 1,000 live births).
+
+9
+
+Using a “hat” ( b ) to denote “estimate”, this is compactly expressed as:
+
+
+1
+nx,1973
+rbx,1968 = log
+;
+n
+bx,1971 = (nx,1968 )e3brx,1968 .
+5
+nx,1968
+We use a similar method to extrapolate the population counts from the 1953 census back to
+1951 using the 1953–1963 growth rate. Interpolating in this manner is adequate for periods
+of length less than five years.
+3.2.3
+
+Results
+
+Poster distributions for the demographic parameters are summarized in Figure 2. Our posterior estimates of mortality and migration agree closely with those of WPP 2010 and Luther
+et al. (1987). Applying Bayesian reconstruction suggests, however, that the sources upon
+which the initial estimates were based are inconsistent with intercensal changes in the number of births. The posterior estimates of TFR from Bayesian reconstruction differ noticeably
+from the initial estimates in the periods 1951–1956 and 1956–1961 (posterior intervals (5.11,
+5.71) and (5.24, 5.88); initial estimates 5.01 and 5.03 children per woman, respectively). Our
+method has automatically provided a correction which, in this case, yields results similar to
+the WPP 2010 estimates.
+
+3.3
+3.3.1
+
+New Zealand, 1961–2006
+Data and Initial Estimates
+
+Census counts came from national censuses conducted every five years between 1961 and
+2006. Initial estimates of fertility rates were calculated from published age-specific fertility
+rates (Statistics New Zealand 2011a) and numbers of births (Statistics New Zealand 2012)
+by age-group of mother by year. Initial estimates for survival proportions were calculated
+from New Zealand life tables (Statistics New Zealand 2011b).
+Information about the measurement errors of these parameters was available in the form
+of census post-enumeration surveys (PESs) and estimates of the coverage achieved by the
+birth and death registration systems. Elicited relative errors were based on this information
+and were set to 2.5 percent, one percent, and one percent for population counts, fertility and
+mortality, respectively.
+Information about international migration is quite reliable given that New Zealand is a
+small island nation with a well-resourced official statistics system. The basis of our initial
+estimates of international migration are counts of permanent and long-term migrants (PLT)
+migrants taken from arrivals and departures cards (Statistics New Zealand 2010c). The
+largest source of error in these data as estimates of international migration is the discrepancy
+10
+
+6000
+
+6
+
+●
+
+●
+
+●
+
+●
+
+legend
+●
+
+●
+
+prior
+posterior
+
+4
+
+WPP 2010
+●
+
+net no. migrants (000s)
+
+TFR (children)
+
+5
+
+4000
+
+legend
+●
+
+prior
+posterior
+
+2000
+
+Luther et al. (1987)
+
+●
+
+3
+0
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+2
+1951
+
+1956
+
+1961
+
+1966
+
+1971
+
+1976
+
+1981
+
+1986
+
+1991
+
+1996
+
+1951 1956 1961 1966 1971 1976 1981 1986 1991 1996
+
+5−year period
+
+5−year period
+
+(a)
+
+(b)
+
+●
+
+●
+
+●
+
+●
+
+250
+
+70
+●
+
+e0 (years)
+
+●
+
+60
+
+legend
+
+●
+
+●
+
+prior
+posterior
+
+●
+
+WPP 2010
+
+50
+
+deaths per 1000 births
+
+●
+
+●
+
+200
+
+legend
+●
+
+●
+
+150
+
+prior
+posterior
+WPP 2010
+
+●
+
+●
+
+100
+
+●
+
+●
+
+50
+
+●
+●
+●
+
+40
+
+●
+
+●
+
+0
+1951
+
+1956
+
+1961
+
+1966
+
+1971
+
+1976
+
+1981
+
+1986
+
+1991
+
+1996
+
+1951
+
+5−year period
+
+1956
+
+1961
+
+1966
+
+1971
+
+1976
+
+1981
+
+1986
+
+1991
+
+1996
+
+5−year period
+
+(c)
+
+(d)
+
+Figure 2: Prior and posterior medians and 95 percent Bayesian confidence intervals and
+WPP 2010 estimates of selected parameters for the reconstructed female population of Sri
+Lanka, 1950–2000. Prior medians correspond to initial estimates. (a) Total fertility rate. (b)
+Total net number of female migrants (average annual). (c) Female life expectancy at birth.
+(d) Female under-five mortality rate (deaths to 0–5 year olds per 1000 live births).
+
+11
+
+between the stated intentions and actual behavior of travelers. To reflect this, we set the
+elicited relative error of this parameter to five percent.
+3.3.2
+
+Results
+
+The posterior distributions for TFR, total net number of migrants, e0 and under-five mortality are summarized in Figure 3. Our posterior estimates of mortality and fertility follow
+the initial estimates closely. This is not unexpected; the initial estimates were based on data
+of high quality and coverage. The least reliable data, a priori, were those for migration. Our
+posterior intervals suggest small corrections in some time periods. The initial estimates for
+periods between 1961 and 1974 appear to be too high while those for periods between 1976
+and 1989 are too low.
+
+4
+
+Choosing Between Alternative Initial Estimates of
+Mortality
+
+In our application to Laos we derived initial estimates of over-five mortality from the CD
+West model life table. This choice was made by UNPD analysts who drew on previous
+studies (Hartman 1996a, 1996b; United Nations [UN] 2011b). However, other approaches
+are possible. Here, we compare the results above with those given by an alternative set of
+initial estimates of survival based on a different model life table, and use them to explain why
+the CD West model should be preferred. To do this, we look at the age specific mortality
+rates, rather than e0 .
+The posterior distribution of e0 in Figure 1c was computed from the posterior distribution
+of the age specific survival proportions, 5 Sx [t, t + 5], which are output by Bayesian reconstruction. These were converted into age-specific annual mortality rates using the separation
+factors implicit in the CD West life table. Medians and the limits of 95 percent Bayesian
+confidence intervals for the marginal posterior distributions of these parameters are shown
+in Figure 4 on the log scale. Posterior uncertainty about these quantities is very low; the
+mean half-widths over age, within year, are all less than 0.004.
+An alternative set of initial estimates for the 5 Sx [t, t+5] was generated from the same data
+on under-five mortality, but adult mortality was estimated using the Brass two-parameter
+relational logit model with the United Nations South Asian (UNSA) model life table, e0
+= 57.5 years. Figure 5 gives the initial estimates and marginal posteriors of the survival
+proportions using these alternative survival estimates, but keeping the initial estimates of all
+other parameters the same. The posterior intervals are much wider under this set of initial
+estimates; the mean half-widths over age, within year, are between 0.02 and 0.06; a five- to
+12
+
+4.0
+●
+
+1500
+
+●
+
+TFR
+
+legend
+●
+
+3.0
+
+prior
+posterior
+WPP 2010
+
+●
+
+net no. migrants (000s)
+
+3.5
+1000
+
+legend
+●
+
+prior
+posterior
+
+500
+
+2.5
+
+●
+
+●
+
+●
+
+0
+
+●
+
+●
+
+●
+
+●
+
+1991
+
+1996
+
+●
+
+●
+
+●
+●
+●
+
+2.0
+●
+
+1961
+
+1966
+
+1971
+
+1976
+
+1981
+
+1986
+
+1991
+
+●
+
+●
+
+1996
+
+2001
+
+1961
+
+1966
+
+1971
+
+1976
+
+5−year period
+
+1981
+
+1986
+
+2001
+
+5−year period
+
+(a)
+
+(b)
+
+82
+●
+
+●
+
+20
+●
+
+80
+
+leb.50pctl
+
+●
+
+legend
+78
+
+●
+
+●
+
+prior
+posterior
+WPP 2010
+
+●
+
+76
+
+deaths per 1000 births
+
+●
+
+●
+
+legend
+
+15
+
+●
+
+●
+
+prior
+posterior
+WPP 2010
+
+●
+
+●
+
+10
+
+●
+
+●
+●
+
+●
+
+74
+
+●
+
+●
+
+●
+
+5
+1961
+
+1966
+
+1971
+
+1976
+
+1981
+
+1986
+
+1991
+
+1996
+
+2001
+
+1961
+
+5−year period
+
+1966
+
+1971
+
+1976
+
+1981
+
+1986
+
+1991
+
+1996
+
+2001
+
+5−year period
+
+(c)
+
+(d)
+
+Figure 3: Prior and posterior medians and 95 percent Bayesian confidence intervals and
+WPP 2010 estimates of selected parameters for the reconstructed female population of New
+Zealand, 1961–2006. Prior medians correspond to initial estimates. (a) Total fertility rate.
+(b) Total net number of female migrants (average annual). (c) Female life expectancy at
+birth. (d) Female under-five mortality rate (deaths to 0–5 year olds per 1000 live births).
+
+13
+
+1985
+
+1990
+●
+
+●
+
+−2
+●
+
+●
+
+●
+
+−3
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+−4
+
+●
+●
+●
+●
+●
+
+−5
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+−6
+
+log nmx
+
+●
+●
+
+−7
+
+legend
+1995
+
+2000
+●
+
+●
+
+prior
+
+●
+
+posterior
+
+●
+
+−2
+●
+
+●
+
+●
+
+−3
+
+●
+
+●
+●
+●
+
+●
+●
+
+●
+
+−4
+
+●
+●
+
+●
+
+●
+
+●
+●
+●
+
+−5
+
+●
+
+●
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+−6
+
+●
+
+●
+●
+
+●
+●
+●
+
+−7
+0
+
+20
+
+40
+
+60
+
+80
+
+0
+
+20
+
+40
+
+60
+
+80
+
+5−year period
+
+Figure 4: Prior and posterior medians and 95 percent Bayesian confidence intervals of the
+age-specific log mortality rates for the reconstructed female population of Laos, 1985–2004.
+Prior medians correspond to initial estimates which were calculated using the CD West
+model life table.
+
+14
+
+1985
+
+1990
+
+−2
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+−4
+
+●
+
+●
+
+●
+
+●
+●
+●
+●
+●
+●
+
+●
+
+−6
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+−8
+
+log nmx
+
+legend
+1995
+
+●
+
+2000
+
+prior
+posterior
+
+−2
+
+●
+
+●
+
+●
+
+●
+
+●
+
+−4
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+●
+●
+●
+●
+●
+
+−6
+
+●
+●
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+−8
+
+0
+
+20
+
+40
+
+60
+
+80
+
+0
+
+20
+
+40
+
+60
+
+80
+
+5−year period
+
+Figure 5: Prior and posterior medians and 95 percent Bayesian confidence intervals of agespecific log mortality rates for the reconstructed female population of Laos, 1985–2004. Prior
+medians correspond to initial estimates. Initial estimates and posterior distributions were
+calculated using the UN South Asian model life table and the Brass two-parameter logit
+relational model.
+
+15
+
+fifteen-fold increase on the log scale.
+The wider intervals show that using the alternative initial estimates greatly increases
+posterior uncertainty. In addition, for many of the older age groups, the posterior medians
+are actually closer to the CD West initial point estimates than those used to fit the model.
+This suggests that the initial estimates based on the CD West life tables are much more
+consistent with the intercensal changes in population counts, given the initial estimates
+for the other parameters, and that they should be preferred over the UNSA-derived initial
+estimates.
+Looking at e0 in Figure 6 leads to the same conclusion. Again, uncertainty is much greater
+under the alternative set of initial estimates (cf. Figure 3c). The posterior distribution has
+shifted away from the initial estimates used to fit the model toward those derived from the
+CD West model life table. In fact, all CD West initial point estimates are contained within
+the 95 percent posterior interval based on the alternative estimates while this is not the case
+for the initial estimates used to fit the model.
+
+75
+●
+
+●
+
+70
+●
+●
+
+e_0 (years)
+
+65
+
+●
+
+Legend
+
+60
+
+●
+
+init. est.
+
+●
+
+posterior
+
+●
+●
+
+55
+
+●
+
+50
+
+1985
+
+1990
+
+1995
+
+2000
+
+5−year period
+
+Figure 6: Initial and posterior estimates of e0 for Laos females, 1985–2000, using Brass twoparameter logit model and the UN South East Asia model life table. This figure summarizes
+the same results shown in Figure 5.
+We emphasize that our preferred set of initial estimates are those generated using the CD
+West standard. Our purpose here is not to advocate for the UNSA standard, or the Brass
+16
+
+two-parameter logit model, but to present an alternative, plausible set of initial estimates
+which we can use to generate an alternative set of posterior estimates for use in a comparative
+analysis.
+
+5
+
+Discussion
+
+In this article we have demonstrated and extended the method of reconstructing past,
+national-level population structures introduced by Wheldon et al. (2012). This method embeds the standard CCMPP in a hierarchical statistical model which takes initial estimates of
+vital rates and population counts as inputs, together with expert opinion about their relative
+error (informed by data if available). International migration is handled in the same way as
+the other inputs, and yields fully probabilistic interval estimates for all of the inputs. The
+approach is Bayesian as the initial estimates serve as informative, but not restrictive, priors
+for population counts through the CCMPP, which are then updated using available census
+data over the period of reconstruction. Reconstruction can be undertaken for any period for
+which estimates of baseline population, vital rates and international migration are available.
+However, reconstruction beyond the year of the most recent census will be based on the
+initial estimates alone.
+We presented 95 percent Bayesian confidence intervals for the marginal distributions
+of TFR, total net number of migrants, e0 and under-five mortality. Ninety-five percent
+intervals cover the range of most likely values. Results for TFR and age-specific fertility
+for Laos showed that the posterior intervals are not constrained to lie inside prior intervals,
+nor are they necessarily more narrow than prior intervals. Our posterior estimates of TFR
+for Laos and Sri Lanka suggested that, in some years, the initial estimates based mainly
+on surveys were inconsistent with intercensal changes in the number of births and Bayesian
+reconstruction was able to provide an appropriate correction.
+We showed that the method works well when applied to different countries spanning a
+wide range of data quality characteristics. For Laos, all mortality data are for ages five and
+below and come from surveys, while New Zealand has complete period life tables based on
+vital registration. Sri Lanka and Burkina Faso (analyzed in Wheldon et al. 2012) lie between
+these extremes. The posterior intervals for New Zealand were much more narrow than those
+for Sri Lanka and Laos, reflecting the greater accuracy and coverage of the New Zealand data.
+The greatest value of Bayesian reconstruction is likely to be for those countries without wellresourced statistical systems. Roughly half of all the countries and areas included in the
+WPP fall into this category (UN 2011a).
+The method as described in Wheldon et al. (2012) was limited by the fact that it required
+
+17
+
+census data at regular intervals. Here, we have relaxed this requirement by showing that
+linearly interpolating census counts on the growth rate scale produces good results.
+We have also shown how Bayesian reconstruction might be used to help choose between
+two sets of initial mortality estimates. We compared the posterior distributions of agespecific mortality rates for Laos derived from initial estimates based on the CD West model
+life table and the Brass two-parameter relational logit with the UNSA model life table. In
+the latter case, the interval widths were much greater. This implies that the CD West based
+initial estimates agree much more closely with the data on fertility, mortality and population
+counts and they should be preferred.
+Bias and measurement error variance are handled separately under Bayesian reconstruction. Existing demographic techniques, such as indirect estimation via P/F ratios and model
+life tables, are used to reduce bias in initial point estimates based on raw data collected from
+surveys, vital registration and censuses. The nature of bias varies greatly across parameters,
+time and country, hence we do not propose a general purpose method to replace the many
+existing techniques. Instead, the analyst is able to select the most appropriate technique
+for the data at hand. Measurement error variance is accounted for through the standard
+deviations of the initial point estimates. Expert opinion is used a priori to set reasonable
+ranges for measurement error uncertainty.
+To ensure that uncertainty is not underestimated, census data should not be used to
+derive initial point estimates of vital rates and migration. If no reliable migration data are
+available, the default initial point estimates should be centered at zero with a large elicited
+relative error.
+Bayesian reconstruction was developed and demonstrated for female-only populations
+and our immediate goal is to extend the method to two-sex populations. We anticipate
+that focusing on a two-sex extension separately will allow us to more carefully consider the
+dependencies between female- and male-specific parameters. A further potential refinement
+is to use single-year age groups and time periods.
+A great deal of attention has already been directed at the estimation of uncertainty in
+demographic forecasts, as opposed to estimates about the past which we focus upon here.
+The study of stochastic models for forecasting dates back to at least Pollard (1966) and Sykes
+(1969). Further developments are reviewed by Booth (2006) with more recent additions in
+Hyndman and Booth (2008), Scherbov, Lutz, and Sanderson (2011) and Alkema, Raftery,
+Gerland, Clark, Pelletier, et al. (2011). One component of error in forecasts of population
+size is the error in estimates of population size and the vital rates prevailing at the jump-off
+time. While the ergodic theorems of Demography (Lotka & Sharpe 1911; Lopez 1961) imply
+that these become irrelevant if one forecasts far enough into the future, short term forecasts
+
+18
+
+can be significantly affected (e.g., Keilman 1998; National Research Council, Commission
+on Behavioral and Social Sciences and Education 2000). It is possible, then, that Bayesian
+reconstructions could contribute to improved forecasting methods by providing important
+information about the uncertainty in estimates of jump-off populations.
+The fact that official statistical estimates are not perfect is undisputed. The UNPD
+acknowledges this both explicitly (UN 2011a) and implicitly in the fact that the WPP are
+revised biannually as new sources of data become available and methods are improved.
+Therefore, augmenting point estimates with quantitative estimates of their uncertainty is an
+important contribution. For many countries, the available data are fragmented and subject
+to bias and measurement error, thus the expert opinions of demographers are very valuable.
+A Bayesian approach is especially appropriate since this can be used in conjunction with the
+available data in a statistically coherent manner.
+
+19
+
+APPENDICES
+A
+
+Technical Details of the Method
+
+A.1
+
+Model Description
+
+The parameters of interest are fertility rates, survival proportions, population counts and
+migration proportions. We use standard demographic notation and the symbols F , S and
+N to refer to fertility, survival and population count, respectively. Hence, 5 Fx [t, t + 5]
+is the average fertility rate among women aged [x, x + 5] over the time period [t, t + 5].
+We adopt the symbol G for migration which we express as a proportion of the receiving
+population (while M may seem like a more obvious choice, this letter is somewhat overloaded
+in demography, variously used to stand for mortality and marital status, as well as migration).
+Therefore the net number of migrants aged [x, x + 5] arriving during the period [t, t + 5] is
+5 × 5 Gx [t, t + 5] × 5 Nx (t).
+The open ended age group is 80+ in all of our case studies. Fertility is assumed to be
+[fert]
+[fert]
+zero at ages below xL and above xU .
+The period of reconstruction varies among countries due to data availability, therefore we
+will use general symbols. Let t0 be the baseline year and T the final year of reconstruction.
+Outputs will then be produced for the years t0 , t0 + 5, . . . , T . Censuses will be available
+[cen]
+only at certain years during the period of reconstruction; we denote census years by t1 <
+[cen]
+
+t2
+
+, and so forth.
+
+Using this notation, we can write Bayesian reconstruction as a hierarchical model with
+four levels. For convenience, we use the symbol 5 θ x [t, t+5] to represent 5 Fx [t, t+5], 5 Sx [t, t+
+5], 5 Gx [t, t + 5], 5 Nx (t) for all x = 0, 5, . . . , 80+, (85+); that is, the demographic rates
+and proportions and the population counts for all age groups during the interval [t, t + 5].
+
+Moreover, we use the expression CCMPP 5 θ x [t, t + 5] to denote the projection from t0 to
+t + 5 using 5 θ x [t, t + 5]. The model is:
+ 
+ 2
+2
+Level 1 : log 5 Nx∗ (t)  5 Nx (t), σN
+∼ Normal log 5 Nx (t) , σN
+,
+[cen]
+
+x = 0, 5, . . . , 80+, t = t1
+Level 2 :
+
+[cen]
+
+, t2
+
+(A.1)
+,...
+
+
+
+
+N
+(t)
+ 5 θ x [t − 5, t], = CCMPP 5 θ x [t − 5, t] , t = t0 + 5, t0 + 10, . . . , T
+5 x
+(A.2)
+
+20
+
+Level 3 :
+
+  2
+ 2
+log 5 Nx (t0 )  σN
+∼ Normal log 5 Nx∗ (t0 ) , σN
+, x = 0, 5, . . . , 80+ (A.3)
+
+
+
+[fert]
+[fert]
+∗
+2
+
+Normal
+log
+F
+[t,
+t
++
+5]
+,
+σ
+, . . . , xU
+5
+x
+F , x = xL
+
+
+
+log 5 Fx [t, t + 5]  σF2 ∼
+t = t0 , t0 + 5, . . . , T
+
+
+0,
+otherwise
+(A.4)
+  2
+
+
+logit 5 Sx [t, t + 5]  σS ∼ Normal logit 5 Sx∗ [t, t + 5] , σS2
+(A.5)
+x = 0, 5, . . . , 85+, t = t0 , t0 + 5, . . . T
+
+
+ 2
+∗
+2
+5 Gx [t, t + 5]  σG ∼ Normal 5 Gx [t, t + 5], σG ,
+
+(A.6)
+
+x = 0, 5, . . . , 80+, t = t0 , t0 + 5, . . . , T
+Level 4 :
+
+σv2 ∼ InvGamma(αv , βv ), αv > 0, βv > 0, v = N, F, S, G.
+(A.7)
+
+For 0 < y < 1, logit(y) ≡ log(y/(1 − y)). The starred quantities denote the initial point estimates which remain fixed in the estimation process. Un-starred quantities are the parameters
+for which the joint posterior distribution is defined.
+
+A.2
+
+Determining the Hyperparameters α and β
+
+The hyperparameters αv and βv in equation (A.7) must be determined by the user. They
+define the distribution of the standard deviation parameters that represent the uncertainty
+in the initial estimates. We set these parameters based on the expert opinion of UNPD
+analysts.
+The distributions of the vital rate and population count parameters in equations (A.3)–
+(A.6) are conditional on the unknown variance parameters, hence draws from them are
+not observable. However, standard calculations show that the marginal (unconditional)
+distributions of these parameters are Student’s t centered at the initial point estimates and
+with variance and degrees of freedom dependent on α and β. Draws from these distributions
+are observable. It is about these observable quantities that we elicit expert opinion. This
+differs from the method used by Wheldon et al. (2012) who used the unobservable quantities
+modeled by the conditional distributions.
+We set αv = 0.5 for all v in {F, S, G, N }. This gives the initial estimates a weight
+equivalent to a single data point. The βv were then determined by specifying the limits
+of the central ninety percent probability interval of the marginal distributions. Population
+counts and fertility rates are modeled on the log scale so this amounts to making a statement
+of the form “the probability that the true parameter values are the within p-percent of the
+
+21
+
+initial point estimates is ten percent”. Migration is explicitly modeled as a proportion so this
+interpretation is direct for this parameter. Survival proportions are modeled on the logit (or
+log-odds) scale. For values of 0 < y < 1 close to zero, logit(y) ≈ log(y), so we can proceed
+as for fertility and population counts after converting n Sx∗ [t, t + 5] to 1 − n Sx∗ [t, t + 5]. Under
+
+
+(A.5), 1 − logit n Sx [t, t + 5] has the same distribution as logit n Sx [t, t + 5] , so the βs arrived
+at from assessing the relative error of 1 − n Sx∗ [t, t + 5] can be used without modification.
+
+A.3
+
+More on Measurement Error Uncertainty
+
+In statistical models, this type of error is typically accounted for by standard deviation
+parameters and is estimated from the sample standard deviation of independent, repeated
+observations. This approach is not suitable for demographic data of the kind we treat
+since repeated observations may not be available or, when they are, they are not typically
+independent. For example, in countries with vital registration systems we might have only
+a single data point for each age-time specific vital rate parameter, in which case there is no
+replication. For countries without these systems several surveys may each yield estimates
+of the same parameters and, moreover, more than one bias-reduction technique may have
+been applied to the same source. There is replication in these cases, but it is incorrect to
+estimate the measurement error varianace from the empirical variance of these observations
+because they are not independent. For example, the results of applying several different
+indirect methods to the results of the same survey are clearly not independent. Given
+detailed information about the sampling methodology for specific surveys, one might be able
+to extract some quantitative estimate of error due to sampling variability. In many cases,
+however, the required information is not available. Even if it were, developing such estimates
+for each parameter in each country would be a substantial undertaking and would have to
+be done case-by-case. Therefore, we take a different approach and model measurement error
+through the prior standard deviations of the initial estimates. These, in turn, are given
+probability distributions at Level 4.
+
+B
+
+Further Details and Results from the Case Studies
+
+We present results for four demographic parameters: TFR, net number of migrants, e0 and
+under-five mortality. Under-five mortality is expressed as the number of deaths between ages
+0 and 5 per 1,000 live births; it is a period measure. Life tables are used in the derivation
+of initial estimates for all case studies. The separation factors implicit in these tables were
+used to convert posterior estimates of age-specific survival proportions, a cohort measure,
+into period mortality (Shryock, Siegel, and Associates 1980, Ch. 14, 15; Thomas Buettner
+22
+
+(pers. comm.)).
+
+B.1
+B.1.1
+
+Laos
+Data and Initial Estimates
+
+Population Counts National censuses were conducted in 1985, 1995 and 2005. These
+data allow us to reconstruct the female population between 1985 and 2005. We used the
+census year counts in WPP 2010; there were no post-enumeration surveys, but these counts
+were adjusted to compensate for undercount in certain age groups.
+Fertility Initial point estimates of fertility were based on direct and indirect estimates of
+age-specific fertility rates. Direct estimates were based on children ever born (CEB) and
+recent births (preceding 12 and 24 months), all by age of mother, collected by the 1993 Laos
+Social Indicator Survey, the 1995 and 2005 censuses, the 1994 Fertility and Birth Spacing
+Survey, the 2000 and 2005 Lao Reproductive Health Surveys, the 1986–1988 multi-round
+survey and the 2006 MICS3 survey. Indirect estimates were produced using the following
+methods: Zaba’s (1981) Relational Gompertz Model, Arriaga’s (1983) method, the P/F
+method (Brass et al. 1968), Arriaga’s (1983) modified P/F method and the Brass fertility
+polynomial (Brass 1960; Brass & CELADE 1975). The indirect techniques applied were
+either used by national agencies or chosen by UNPD analysts.
+All data points were given equal weight during the process of producing initial estimates.
+Averages for the five-year projection intervals were calculated using all observations with
+reference years falling within the interval.
+Age patterns and levels of fertility were estimated separately. Within each five-year time
+period and each age group, a single schedule for each time period was derived by taking
+medians across data points. The median schedules were then normalized to produce fertility
+patterns. The level of fertility was estimated similarly except the data points were summed
+to give estimates of average annual TFRs for each five-year period. Medians were taken
+within time periods and the initial estimates were formed by multiplying each time period’s
+median age pattern by the corresponding annual median TFR. The elicited relative error
+was set to 10 percent. Hence, the medians of the initial estimate distributions for age-specific
+fertility rates were the initial point estimates and the upper 95 percent and lower five percent
+quantiles were equal to the initial point estimates plus and minus 10 percent, respectively.
+Mortality Direct and indirect estimates of infant and under-five mortality (1 q0 , 5 q0 ) came
+from maternity histories and CEB and surviving data collected by the 1993 Laos Social
+Indicator Survey, the 1994 Fertility and Birth Spacing Survey, the 1995 and 2000 censuses
+23
+
+and the 2000 and 2005 Lao Reproductive Health Surveys. These were smoothed using
+weighted cubic smoothing splines to produce single initial point estimates of the average 1 q0
+and 5 q0 over each five-year interval during the period of reconstruction. Intercensal survival
+estimates were not used.
+There are no direct estimates of mortality over age five. Initial estimates for these older
+ages were derived using the the Coale and Demeny (1983) West (CD West) family of model
+life tables in the following way. For each five year period, two CD West life tables were
+found; one with 1 q0 closest to that produced by the smoothing procedure and one with 5 q0
+closest. Within each pair, the e0 s in these two tables were averaged. Age-specific survival
+proportions calculated from the CD West table with e0 closest to this average were then
+taken as the initial estimates of mortality at all ages. The elicited relative error of these
+initial point estimates was set to 10 percent.
+Migration There is not much information about migration. Political upheaval resulted in
+significant levels of migration between 1975 and 1985 as refugees left the country. By 1985,
+however, these flows had become small (U.S. Department of State 2011). No information
+about the age pattern or sex distribution is available. To model this, we set initial point
+estimates to zero for all ages and time periods, but used a large elicited relative error of 20
+percent.
+B.1.2
+
+Results
+
+Census-based initial estimates and posterior quantiles for the size of the Laos female population are given in Table B.1. Between 1985 and 2005, the posterior median estimate increased
+from 1.83 to 2.96 million, an average annual growth rate of 2.4 percent. Figure 1 in the article summarizes the posterior distributions of TFR, total net number of migrants, e0 and
+under-five mortality.
+Table B.1: Initial estimate and posterior medians and 95 percent Bayesian confidence intervals for the size of the Laos female population, 1985–2005, in millions.
+Year
+1985
+1990
+1995
+2000
+2005
+
+Posterior Percentile
+2.5th 50th 97.5th
+1.80 1.83 1.86
+2.04 2.10 2.16
+2.37 2.40 2.44
+2.62 2.70 2.78
+2.91 2.96 3.00
+
+24
+
+Init. Est.
+1.83
+2.41
+2.95
+
+TFR Total fertility rate declined over the period of reconstruction, from (5.99, 6.78) to
+(3.66, 4.08). The mean half-width of the posterior 95 percent Bayesian confidence intervals
+is 0.32 children.
+For most of the years, the posterior median moved away from the initial estimates toward
+the WPP 2010 estimates. No information about intercensal population changes was used
+in our initial estimates, whereas both our posterior and WPP 2010 do use this information.
+The 95 percent Bayesian confidence interval contains the WPP 2010 estimate in all five-year
+periods except 1995–1999 where our estimate is (4.97, 5.61) compared with 4.81 in WPP
+2010. These results also show that the posterior is not constrained to lie within the initial
+estimate (see the posterior intervals for the 1990–1994 and 2000–2004).
+Age-specific Fertility Rates The posterior intervals for age-specific fertility rates are
+wider than the prior intervals in all years and ages (Figure B.1). This is quite feasible under
+the statistical model and is a consequence of there being very little information about the
+age pattern of fertility in the other parameters.
+Net Number of Migrants The total net number of migrants changed from (−4,975,
+4,341) women over the period 1985–1989 to (−15,319, 65) over 2000–2004. The 95 percent
+posterior intervals have a mean half-width of 6,099 and are considerably more narrow than
+the corresponding initial estimate intervals (mean half width 142,777). In this case, the only
+information about migration comes from intercensal changes that are not accounted for by
+fertility and mortality.
+Life Expectancy at Birth Female life expectancy at birth increased consistently between
+1985 and 2005, from (51.6, 53.1) years over the period 1985–1989 to (64.5, 65.4) over the period 2000–2004. The mean half-width of the intervals over the whole period of reconstruction
+is 0.61 years. The mean trend in the posterior agrees broadly with WPP 2010 but implies
+a lower e0 over the 1985–1989 and 1995–1999 periods and a higher e0 over the 2000–2004
+period.
+Under-five Mortality Under-five mortality decreased consistently over the period of reconstruction from (145, 167) deaths per 1,000 live births over 1985–1989 to (65.5, 76.5) over
+2000–2004. The latter of these contains the WPP 2010 estimate of 75. Our 95 percent
+interval for 1995–1999 is (94.5, 110) which also contains the WPP 2010 estimate of 94. The
+mean half-width of the intervals is 8.19.
+
+25
+
+1985
+
+1990
+
+0.4
+
+0.3
+
+0.2
+
+fert. rate
+
+0.1
+
+legend
+
+0.0
+1995
+
+prior
+
+2000
+
+posterior
+
+0.4
+
+0.3
+
+0.2
+
+0.1
+
+0.0
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+15
+
+20
+
+25
+
+30
+
+35
+
+40
+
+45
+
+5−year age−group
+
+Figure B.1: Initial point estimates, posterior medians and 95 percent Bayesian confidence
+intervals of age-specific fertility rates for the reconstructed female population of Laos, 1985–
+2004.
+
+26
+
+B.2
+B.2.1
+
+Sri Lanka
+Data and Initial Estimates
+
+Population Counts Censuses were conducted in Sri Lanka in 1953, 1963, 1971, 1981
+and 2001 and so we reconstruct the female population between 1953 and 2001. We took
+population counts from WPP 2010 which were adjusted to account for underenumeration
+and set the elicited relative error to 10 percent.
+Fertility Data on age-specific fertility rates for Sri Lanka came from data on children ever
+born classified by age of mother collected in the 1971 census, maternity history and children
+ever born data from the 1975 Sri Lanka World Fertility Survey (WFS), the 1987, 1993 and
+2000 Sri Lanka DHSs, maternity history data from the 2006–07 Sri Lanka DHS and recent
+births registered by the Department of Census and Statistics, Sri Lanka (DCS Sri Lanka)
+between 1972 and 2006.
+A single series of age-specific initial estimates was derived in a manner similar to that used
+for Laos, although at the level of TFR we used loess (Cleveland et al. 1992; Cleveland 1979)
+to smooth multiple data points across time-period. Elicited relative error for this parameter
+was set at 10 percent.
+Mortality Official estimates of infant and child mortality from DCS Sri Lanka were adjusted upward to improve consistency with UN Inter-agency Group for Child Mortality
+Estimation (IGME 2010) estimates. These were based on maternity histories and children
+ever born data from the 1975 Sri Lanka WFS, the 1987, 1993, 2000 and 2006 Sri Lanka DHS
+and the 1971 Census, assuming that the age pattern of mortality followed that in the CoaleDemeny West model life table (Coale, Demeny, & Vaughan 1983). These estimates were
+combined with registered deaths and population estimates to produce abridged national life
+tables at five yearly intervals over the period of reconstruction. Age specific survival proportions were calculated from these. Elicited relative error for this parameter was set at 10
+percent.
+Migration DCS Sri Lanka releases counts of international arrivals and departures which
+provide some information about international migration (e.g., Department of Census and
+Statistics, Sri Lanka [DCS Sri Lanka] 2010). However, their accuracy as estimates of actual
+net migration was difficult to determine and counts by age were not available for most of the
+period of reconstruction. Luther et al. (1987) provide age-specific estimates for the periods
+1971–1975 and 1976–1980 using census data as well as information about vital rates. Their
+results are not suitable as a basis for initial estimates because they were derived, in part,
+27
+
+from census counts. Since intercensal changes are automatically accounted for by Bayesian
+reconstruction, incorporating census information into initial estimates would result in using
+the data twice and underestimate posterior uncertainty. Therefore, we used the same default
+initial estimate as for Laos and use Luther et al.’s (1987) results for comparison.
+B.2.2
+
+Results
+
+Posterior estimates of the size of the Sri Lanka female population are given in Table B.2.
+Figure 2 in the article summarizes the posterior distributions of TFR, total net number of
+migrants, e0 and under-five mortality.
+Table B.2: Initial estimate and posterior medians and 95 percent Bayesian confidence intervals for the size of the Sri Lanka female population, 1951–2006, in millions.
+Year
+1951
+1953
+1956
+1961
+1963
+1966
+1971
+1976
+1981
+1986
+1991
+1996
+2001
+2006
+
+Posterior Percentile
+2.5th 50th 97.5th
+3.74 3.81 3.88
+
+Init. Est.
+3.99
+
+4.13
+4.73
+
+4.27
+4.88
+
+4.40
+5.02
+5.13
+
+5.34
+6.09
+6.58
+7.36
+7.77
+8.22
+8.70
+9.32
+9.59
+
+5.53
+6.21
+6.83
+7.51
+8.14
+8.66
+9.12
+9.52
+10.17
+
+5.70
+6.33
+7.09
+7.65
+8.52
+9.13
+9.55
+9.72
+10.78
+
+6.22
+7.51
+
+9.50
+
+TFR Fertility changed markedly in Sri Lanka over the fifty years between 1951 and 2000.
+Our posterior estimates suggest that TFR declined from (5.11, 5.71) births per woman to
+(2.07, 2.23). The mean half-width of the posterior intervals is 0.189 children.
+Our initial point estimates of TFR for the periods 1951–1956 and 1956–1961 were 5.01
+and 5.03, respectively, much lower than the corresponding medians of the posterior; 5.42 and
+5.09 respectively. The WPP 2010 estimate is 5.8 births for both of the periods 1950–1954
+and 1955-1959. This suggests that the sources upon which the initial estimates were based
+are inconsistent with intercensal changes in the number of births. Our posterior estimates
+and those of the WPP 2010 account for this by adjusting the estimates upward over this ten
+year period.
+28
+
+Net Number of Migrants The total net number of migrants changed from (−5,062,
+14,517) during 1951–1955 to (−56,691, 7,526) between 1996 and 2001. The mean half-width
+of the posterior 95 percent intervals is 109,665.
+Our results indicate net out-migration from 1971 to 2001 but there is not enough information to determine the direction of the flow between 1951 and 1970. There is close agreement
+between our results and those of Luther et al. (1987). They estimated net migration from
+intercensal changes after accounting for changes due to fertility and mortality; their method
+does not provide an estimate of uncertainty.
+Life Expectancy at Birth Female life expectancy at birth increased between 1951 and
+2001, from (54.9, 57.2) years to (72.9, 73.8). The mean half-width of the posterior 95
+percent confidence intervals is 0.707 years. Our results are in close agreement with WPP
+2010 estimates in all five-year periods except 1996–2000. The WPP 2010 estimate for 1995–
+1999 is 72.7, 0.3 years below the lower bound of our 95 percent interval for 1996–2000.
+Under-five Mortality Under-five mortality decreased from (139, 171) deaths per 1,000
+live births over 1951–1955 to (18.2, 23.2) over 1996–2001. The mean half-widths of the
+posterior intervals is 7,822. The WPP 2010 estimate of under five mortality over 1995–1999
+is similar at 21 deaths per 1,000 live births.
+
+B.3
+B.3.1
+
+New Zealand
+Data and Initial Estimates
+
+Population Counts National censuses were conducted every five years from 1961 to 2001.
+We took the counts published in WPP 2010 and interpolated them to the census years on the
+growth rate scale. PESs were used to estimate undercount in the 1996 and 2001 censuses. The
+ninety-five percent confidence intervals for the undercount of total population as estimated
+by these surveys are (1.4, 1.8) and (1.9, 2.5) percentage points for 1996 and 2001 respectively
+(Statistics New Zealand 2001). Since PESs were not conducted for earlier censuses, we took
+a conservative approach to determining the distributions of the initial estimates and made
+them symmetric about the census counts. Elicited relative error was set at 2.5 percent under
+the assumption that undercount in 2001 is an upper bound on the measurement error for all
+previous censuses back to 1961.
+Fertility Initial estimates of fertility rates were calculated from published age-specific fertility rates (Statistics New Zealand 2011a) and numbers of births (Statistics New Zealand 2012)
+by age-group of mother by year. The denominators of the rates were inferred from these two
+29
+
+tables. Age-specific rates for the five-year periods 1961–1965, . . . , 2001–2005 were calculated
+by binning the number of births and person-years lived into the five-year periods, summing
+and taking ratios.
+In New Zealand, all births are recorded in a centralized birth register. Any inaccuracies
+are primarily due to late registrations; that is, registrations made more than two years after the birth. These are excluded from the data used to estimate fertility. However, it is
+estimated that these late registrations make up no more than one percent of all eventually
+registered births (Statistics New Zealand 2010a). The denominators for the published birth
+rates are based on estimated population counts based primarily on census data. Any inaccuracy in these counts is likely to be small and in the form of an undercount which would
+have an effect on the estimated rates opposite to that caused by an undercount of births.
+Consequently, the initial estimates of fertility rates were deemed to have a very high level of
+reliability relative to the two previous case studies and elicited relative error was set to one
+percent.
+Mortality Initial estimates for survival proportions were calculated from New Zealand
+life tables (Statistics New Zealand 2011b). These are tabulated for the periods 1960–1962,
+. . . , 2000–2002. To derive estimates for the five-year projection intervals 1961–1965, 1966–
+1970, . . . , 2001–2005, tabulated mortality rates for periods bracketing those of interest were
+linearly interpolated.
+Mortality information contained within these tables comes from the central death register.
+This register achieved high coverage of the whole population (including New Zealand M¯aori)
+from 1960 onward. Any inaccuracies are likely to be concentrated at very young ages, but
+these became negligible from 1961 (Statistics New Zealand 2006). Therefore, as with fertility,
+initial estimates of survival were deemed to be highly reliable and elicited relative error was
+set to one percent.
+Migration Since New Zealand is an island nation with a well resourced official statistics
+system, information about international migration is potentially quite reliable relative to
+other countries. The basis of our initial estimates of international migration are counts
+of PLT migrants taken from arrivals and departures cards required of all travelers. PLT
+migrants are those intending to remain present/absent for at least 12 months.(Statistics
+New Zealand 2010b).
+Net numbers of PLT migrants by five-year age group and sex for single years between 1979
+and 2006 were taken from Statistics New Zealand (2010c). Only total counts are available by
+single year between 1961 and 1979 (Statistics New Zealand 2010d). These were disaggregated
+
+30
+
+into age-specific female counts by multiplying the total counts by the 1979 age and sex
+pattern. Were counts by sex and age not available, a model age/sex pattern (e.g., Rogers &
+Castro 1981) could have been used. The resulting set of net counts for females by five-year
+age group, single years, were then summed over the five-year periods 1961–1965, 1966–1970,
+. . . , 2001–2005 and converted into average annual proportions by dividing by five times the
+population counts described above.
+The largest source of error in these data as estimates of international migration is the
+discrepancy between stated and actual intentions. Some of those classified as PLT migrants
+according to their stated intentions may leave or return earlier than twelve months, some of
+those classified as short term migrants may leave or return later. This effect is not negligible
+and to reflect its effect on the initial estimates we set the elicited relative error of this
+parameter to five percent. This is lower than the elicited error in migration for Laos and Sri
+Lanka, but much higher than the error for New Zealand fertility and survival estimates.
+B.3.2
+
+Results
+
+Posterior estimates of the size of the New Zealand female population are given in Table B.3.
+Figure 3 in the article summarizes the posterior distributions of TFR, total net number of
+migrants, e0 and under-five mortality.
+Table B.3: Census counts and posterior medians and 95 percent Bayesian confidence intervals
+for the size of the New Zealand female population, 1961–2001, in millions.
+Year
+1961
+1966
+1971
+1976
+1981
+1986
+1991
+1996
+2001
+2006
+
+Posterior Percentile
+2.5th 50th 97.5th
+1.18 1.20 1.23
+1.31 1.33 1.36
+1.41 1.44 1.46
+1.53 1.56 1.59
+1.56 1.59 1.63
+1.63 1.67 1.70
+1.72 1.75 1.78
+1.85 1.88 1.92
+1.95 1.99 2.03
+2.08 2.13 2.17
+
+Init. Est.
+1.33
+1.44
+1.55
+1.59
+1.66
+1.75
+1.88
+1.99
+2.13
+
+TFR Fertility declined steeply in New Zealand. Our posterior estimates for TFR over the
+1961–1965 period are (3.83, 3.93) births per woman, declining to (1.94, 1.98) over 2001–
+2006. The mean half-width of the 95 percent posterior Bayesian confidence intervals is 0.03
+children. Our estimates are broadly similar to those in WPP 2010.
+31
+
+Net Number of Migrants We estimate that the total net number of migrants changed
+from (13,576, 35,252) during 1961–1965 to (53,418, 84,553) during 2001–2006. The mean
+half-width of the posterior 95 percent intervals is 12,872. This is much more narrow than the
+posterior intervals for both Laos and Sri Lanka, reflecting the relatively reliable migration
+information used to form the initial estimates.
+Life Expectancy at Birth Female life expectancy at birth increased between 1961 and
+2001, from (73.99, 74.06) years to (81.55, 81.65). The mean half-width of the posterior 95
+percent confidence intervals is 0.04 years. Our results are broadly comparable with those in
+WPP 2010.
+Under-five Mortality Under-five mortality decreased from (20.4, 21.2) deaths per 1,000
+live births over 1961–1965 to (7.08, 7.36) over 1996–2001. The mean half-widths of the
+posterior intervals is 0.244. The WPP 2010 estimates of under five mortality over 1995–
+1999, and 2000–2005 (7 and 6 deaths per 1,000 live births, respectively) are lower. However,
+at such small numbers it is possible that some of this discrepancy is due to rounding; the
+WPP 2010 results appear to be rounded to the nearest whole number.
+
+References
+Alberts, B. (Ed.). (2011, July 29). Science special issue: population, 333.6042.
+Alkema, L., Raftery, A. E., Gerland, P., Clark, S. J., & Pelletier, F. (2012). Estimating trends
+in the total fertility rate with uncertainty using imperfect data: examples from West
+Africa. Demographic Research, 26(15), 331–362.
+Alkema, L., Raftery, A. E., Gerland, P., Clark, S. J., Pelletier, F., Buettner, T., & Heilig,
+G. K. (2011). Probabilistic projections of the total fertility rate for all countries. Demography, 48, 815–839.
+Arriaga, E. (1983). Estimating fertility from data on children ever born by age of mother
+(International Research Document No. 11). Washington D. C.
+Barbi, E., Bertino, S., & Sonnino, E. (Eds.). (2004). Inverse projection techniques: old and
+new approaches. Berlin: Springer-Verlag.
+Bertino, S., & Sonnino, E. (2003). The stochastic inverse projection and the population of
+Velletri (1590-1870). Mathematical Population Studies, 10(1), 41–73.
+Bonneui, N., & Fursa, E. (2011). Optimal population path fitting for flawed vital statistics
+and censuses. Journal of Optimization Theory and Applications, 148, 301–317.
+Booth, H. (2006). Demographic forecasting: 1980 to 2005 in review. International Journal
+of Forecasting, 22(3), 547–581.
+´ Gr´ada, C. (1986). Fertility trends, excess mortality, and the great irish
+Boyle, P. P., & O
+famine. Demography, 23(4), 543–562.
+Brass, W. (1968). The demography of tropical Africa. Princeton, NJ: Princeton University
+Press.
+32
+
+Brass, W. (1960). The graduation of fertility distributions by polynomial functions. Population Studies, 14, 148–162.
+Brass, W., & CELADE. (1975). Methods for estimating fertility and mortality from limited and defective data: based on seminars held 16–24 September 1971 at the Centro
+Latinoamericano de Demograf´ıa (CELADE) San Jos´e Costa Rica. Chapel Hill, North
+Carolina: Carolina Population Center, University of North Carolina at Chapel Hill.
+Cleveland, W. S. (1979). Robust locally weighted regression and smoothing scatterplots.
+Journal of the American Statistical Association, 74(368), 829–836.
+Cleveland, W. S., Grosse, E., & Shyu, W. M. (1992). Local regression models. In J. Chambers
+& T. Hastie (Eds.), Statistical models in S (Chap. 8). Pacific Grove, Calif: Wadsworth
+& Brooks/Cole.
+Coale, A. J., Demeny, P., & Vaughan, B. (1983). Regional model life tables and stable populations (2nd ed.). New York, New York: Academic Press.
+Daponte, B. O., Kadane, J. B., & Wolfson, L. J. (1997). Bayesian demography: projecting the
+iraqi kurdish population, 1977-1990. Journal of the American Statistical Association,
+92(440), 1256–1267.
+Department of Census and Statistics, Sri Lanka. (2010, December). Statistical abstract (46th ed.).
+Colombo, Sri Lanka: Department of Census and Statistics.
+E. Cohen, J. (2006, August). Stochastic demography. In Encyclopedia of statistical sciences.
+Article Online Posting Date: August 15, 2006. John Wiley and Sons, Inc.
+Gillis, J., & Dugger, C. W. (2011, September 4). U.N. sees rise for the world to 10.1 billion.
+In The New York times (pp. A1). May 4. New York, New York: The New York Times
+Company.
+Goodkind, D., & West, L. (2001). The North Korean famine and its demographic impact.
+Population and Development Review, 27(2), 219–238.
+Hartman, M. (1996a). Analysis of fertility, mortality and population growth in Lao PDR
+(Mission report to National Statistical Centre (NSC), Vientiane, Lao PDR. No. LAOSTAT 1996:7).
+Hartman, M. (1996b). Demographic analysis of fertility and mortality—preliminary analysis
+in five provinces.
+Heuveline, P. (1998). ‘Between one and three million’: towards the demographic reconstruction of a decade of Cambodian history (1970–79). Population Studies, 52, 49–65.
+Hyndman, R. J., & Booth, H. (2008). Stochastic population forecasts using functional data
+models for mortality, fertility and migration. International Journal of Forecasting,
+24(3), 323–342.
+Keilman, N. (1998). How accurate are the United Nations world population projections?
+Population and Development Review, 24, 15–41.
+Lee, R. D. (1998). Probabilistic approaches to population forecasting. Population and Development Review, 24, 156–190.
+Lee, R. D. (2003). Reflections on inverse projection: its origins, development, extensions, and
+relation to forecasting. (Vol. 10, 1, pp. 1–9).
+Lee, R. D. (1971). Econometric studies of topics in demographic history. (Disseration in
+Economics, Harvard University, Cambridge, Massachucetts).
+
+33
+
+Lee, R. D. (1974). Estimating series of vital rates and age structures from baptisms and burials: a new technique, with applications to pre-industrial England. Population Studies,
+28(3), 495–512.
+Lee, R. D. (1985). Inverse projection and back projection: a critical appraisal, and comparative results for England, 1539 to 1871. Population Studies, 39(2), 233–248.
+Lee, R. D. (1993). Inverse projection and demographic fluctuations. In D. S. Reher & R.
+Schofield (Eds.), Old and new methods in historical demography (Chap. 1, pp. 7–28).
+Oxford, England: Clarendon Press.
+Leslie, P. H. (1945). On the use of matrices in certain population mathematics. Biometrika,
+33(3), 183–212.
+Leslie, P. H. (1948). Some further notes on the use of matrices in population mathematics.
+Biometrika, 35(3/4), 213–245.
+Lewis, E. G. (1942). On the generation and growth of a population. Sankhy¯a: The Indian
+Journal of Statistics (1933-1960), 6(1), 93–96.
+Lopez, A. (1961). Problems in stable population theory. Princeton, New Jersey: Office of
+Population Research.
+Lotka, A. J., & Sharpe, F. J. (1911). A problem in age distribution. Philosophical Magazine,
+21(6), 339–345.
+Luther, N. Y., Gaminirante, K. H. W., de Silva, S., & Retherford, R. D. (1987). Consistent correction of international migration data for Sri Lanka, 1971–81. International
+Migration Review, 21(4), 1335–1369. Special Issue: Measuring International Migration:
+Theory and Practice.
+Merli, M. G. (1998). Mortality in Vietnam, 1979-1989. Demography, 35(3), 345–360.
+Nagarajan, R. (2011, January 24). World’s baby no. 7 billion could be born in UP. In The
+times of india. New Delhi, India: Bennett, Coleman & Co. Ltd.
+National Research Council, Commission on Behavioral and Social Sciences and Education.
+(2000). Beyond six billion: forecasting the world’s population (J. Bongaarts & R. A.
+Bulatao, Eds.). Washington, D.C.: National Academies Press.
+Oeppen, J. (1993a). Back projection and inverse projection: members of a wider class of
+constrained projection models. Population Studies, 47(2), 245–267.
+Oeppen, J. (1993b). Generalized inverse projection. In D. S. Reher & R. Schofield (Eds.),
+Old and new methods in historical demography (Chap. 2, pp. 29–39). Oxford, England:
+Clarendon Press.
+Phillips, N. (2011, April 30). Seven billion and counting. (1 (News Review)). Sydney, Australia: Fairfax Media.
+Pollard, J. H. (1966). On the use of the direct matrix product in analysing certain stochastic
+population models. Biometrika, 53(3/4), 397–415.
+Pollard, J. H. (1968). A note on multi-type galton-watson processes with random branching
+probabilities. Biometrika, 55(3), 589–590.
+Preston, S., Heuveline, P., & Guillot, M. (2001). Demography: measuring and modeling population processes. Malden, Massachusetts: Blackwell.
+R Development Core Team. (2012). R: a language and environment for statistical computing.
+ISBN 3-900051-07-0. R Foundation for Statistical Computing. Vienna, Austria.
+Reuters. (2011, May 4). Population set to surpass seven billion. In National post. Toronto,
+Canada: Postmedia Network Inc.
+34
+
+Rogers, A., & Castro, L. (1981). Model migration schedules. Laxenburg, Austria: International Institute for Applied Systems Analysis.
+Scherbov, S., Lutz, W., & Sanderson, W. C. (2011). The uncertain timing of reaching 8
+billion, peak world population, and other demographic milestones. Population and
+Development Review, 37(3), 571–578.
+Shryock, H. S., Siegel, J. S., & Associates. (1980). The methods and materials of demography.
+Washington D. C.: United States Bureau of the Census.
+Statistics New Zealand. (2001). A report on the 2001 post-enumeration survey. Wellington,
+New Zealand.
+Statistics New Zealand. (2006, December). A history of survival in New Zealand: cohort life
+tables 1876–2004. (revised edition). Wellington, New Zealand: Statistics New Zealand.
+Statistics New Zealand. (2010a, November). Late birth registrations. Wellington, New Zealand.
+Statistics New Zealand. (2010b, September). New Zealand’s international migration statistics: 1922–2009. International Travel and Migration Articles. Wellington, New Zealand.
+Statistics New Zealand. (2010c, July). Permanent & long-term migration by country of residence, age and sex (annual-Jun) (Table No. ITM172AA). Wellington, New Zealand.
+Statistics New Zealand. (2010d, July). Permanent & long-term migration totals (annual-Jun)
+(Table No. ITM040AA). Wellington, New Zealand.
+Statistics New Zealand. (2011a, February). Age-specific fertility rates by 5 year age group
+(Maori and total population) (annual-Dec) (Table No. DFM017AA). Wellington, New
+Zealand.
+Statistics New Zealand. (2011b, December). Period life tables. Retrieved from http://www.
+stats . govt . nz / browse _ for _ stats / health / life _ expectancy / period - life tables.aspx
+Statistics New Zealand. (2012, February). Live births by age of mother (annual–Dec) (Table
+No. VSB004AA). Wellington, New Zealand.
+Sykes, Z. M. (1969). Some stochastic versions of the matrix model for population dynamics.
+Journal of the American Statistical Association, 64(325), 111–130.
+UN Inter-agency Group for Child Mortality Estimation. (2010). Child mortality estimates.
+Retrieved from http://www.childmortality.org
+United Nations. (1983). Manual X: indirect techniques for demographic estimation. Population Studies (Department of International, Economic and Social Affairs). New York,
+NY: United Nations, Sales No. E.83.XIII.2.
+United Nations. (2008). Principles and recommendations for population and housing census.
+M. Sales No. E.o7.XVII.8. New York, New York: United Nations.
+United Nations. (2010). Post enumeration surveys: operational guidelines. New York, New
+York.
+United Nations. (2011a, August). World population prospects: the 2010 revision. Retrieved
+from Department of Economic and Social Affairs (DESA), Population Division, Population Estimates and Projections Section: http://esa.un.org/unpd/wpp/index.htm
+United Nations. (2011b, August). World population prospects: the 2010 revision—data
+sources. Retrieved from Department of Economic and Social Affairs (DESA), Population Division, Population Estimates and Projections Section: http://http://esa.
+un.org/wpp/sources/country.aspx
+
+35
+
+U.S. Department of State. (2011, June). Background note: Laos. Retrieved from http :
+//www.state.gov/r/pa/ei/bgn/2770.htm
+Wheldon, M. C., Raftery, A. E., Clark, S. J., & Gerland, P. (2012, May). Reconstructing
+population dynamics of the recent past, with uncertainty, from fragmentary data. In
+PAA annual conference. Population Association of America (PAA). San Francisco,
+California.
+Wrigley, E. A., & Schofield, R. S. (1981). The population history of England, 1541–1871: a
+reconstruction. Studies in Social and Demographic History. London, England: Edward
+Arnold.
+Zaba, B. (1981). Use of the relational Gompertz model in analysing fertility data collected in
+retrospective surveys (Centre for Population Studies Research Paper No. 81-2). London.
+Zitter, M., & McArthur, E. K. (1980). Census undercount: the international experience. In
+Conference on census undercount (pp. 164–180). U.S. Bureau of the Census. Washington, D.C.: U.S. Department of Commerce, Bureau of the Census.
+
+36
+
+

@@ -1,0 +1,4726 @@
+Bayesian Reconstruction of Two-Sex Populations by
+Age: Estimating Sex Ratios at Birth and Sex Ratios of
+Mortality1
+Mark C. Wheldon
+Auckland University of Technology
+Adrian E. Raftery, Samuel J. Clark
+University of Washington
+Patrick Gerland
+United Nations Population Division
+
+Working Paper no. 138
+Center for Statistics and the Social Sciences
+University of Washington
+December 12, 2013
+
+1 Mark C. Wheldon is Lecturer in the Biostatistics Unit, Faculty of Health and Environmental Sciences, Auckland University of Technology, and Biostatistician, Centre for Clinical Research and Effective Practice, Middlemore Hospital, both
+in Auckland, New Zealand (e-mail: mwheldon@aut.ac.nz, web: http://www.aut.ac.nz/~profiles/mwheldon). Part of this
+work was done while he was a Ph.D. student in the Department of Statistics at the University of Washington, Seattle,
+WA, USA. Adrian E. Raftery is Professor of Statistics and Sociology, University of Washington (e-mail: raftery@uw.edu,
+web: http://www.stat.washington.edu/~raftery). Samuel J. Clark is Associate Professor of Sociology, University of
+Washington, and Researcher at the Institute of Behavioral Science (IBS), University of Colorado at Boulder, CO, USA
+and at MRC/Wits Rural Public Health and Health Transitions Research Unit (Agincourt), School of Public Health, Faculty of Health Sciences, University of the Witwatersrand, Johannesburg, South Africa (e-mail: samclark@uw.edu, web:
+http://www.soc.washington.edu/faculty-details/samclark). Patrick Gerland is Population Affairs Officer, United Nations
+Department of Economic and Social Affairs, Population Division, New York, NY, USA (e-mail: gerland@un.org). This work
+was supported by grants R01 HD054511, R01 HD070936, K01 HD057246 and 5R24HD042828 from the Eunice Kennedy Shriver
+National Institute of Child Health and Human Development (NICHD). Wheldon also received partial support from a Shanahan
+Endowment Fellowship to the Center for Studies in Demography & Ecology at the University of Washington, and from the
+Faculty of Health and Environmental Sciences, Auckland University of Technology. Raftery’s research was also supported by a
+Science Foundation Ireland ETS Walton visitor award, grant reference 11/W.1/I2079. The views and opinions expressed in this
+paper are those of the authors and do not necessarily represent those of the United Nations. This paper has not been formally
+edited and cleared by the United Nations.
+
+Abstract
+The original version of Bayesian reconstruction (Wheldon et al., 2013b), a method for estimating age-specific fertility, mortality, migration and population counts of the recent past
+with uncertainty, produced estimates for female-only populations. Here we show how two-sex
+populations can be similarly reconstructed and probabilistic estimates of various sex ratio
+quantities obtained. We demonstrate the method by reconstructing the populations of India
+from 1971 to 2001, Thailand from 1960 to 2000, and Laos from 1985 to 2005. We found
+evidence that in India, sex ratio at birth (SRB) exceeded its conventional upper limit of
+1.06, and, further, increased over the period of study, with posterior probability above 0.9.
+In addition, almost uniquely, we found evidence that life expectancy at birth (e0 ) was lower
+for females than for males in India (posterior probability for 1971–1976 0.79), although there
+was strong evidence for a narrowing of the gap through to 2001. In both Thailand and Laos,
+we found strong evidence for the more usual result that e0 was greater for females and, in
+Thailand, that the difference increased over the period of study.
+KEY WORDS: Bayesian hierarchical model; Two-sex model; Population projection;
+Vital Rates; Sex ratio at birth; Sex ratio of mortality
+
+Contents
+1 Introduction
+1.1 Methods of Population Reconstruction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1.2 Estimating Sex Ratios . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+1
+3
+4
+
+2 Method
+2.1 Notation and Parameters . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2.2 Projection of Two-Sex Populations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2.3 Modelling Uncertainty . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+7
+7
+8
+9
+
+3 Application
+3.1 Data Sources and Initial Estimates
+3.1.1 India, 1971–2001 . . . . . .
+3.1.2 Thailand, 1960–2000 . . . .
+3.1.3 Laos, 1985–2004 . . . . . .
+3.2 Results . . . . . . . . . . . . . . . .
+3.2.1 India, 1971–2001 . . . . . .
+3.2.2 Thailand, 1960–2000 . . . .
+3.2.3 Laos, 1985–2004 . . . . . .
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+
+11
+12
+12
+13
+13
+13
+14
+18
+19
+
+4 Discussion
+4.1 Sex Ratios in Asia . . . . . .
+4.1.1 India . . . . . . . . . .
+4.1.2 Thailand . . . . . . .
+4.1.3 Laos . . . . . . . . . .
+4.2 Further Work and Extensions
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+21
+25
+26
+27
+28
+28
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+
+Appendices
+
+30
+
+A Derivation of Demographic Indicators
+30
+A.1 Total Fertility Rate . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+A.2 Life Expectancy at Birth . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+A.3 Under 5 Mortality Rate . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+B Application: Further Details About Data
+B.1 India . . . . . . . . . . . . . . . . . . . . .
+B.1.1 Population Counts . . . . . . . . .
+B.1.2 Sex Ratio at Birth . . . . . . . . .
+B.1.3 Fertility . . . . . . . . . . . . . . .
+B.1.4 Mortality . . . . . . . . . . . . . .
+B.1.5 Migration . . . . . . . . . . . . . .
+B.2 Thailand . . . . . . . . . . . . . . . . . . .
+B.2.1 Fertility . . . . . . . . . . . . . . .
+B.2.2 Mortality . . . . . . . . . . . . . .
+B.3 Laos . . . . . . . . . . . . . . . . . . . . .
+B.3.1 Population Counts . . . . . . . . .
+B.3.2 Fertility . . . . . . . . . . . . . . .
+B.3.3 Mortality . . . . . . . . . . . . . .
+B.3.4 Migration . . . . . . . . . . . . . .
+
+Sources
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+. . . . . .
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+30
+30
+30
+31
+31
+31
+31
+32
+32
+32
+32
+33
+33
+33
+34
+
+C Application: Further Results
+34
+C.1 India . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+C.2 Thailand . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+C.3 Laos . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 40
+
+i
+
+References
+
+45
+
+ii
+
+1
+
+Introduction
+
+The past, present and future dynamics of human populations at the country level are highly
+relevant to the work of social scientists in many disciplines as well as planners and evaluators
+of public policy. These dynamics are driven by population counts, fertility and mortality rates
+(vital rates), and net international migration. Demographers at the United Nations Population Division (UNPD) are tasked with producing detailed information on these quantities,
+published biennially in the World Population Prospects (WPP) (e.g., UN, 2011). Estimates
+for each country are provided, for periods stretching back from the present to about 1950.
+Currently, however, WPP estimates are not accompanied by any quantitative estimate of
+uncertainty. Uncertainty should also be measured because the availability, coverage and
+reliability of data used to derive the estimates differ greatly among countries. Developing
+countries, in particular, often lack the extensive registration and census-taking systems developed countries maintain, so that estimates in these cases are subject to greater uncertainty.
+Estimates are not error-free even for developed countries. While estimates of population
+counts and vital rates are likely to be very accurate, uncertainty about net international
+migration can be quite substantial. Beer et al. (2010) found this to be the case for Europe.
+In response to the need for uncertainty quantification in estimates of the key parameters
+driving human population dynamics, Wheldon et al. (2013b) proposed Bayesian population
+reconstruction (Bayesian reconstruction for short), a method of simultaneously estimating
+population counts, vital rates and net international migration at the country level, by age,
+together with uncertainty. The original formulation was able to reconstruct female-only
+populations. In this article, we describe a major extension to two-sex populations. This
+allows us to estimate age- and time-specific indicators of fertility, mortality and migration
+separately for females and males and, importantly, sex ratios of these quantities, all with
+probabilistic measures of uncertainty. In addition, we also show how Bayesian reconstruction
+can be used to derive probabilities of change over time in these quantities. To demonstrate
+the method, we reconstruct the full populations of India from 1971–2001, Thailand from
+1960–2000 and Laos from 1985–2005. These countries were selected because, in all cases, the
+available data are fragmentary, which makes population reconstruction challenging.
+Bayesian reconstruction embeds a standard demographic projection model in a hierarchical statistical model. As inputs, it takes bias-reduced initial estimates of age-specific fertility
+rates, survival proportions (a measure of mortality), net international migration and censusbased population counts. Also required is expert opinion about the measurement error of
+these quantities, informed by data if available. The output is a joint posterior probability
+distribution on the inputs, allowing all parameters to be estimated simultaneously, together
+
+1
+
+with fully probabilistic posterior estimates of measurement error. Wheldon et al. (2013b)
+showed that marginal credible intervals were well calibrated. They demonstrated the method
+by reconstructing the female population of Burkina Faso from 1960 to 2000. Wheldon et al.
+(2013a) extended Bayesian reconstruction to countries with censuses at irregular intervals
+and showed that it works well across a wide range of data quality contexts by reconstructing the female populations of Laos, Sri Lanka, and New Zealand. Laos is a country with
+very little vital registration data where population estimation depends largely on surveys,
+Sri Lanka has some vital registration data, and New Zealand is a country with high-quality
+registration data. In this paper we focus on countries which lack good vital registration data
+or for which there are gaps in, or inconsistencies among, the available data sources.
+Global sex ratio in the total population (SRTP), defined as the ratio of the number of
+males per female, has risen slightly from about 1.00 in 1950 to 1.02 in 2010. There is a
+great deal of variation among regions, however. For instance, SRTP in the more developed
+regions ranged from 0.91 to 0.95 over this period, while in less developed regions it remained
+constant at about 1.04. In Eastern Asia, which includes China, and in Southern Asia, which
+includes India, SRTPs ranged from 1.05 to 1.06 and from 1.09 to 1.06, respectively (UN,
+2011). Guilmoto (2007b) claimed that the population of Asia underwent “masculinization”
+during the latter half of the twentieth century, with one likely consequence being a “marriage
+squeeze” (Guilmoto, 2009, 2012) wherein many males will be unable to find a wife. Imbalances in population sex ratios are caused by imbalances in sex ratios at birth (SRBs) and
+sex ratios of mortality (SRMs) (Guillot, 2002). These quantities have received considerable
+attention in the literature on the demography of Asia (e.g. Bhat, 2002b,c; Bongaarts, 2001;
+Coale, 1991; Das Gupta, 2005; Guilmoto, 2009; Mayer, 1999; Sen, 1990). Sawyer (2012)
+called for further work to quantify uncertainty in estimates of SRMs. Estimates of the SRB
+are subject to a large amount of uncertainty, especially in India (Bhat, 2002b,c; Guillot,
+2002; Guilmoto, 2009). Here, we respond by quantifying uncertainty in these parameters.
+The article is organized as follows. In the remainder of this section we provide some background on existing methods of population reconstruction and the demography of sex ratios
+in Asia. In Section 2 we describe the two-sex version of Bayesian reconstruction. In Section 3 we present results from our case studies of India, Thailand and Laos. We focus mainly
+on posterior distributions of total fertility rate (TFR), SRBs and the sex difference in life
+expectancy. Certain sex ratios in India are widely believed to be atypical so we devote more
+attention to this case. Sensitivity to aspects of the prior based primarily on expert opinion
+is investigated. We end with a discussion in Section 4 which provides further demographic
+context and an overall conclusion. Selected mathematical derivations, further details about
+data sources and results for additional parameters such as sex ratio of under-five mortality
+
+2
+
+rate, population sex ratios and net international migration, are in the appedices. Bayesian
+reconstruction is implemented in the “popReconstruct” package for the R environment for
+statistical computing (R Core Team, 2013).
+
+1.1
+
+Methods of Population Reconstruction
+
+In human demography, population reconstruction is often referred to simply as “estimation”
+to distinguish it from forecasts of future population counts and vital rates. Instead we use
+“reconstruction” to avoid ambiguity. Nevertheless, use of “estimation” agrees with its usage
+in statistics, namely the estimation of the values of some unknown quantities from data.
+Reviews of existing methods of population reconstruction are given by Oeppen (1993a),
+Barbi et al. (2004), and Wheldon et al. (2013b). Many were developed for the purpose of
+reconstructing populations of the distant past from data on births, deaths and marriages
+recorded in parish registers (e.g,. Bertino and Sonnino, 2003; Walters, 2008; Wrigley and
+Schofield, 1981), or in counterfactual exercises to estimate the excess of mortality due to
+extreme events such as famine or genocide (e.g., Boyle and Ó Gráda, 1986; Daponte et al.,
+1997; Goodkind and West, 2001; Heuveline, 1998; Merli, 1998) or the number of “missing
+women” due to male-dominated sex ratios in Asia (Coale, 1991; Das Gupta, 2005; Sen, 1990).
+Purely deterministic reconstruction methods used in some of these studies include “inverse
+projection” (Lee, 1971, 1974), “back projection” (Wrigley and Schofield, 1981) and “generalized back projection” (Oeppen, 1993b). Bertino and Sonnino (2003) proposed “stochastic
+inverse projection”. This is a non-deterministic method but the only form of uncertainty is
+that which comes from treating birth and death as stochastic processes at the individual
+level. Counts of births and deaths are assumed to be known without error and age patterns
+are fixed. In the cases we treat, accurate data on births and deaths of the parish register
+kind are often unavailable and uncertainty due to stochastic vital rates is likely to be small
+relative to uncertainty due to measurement error (Cohen, 2006; Lee, 2003; Pollard, 1968).
+Moreover, it is designed to work with the kind of data commonly available for developing
+countries and does not rely on the existence of detailed births and deaths registers, although
+this information can be used when available (Wheldon et al., 2013a).
+Daponte et al. (1997) took a fully Bayesian approach to constructing a counterfactual
+history of the Iraqi Kurdish population from 1977 to 1990. They constructed prior distributions for fertility and mortality rates using survey data and expert opinion about uncertainty
+based on historical information and knowledge of demographic processes. Measurement error
+in the available, fragmentary data was accounted for. However, there were some restrictions
+such as holding the age pattern of fertility fixed and allowing for mortality variation only
+through infant mortality. Rural to urban migration was accounted for by treating these
+3
+
+populations separately; international migration was assumed to be negligible. Bayesian reconstruction is similar, but no model age patterns are assumed to hold and international
+migration is explicitly estimated along with fertility, mortality and population counts.
+Most methods of population reconstruction in demography employ the cohort component
+model of population projection (CCMPP) in some form. Population projection uses vital
+rates and migration to project a set of age-specific population counts in the baseline year,
+denoted t0 , forward in time to the end year, denoted T . In its simplest form, the population
+in year t+δ, t0 ≤ t ≤ T −δ, equals the population in year t plus the intervening births and net
+migration, minus the intervening deaths (e.g., Preston et al., 2001; Whelpton, 1936). This
+is known as the demographic balancing equation. Population projection is distinct from
+population forecasting since it merely entails evolving a population forward in time from
+some given baseline under assumptions about prevailing vital rates and migration (Keyfitz
+and Caswell, 2005). The period of projection may be in the future or in the past. Wheldon
+et al. (2013a,b) employed single-sex population projection in this way to reconstruct femaleonly populations taking account of measurement error. In this article we show how twosex population projection can be used to reconstruct full populations, thereby providing
+estimates of population sex ratios, SRBs and SRMs simultaneously while accounting for
+measurement error.
+
+1.2
+
+Estimating Sex Ratios
+
+Methods of reporting sex ratios are not standardized. Here we adopt the convention that all
+ratios are “male-per-female”; in the Indian literature the inverse is more common. Hence,
+SRTP is the total number of males per female in the population and SRB is the number of
+male births per female birth. The SRM can be expressed using various mortality indicators.
+We will use the under-five mortality rate (U5MR) exclusively (see the Appendix for a formal
+definition). A low SRM means that mortality is lower among males than among females. Allage mortality is summarized by life expectancy at birth, for which the standard demographic
+abbreviation is e0 . Comparison of e0 by sex is more commonly done using the difference than
+the ratio and we adopt that convention here. Male e0 is subtracted from female e0 to obtain
+the difference.
+Under typical conditions, SRBs for most countries are in the range 1.04–1.06 (UNFPA,
+2010). Estimates of SRB in some regions in Asia are higher; the National Family Health
+Survey in India estimated SRB over 2000–2006 to be 1.09, for example (Guilmoto, 2009).
+For almost all countries, e0 is higher for females than males. This is thought to be due to
+a range of biological and environmental factors, with the relative contribution of each class
+of factor varying among countries (Waldron, 1985). Age-specific SRMs are more variable as
+4
+
+they are affected by sex-specific causes of death such as those associated with child birth.
+The preferred way of estimating SRBs and SRMs at the national level is from counts of births
+and deaths recorded in official registers (vital registration) together with total population
+counts from censuses. In many countries where such registers are not kept, surveys such
+as the Demographic and Health Surveys and World Fertility Surveys must be used. These
+typically ask a sample of women about their birth histories. Full birth histories collect
+information about the times of each birth and, if the child subsequently died, the time of the
+death. Summary birth histories ask only about the total number of births and child deaths
+the respondent has ever experienced (Preston et al., 2001; UN, 1983).
+Estimates based on both vital registration and surveys are susceptible to systematic biases
+and non-systematic measurement error. Counts of births or deaths from vital registration
+may be biased downward by the omission of events from the register or under-coverage of the
+target population. Full birth histories are susceptible to biases caused by omission of births
+or misreporting of the timing of events. Some omissions may be deliberate in order to avoid
+lengthy subsections of the survey (Hill, You, et al., 2012). Fertility and mortality estimates
+from summary birth histories are derived using so-called indirect techniques such as the Brass
+P/F ratio method (Brass, 1964; Feeney, 1996; UN, 1983). In addition to the biases affecting
+full birth histories, estimates based on summary birth histories can also be affected when the
+assumptions behind the indirect methods are not satisfied. These assumptions concern the
+pattern of mortality by age and the association between mother and child mortality. They
+often do not hold, for example, in populations experiencing rapid mortality decline (Silva,
+2012).
+In the absence of vital registration, estimates of adult mortality may be based on reports
+of sibling survival histories collected in surveys. Often however, the only data available are on
+child mortality collected from surveys of women. In such cases, estimates of adult mortality
+are extrapolations based on model life tables (Preston et al., 2001; UN, 1983). Model life
+tables are families of life tables generated from mortality data collected from a wide range of
+countries over a long period of time. They are indexed by a summary parameter such as e0
+or U5MR and are grouped into regions. The Coale and Demeny system (Coale et al., 1983;
+Preston, 1976) and the United Nations (UN) system for developing countries (UN, 1982)
+both have five families. Errors in estimates of adult mortality derived in this way come from
+errors in the survey-based estimates of under five mortality and the inability of the model
+life table family to capture the true mortality patterns in the population of interest.
+Concerns about the accuracy of SRB estimates, particularly for periods between 1950
+and 1970, have led some authors to suggest using age-specific population sex ratios as a
+proxy for SRBs. Guilmoto (2009) suggests the male-to-female ratio among those aged 0–4
+
+5
+
+(the “child sex ratio”) and Bhat (2002b) suggests the ratio among those aged 0–14 for India
+(the “juvenile sex ratio”). Such ratios must be estimated from census data which is probably
+more reliable than survey data, but still subject to age misreporting and underreporting
+of certain groups. For example, there appears to have been under counting of females in
+censuses of India (Bhat, 2002b,c; Guillot, 2002). In our case study, we estimate the child
+sex ratio for India between 1971 and 2001.
+Estimates of fertility, mortality, migration and population counts, and the implied sex
+ratios for successive quinquennia are all related to one another via the demographic balancing
+equation that underlies the CCMPP. The estimates of these quantities published in WPP
+must be “projection consistent” in that the age-specific population counts for year t must
+be the counts one gets by projecting the published counts for year t − 5 forward using the
+published fertility, mortality and migration rates.
+Bias reduction techniques are source- and parameter-specific. For birth history data,
+these might involve omitting responses of very old women, or responses pertaining to events
+in the distant past. For census counts, adjustments may be made to compensate for wellknown undercounts in certain age-sex groups. In other cases, parametric models of life
+tables, or specially constructed life tables, may be used if available. For this reason we do
+not propose a generally applicable method of bias reduction, one which would work well for
+all parameters and data sources, since many specialized ones already exist (e.g., Alkema,
+Raftery, et al., 2012; Murray, Ferguson, et al., 2003; Murray, Rajaratnam, et al., 2010; UN,
+1983). Bayesian reconstruction takes as input bias-reduced initial estimates of age-specific
+fertility rates and age- and sex-specific initial estimates of mortality, international migration
+and population counts. Measurement error is accounted for by modelling these quantities as
+probability distributions. Projection consistency is achieved by embedding the CCMPP in
+a Bayesian hierarchical model. Inference is based on the joint posterior distribution of the
+input parameters, which is sampled from using Markov chain Monte Carlo (MCMC).
+Under the current UN procedure, all available representative data sources for a given
+country are considered and techniques to reduce bias are applied where UN analysts deem
+them appropriate. Projection consistency is achieved through an iterative “project-andadjust” process. SRBs and SRMs are inputs to the procedure, while population sex ratios
+are calculated using estimate population counts, which are an output.
+
+6
+
+2
+
+Method
+
+2.1
+
+Notation and Parameters
+
+The parameters of interest are age- and time-specific vital rates, net international migration
+flows, population counts and SRB. The symbols n, s, g and f denote population counts,
+survival (a measure of mortality), net migration (immigrants minus emigrants) and fertility,
+respectively. All of these parameters will be indexed by five-year increments of age, denoted
+by a, and time, denoted by t. The parameters n, s and g will also be indexed by sex, denoted
+by l = F, M , where F and M indicate female and male, respectively. SRB is defined as the
+number of male births for every female birth. It will be indexed by time.
+Reconstruction will be done over the time interval [t0 , T ]. The age scale runs from 0
+to A > 0; in our applications A is 80. The total number of age-groups is denoted K. To
+[fert]
+
+[fert]
+
+model fertility, we define aL ≤ aU , where fertility is assumed to be zero at ages out[fert] [fert]
+side the range [aL , aU + 5). Throughout, a prime indicates vector transpose. We will
+use boldface for vectors and a “·” to indicate the indices whose entire range is contained
+therein. Multiple indices are stacked in the order a, t, l. For example, n·,t0 ,F is the vector of age-specific female population counts in exact year t0 , [n0,t0 ,F , · · · , nA,t0 ,F ]0 and n·,·,· =
+[n0,t0 ,F , · · · , nA,t0 ,F , n0,t0 +5,F , · · · , nA,t0 +5,F , · · · n0,T,F , · · · , nA,T,F , · · · , n0,T,M , · · · , nA,T,M ]0 .
+The parameters are the standard demographic parameters used for projection. The
+fertility parameters, fa,t , are age-, time-specific occurrence/exposure rates. They give the
+ratio of the number of babies born over the period [t, t + 5) to the number of person-years
+lived over this period by women in the age range [a, a + 5). If a woman survives for the
+whole quinquennium she contributes five person-years to the denominator; if she survives
+only for the first year and a half she contributes 1.5 person-years, and so forth. The survival
+parameters, sa,t,l , are age-, time-, and sex-specific proportions. They give the proportion of
+those alive at time t that survive for five years. The age subscript on the survival parameters
+indicates the age-range the women will survive into. For example, the number of females
+aged [15, 20) alive in 1965 would be the product (n10,1960,F )(s15,1960,F ) (ignoring migration
+for simplicity). It also means that s0,1960.F is the proportion of female births born during
+1960–1965 that are alive in 1965, hence aged 0–5. The oldest age-group is open-ended and
+we must allow for survival in this age group. Thus, the proportion aged [A, ∞) at time t
+that survives through the interval [t, t + 5) is denoted by sA+5,t,l . Migration is also expressed
+as a proportion. The net number of male migrants aged [a, a + 5) over the interval [t, t + 5)
+is (na,t,M )(ga,t,M ).
+
+7
+
+2.2
+
+Projection of Two-Sex Populations
+
+The CCMPP allows one to calculate the number alive by age and sex at any time, t =
+t0 + 5, . . . , T , using n·,t0 ,· , the vector of age- and sex-specific female and male population
+counts at baseline t0 , and the age-, time-, sex-specific vital rates and migration up to time t.
+The vector of counts n·,t,· is simply n·,t0 ,· plus the intervening births, minus the deaths, plus
+net migration. Projection is a discrete time approximation to a continuous time process,
+and several adjustments are made to improve accuracy. The form we use has two-steps;
+projection is done first for those aged 5 and above, n5+,t,l and then for those under five,
+n0,t,l . To this end, let us write
+n·,t,· =
+
+h
+
+n0,t,F , n5+ ,t,F
+
+n0,t,M , n5+ ,t,M
+
+i0
+
+(1)
+
+,
+
+where vectors and matrices are partitioned according to sex for clarity.
+The number alive at exact time t + 5 aged 5 and above is then given by the following
+matrix multiplication:
+"
+
+n5+ ,t+5,F
+n5+ ,t+5,M
+
+#
+
+"
+
+=
+
+L5+ ,t,F
+0
+0
+L 5+ ,t,M
+
+#"
+
+n·,t,F + n·,t,F ◦ (g ·,t,F )/2
+n·,t,M + n·,t,M ◦ (g ·,t,M )/2
+
+#
+
+"
+
++
+
+(g 5+ ,t,F )/2
+(g 5+ ,t,M )/2
+
+#
+
+. (2)
+
+The symbol “◦” indicates the Hadamard (or element-wise) product; n5+ ,t,l , l = F, M , are
+(K − 1) × 1 vectors containing the age-specific female and male population counts at exact
+time t; and g 5+ ,t,l , l = F, M , are (K − 1) × 1 vectors of age-specific female and male net
+migration expressed as a proportion of the population. The matrices L 5+ ,t,F and L 5+ ,t,M are
+(K − 1) × K matrices of survival proportions for females and males at ages 5 and above, and
+0 is a (K − 1) × K matrix of zeros (the “L” is for Leslie 1945, 1948). The female and male
+survival matrices have the same form:
+
+
+s5,t,l
+
+L 5+ ,t,l =
+
+
+
+
+
+
+
+0
+0
+0
+
+0
+
+0
+
+0
+
+
+
+
+.
+s10,t,l . .
+0
+0 
+ , l = F, M.
+
+0
+0
+0 
+0
+· · · sA,t,l sA+5,t,l
+
+(3)
+
+Splitting migration in half and adding the first half at the beginning of the projection interval
+and the second half at the end is a standard approximation to improve the discrete time
+approximation (Preston et al., 2001).
+The number of females and males alive aged [0, 5) in exact year t + 5 is derived from the
+total number of births over the interval, bt , where
+[fert]
+
+aU
+
+bt =
+
+X
+[fert]
+a=aL
+
+(
+
+5fa,t
+
+)
+
+na,t,F + (na−5,t,F )(sa,t,F )
+.
+2
+8
+
+(4)
+
+The term in braces is an approximation to the number of person-years lived by women of
+child-bearing age over the projection interval. The total number of each sex aged [0, 5) alive
+at the end of the interval is computed from bt using under five mortality, migration and SRB:
+n0,t+5,F = bt
+n0,t+5,M = bt
+
+1
+1 + SRB t
+SRB t
+
+1 + SRB t
+
+{s0,t,F (1 + (g0,t,F )/2) + (g0,t,F )/2} ,
+
+(5)
+
+{s0,t,M (1 + (g0,t,M )/2) + (g0,t,M )/2} .
+
+(6)
+
+Note that the fa,t in (5) have only two subscripts; they are the age-specific (female)
+fertility rates introduced above. Thus the total number of births in the projection interval
+is a function of the number of females of reproductive age, but not of the number of males
+of any age, or of females of other ages. This is called “female dominant projection”. This
+approach is preferred to alternatives, such as basing fertility on the number of male personyears lived, because survey-based fertility data are often collected by interviewing mothers,
+not fathers. All-sex births are computed first and then decomposed because SRB is often a
+parameter of interest to demographers, as it is to us here (Preston et al., 2001).
+
+2.3
+
+Modelling Uncertainty
+
+In many countries, the available data on vital rates and migration are fragmentary and subject to systematic biases and non-systematic measurement error. Wheldon et al. (2013b)
+proposed Bayesian reconstruction as a way of estimating past vital rates, migration and
+population counts for a single-sex population, which accounts for measurement error. Systematic biases are treated in a pre-processing step which yields a set of bias-reduced “initial
+estimates” for each age-, time-specific fertility rate, survival and migration proportion and
+∗
+is the
+population counts. We use an asterisk (“∗ ”) to denote initial estimates. Hence fa,t
+
+initial estimate of fa,t . At the heart of Bayesian reconstruction is a hierarchical model which
+takes the initial estimates as inputs. Here, we present a substantial development of the
+model given in Wheldon et al. (2013b) which allows estimation of two-sex populations.
+Take t0 and T to be the years for which the earliest and most recent bias adjusted
+census-based population counts are available (henceforth, we refer to these simply as census counts). Years following t0 for which census counts are also available are denoted by
+[cen]
+[cen]
+t0 < tL , . . . , tU < T . Let θ be the vector of all age-, time- and sex-specific fertility
+rates, survival and migration proportions over the period [t0 , T ), the SRBs, and the age- and
+sex-specific census counts in year t0 . These are the inputs required by the CCMPP. We abbreviate CCMPP by M (·). Let ψ t be the components of θ corresponding to time t, excluding
+nt0 . Therefore, θ = [n0·,t0 ,· , f 0·,·,· , s0·,·,· , g 0·,·,· , SRB 0· ]0 and ψ t = [f 0·,t,· , s0·,t,· , g 0·,t,· , SRB 0t ]0 .
+
+9
+
+Reconstruction requires estimation of θ which we do using the following hierarchical model:
+Level 1 :
+
+
+
+log n∗a,t,l | na,t,l , σn2 ∼ Normal log na,t,l , σn2
+[cen]
+
+
+
+(7)
+
+[cen]
+
+t = tL , . . . , tU
+Level 2 :
+
+
+
+na,t,l | n·,t−5,· , ψ t−5 = M n·,t−5,· , ψ t−5
+
+
+
+(8)
+
+t = t0 + 5, . . . , T
+Level 3 :
+
+
+
+2
+2
+log SRB t | SRB ∗t , σSRB
+∼ Normal log SRB ∗t , σSRB
+∗
+log fa,t | fa,t
+, σf2
+
+
+
+Normal log f ∗
+
+∼
+
+2
+a,t , σf
+
+
+
+
+
+(9)
+[fert]
+
+, a = aL
+
+undefined,
+
+[fert]
+
+, . . . , aU
+
+otherwise
+
+(10)
+
+
+
+
+
+(11)
+
+
+
+
+
+(12)
+
+log na,t0 ,l | n∗a,t0 ,l , σn2 ∼ Normal log n∗a,t0 ,l , σn2
+
+logit sa,t,l | s∗a,t,l , σs2 ∼ Normal logit s∗a,t,l , σs2 , a = 0, 5, . . . , A + 5
+
+
+∗
+∗
+ga,t,l | ga,t,l
+, σg2 ∼ Normal ga,t,l
+, σg2
+
+
+
+(13)
+
+(where a = 0, 5, . . . , A; t = t0 , t0 + 5, . . . , T ; l = F, M in (7)–(13) unless otherwise specified)
+σv2 ∼ InvGamma(αv , βv ), v = n, f, s, g, SRB .
+
+Level 4 :
+
+(14)
+
+For x < 0 < 1, logit(x) ≡ log(x/(1 − x)). The joint prior at time t is multiplied by
+I {M (nt , ψ t ) > 0} ≡
+
+
+1
+
+if, for all a = 0, . . . , A and l = F, M , na,t+5,l ≥ 0
+0 otherwise.
+
+(15)
+
+to ensure a non-negative population. Wheldon et al.’s (2013) female-only model had SRB
+fixed at 1.05 and l = F . SRB can be interpreted as the odds that a birth is male, so (9) is
+a model for the log-odds that a birth is male.
+The hyper parameters αv , βv , v = n, f, s, g, SRB define the distribution of the variance parameters that represent measurement error in the initial estimates. We set these parameters
+based on the expert opinion of UNPD analysts by eliciting liberal, but realistic, estimates of
+initial estimate accuracy. We elicit on the observable marginal quantities, fa,t , sa,t,l , ga,t,l , and
+na,t,l . On their respective transformed scales, these have Student’s t distributions centred at
+the initial point estimates and variance and degrees of freedom dependent on α and β. We
+set αv = 0.5, v = f, s, n, g, SRB , which gives the initial estimates a weight equivalent to a
+single data point. The βv are then determined by specifying the limits of the central 90percent probability interval of the untransformed marginal distributions. Population counts,
+10
+
+fertility rates and SRB are modelled on the log scale so this amounts to making a statement
+of the form “the probability that the true parameter values are within ηv × 100 percent of
+the initial point estimates is 90 percent”, v = f, n, SRB . Migration is explicitly modelled as
+a proportion so this interpretation is direct for migration. The survival parameters are also
+proportions but they are modelled on the logit scale. We set βs such that the untransformed
+sa,t,l lie within the elicited intervals. In all cases, we call ηv , v = f, s, n, g, SRB , the elicited
+relative error.
+Bayesian reconstruction defines a joint prior distribution over the input parameters (9)–
+(15) which induces a prior on the population counts after the baseline via CCMPP. This is
+“updated” using the census counts for which a likelihood is given in (7). Some methods of
+estimating migration rely on “residual” counts; projected counts based only on vital rates
+are compared with census counts and the difference attributed to international migration.
+Methods of adjusting vital rates and census counts to ensure mutual consistency have also
+been proposed that use a similar approach (e.g., Luther, Dhanasakdi, et al., 1986; Luther and
+∗
+∗
+should not be based on such methods
+, s∗a,t,l , ga,t,l
+Retherford, 1988). Initial estimates of fa,t
+
+since this would amount to using the data twice and uncertainty would be underestimated
+in the posterior.
+
+3
+
+Application
+
+We apply two-sex Bayesian reconstruction to the populations of India from 1971–2001, Thailand from 1960–2000 and Laos from 1985–2005. The periods of reconstruction are determined
+by the available data. Laos has no vital registration data. Initial estimates of fertility are
+based on surveys of women and the only mortality estimates are for ages under five derived
+from these same surveys. Thailand and India have acceptable vital registration data for
+these periods which provide information about fertility and mortality at all ages. Nevertheless, adjustments are necessary to reduce bias due to undercount of certain groups. For
+example, vital registration is thought to have underestimated U5MR in Thailand (Hill, Vapattanawong, et al., 2007; Vapattanawong and Prasartkul, 2011) and in India 50–60 percent
+of children are born at home which increases the likelihood of omission from the register
+(UNFPA, 2010).
+Estimates of population sex ratios in India have been relatively high throughout the
+twentieth century. Prior to the late 1970s, these were thought to have been caused by an
+excess of female mortality (high SRMs), and from the late 1970s onward by high SRBs.
+Both of these phenomena have been linked to cultural preferences for sons over daughters
+which were intensified by a rapid fall in fertility rates (Bhat, 2002b,c; Das Gupta, 2005;
+
+11
+
+Guilmoto, 2007a; Visaria, 1971). Concern over the accuracy of certain estimates of SRB has
+led some authors to suggest using the SRTP and sex ratios for young age groups as proxies
+for SRB and SRMs (Bhat, 2002b,c; Guilmoto, 2009). We use Bayesian reconstruction to
+derive credible intervals for the SRTP and the sex ratio among those aged 0–5 for India.
+Thailand experienced an even more rapid decline in TFR between 1960 and about 1980
+(Kamnuansilpa et al., 1982). Estimates of Thailand’s SRBs between 1960 and about 1970
+are relatively high, but are within the typical range from about 1970 to 2000. Surveys of
+Thai families in the 1970s found that girls and boys were desired about equally (Guilmoto,
+2009; Knodel, Ruffolo, et al., 1996).
+Fertility rates in Laos have fallen since 1985 but remain high relative to other Asian
+countries. Very little has been written about sex ratios for this country (but see Frisen,
+1991).
+In the remainder of this section, we briefly describe the data sources for each country and
+the method used to derive initial estimates. More details are in the appendices. These are
+followed by results for selected parameters. We focus on key details and the most interesting
+outputs; further results, including those for migration, can be found in the appendices.
+All computations were done using the R environment for statistical computing (R Core
+Team, 2013); Bayesian reconstruction is implemented in the package “popReconstruct”. The
+method of Raftery and Lewis (1996) was used to select the length of MCMC chains.
+
+3.1
+3.1.1
+
+Data Sources and Initial Estimates
+India, 1971–2001
+
+Censuses have been taken roughly every 10 years in India since 1871. We begin our period of
+reconstruction in 1971. This is the first census year for which vital rate data independent of
+the censuses are available, collected by the Indian Sample Registration System. Subsequent
+censuses were taken in 1981, 1991 and 2001 (sufficiently detailed results from the 2011 census
+were not available at the time of writing). Counts in WPP 2010 were used as these were
+adjusted to reduce bias. Estimates of SRB, fertility and survival were based on data from
+the Sample Registration System (The Registrar General and Census Commissioner of India,
+2011), the National Family Health Surveys conducted between 1992 and 2006 (The Registrar
+General and Census Commissioner of India, 2009) and the 2002–04 Reproductive Child
+Health Survey. Weighted cubic splines were used to smooth estimates of SRB and fertility.
+The same initial estimates for migration were used for India as for Laos and Thailand and the
+elicited relative errors were also the same; see below. The elicited relative error of 10 percent
+for the vital rates and SRB is consistent with independent assessments of the coverage of
+the Sample Registration System (Bhat, 2002a; Mahapatra, 2010).
+12
+
+3.1.2
+
+Thailand, 1960–2000
+
+Censuses were conducted in 1960, 1970, 1980, 1990 and 2000 (detailed results from the census
+conducted in 2010 were not available at the time of writing). We used the counts in WPP
+2010 which were adjusted for known biases such as undercount. Initial estimates of sex ratio
+at birth were taken from current fertility based on vital registration. The elicited relative
+error was set to 10 percent. Initial estimates of age-specific fertility were based on direct and
+indirect estimates of current fertility and children ever born (CEB) based on the available
+data including surveys and vital registration. Each data series was normalized to give the
+age pattern and summed to give TFR. These were smoothed separately using weighted cubic
+splines and the resulting estimates combined to yield a single series of initial estimates of
+age-specific fertility rates, in the same manner as for India. The weights were determined by
+UN analysts based on their expert judgement about the relative reliability of each source.
+The elicited relative error was set to 10 percent. Initial estimates of survival for both sexes
+were based on life tables calculated from vital registration, adjusted for undercount using
+data from surveys. We used the same initial estimates of international migration as for Laos;
+see below.
+3.1.3
+
+Laos, 1985–2004
+
+National censuses were conducted in 1985, 1995 and 2005, so we reconstruct the whole
+population between 1985 and 2005. We used Wheldon et al.’s (2013) initial estimates for
+fertility, female mortality, migration and population counts. In these, migration was centred
+at zero for all sexes, ages and quinquennia, with a large relative error of 20 percent. Initial
+estimates for males were derived in an analogous manner. There was very little information
+about the sex ratio at birth, so initial estimates were set at 1.05, a demographic convention
+(Preston et al., 2001), with a large elicited relative error of 20 percent.
+
+3.2
+
+Results
+
+Key results are given by country; more results are presented in the appendices . We show
+the limits of central 95 percent credible intervals for the marginal prior and posterior distributions of selected parameters. The magnitude of uncertainty will be summarized using
+half-widths of these intervals, averaged over age, time, and sex. We compare our results to
+those published in WPP 2010 for years with comparable estimates. WPP 2010 did not use
+Bayesian reconstruction but it is based on the same data, so the comparison is useful.
+
+13
+
+3.2.1
+
+India, 1971–2001
+
+Figures 1a and 1b show posterior 95 percent intervals for TFR and SRB for India. Median
+TFR decreased consistently and the posterior intervals have half-width 0.11 children per
+woman. The marginal posterior for SRB is centred above the range 1.04–1.06 from 1976–
+2001, which suggests that SRBs might have been atypically high over this period. There
+also appears to have been an increase in SRB over the same period. Under Bayesian reconstruction, the posterior probabilities of these events can be estimated in a straightforward
+manner from the posterior sample. The posterior probabilities that SRB exceeded 1.06 in
+each of the quinquennia are in Table 1a. Strong evidence for high SRB was found for the
+period 1991–2001.
+To investigate the trend further we looked at the posterior distributions of two measures
+of linear increase: 1) the difference between SRBs in the first and last quinquennia; and 2)
+the slope coefficient in the ordinary least squares (OLS) regression of SRB on the start year
+of each quinquennium. Each quantity was calculated separately for each SRB trajectory
+in the posterior sample. Some actual trajectories are shown in Figure 1b. These measures
+summarize the posterior obtained from the reconstruction in simple ways; linear regression
+models were not used to obtain the sample from the posterior. The probabilities that the
+simple difference and slope coefficient were greater than zero are 0.92 and 0.93 respectively
+(Table 2a).
+
+6
+
+●
+
+1.10
+●
+
+TFR (children)
+
+5
+●
+
+●
+●
+
+legend
+● prior
+● posterior
+● WPP 2010
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+Sex ratio at birth
+
+●
+
+●
+●
+●
+
+●
+
+1981
+
+1986
+
+●
+
+legend
+● prior
+posterior
+WPP 2010
+
+●
+
+1.05
+
+4
+●
+●
+●
+●
+●
+
+3
+1.00
+1971
+
+1976
+
+1981
+
+1986
+
+1991
+
+1996
+
+1971
+
+quinquennium beginning
+
+1976
+
+1991
+
+1996
+
+quinquennium beginning
+
+(a)
+
+(b)
+
+Figure 1. Prior and posterior medians and 95 percent credible intervals for the reconstructed
+population of India, 1971–2001: (a) total fertility rate (TFR); (b) sex ratio at birth (SRB)
+(four trajectories from the Markov chain Monte Carlo (MCMC) sample are also shown).
+
+14
+
+Results for e0 are shown in Figure 2. Life expectancy at birth increased for both sexes
+over the period of reconstruction (Figure 2a) but the sex difference suggests that female e0
+might have increased more rapidly than male e0 and even exceeded it in the period 1996–2001
+(Figure 2c). The mean interval half-width for the sex difference in life expectancies is 1.7
+years. The posterior probabilities that female e0 exceeded male e0 support this (Table 1b).
+The possibility of an increase in the female−male difference in e0 was investigated using the
+same method applied to SRB. The probability of an increase between 1971 and 2001 is 0.98
+and the probability that the slope is greater than zero is 0.98 (Table 2b); strong evidence of
+a positive time trend.
+Population sex ratios are shown in Figure 3a. The probability of a decrease in SRTP
+is 1 and the probability that the OLS slope was less than zero is 1 (Table 2c); very strong
+evidence for a decline over the period of reconstruction. Sex ratios in the population under
+five (SRU5s) increased in the WPP population counts, but our posterior median remained
+relatively constant after an initial decline. The probability that the sex ratio declined is 0.8;.
+the probability that the OLS coefficient was negative is 0.71 (Table 2d). Mean half-widths
+of the intervals for SRTP and the sex ratio in ages 0–5 are 0.01 and 0.027 respectively.
+Uncertainty is higher in years without a census.
+Table 1. Probability that sex ratios and differences exceeded certain thresholds for the reconstructed population of India, 1971–2001, by quinquennium.
+
+1971
+
+1976
+
+1981
+
+1986
+
+1991
+
+1996
+
+(a) Pr(SRB > 1.06)
+0.44
+
+0.66
+
+0.83
+
+0.86
+
+0.93
+
+0.96
+
+(b) Pr(female e0 − male e0 > 0)
+0.21
+
+0.58
+
+0.74
+
+0.78
+
+0.91
+
+0.99
+
+Using the sex ratio, the probability that female U5MR exceeded that of males ranged
+from 0.72 to 0.89 over the period of reconstruction. Evidence of a linear trend was not found.
+Further results for U5MR and net international migration, are given in the appendices.
+
+15
+
+●
+●
+●
+●
+
+60
+
+●
+
+live expectancy at birth (years)
+
+life expectancy at birth (years)
+
+●
+
+60
+●
+
+legend
+● posterior
+● WPP 2010
+
+●
+●
+
+●
+
+sex
+● female
+male
+
+●
+
+55
+●
+
+●
+
+●
+
+●
+
+sex
+● female
+male
+
+●
+
+50
+
+40
+●
+
+50
+
+●
+
+1970
+
+1980
+
+1990
+
+1970
+
+1980
+
+quinquennium beginning
+
+1990
+
+quinquennium beginning
+
+(a)
+
+(b)
+5.0
+
+2.5
+
+female e0 − male e0
+
+●
+
+●
+●
+●
+
+●
+●
+
+legend
+● prior
+● posterior
+
+●
+●
+
+0.0
+●
+
+−2.5
+
+−5.0
+1970
+
+1980
+
+1990
+
+quinquennium beginning
+
+(c)
+
+Figure 2. Prior and posterior medians and 95 percent credible intervals for life expectancy at
+birth (e0 ) for the reconstructed population of India, 1971–2001. (a): Female and male posterior
+quantiles with World Population Prospects (WPP) 2010 estimates; (b): Female and male prior
+quantiles only; (c): Sex difference (female−male).
+
+16
+
+1.10
+●
+
+1.08
+
+●
+
+●
+●
+●
+
+ratio (M/F)
+
+●
+
+●
+
+●
+
+●
+
+1.08
+●
+●
+
+legend
+● posterior
+● WPP census
+
+●
+
+ratio (M/F)
+
+1.09
+
+1.06
+
+●
+
+●
+
+●
+
+●
+●
+
+legend
+● posterior
+● WPP census
+
+●
+
+1.07
+●
+
+1.04
+●
+
+1.06
+1.02
+
+1970
+
+1980
+
+1990
+
+2000
+
+1970
+
+1980
+
+year
+
+1990
+
+2000
+
+year
+
+(a)
+
+(b)
+
+Figure 3. Prior and posterior medians and 95 percent credible intervals for sex ratios in the
+reconstructed population of India, 1971–2001. (a): Total population; (b): Population aged
+0–5.
+Table 2. Probabilities of increasing linear trends for sex ratio at birth (SRB), sex difference
+in life expectancy at birth (sex diff. e0 ), sex ratio in the total population (SRTP), and sex
+ratio in the population under five (SRU5) for the reconstructed population of India, 1971–
+2001. Two measures of trend are used: the difference over the period of reconstruction and
+the slope coefficient from the ordinary least squares (OLS) regression on the start year of each
+quinquennium. Ninety-five percent credible intervals for the measures are also given.
+
+Measure of trend
+
+95 percent CI
+
+Prob > 0
+
+(a) Sex ratio at birth (SRB)
+SRB1996 − SRB1971
+OLS slope (SRB ∼ year)
+
+[−0.011, 0.054]
+[−0.00034, 0.0021]
+
+0.92
+0.93
+
+(b) Sex difference in life expectancy at birth (sex diff. e0 )
+(sex diff. e0 )1996 − (sex diff. e0 )1971
+OLS slope (sex diff. e0 ∼ year)
+
+[0.12, 5]
+[0.0066, 0.17]
+
+0.98
+0.98
+
+(c) Sex ratio in the total population (SRTP)
+SRTP1996 − SRTP1971
+OLS slope (SRTP ∼ year)
+
+[−0.034, −0.017]
+[−0.0013, −0.00045]
+
+0.000027
+0.00035
+
+(d) Sex ratio in the population under five (SRU5)
+SRU51996 − SRU51971
+OLS slope (SRU5 ∼ year)
+
+[−0.037, 0.017]
+[−0.0011, 0.00062]
+17
+
+0.2
+0.29
+
+3.2.2
+
+Thailand, 1960–2000
+
+Total fertility rate fell very steeply in Thailand from 1960–2000 (Figure 4a). Posterior
+uncertainty about this parameter is small; the mean half-width of the posterior intervals is
+0.07 children per woman.
+Ninety five percent credible intervals for SRB contain the typical range of 1.04–1.06 for
+all but the first two quinquennia (Figure 4b). The probability that SRB exceeded 1.06
+in each period is given in Table 3. There is strong evidence that SRBs were atypically
+high in the period 1960–1969. The time trend for SRB appears to be curvilinear, hence
+the simple linear summaries used to analyze the trend in Indian SRB are not appropriate
+here. Piecewise linear regression models are available (e.g., Hinkley, 1969; Hinkley, 1971),
+but each trajectory in the posterior sample consists of only eight values and they are quite
+volatile. These characteristics make identification of a change point difficult. Instead we
+partition the period of reconstruction into two sub-periods, 1960–1984 and 1985–2000, and
+summarize the time trend with the following two difference quantities: SRB1960 − SRB1980
+and SRB1985 − SRB1995 (the subscripts indicate the start years of the quinquennia). The
+posterior joint probability of a decrease from 1960 to 1984 followed by an increase to 1995–
+1999 (i.e., Pr({SRB1960 − SRB1980 > 0} ∩ {SRB1985 − SRB1995 < 0})) is 0.84.
+
+1.15
+
+6
+
+●
+●
+
+●
+
+●
+●
+
+●
+●
+
+legend
+● prior
+● posterior
+● WPP 2010
+
+●
+●
+●
+
+4
+
+Sex ratio at birth
+
+TFR (children)
+
+1.10
+●
+
+●
+●
+●
+
+●
+
+1.05
+
+legend
+● prior
+posterior
+WPP 2010
+
+●
+●
+
+●
+
+1.00
+
+●
+
+2
+
+●
+●
+●
+
+1960
+
+1965
+
+1970
+
+1975
+
+1980
+
+1985
+
+1990
+
+1995
+
+1960
+
+quinquennium beginning
+
+1965
+
+1970
+
+1975
+
+1980
+
+1985
+
+1990
+
+1995
+
+quinquennium beginning
+
+(a)
+
+(b)
+
+Figure 4. Prior and posterior medians and 95 percent credible intervals for the reconstructed
+population of Thailand, 1960–2000: (a) total fertility rate (TFR); (b) sex ratio at birth (SRB).
+
+Results for the sex difference in e0 are shown in Figure 5. Our posterior intervals for
+the sex difference in e0 lie entirely above zero in each quinquennium, suggesting that female
+longevity was greater than that of males in Thailand from 1960–2000 (mean half-width of
+18
+
+Table 3. Probability that sex ratio at birth (SRB) was greater than 1.06 for the reconstructed
+population of Thailand, 1960–2000, by quinquennium.
+
+1960 1965
+0.99 0.95
+
+1970
+0.66
+
+1975
+0.32
+
+1980
+0.11
+
+1985 1990 1995
+0.19 0.35 0.54
+
+the difference: 2.4 years). There is also strong evidence for a positive trend; the probability
+that the simple difference (1995 period minus 1960 period) in the sex differences in e0 was
+greater than 0 is 0.96 and the probability that the OLS slope is greater than 0 is 1 (Table 4).
+The posterior for sex ratio of under-five mortality rate (SRU5MR) suggests that mortality
+at ages 0–5 was similar for both sexes. In no quinquennium is there convincing evidence for
+a male-to-female ratio less than one. Similarly there is not strong evidence for a linear trend
+in this parameter over the period of reconstruction. Details are in the appendices along with
+results for net international migration and population sex ratios.
+Table 4. Probabilities of an increasing linear trend and 95 percent credible intervals for sex
+difference in life expectancy at birth (sex diff. e0 ) for the reconstructed population of Thailand,
+1960–2000. Two measures of trend are used: the difference over the period of reconstruction
+and the slope coefficient from the ordinary least squares (OLS) regression on the start year of
+each quinquennium.
+
+Measure of trend
+(sex diff. e0 )1996 − (sex diff. e0 )1971
+OLS slope (sex diff. e0 ∼ year)
+
+3.2.3
+
+95 percent CI
+[−0.42, 7.1]
+[0.027, 0.18]
+
+Prob > 0
+0.96
+1
+
+Laos, 1985–2004
+
+Medians and prior and posterior credible intervals for TFR and SRB are shown in Figure 6.
+The posterior for TFR obtained here (Figure 6a) is very similar that obtained by Wheldon
+et al. (2013a) who reconstructed the female-only population and did not estimate SRB; it
+was kept fixed at 1.05 throughout, a demographic convention (Preston et al., 2001).
+There was very little data on SRB for Laos therefore, in this study, the initial estimate
+of SRB was fixed at 1.05 in all quinquennia but a posterior distribution was estimated using
+the model. The posterior median SRB deviates very little from the initial estimate, although
+the uncertainty has been considerably reduced; the mean of the half-widths of the 95 percent
+credible intervals is 0.038 compared with 0.39 for the prior (Figure 6b). The probability that
+SRB was above 1.06 in any of the quinquennia is low (Table 5) and the evidence for a trend
+over time is equivocal (Table 6).
+There is strong evidence that female e0 was higher from 1990 through 2005 but there
+appears to be no evidence for a sex difference between 1985 and 1990 (Figure 7, Table 5b).
+19
+
+80
+●
+●
+
+●
+
+●
+
+●
+●
+
+75
+
+●
+
+●
+
+●
+
+life expectancy at birth (years)
+
+life expectancy at birth (years)
+
+70
+●
+●
+
+70
+legend
+● posterior
+● WPP 2010
+
+●
+
+●
+
+sex
+● female
+male
+
+●
+
+65
+
+●
+●
+●
+●
+
+●
+
+●
+
+●
+●
+
+sex
+● female
+male
+
+60
+
+50
+
+60
+●
+
+55
+40
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+quinquennium beginning
+
+1980
+
+1990
+
+quinquennium beginning
+
+(a)
+
+(b)
+
+12
+
+female e0 − male e0
+
+8
+
+●
+●
+●
+
+●
+●
+●
+●
+
+●
+
+legend
+● prior
+● posterior
+
+●
+●
+
+4
+
+●
+
+●
+●
+
+0
+
+1960
+
+1970
+
+1980
+
+1990
+
+quinquennium beginning
+
+(c)
+
+Figure 5. Prior and posterior medians and 95 percent credible intervals for life expectancy
+at birth (e0 ) for the reconstructed population of Thailand, 1960–2000. (a): Female and male
+posterior quantiles with World Population Prospects (WPP) 2010 estimates; (b): Female and
+male prior quantiles only; (c): Sex difference (female−male).
+
+20
+
+8
+
+1.10
+7
+
+●
+●
+●
+
+6
+
+legend
+● prior
+● posterior
+● WPP 2010
+
+●
+●
+
+Sex ratio at birth
+
+TFR (children)
+
+●
+
+1.05
+
+●
+
+●
+
+●
+
+●
+
+1990
+
+1995
+
+2000
+
+legend
+● prior
+posterior
+WPP 2010
+
+●
+●
+
+5
+●
+
+1.00
+
+●
+
+4
+●
+●
+
+0.95
+1985
+
+1990
+
+1995
+
+2000
+
+1985
+
+quinquennium beginning
+
+quinquennium beginning
+
+(a)
+
+(b)
+
+Figure 6. Prior and posterior medians and 95 percent credible intervals for the reconstructed
+population of Laos, 1985–2004: (a) total fertility rate (TFR); (b) sex ratio at birth (SRB).
+
+The posterior distributions of both trend summaries provide strong evidence for an increase
+in the sex difference over the period of reconstruction (Table 6), although this is due primarily
+to the increase immediately following the 1985–1990 period.
+Results for SRU5MR, net international migration and population sex ratios are in the
+appendices.
+Table 5. Probability that sex ratios and differences exceeded certain thresholds for the reconstructed population of Loas, 1985–2005, by quinquennium.
+
+1985
+
+1990
+
+1995
+
+2005
+
+(a) Pr(SRB > 1.06)
+0.20
+
+0.30
+
+0.27
+
+0.27
+
+(b) Pr(female e0 − male e0 > 0)
+0.56
+
+4
+
+1.00
+
+1.00
+
+1.00
+
+Discussion
+
+We have described Bayesian reconstruction for two-sex populations, a method of reconstructing human populations of the recent past which yields probabilistic estimates of uncertainty
+(Wheldon et al., 2013a,b). We reconstructed the populations of Laos from 1985–2005, Thai21
+
+65
+
+●
+
+60
+
+●
+
+●
+
+life expectancy at birth (years)
+
+life expectancy at birth (years)
+
+●
+
+●
+
+60
+
+legend
+● posterior
+● WPP 2010
+
+●
+
+sex
+● female
+male
+
+●
+●
+
+55
+
+●
+
+50
+
+sex
+● female
+male
+
+40
+●
+
+●
+
+1985
+
+1990
+
+1995
+
+2000
+
+1985
+
+1988
+
+quinquennium beginning
+
+1990
+
+1992
+
+1995
+
+quinquennium beginning
+
+(a)
+
+(b)
+10
+
+female e0 − male e0
+
+5
+
+●
+
+●
+
+0
+
+●
+
+legend
+● prior
+● posterior
+
+●
+●
+
+−5
+
+−10
+1985
+
+1990
+
+1995
+
+2000
+
+quinquennium beginning
+
+(c)
+
+Figure 7. Prior and posterior medians and 95 percent credible intervals for life expectancy at
+birth (e0 ) for the reconstructed population of Laos, 1985–2004. (a): Female and male posterior
+quantiles with World Population Prospects (WPP) 2010 estimates; (b): Female and male prior
+quantiles only; (c): Sex difference (female−male).
+
+22
+
+Table 6. Probabilities of an increasing linear trend and 95 percent credible intervals for sex
+difference in life expectancy at birth (sex diff. e0 ) for the reconstructed population of Laos,
+1985–2000. Two measures of trend are used: the difference over the period of reconstruction
+and the slope coefficient from the ordinary least squares (OLS) regression on the start year of
+each quinquennium.
+
+Measure of trend
+
+95 percent CI
+
+Prob > 0
+
+(a) Sex ratio at birth (SRB)
+SRB2000 − SRB1985
+OLS slope (SRB ∼ year)
+
+[−0.046, 0.061]
+[−0.0034, 0.0042]
+
+0.58
+0.56
+
+(b) Sex difference in life expectancy at birth (sex diff. e0 )
+(sex diff. e0 )2000 − (sex diff. e0 )1985
+OLS slope (sex diff. e0 ∼ year)
+
+[0.54, 4.2]
+[0.025, 0.26]
+
+0.99
+0.99
+
+land from 1960–2000 and India from 1971–2001, paying particular attention to sex ratios
+of fertility and mortality indicators. We estimate that the posterior probability that SRB
+was above 1.06 is greater than 0.9 in India between 1991 and 2001 and the probability it
+increased over this period is about 0.92. The SRB was also above 1.06 with high posterior probability in Thailand from 1960–1970. We estimate that the probability it decreased
+between 1960 and 1980, then increased from 1985 to 2000, is 0.84. We found no evidence
+for atypically high SRBs, or a trend over the period of reconstruction, for Laos, a country
+with much less available data than Thailand and India. In both Thailand and Laos, we
+found strong evidence that e0 was greater for females and, in Thailand, that the difference
+increased over the period of reconstruction. In India, the probability that female e0 was
+lower during 1971–1976 was 0.79 but there was strong evidence for a narrowing of the gap
+through to 2001.
+In its original formulation, Bayesian reconstruction was for female-only populations; here
+we show how two-sex populations can be reconstructed using the same framework. The
+method takes a set of data-derived, bias-reduced initial estimates of age-specific fertility
+rates, and age-sex-specific survival proportions, migration proportions and population counts
+from censuses, together with expert opinion on the measurement error informed by data if
+available. Bayesian reconstruction updates initial estimates using adjusted census counts via
+a Bayesian hierarchical model. The periods of reconstruction used in our applications begin
+in the earliest census year for which non-census vital rate data were available, and end with
+the year of the most recent census. Reconstruction can be done further ahead, but without
+a census the results are based purely on the initial estimates.
+∗
+∗
+, s∗a,t,l , ga,t,l
+, n∗a,t0 ,l , SRB ∗t , enter the model as fixed prior medians
+The initial estimates, fa,t
+
+23
+
+(Section 2.3), and so the posterior will be sensitive to changes in these inputs. This is actually
+desirable, because the initial estimates are based heavily on data specific to that estimate;
+the posterior should be sensitive to changes in these data.
+Information about measurement error variance is needed to set the model hyper parameters (14). In our case studies, this took the form of expert opinion, elicited as 90percent
+probability intervals centred at the data-derived initial estimates. If available, additional
+data on measurement error could be used to inform the elicitations, or to replace them altogether if they are comprehensive enough. This is the case in many developed countries (e.g.,
+New Zealand, Wheldon et al. (2013a)), where post-census enumeration surveys and vital
+registration coverage studies are undertaken. However, we expect Bayesian reconstruction
+to be most useful for less developed and developing countries where fragmentary and unreliable data lead to a substantial amount of uncertainty. For these countries, expert opinion
+is a main source of information. We do expect the posterior to be somewhat sensitive to
+the elicited intervals since the initial estimates themselves do not contain much information
+about measurement error.
+Previous methods of population reconstruction were purely deterministic, were not designed to work with the type of data commonly available for many countries over the last
+sixty years, or did not account for measurement error (e.g., Bertino and Sonnino, 2003; Lee,
+1971, 1974; Wrigley and Schofield, 1981). Daponte et al. (1997) used a Bayesian approach
+to construct a counterfactual population, but age patterns of fertility were held fixed and
+mortality varied only through infant mortality. Bayesian reconstruction does not impose
+fixed age-patterns and mortality can vary at each age. Moreover, international migration is
+estimated in the same way as fertility and mortality.
+We considered sex ratios of births and mortality because these are of interest to demographers and policy-makers, especially since they determine the SRTP (Griffiths et al., 2000;
+Guillot, 2002). It is conventional to compare sex-specific U5MRs with a ratio but sex-specific
+e0 s with a difference. We have not studied the associations among U5MR ratios, e0 differences and population sex ratios. The SRTP is a function of life-time cohort mortality but
+the U5MR and e0 presented here are period measures for which the relationship used by
+Guillot (2002) does not hold. Our results add to previous work on SRMs, especially that of
+Sawyer (2012) who studied sex ratios of U5MR and called for further work to quantify its
+uncertainty. Sawyer (2012) decomposed U5MR into mortality between ages 0 and 1 (infant
+mortality) and mortality between ages 1 and 5 (child mortality). We reconstructed populations in age- time-intervals of width five because these are the intervals for which data is
+most widely available across all countries.
+Many methods of adjusting vital registration using census data have been proposed (e.g.,
+
+24
+
+Bennett and Horiuchi, 1981; Hill, 1987; Luther and Retherford, 1988), but these deal with
+intercensal migrations by essentially truncating the age groups most affected by migration
+(Murray, Rajaratnam, et al., 2010), or ignore them altogether. Luther, Dhanasakdi, et al.
+(1986) and Hill, Vapattanawong, et al. (2007) applied these methods to Thailand to estimate
+undercounts. The aim of these methods is to produce improved point estimates of vital
+rates. We have not used any census data to derive our initial estimates. For example, initial
+estimates of survival were not based on inter-censal cohort survival and initial estimates of
+migration were not based on “residual” counts. Doing so would have amounted to using the
+census data twice and would have underestimated the uncertainty. The outputs of Bayesian
+reconstruction are interval estimates which quantify uncertainty probabilistically.
+
+4.1
+
+Sex Ratios in Asia
+
+The SRTP is a crude measure of the balance of sexes in a population since it is not agespecific; sex ratios may be quite different among age groups, for example. Nevertheless, there
+is a large literature devoted to estimating SRTPs and exploring the causes and consequences,
+especially in Asia where SRTPs are the highest in the world (UN, 2011). A persistently high
+sex ratio among younger cohorts could lead to a “marriage squeeze” in which many young
+males will struggle to marry due to a lack of eligible females (Guilmoto, 2012). Formally,
+high SRTPs are the result of high SRBs and life-time sex ratios of cohort mortality (Guillot,
+2002). The relative effects of these two factors may vary by time and country.
+A normal range for SRB is believed to be 1.04–1.06 (UNFPA, 2010); on average, slightly
+more than half of all newborns are male. Concerns about quality, or a complete lack of data,
+have made it difficult to accurately estimate SRBs in many Asian countries. Bayesian reconstruction of these populations quantifies the accuracy of SRB estimates probabilistically.
+With very few exceptions, country-level e0 s for females exceed those of males. This
+pattern is consistent with a female survival advantage; in virtually all contemporary human
+populations, females age slower and live longer than males (Soliani and Luchetti, 2006; Vallin,
+2006). Behavioural factors appear to play an important role, especially in developed countries
+where the prevalence of harmful activities, such as smoking, consumption of alcohol, and risky
+behaviour leading to accidental death, tends to be lower among women than among men
+(Lalic and Raftery, 2012; Waldron, 1985, 2009). The persistence of lower male e0 across the
+development spectrum suggests there are other factors as well. In less developed countries,
+e0 is determined more by infant and child mortality. Pongou (2013) studied infant mortality
+in Africa and found an association with parental characteristics extant prior to conception.
+Biological, as well as behavioural, determinants have also been proposed but there is little
+consensus on the specific mechanism (Austad, 2011). The only countries in which female
+25
+
+e0 is not higher are countries in Africa and some in South and Central Asia. The African
+countries are those with generalized HIV epidemics where mortality due to AIDS changes
+the typical sex difference in e0 (UN, 2011). Those in Asia include, most notably, India where
+cultural preference for males is thought to be the major cause.
+4.1.1
+
+India
+
+The SRTP in India has received considerable attention, particularly as an indicator of discrimination against women (UNFPA, 2010). Griffiths et al. (2000) showed that only slightly
+elevated SRBs and SRMs at young ages are sufficient to produce the observed SRTP in
+India, if they persist for a long period of time. The relative contribution of these two factors
+may have varied over time. Bhat (2002c) and Guilmoto (2007a, 2009) argue that India experienced a transition in the 1970s whereby high SRB replaced low SRM as the cause of the
+high SRTPs observed throughout the period (recall that a low SRM is a result of lower male
+mortality). Evidence suggests that low SRMs were due to female neglect and infanticide. In
+the 1970s, these practices gave way to sex selective abortion which raised the SRB instead.
+The transition hypothesis is based on several pieces of evidence. Data suggest a possible
+rise in SRB in India above the typical range of 1.04–1.06 in the mid 1980s (Guilmoto, 2007a).
+In the 1970s, amniocentesis started to became available as a method for determining the sex
+of a foetus and abortion was legalized. Ultrasonography, a less invasive way of determining
+foetal sex, started to became available in many parts of India in the 1980s. In certain regions,
+such as the northern states and highly urbanized areas, there is a long standing tradition of
+preference for sons over daughters (Bongaarts, 2001; Mayer, 1999). The arrival of these new
+technologies in this context appears to have led to an increase in sex selective abortions in
+India (Bhat, 2002c; APCRSHR, 2007; Jha, Kesler, et al., 2011; Jha, Kumar, Vasa, et al.,
+2006; UNFPA, 2010). The steep decline in Indian TFR, which began in the early 1970s,
+could have increased the prevalence of such procedures. Several studies have found evidence
+that SRB is higher at higher parities (birth orders), both in India (Bhat, 2002c; Das Gupta
+and Bhat, 1997; Jha, Kesler, et al., 2011; Jha, Kumar, and Dhingra, 2006) and other Asian
+countries (Das Gupta, 2005). The increase appears to be greater if none of the earlier births
+were male. As TFR decreases so does the average family size, so the risk of having no sons
+increases (Guilmoto, 2009). Therefore, in cultures where sons play important economic and
+social functions, or where families benefit materially much more from the marriage of a son
+than of a daughter, the incentive to use sex selective abortion increases (Guilmoto, 2009;
+Mayer, 1999).
+After combining all available data and including uncertainty, we estimate that the probability there was an increase in SRB between 1971 and 2001 is above 0.92. The probability
+26
+
+that female U5MR was higher over this period is estimated to be between 0.72 and 0.89, but
+there was no evidence of a trend. Therefore, our results provide support for the SRB part
+of the transition hypothesis but not the U5MR part.
+Overall mortality decreased rapidly in India from about 1950 as infectious diseases were
+brought under control, food security increased and health services became more widely available (Bhat, 2002c). Our results suggest that, after taking account of uncertainty, there was
+an increase in e0 and a continual decrease in U5MR between 1971 and 2001 for both sexes.
+Using Sample Registration System data, (Bhat, 2002c) noted that the decrease was greater
+for females than males and our analysis of the change in the sex difference of e0 supports this;
+we found that the probability that the difference increased over the period of reconstruction
+is about 0.98. The probability of a decline in the SRTP was found to be similarly strong.
+However, as with SRU5MR, there was little evidence for a trend in SRU5.
+India’s large population makes it a very important case for the study of sex ratios in Asia
+(Guilmoto, 2007a) and, like other authors (e.g., Guillot, 2002; UN, 2011), we have focused
+on country level estimates only. However, where available, data suggest that there are large
+regional variations in SRBs and population sex ratios, with estimates for urban areas and
+northern states being much higher than other areas (Bhat, 2002c; Guilmoto, 2009; Jha,
+Kesler, et al., 2011). Currently, Bayesian reconstruction is not able to produce sub-national
+estimates, but could be extended to do so in the future.
+4.1.2
+
+Thailand
+
+Like other parts of Asia, Thailand experienced rapid economic growth and a rapid fall in TFR
+beginning in 1960. The TFR decline was accompanied by an increase in the widespread use
+of modern contraceptive methods made available through government supported, voluntary
+family planning programs (Kamnuansilpa et al., 1982; Knodel, 1987; Knodel, Ruffolo, et
+al., 1996). Unlike India, Thailand is not considered to have had a high SRB (Guilmoto,
+2009). Vital registration data, which formed the basis of our initial estimates, indicate
+that SRB was high during the period 1960 to 1970, but remained within the typical range
+thereafter. This is consistent with studies conducted after the early 1970s which found that
+small families of two or three children consisting of at least one boy and one girl was the most
+commonly desired configuration in Thailand. TFR decline in Thailand may have intensified
+this preference (Knodel and Prachuabmoh, 1976; Knodel, Ruffolo, et al., 1996).
+Posterior intervals for sex ratios of mortality in Thailand reflect the typical pattern which
+is one of higher female life expectancy. There is no evidence that this pattern was also true
+for U5MR (on-line resources).
+
+27
+
+4.1.3
+
+Laos
+
+Fertility in Laos remained high relative to its neighbours. For example, the estimated TFR
+for 1985 in Laos is comparable to the 1960 estimate for Thailand (Frisen, 1991). Posterior
+uncertainty about SRB is high and our results provide no evidence to suggest levels were
+atypical between 1985 and 2005. All-age mortality as summarized by e0 does appear to have
+been higher for females from 1990 onward but, as with Thailand, there is no evidence that
+this advantage held for U5MR (on-line resources).
+
+4.2
+
+Further Work and Extensions
+
+Our prior distributions were constructed from initial point estimates of the CCMPP input
+parameters, together with information about measurement error. In the examples given
+here, this was elicited from UN analysts who are very familiar with the data sources and
+the demography of each country. In cases where good data on measurement error are available, they can be used. For example, Wheldon et al. (2013a) used information from postenumeration surveys to estimate the accuracy of New Zealand censuses. Data of this kind
+are rarely available in developing countries for either census or vital rate data. Nevertheless,
+surveys come with a substantial amount of meta-data which can be used to model accuracy. This approach was taken by Alkema, Raftery, et al. (2012) who developed a method
+for estimating the quality of survey-based TFR estimates in West Africa by modelling bias
+and measurement error variance as a function of data quality covariates. Wheldon et al.
+(2013b) used these results in their reconstruction of the female population of Burkina Faso.
+Extending this work to more countries could provide a source of initial estimates together
+with uncertainty that could be used as inputs to Bayesian reconstruction.
+Posterior uncertainty in estimates of U5MR was found to be substantial and we did not
+find strong evidence for a skewed sex ratio in any of our examples. U5MR is under-identified
+in the model because the only census count it affects, that for ages 0–5, is also dependent on
+SRB and TFR. Recent work by the UN Interagency Group for Child Mortality Estimation
+(IGME) has focused on producing probabilistic estimates of U5MR (Alkema and Ann, 2011;
+Hill, You, et al., 2012). Further work could look at ways of using these estimates in Bayesian
+reconstruction to improve estimation of U5MR.
+The census counts we used were not raw census output but adjusted counts published in
+WPP. In some cases, these counts are adjusted by the UNPD to reduce bias due to factors
+such differential undercount by age. This may have led to an underestimate of uncertainty.
+The use of raw census outputs instead is worth investigating, but the effects of undercount
+would still need to be addressed through modifications to the method.
+
+28
+
+Our prior distributions for international migration were centred at zero with large variances. This is a sensible default when accurate data are not available. Further work could
+investigate the possibility of using stocks of foreign-born, often collected in censuses, to provide more accurate initial estimates. Data on refugee movements is another source that
+could be investigated where available.
+We have reconstructed national level populations only, principally because this is the
+level at which the UN operate. We have already mentioned that sub-national reconstructions
+might be of interest. Subnational reconstructions could be done without any modifications to
+the method if the requisite data are available; national level initial estimates and population
+counts would just be replaced with their subnational equivalents and the method applied
+as above. Reconstructing adjacent regions, or regions between which there is likely to be
+a lot of migration would require special care, however, as there is no way of accounting for
+dependence among migratory flows under the current approach.
+
+29
+
+Appendices
+A
+A.1
+
+Derivation of Demographic Indicators
+Total Fertility Rate
+
+The TFR for the period [t, t + 5) is the average number of children born to women of a
+[fert]
+[fert]
+hypothetical cohort which survives through ages aL to aU , all the way experiencing the
+age-specific fertility rates, fa,t . Its definition is:
+[fert]
+
+aU
+
+TFRt ≡ 5 ·
+
+X
+
+fa,t .
+
+[fert]
+aL
+
+A.2
+
+Life Expectancy at Birth
+
+Life expectancy at birth is the average age at death for members of a hypothetical cohort
+which, at each age, experience age-specific survival sa,t,l . Its definition is:
+e0,t,l = 5
+
+A Y
+a
+X
+
+si,t,l + 5
+
+a=0 i=0
+
+A
+Y
+
+!
+
+si,t,l
+
+
+
+
+
+sA+5,t,l /(1 − sA+5,t,l ) .
+
+i=0
+
+The derivation is straightforward and can be found in Wheldon et al. (2013b).
+
+A.3
+
+Under 5 Mortality Rate
+
+The U5MR is constructed in the same way as the standard “Infant Mortality Rate” (e.g.,
+Preston et al., 2001, Ch. 2), except for the age interval [0,5). It is defined as follows:
+U5MRt ≡
+
+No. deaths to those aged [0,5) in the interval [t,t+5)
+.
+No. births in the interval [t,t+5)
+
+It is neither a true demographic rate nor a probability but, nevertheless, is in common use.
+
+B
+B.1
+B.1.1
+
+Application: Further Details About Data Sources
+India
+Population Counts
+
+Censuses were conducted in 1971, 1981, 1991 and 2001. We used the counts in WPP 2010
+which were adjusted for slight undercount in some age groups.
+
+30
+
+B.1.2
+
+Sex Ratio at Birth
+
+Data on sex ratio at birth came from the same sources as data on age-specific fertility
+(Section B.1.3). A weighted cubic spline was used to smooth the available data and initial
+estimates were derived by evaluating the spline at the mid-points of the quinquennia 1971–
+1976, . . . , 1996–2001. Elicited relative error for this parameter was set at 10 percent.
+B.1.3
+
+Fertility
+
+Initial estimates of age-specific fertility were based on data from the Indian Sample Registration System (SRS) (The Registrar General and Census Commissioner of India, 2011) and
+National Family Health Surveys (NFHSs) conducted between 1992 and 2006 (The Registrar
+General and Census Commissioner of India, 2009). These were weighted and smoothed using
+the same procedure as for Thailand. Elicited relative error for this parameter was set at 10
+percent.
+B.1.4
+
+Mortality
+
+Initial estimates of survival proportions were calculated from abridged life tables based on
+data from the SRS from 1968-1969 through 2008. The average number of person-years
+lived in each interval (n ax s) were computed using Greville’s (1943) formula from age 15 and
+above. Values for ages under 5 are based on the formulae of Coale et al. (1983) using the
+West pattern. All other values were set to 2.5 (see also UN, 1982, Ch. 6).
+Additional sources were used for infant and child mortality: data on births and deaths
+under-five were calculated from maternity-history data from the NFHSs conducted between
+1992 and 2006 and data on children ever-born and surviving classified by age of mother from
+these surveys and earlier ones as well as from the 2002–04 Reproductive and Child Health
+Survey (RCHS). Weighted cubic splines were used to smooth estimates of 1 q0 and 4 q1 from
+these data sources. The weights were determined by UN analysts based on their expert
+judgement about the relative reliability of each source. Elicited relative error was set to 10
+percent.
+B.1.5
+
+Migration
+
+We used the same initial estimates for international migration as for Laos.
+
+31
+
+B.2
+B.2.1
+
+Thailand
+Fertility
+
+Initial estimates of age-specific fertility were based on direct and indirect estimates of current fertility and CEB taken from the Surveys of Population Change conducted between 1964
+and 1996 (NSO Thailand, 1970, 1977, 1992, 1997; see also Vallin, 1976), the World Fertility
+Surveys (WFSs) (UN, 1993), the Thai Longitudinal Study of Economic, Social and Demographic Change (Knodel and Pitaktepsombati, 1975), the 1968–1972 Longitudinal Study of
+Economic, Social and Demographic Change (National Research Council Panel on Thailand,
+1980), the 1978 and 1996 National Contraceptive Prevalence Surveys (Chamratrithirong et
+al., 1997; Suvanajata and Kamnuansilpa, 1979), the 1987 Demographic and Health Survey
+(DHS), and vital registration.
+Age patterns and levels of fertility were estimated separately from the available data.
+The available data were smoothed within age and within year using weighted splines. The
+weights were determined by UN analysts based on their expert judgement about the relative reliability of each source. Estimates of TFR, based on summed age-specific estimates,
+were obtained similarly. The final set of initial estimates was obtained by multiplying the
+smoothed TFRs by the smoothed age patterns. Elicited relative error for this parameter was
+set at 10 percent.
+B.2.2
+
+Mortality
+
+Initial estimates of mortality for both sexes were based on life tables calculated from vital
+registration. Vital registration is thought to have underestimated U5MR (Hill, Vapattanawong, et al., 2007) so the following additional sources were used to derive initial estimates of
+under five mortality: (a) the 1974–1976, 1984–86, 1989, 1991, 1995–1996, Surveys of Population Change (NSO Thailand, 1970, 1977, 1992, 1997), (b) maternity-history data from the
+1975 WFS and 1987 DHS, (c) data on children ever born and surviving from these surveys,
+the 1981–1986 Contraceptive Prevalence Surveys (CPSs). All available non-census data on
+5 q0 from these sources were weighted by UN analysts who used their expert judgement about
+potential biases and smoothed over time using cubic splines. The splines were evaluated at
+1962.5, 1968.5, . . . 1998.5 and the values substituted for the 5 q0 s in the life tables based solely
+on vital registration. Survival proportions were derived from these “spliced” life tables.
+
+B.3
+
+Laos
+
+Initial estimates for females were the same as those used by Wheldon et al. (2013a). Initial
+estimates for males were derived using the same procedures.
+32
+
+B.3.1
+
+Population Counts
+
+National censuses were conducted in 1985, 1995 and 2005. Following Wheldon et al. (2013a),
+we used the census year counts in WPP 2010; there were no post-enumeration surveys, but
+these counts were adjusted to compensate for undercount in certain age groups.
+B.3.2
+
+Fertility
+
+Direct and indirect estimates were based on CEB and recent births (preceding 12 and 24
+months), all by age of mother, collected by the 1993 Laos Social Indicator Survey, the
+1995 and 2005 censuses, the 1994 Fertility and Birth Spacing Survey, the 2000 and 2005 Lao
+Reproductive Health Surveys, the 1986–1988 multi-round survey and the 2006 MICS3 survey.
+Zaba’s (1981) Relational Gompertz Model, Arriaga’s (1983) method, the P/F method (Brass
+et al., 1968), Arriaga’s (1983) modified P/F method and the Brass fertility polynomial
+(Brass, 1960; Brass and CELADE, 1975) were used to derive indirect estimates.
+Age patterns of fertility were estimated by taking medians across all available data points
+within the quinquennia 1985–1990, . . . , 2000–2005. TFR was estimated separately by converting each age-specific data series into series of TFR by summing. Medians within quinquennia were then taken. The final initial estimates of the age-specific rates was obtained by
+multiplying the median age-patterns by the median TFRs. Data points were not weighted.
+The elicited relative error was set to 10 percent. Hence, the medians of the initial estimate
+distributions for age-specific fertility rates were the initial point estimates and the upper 95
+percent and lower five percent quantiles were equal to the initial point estimates plus and
+minus 10 percent, respectively.
+B.3.3
+
+Mortality
+
+The available data only provide estimates of mortality under age five. These are maternity
+histories and CEB and surviving data from the 1993 Laos Social Indicator Survey, the 1994
+Fertility and Birth Spacing Survey, the 1995 and 2000 censuses and the 2000 and 2005
+Lao Reproductive Health Surveys (intercensal survival estimates were not used). Weighted
+cubic smoothing splines were used to smooth these to produce single initial point estimates
+of the average 1 q0 and 5 q0 over each quinquennium 1985–1990, . . . , 2000–2005. For each
+quinquennium, two Coale and Demeny West (CD West) life tables were found; one with 1 q0
+closest to that produced by the smoothing procedure and one with 5 q0 closest. Within each
+pair, the e0 s in these two tables were averaged. Age-specific survival proportions calculated
+from the CD West table with e0 closest to this average were then taken as the initial estimates
+of mortality at all ages. The elicited relative error of these initial point estimates was set to
+10 percent.
+33
+
+B.3.4
+
+Migration
+
+There is very little quantitative information about international migration in Laos between
+1985 and 2005. To reflect this, initial estimates for females and males were set to zero and
+the elicited relative error was high, at 20 percent.
+
+C
+C.1
+
+Application: Further Results
+India
+
+Results for U5MR are in Figure 8. Posterior medians of Indian U5MR for males are lower
+than those for females. However, although the sex ratio in U5MR is centred below one,
+the posterior intervals are relatively wide and contain it (mean half-width 0.16 deaths per
+live births; Figure 8). The probability that female U5MR exceeded that of males in each
+quinquennium is given in Table 7; by the period 1996–2001 this had peaked at 0.89. The
+evidence for a linear decrease over the period of reconstruction is weak (Table 8a). There
+is a slight decline in the posterior median after 1981 but the evidence for a trend after this
+point is similar: the probability of a simple decrease is 0.7 and the probability that the OLS
+coefficient was less than zero is 0.68 (Table 8b).
+Table 7. Probability that sex ratio of under-five mortality rate (SRU5MR) was less than one
+for the reconstructed population of India, 1971–2001, by quinquennium.
+
+1971
+0.85
+
+1976
+0.77
+
+1981
+0.72
+
+1986 1991
+0.83 0.86
+
+1996
+0.89
+
+Table 8. Probabilities of an increasing linear trend and 95 percent credible intervals for sex
+ratio of under-five mortality rate (SRU5MR) for the reconstructed population of India, 1971–
+2001. Two measures of trend are used: the difference over the period of reconstruction and
+the slope coefficient from the ordinary least squares (OLS) regression on the start year of each
+quinquennium.
+
+Measure of trend
+
+95 percent CI
+
+Prob > 0
+
+(a) Sex ratio of under-five mortality rate (SRU5MR), 1971–2001
+SRU5MR1996 − SRU5MR1971
+OLS slope (SRU5MR ∼ year)
+
+[−0.26, 0.2]
+[−0.0097, 0.0061]
+
+0.38
+0.32
+
+(b) Sex ratio of under-five mortality rate (SRU5MR), 1981–2001
+SRU5MR1996 − SRU5MR1971
+OLS slope (SRU5MR ∼ year)
+
+[−0.3, 0.17]
+[−0.0097, 0.0061]
+
+34
+
+0.3
+0.32
+
+200
+
+60
+
+160
+
+deaths per 1000 births
+
+deaths per 1000 births
+
+●
+
+●
+
+legend
+● posterior
+● WPP 2010
+
+●
+
+sex
+● female
+male
+
+●
+
+120
+
+legend
+female
+male
+
+40
+●
+●
+●
+●
+●
+
+●
+
+●
+●
+●
+●
+
+●
+
+●
+●
+
+20
+
+●
+●
+
+80
+1970
+
+1980
+
+1990
+
+1970
+
+1980
+
+quinquennium beginning
+
+1990
+
+quinquennium beginning
+
+(a)
+
+(b)
+
+1.50
+
+male U5MR / female U5MR
+
+1.25
+
+legend
+● prior
+● posterior
+
+1.00
+●
+●
+
+●
+●
+
+●
+●
+
+●
+●
+
+●
+●
+
+●
+●
+
+0.75
+
+0.50
+1970
+
+1980
+
+1990
+
+quinquennium beginning
+
+(c)
+
+Figure 8. Prior and posterior medians and 95 percent credible intervals for under-five mortality rate (U5MR) (deaths per 1,000 live births) for the reconstructed population of India,
+1971–2001 (a): Female and male posterior quantiles and World Population Prospects (WPP)
+2010 estimates; (b): Female and male prior quantiles only; (c): Male-to-female ratio.
+
+35
+
+Results for the average annual net number of migrants are in Figure 9. The mean posterior
+half-width is 801,000.
+
+6e+05
+
+4e+05
+
+legend
+● prior
+● posterior
+2e+05
+
+0e+00
+
+●
+●
+
+●
+●
+
+1970
+
+●
+●
+
+●
+●
+
+●
+●
+
+●
+●
+
+1980
+
+total number of migrants (000s)
+
+total number of migrants (000s)
+
+6e+05
+
+4e+05
+
+legend
+● prior
+● posterior
+2e+05
+
+0e+00
+
+1990
+
+●
+●
+
+●
+●
+
+1970
+
+1980
+
+quinquennium beginning
+
+1990
+
+quinquennium beginning
+
+(a)
+
+(b)
+
+1000
+
+6e+05
+
+500
+
+●
+●
+
+0
+●
+●
+
+●
+
+●
+
+sex
+● female
+male
+
+−500
+
+−1000
+
+1970
+
+total number of migrants (000s)
+
+total number of migrants (000s)
+
+●
+●
+
+●
+●
+
+●
+●
+
+●
+●
+
+4e+05
+
+sex
+● female
+male
+2e+05
+
+0e+00
+
+1980
+
+1990
+
+●
+
+1970
+
+quinquennium beginning
+
+●
+
+●
+
+●
+
+1980
+
+●
+
+●
+
+1990
+
+year
+
+(c)
+
+(d)
+
+Figure 9. Prior and posterior medians and 95 percent credible intervals for the average annual
+net number of migrants for the reconstructed population of India, 1985–2004. (a): Females;
+(b): Males; (c): Female and male posterior quantiles only; (d): Female and male prior quantiles
+only.
+
+36
+
+C.2
+
+Thailand
+
+Results for SRU5MR are shown in Figure 10. The posterior suggests mortality at ages 0–
+5 was similar for both sexes. The 95 percent credible interval is centred above one for the
+period of reconstruction (mean half-width 0.47) and the probabilities that the male-to-female
+ratios of U5MR were less than one are small (Table 9). Based on the measures of change over
+time used above, there is no evidence for a strong trend in this parameter over the period of
+reconstruction (Table 10).
+Table 9. Probability that sex ratio of under-five mortality rate (SRU5MR) was less than one
+for the reconstructed population of Thailand, 1971–2001, by quinquennium.
+
+1960 1965
+0.23 0.46
+
+1970
+0.38
+
+1975
+0.29
+
+1980
+0.15
+
+1985 1990 1995
+0.12 0.13 0.16
+
+Table 10. Probabilities of an increasing linear trend and 95 percent credible intervals for
+sex ratio of under-five mortality rate (SRU5MR) for the reconstructed population of Thailand,
+1960–2000. Two measures of trend are used: the difference over the period of reconstruction
+and the slope coefficient from the ordinary least squares (OLS) regression on the start year of
+each quinquennium.
+
+Measure of trend
+SRU5MR1996 − SRU5MR1971
+OLS slope (SRU5MR ∼ year)
+
+95 percent CI
+[−0.54, 0.84]
+[−0.0075, 0.022]
+
+Prob > 0
+0.61
+0.81
+
+Results for the average annual net number of migrants are in Figure 11. The mean
+posterior half-width is 85,800.
+Population sex ratios are shown in Figure 12. Posterior medians follow the ratios in the
+WPP counts relatively closely.
+
+37
+
+150
+
+100
+
+deaths per 1000 births
+
+deaths per 1000 births
+
+200
+
+●
+
+legend
+● posterior
+● WPP 2010
+
+●
+
+●
+
+sex
+● female
+male
+
+●
+
+150
+
+legend
+female
+male
+
+●
+●
+
+100
+
+●
+
+●
+●
+●
+
+50
+
+●
+●
+
+●
+
+50
+
+●
+●
+
+●
+●
+
+●
+
+1960
+
+1970
+
+1980
+
+●
+●
+
+●
+●
+
+1990
+
+1960
+
+1970
+
+quinquennium beginning
+
+1980
+
+●
+●
+
+1990
+
+quinquennium beginning
+
+(a)
+
+(b)
+
+male U5MR / female U5MR
+
+4
+
+3
+legend
+● prior
+● posterior
+2
+
+●
+●
+
+1
+
+●
+
+1960
+
+●
+
+●
+●
+
+1970
+
+●
+
+●
+
+●
+
+●
+●
+
+1980
+
+1990
+
+quinquennium beginning
+
+(c)
+
+Figure 10. Prior and posterior medians and 95 percent credible intervals for under-five mortality rate (U5MR) (deaths per 1,000 live births) for the reconstructed population of Thailand,
+1960–2000 (a): Female and male posterior quantiles and World Population Prospects (WPP)
+2010 estimates; (b): Female and male prior quantiles only; (c): Male-to-female ratio.
+
+38
+
+50000
+50000
+
+40000
+
+30000
+legend
+● init. est.
+● posterior
+20000
+
+10000
+
+0
+
+●
+
+●
+
+1960
+
+●
+●
+
+●
+●
+
+1970
+
+●
+●
+
+1980
+
+30000
+
+legend
+● init. est.
+● posterior
+
+20000
+
+10000
+
+0
+
+●
+●
+
+●
+●
+
+●
+●
+
+total number of migrants (000s)
+
+total number of migrants (000s)
+
+40000
+
+1990
+
+●
+
+●
+●
+
+1960
+
+●
+●
+
+●
+●
+
+1970
+
+quinquennium beginning
+
+●
+●
+
+●
+●
+
+●
+●
+
+●
+●
+
+1980
+
+1990
+
+quinquennium beginning
+
+(a)
+
+(b)
+
+50000
+
+40000
+●
+●
+
+●
+●
+
+0
+
+●
+
+●
+
+●
+
+sex
+● female
+male
+
+●
+
+total number of migrants (000s)
+
+total number of migrants (000s)
+
+100
+
+30000
+sex
+● female
+male
+
+20000
+
+10000
+
+−100
+0
+
+1960
+
+1970
+
+1980
+
+1990
+
+●
+
+1960
+
+quinquennium beginning
+
+●
+
+●
+
+1970
+
+●
+
+●
+
+●
+
+1980
+
+●
+
+●
+
+1990
+
+quinquennium beginning
+
+(c)
+
+(d)
+
+Figure 11. Prior and posterior medians and 95 percent credible intervals for the average
+annual net number of migrants for the reconstructed population of Thailand, 1985–2004. (a):
+Females; (b): Males; (c): Female and male posterior quantiles only; (d): Female and male prior
+quantiles only.
+
+39
+
+1.02
+
+●
+●
+
+●
+●
+
+●
+
+●
+
+legend
+● posterior
+● census
+
+●
+
+0.98
+
+ratio (M/F)
+
+1.00
+
+ratio (M/F)
+
+1.08
+
+●
+
+●
+
+●
+●
+
+●
+
+1.04
+●
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+legend
+● posterior
+● census
+
+●
+
+●
+
+●
+
+●
+●
+●
+●
+
+0.96
+
+1.00
+
+0.94
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+1960
+
+year
+
+1970
+
+1980
+
+1990
+
+2000
+
+year
+
+(a)
+
+(b)
+
+Figure 12. Prior and posterior medians and 95 percent credible intervals for the reconstructed
+population of Thailand, 1960–2000. Sex ratios (male/female) for (a): total population; (b):
+population aged 0–5; .
+
+C.3
+
+Laos
+
+The results for U5MR are shown in Figure 13. Posterior median estimates of U5MR decreased. The posterior intervals for U5MR straddle one for the entire period of reconstruction
+(Figure 13c; mean half-width of the ratio 0.16). The probability that the male-to-female ratio
+of U5MR was less than one was 0.77 in 1985 but less than 0.2 in all other periods (Table 11).
+The probabilities of an increasing linear trend are given in Table 12.
+Table 11. Probability that sex ratio of under-five mortality rate (SRU5MR) was less than one
+for the reconstructed population of Loas, 1985–2005, by quinquennium.
+
+1985
+0.77
+
+1990
+0.14
+
+1995
+0.14
+
+2005
+0.16
+
+Posterior distributions for the average annual net number of migrants are shown in Figure 14. Posterior uncertainty is high, with a mean half-width of 8,890. Posterior medians
+indicate out-migration for most of the period of reconstruction. For 1995–2005, posterior
+intervals for males fall completely below zero.
+Posterior intervals for population sex ratios are in Figure 15. Posterior medians are
+reasonably similar to the ratios in the WPP census counts and uncertainty is high.
+
+40
+
+300
+
+●
+
+deaths per 1000 births
+
+deaths per 1000 births
+
+150
+
+legend
+● posterior
+● WPP 2010
+
+120
+
+●
+
+sex
+● female
+male
+
+●
+
+200
+legend
+female
+male
+●
+●
+
+●
+●
+
+●
+
+●
+
+90
+
+●
+
+100
+
+●
+●
+
+●
+●
+
+60
+1985
+
+1990
+
+1995
+
+2000
+
+1985
+
+1990
+
+quinquennium beginning
+
+1995
+
+2000
+
+quinquennium beginning
+
+(a)
+
+(b)
+
+2.0
+
+male U5MR / female U5MR
+
+1.6
+
+legend
+● prior
+● posterior
+
+1.2
+●
+●
+
+●
+
+●
+
+1990
+
+1995
+
+2000
+
+●
+
+0.8
+
+0.4
+1985
+
+quinquennium beginning
+
+(c)
+
+Figure 13. Prior and posterior medians and 95 percent credible intervals for under-five
+mortality rate (U5MR) (deaths per 1,000 live births) for the reconstructed population of Laos,
+1985–2004. (a): Female and male posterior quantiles and World Population Prospects (WPP)
+2010 estimates; (b): Female and male prior quantiles only; (c): Male-to-female ratio.
+
+41
+
+legend
+● prior
+● posterior
+1000
+
+0
+
+●
+●
+
+1985
+
+●
+●
+
+●
+●
+
+●
+●
+
+1990
+
+1995
+
+2000
+
+total number of migrants (000s)
+
+total number of migrants (000s)
+
+2000
+
+2000
+
+legend
+● prior
+● posterior
+1000
+
+0
+
+●
+●
+
+1985
+
+quinquennium beginning
+
+●
+●
+
+●
+●
+
+●
+●
+
+1990
+
+1995
+
+2000
+
+quinquennium beginning
+
+(a)
+
+(b)
+
+0
+
+●
+●
+
+●
+
+●
+
+sex
+● female
+male
+
+−10
+
+total number of migrants (000s)
+
+total number of migrants (000s)
+
+10
+
+2000
+
+sex
+● female
+male
+1000
+
+−20
+0
+
+1985
+
+1990
+
+1995
+
+2000
+
+●
+
+1985
+
+quinquennium beginning
+
+●
+
+●
+
+●
+
+1990
+
+1995
+
+2000
+
+quinquennium beginning
+
+(c)
+
+(d)
+
+Figure 14. Prior and posterior medians and 95 percent credible intervals for the average
+annual net number of migrants for the reconstructed population of Laos, 1985–2004. (a):
+Females; (b): Males; (c): Female and male posterior quantiles only; (d): Female and male
+prior quantiles only.
+
+42
+
+Table 12. Probabilities of an increasing linear trend and 95 percent credible intervals for sex
+ratio of under-five mortality rate (SRU5MR) for the reconstructed population of Laos, 1985–
+2000. Two measures of trend are used: the difference over the period of reconstruction and
+the slope coefficient from the ordinary least squares (OLS) regression on the start year of each
+quinquennium.
+
+Measure of trend
+SRU5MR2000 − SRU5MR1985
+OLS slope (SRU5MR ∼ year)
+
+95 percent CI
+
+Prob > 0
+
+[−0.1, 0.35]
+[−0.0071, 0.022]
+
+0.88
+0.87
+
+1.100
+
+1.02
+1.075
+
+●
+
+legend
+● posterior
+● census
+
+1.00
+●
+●
+●
+
+●
+
+ratio (M/F)
+
+ratio (M/F)
+
+1.01
+
+1.050
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+2000
+
+2005
+
+legend
+● posterior
+● census
+
+●
+●
+
+●
+
+0.99
+1.025
+
+0.98
+
+1.000
+0.97
+1985
+
+1990
+
+1995
+
+2000
+
+2005
+
+1985
+
+year
+
+1990
+
+1995
+
+year
+
+(a)
+
+(b)
+
+Figure 15. Prior and posterior medians and 95 percent credible intervals for the reconstructed
+population of Laos, 1985–2005. Sex ratios (male/female) for (a): total population; (b): population aged 0–5; .
+
+43
+
+44
+
+References
+Alkema, L. and Ann, W. L. (Jan. 2011). Estimating the Under-five Mortality Rate Using a
+Bayesian Hierarchical Time Series Model. PLoS One 6.9. Ed. by Z. Su, e23954.
+Alkema, L., Raftery, A. E., Gerland, P., Clark, S. J., and Pelletier, F. (2012). Estimating
+Trends in the Total Fertility Rate with Uncertainty Using Imperfect Data: Examples
+from West Africa. Demographic Research 26.15, pp. 331–362.
+Arriaga, E. (1983). Estimating Fertility From Data on Children Ever Born by Age of Mother.
+International Research Document 11. Washington D. C.: United States Bureau of the
+Census.
+Austad, S. N. (2011). “Sex Differences in Longevity and Aging.” In: Handbook of the Biology of
+Aging. Ed. by E. J. Masoro and S. N. Austad. 7th ed. Boston: Academic Press. Chap. 23,
+pp. 479–495.
+Barbi, E., Bertino, S., and Sonnino, E., eds. (2004). Inverse Projection Techniques: Old and
+New Approaches. Berlin: Springer-Verlag.
+Beer, J. de, Raymer, J., Erf, R. van der, and Wissen, L. van (2010). Overcoming the Problems
+of Inconsistent International Migration Data: A New Method Applied to Flows in Europe.
+European Journal of Population/Revue Européenne de Démographie 26.4, pp. 459–481.
+Bennett, N. G. and Horiuchi, S. (1981). Estimating the Completeness of Death Registration
+in a Closed Population. Population Index 47.2, pp. 207–221.
+Bertino, S. and Sonnino, E. (2003). The Stochastic Inverse Projection and the Population of
+Velletri (1590–1870). Mathematical Population Studies 10.1, pp. 41–73.
+Bhat, P. N. M. (2002a). Completeness of India’s Sample Registration System: An Assessment
+Using the General Growth Balance Method. Population Studies 56.2, pp. 119–134.
+— (2002b). On the Trail of ‘Missing’ Indian Females I: Search for Clues. Economic and
+Political Weekly 37.51, pp. 5105–5118.
+— (2002c). On the Trail of ‘Missing’ Indian Females II: Illusion and Reality. Economic and
+Political Weekly 37.52, pp. 5244–5263.
+Bongaarts, J. (2001). Fertility and Reproductive Preferences in Post-Transitional Societies.
+Population and Development Review 27, pp. 260–281.
+Boyle, P. P. and Ó Gráda, C. (1986). Fertility Trends, Excess Mortality, and the Great Irish
+Famine. Demography 23.4, pp. 543–562.
+Brass, W. et al. (1968). The Demography of Tropical Africa. Princeton, NJ: Princeton University Press.
+Brass, W. (1960). The Graduation of Fertility Distributions by Polynomial Functions. Population Studies 14, pp. 148–162.
+— (1964). “Uses of Census and Survey Data for the Estimation of Vital Rates.” In: African
+Seminar on Vital Statistics. (Addis Ababa, Dec. 14–19, 1964).
+Brass, W. and CELADE (1975). Methods for Estimating Fertility and Mortality from Limited and Defective Data. Based on Seminars Held 16–24 September 1971 at the Centro
+Latinoamericano de Demografía (CELADE), San José, Costa Rica. Chapel Hill, North
+Carolina: Carolina Population Center, University of North Carolina at Chapel Hill.
+Chamratrithirong, A., Prasartkul, P., Thongthai, V., and Guest, P. (1997). National Contraceptive Prevalence Survey 1996. Nakhon Pathom Thailand Mahidol University Institute
+for Population and Social Research (IPSR).
+45
+
+Coale, A. J. (1991). Excess Female Mortality and the Balance of the Sexes in the Population:
+An Estimate of the Number of Missing Females. Population and Development Review 17,
+pp. 517–523.
+Coale, A. J., Demeny, P., and Vaughan, B. (1983). Regional Model Life Tables and Stable
+Populations. 2nd ed. New York, New York: Academic Press.
+Cohen, J. E. (Aug. 2006). Stochastic Demography. In: Encyclopedia of Statistical Sciences.
+Article Online Posting Date: August 15, 2006. John Wiley and Sons, Inc.
+Daponte, B. O., Kadane, J. B., and Wolfson, L. J. (1997). Bayesian Demography: Projecting
+the Iraqi Kurdish Population, 1977–1990. Journal of the American Statistical Association
+92.440, pp. 1256–1267.
+Das Gupta, M. (2005). Explaining Asia’s “Missing Women”: A New Look at the Data.
+Population and Development Review 31.3, pp. 529–535.
+Das Gupta, M. and Bhat, P. N. M. (1997). Fertility Decline and Increased Manifestation of
+Sex Bias in India. Population Studies 51.3, pp. 307–315.
+Feeney, G. (1996). A New Interpretation of Brass’ P/F Ratio Method Applicable When Fertility is Declining. url: http://www.heart-intl.net/HEART/HIV/Comp/InterpretationofFertiline.
+pdf (visited on 12/12/2013).
+Frisen, C. M. (1991). Population Characteristicsin the Lao People’s Democratic Republic.
+Asia-Pacific Population Journal 6.2, pp. 55–66.
+Goodkind, D. and West, L. (2001). The North Korean Famine and its Demographic Impact.
+Population and Development Review 27.2, pp. 219–238.
+Greville, T. N. E. (1943). Short Methods for Constructing Model Life Tables. The Record of
+the American Institute of Acturaries 32.65, pp. 29–42.
+Griffiths, P., Matthews, Z., and Hinde, A. (4 2000). Understanding the Sex Ratio in India:
+A Simulation Approach. Demography 37.4, pp. 477–488.
+Guillot, M. (2002). The Dynamics of the Population Sex Ratio in India, 1971–96. Population
+Studies 56.1, pp. 51–63.
+Guilmoto, C. Z. (2007a). “Characteristics of Sex-Ratio Imbalance in India and Future Scenarios.” In: 4th Asia Pacific Conference on Reproductive and Sexual Health and Rights.
+(Hyderabad, India, Oct. 29–31, 2007).
+— (2007). “Characteristics of Sex-Ratio Imbalance in India and Future Scenarios: Executive Summary.” In: 4th Asia Pacific Conference on Reproductive and Sexual Health and
+Rights. (Hyderabad, India, Oct. 29–31, 2007).
+— (2007b). “Sex Ratio Imbalance in Asia: Trends, Consequences and Policy Responses.” In:
+4th Asia Pacific Conference on Reproductive and Sexual Health and Rights. (Hyderabad,
+India, Oct. 29–31, 2007).
+— (2009). The Sex Ratio Transition in Asia. Population and Development Review 35.3,
+pp. 519–549.
+— (2012). Skewed Sex Ratios at Birth and Future Marriage Squeeze in China and India
+2005–2100. Demography 49, pp. 77–100.
+Heuveline, P. (1998). ‘Between One and Three Million’: Towards the Demographic Reconstruction of a Decade of Cambodian History (1970–79). Population Studies 52, pp. 49–
+65.
+Hill, K. (1987). Estimating Census and Death Registration Completeness. Asian and Pacific
+Population Forum 1, pp. 8–13.
+46
+
+Hill, K., Vapattanawong, P., Prasartkul, P., Porapakkham, Y., Lim, S. S., and Lopez, A. D.
+(2007). Epidemiologic Transition Interrupted: A Reassessment of Mortality Trends in
+Thailand, 1980–2000. International Journal of Epidemiology 36.2, pp. 374–384.
+Hill, K., You, D., Inoue, M., Oestergaard, M. Z., and Technical Advisory Group of the
+United Nations Inter-agency Group for Child Mortality Estimation (IGME) (Aug. 2012).
+Child Mortality Estimation: Accelerated Progress in Reducing Global Child Mortality,
+1990–2010. PLoS Medicine 9.8, e1001303.
+Hinkley, D. V. (1969). Inference About the Intersection in Two-Phase Regression. Biometrika
+56.3, pp. 495–504.
+Hinkley, D. V. (1971). Inference in Two-Phase Regression. Journal of the American Statistical
+Association 66.336, pp. 736–743.
+Jha, P., Kesler, M. A., Kumar, R., Ram, F., Ram, U., Aleksandrowicz, L., Bassani, D. G.,
+Chandra, S., and Banthia, J. K. (2011). Trends in Selective Abortions of Girls in India:
+Analysis of Nationally Representative Birth Histories from 1990 to 2005 and Census Data
+from 1991 to 2011. The Lancet 377, pp. 1921–1928.
+Jha, P., Kumar, R., and Dhingra, N. (2006). Sex Ratio in India — Authors’ Reply. The
+Lancet 367.9524, p. 1727.
+Jha, P., Kumar, R., Vasa, P., Dhingra, N., Thiruchelvam, D., and Moineddin, R. (2006).
+Low Male-to-female Sex Ratio of Children Born in India: National Survey of 1.1 Million
+Households. The Lancet 367.9506, pp. 211–218.
+Kamnuansilpa, P., Chamratrithirong, A., and Knodel, J. (1982). Thailand’s Reproductive
+Revolution: An Update. International Family Planning Perspectives 8.2, pp. 51–56.
+Keyfitz, N. and Caswell, H. (2005). Applied Mathematical Demography. third. Statistics for
+Biology and Health. Springer.
+Knodel, J. (1987). Thailand’s Reproductive Revolution. Social Science 72.1, pp. 52–56.
+Knodel, J. and Pitaktepsombati, P. (1975). Fertility and Family Planning in Thailand: Results from Two Rounds of a National Study. Studies in Family Planning 6.11, pp. 402–
+413.
+Knodel, J. and Prachuabmoh, V. (1976). Preferences for Sex of Children in Thailand: A
+Comparison of Husbands’ and Wives’ Attitudes. Studies in Family Planning 7.5, pp. 137–
+143.
+Knodel, J., Ruffolo, V. P., Ratanalangkarn, P., and Wongboonsin, K. (1996). Reproductive
+Preferences and Fertility Trends in Post-transition Thailand. Studies in Family Planning
+27.6, pp. 307–318.
+Lalic, N. and Raftery, A. E. (May 2012). “Joint Probabilistic Projection of Female and Male
+Life Expectancy.” In: Annual Meeting of the Population Association of America. New
+Orleans, LA.
+Lee, R. D. (2003). Reflections on Inverse Projection: Its Origins, Development, Extensions,
+and Relation to Forecasting. In: vol. 10. 1, pp. 1–9.
+Lee, R. D. (1971). Econometric Studies of Topics in Demographic History. Disseration in
+Economics. Cambridge, Massachucetts: Harvard University.
+— (1974). Estimating Series of Vital Rates and Age Structures from Baptisms and Burials:
+A New Technique, with Applications to Pre-Industrial England. Population Studies 28.3,
+pp. 495–512.
+
+47
+
+Leslie, P. H. (1945). On the Use of Matrices in Certain Population Mathematics. Biometrika
+33.3, pp. 183–212.
+— (1948). Some Further Notes on the Use of Matrices in Population Mathematics. Biometrika
+35.3/4, pp. 213–245.
+Luther, N. Y., Dhanasakdi, N., and Arnold, F. (Dec. 1986). Consistent Correction of Census
+and Vital Registration Data for Thailand, 1960–80. Papers of the East-West Population
+Institute. Honolulu, Hawaii.
+Luther, N. Y. and Retherford, R. D. (1988). Consistent Correction of Census and Vital
+Registration Data. Mathematical Population Studies 1, pp. 1–20.
+Mahapatra, P. (2010). “An Overview of the Sample Registration System in India.” In: Prince
+Mahidol Award Conference & Global Health Information Forum.
+Mayer, P. (1999). India’s Falling Sex Ratios. Population and Development Review 25.2,
+pp. 323–343.
+Merli, M. G. (1998). Mortality in Vietnam, 1979-1989. Demography 35.3, pp. 345–360.
+Murray, C. J. L., Ferguson, B. D., Lopez, A. D., Guillot, M., Salomon, J. A., and Ahmad, O.
+(2003). Modified Logit Life Table System: Principles, Empirical Validation, and Application. Population Studies 57.2, pp. 165–182.
+Murray, C. J. L., Rajaratnam, J. K., Marcus, J., Laakso, T., and Lopez, A. D. (Apr. 2010).
+What Can We Conclude from Death Registration? Improved Methods for Evaluating
+Completeness. PLoS Med 7.4, e1000262.
+National Research Council Panel on Thailand (1980). Fertility and Mortality Changes in
+Thailand, 1950–1975. Report (National Research Council. Committee on Population and
+Demography). Washington, D.C.: National Academy of Sciences.
+Oeppen, J. (1993a). Back Projection and Inverse Projection: Members of a Wider Class of
+Constrained Projection Models. Population Studies 47.2, pp. 245–267.
+— (1993b). Generalized Inverse Projection. In: Old and New Methods in Historical Demography. Ed. by D. S. Reher and R. Schofield. Oxford, England: Clarendon Press. Chap. 2,
+pp. 29–39.
+Pollard, J. H. (1968). A Note on Multi-Type Galton-Watson Processes with Random Branching Probabilities. Biometrika 55.3, pp. 589–590.
+Pongou, R. (2013). Why Is Infant Mortality Higher in Boys Than in Girls? A New Hypothesis
+Based on Preconception Environment and Evidence From a Large Sample of Twins.
+Demography 50, pp. 421–444.
+United Nations (1982). Model Life Tables for Developing Countries. Population Studies (Department of International, Economic and Social Affairs) 77. New York, New York: United
+Nations, Sales No. E.07.XIII.7.
+Preston, S. H. (1976). Mortality Patterns in National Populations. New York, New York:
+Academic Press.
+Preston, S. H., Heuveline, P., and Guillot, M. (2001). Demography: Measuring and Modeling
+Population Processes. Malden, Massachusetts: Blackwell.
+R Core Team (2013). R: A Language and Environment for Statistical Computing. R Foundation for Statistical Computing. Vienna, Austria.
+Raftery, A. E. and Lewis, S. M. (1996). Implementing MCMC. In: Markov Chain Monte
+Carlo in Practice. Ed. by W. R. Gilks, S. Richardson, and D. J. Spiegelhalter. London:
+Chapman & Hall, pp. 115–130.
+48
+
+Sawyer, C. C. (2012). Child Mortality Estimation: Estimating Sex Differences in Childhood
+Mortality since the 1970s. PLoS Med 9.8, e1001287.
+Sen, A. (1990). More Than 100 Million Women are Missing. New York Review of Books 20,
+pp. 61–66.
+Silva, R. (2012). Child Mortality Estimation: Consistency of Under-Five Mortality Rate
+Estimates Using Full Birth Histories and Summary Birth Histories. PLoS Medicine 9.8,
+e1001296.
+Soliani, L. and Luchetti, E. (2006). “Genetic Factors in Mortality.” In: Demography: Analysis
+and Synthesis. A Treatise in Population. Ed. by G. Caselli, J. Vallin, and G. J. Wunsch.
+Vol. 2. Burlington, MA: Academic Press. Chap. 49, pp. 117–128.
+Suvanajata, T. and Kamnuansilpa, P. (1979). Thailand Contraceptive Prevalence Survey:
+Country Report. Bangkok, Thailand: Research Center, National Institute of Development
+Administration.
+The National Statistical Office of Thailand (1970). Report: The Survey of Population Change,
+1964–67. The National Statistical Office of Thailand.
+— (1977). Report: The Survey of Population Change, 1974–1975. The National Statistical
+Office of Thailand.
+— (1992). Report, The Survey of Population Change, 1991. Bangkok, Thailand: The National Statistical Office of Thailand.
+— (1997). Report on The 1995–1996 Survey of Population Change. Bangkok, Thailand: The
+National Statistical Office of Thailand.
+The Registrar General and Census Commissioner of India (2009). National Family Health
+Survey, India. Misitry of Home Affairs. url: http://censusindia.gov.in/Vital_
+Statistics/SRS/Sample_Registration_System.aspx (visited on 12/12/2013).
+— (2011). Vital Statistics: Sample Registration. Misitry of Home Affairs, The Government
+of India. url: http : / / censusindia . gov . in / Vital _ Statistics / SRS / Sample _
+Registration_System.aspx (visited on 12/12/2013).
+United Nations (1983). Manual X: Indirect Techniques for Demographic Estimation. Population Studies (Department of International, Economic and Social Affairs) 81. New York,
+NY: United Nations, Sales No. E.83.XIII.2.
+— (1993). Fertility Levels and Trends as Assessed from Twenty World Fertility Surveys. New
+York, New York: United Nations, document number: ST/ESA/SER.R/50.
+— (2011). World Population Prospects: The 2010 Revision, Standard Variants (Updated: 28
+June 2011). Department of Economic and Social Affairs (DESA), Population Division,
+Population Estimates and Projections Section. url: http://esa.un.org/unpd/wpp/
+index.htm.
+United Nations Population Fund (2010). UNFPA Guidance Note on Sex Selection. url:
+http://www.unfpa.org/webdav/site/global/shared/documents/publications/
+2010/guidenote_prenatal_sexselection.pdf (visited on 12/12/2013).
+Vallin, J. (1976). La Population de la Thailande. Population (French Edition) 31.1, pp. 153–
+175.
+— (2006). “Mortality, Sex, and Gender.” In: Demography: Analysis and Synthesis. A Treatise
+in Population. Ed. by G. Caselli, J. Vallin, and G. J. Wunsch. Vol. 2. Burlington, MA:
+Academic Press. Chap. 53, pp. 177–194.
+
+49
+
+Vapattanawong, P. and Prasartkul, P. (2011). Under-Registration of Deaths in Thailand in
+2005–2006: Results of Cross-Matching Data from Two Sources. Bulletin of the World
+Health Organization 89.11, pp. 806–812.
+Visaria, P. M. (1971). The Sex Ratio of the Population of India. Vol. 1. Census of India,
+Monographs 10. New Delhi, India: Ministry of Home Affairs, Office of the Registrar
+General.
+Waldron, I. (1985). What Do We Know About Causes of Sex Differences in Mortality? A
+Review of the Literature. Population Bulletin of the United Nations 18, pp. 59–76.
+— (2009). Gender Differences in Mortality—Causes and Variation in Different Societies. In:
+The Sociology of Health and Illness: Critical Perspectives. Ed. by P. Conrad. 8th ed. New
+York, New York: Worth. Chap. 4, pp. 38–54.
+Walters, S. L. (2008). Fertility, Mortality and Marriage in Northwest Tanzania, 1920–1970:
+a Demographic Study Using Parish Registers. Doctoral dissertation. Cambridge, England:
+King’s College, University of Cambridge.
+Wheldon, M. C., Raftery, A. E., Clark, S. J., and Gerland, P. (Apr. 11, 2013a). “Bayesian
+Reconstruction of Past Populations and Vital Rates by Age for Developing and Developed
+Countries.” In: Annual Meeting of the Population Association of America. (New Orleans,
+Louisiana, Apr. 11–13, 2013). Population Association of America.
+— (2013b). Reconstructing Past Populations with Uncertainty from Fragmentary Data.
+Journal of the American Statistical Association 108.501, pp. 96–110.
+Whelpton, P. K. (1936). An Empirical Method of Calculating Future Population. Journal of
+the American Statistical Association 31.195, pp. 457–473.
+Wrigley, E. A. and Schofield, R. S. (1981). The Population History of England, 1541–1871:
+A Reconstruction. Studies in Social and Demographic History. London, England: Edward
+Arnold.
+Zaba, B. (1981). Use of the Relational Gompertz Model in Analysing Fertility Data Collected
+in Retrospective Surveys. Centre for Population Studies Research Paper 81-2. London:
+Centre for Population Studies, London School of Hygiene and Tropical Medicine.
+
+50
+
+

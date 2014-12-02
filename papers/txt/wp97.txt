@@ -1,0 +1,9963 @@
+Probabilistic Projections of the Total Fertility Rate
+for All Countries
+Leontine Alkema, Adrian E. Raftery, Patrick Gerland,
+Samuel J. Clark, Fran¸cois Pelletier, Thomas Buettner 1
+Working Paper no. 97
+Center for Statistics and the Social Sciences
+University of Washington
+January 28, 2010
+
+1 Leontine
+
+Alkema, Department of Statistics and Applied Probability, National University
+of Singapore, Singapore 117546; Email: alkema@nus.edu.sg. Adrian E. Raftery, Departments of Statistics and Sociology, University of Washington, Seattle, WA 98195-4320; Email:
+raftery@u.washington.edu. Patrick Gerland, Population Estimates and Projections Section, United
+Nations Population Division, New York, NY 10017; Email: gerland@un.org. Samuel J. Clark, Department of Sociology, University of Washington, Seattle, WA 98195-3340; MRC/Wits University
+Rural Public Health and Health Transitions Research Unit (Agincourt), School of Public Health,
+University of Witwatersrand, South Africa and INDEPTH Network; Email: work@samclark.net.
+Fran¸cois Pelletier, Mortality Section, United Nations Population Division, New York, NY 10017;
+Email: pelletierf@un.org. Thomas Buettner, United Nations Population Division, New York, NY
+10017; Email: buettner@un.org. The project described was partially supported by Grant Number
+R01 HD054511 (Adrian E. Raftery, Principal Investigator) and HD057246 (Samuel J. Clark, Principal Investigator) from the National Institute of Child Health and Human Development. Its contents
+are solely the responsibility of the authors and do not necessarily represent the oﬃcial views of the
+National Institute of Child Health and Human Development or those of the United Nations. Its
+contents have not been formally edited and cleared by the United Nations. The authors are grateful to John Bongaarts, Jennifer Chunn, Joel Cohen, Timothy Dyson, Taeke Gjaltema, Gerhard
+Heilig, Peter Johnson, Nico Keilman, Nan Li and Peter Way for helpful discussions and insightful
+ˇ c´ıkov´
+comments, and to Hana Sevˇ
+a for software development. Alkema thanks the United Nations
+Population Division for hospitality.
+
+Abstract
+We describe a Bayesian projection model to produce country-specific projections of the total
+fertility rate (TFR) for all countries. It decomposes the evolution of TFR in three phases:
+pre-transition high fertility, the fertility transition, and post-transition low fertility. The
+model for the fertility decline builds on the United Nations Population Division’s current
+deterministic projection methodology, which assumes that fertility will eventually fall below
+replacement level. It models the decline in TFR as the sum of two logistic functions that
+depend on the current TFR level, and a random term. A Bayesian hierarchical model is
+used to project future TFR based on both the country’s TFR history and the pattern of all
+countries. It is estimated from United Nations estimates of past TFR in all countries using
+a Markov chain Monte Carlo algorithm. The post-transition low fertility phase is modeled
+using an autoregressive model, in which long-term TFR projections converge toward and
+oscillate around replacement level. The method is evaluated using out-of-sample projections
+for the period since 1980 and the period since 1995, and is found to be well calibrated.
+
+Population forecasts predict the future size and composition of populations, based on
+projections of fertility, mortality and migration. They are used for many purposes, including
+predicting the demand for food, water, education, medical services, labor markets, pension
+systems, and future impact on the environment. It is important for decision makers to not
+only have a point forecast that states the most likely scenario for a future population, but
+also to know the uncertainty around it, that is, the possible future values of an outcome,
+and how likely each set of possible future values is.
+Fertility is a key driver of the size and composition of the population. Fertility decline
+has been a primary determinant of population aging and projected levels of fertility have
+important implications on the age structure of future populations, including the pace of
+population aging. The total fertility rate (TFR) is one of the key components in population
+projections; it is the average number of children a woman would bear if she survived through
+the end of the reproductive age span, experiencing at each age the age-specific fertility rates
+of that period.
+In this paper we propose a new methodology for probabilistic projections of the total
+fertility rate for all the countries of the world. The goal is to produce probabilistic projections
+that would ultimately be part of the population projections produced by the United Nations
+Population Division. Earlier versions of this methodology were described by Alkema (2008),
+Alkema et al. (2008, 2009), and Raftery et al. (2009).
+Until now, most operational population projections have been deterministic, produced
+using the standard cohort-component population projection model. Future fertility rates
+have typically been assigned in a deterministic way. The main organizations that have
+produced population projections for all or most of the world’s countries are the United
+Nations, the World Bank (Bos et al. 1994) and the United States Bureau of the Census (U.
+S. Census Bureau 2009), all of which use the standard deterministic approach.
+Probabilistic projections of the TFR have been proposed, mostly for developed countries with low fertility. Lee (1993) and Lee and Tuljapurkar (1994) proposed a time series
+approach based on the probabilistic mortality projection method of Lee and Carter (1992),
+for decomposing and projecting fertility in the U.S. Methods based on expert judgement
+have been developed and applied by Lutz, Sanderson, and Scherbov (2001). The Uncertain
+Population in Europe project (Alho et al. 2006; Alders, Keilman, and Cruijsen 2007; Alho,
+Jensen, and Lassila 2008) developed probabilistic TFR projections for 18 European countries
+using the ex-post method based on the errors of previous projections (Keyfitz 1981; Stoto
+1983). Hyndman and Booth (2008) developed a method using functional data models and
+applied it to Australia, as well as France (Booth et al. 2009).
+These methods were developed mainly for low fertility countries that have largely finished
+
+1
+
+going through the fertility transition and for which fertility is fluctuating in a fairly stable,
+stationary way. They do not apply easily to countries that are still going through the fertility
+transition. Here we develop a methodology for all countries.
+A great deal of the demographic literature over the past sixty years has been concerned
+with explaining trends in fertility; see the reviews by Hirschman (1994) and Mason (1997).
+This literature is dominated by controversy over why fertility has declined in most countries.
+Proposed explanations include socioeconomic and educational development, declines in child
+mortality, contraceptive programs and ideational changes; see Raftery, Lewis, and Aghajanian (1995) for one empirical comparison between competing theories. In spite of this, there
+has been a general consensus that, whatever the causes, the evolution of fertility includes
+three broad phases: a high-fertility pre-transition phase, the fertility transition itself and a
+low-fertility post-transition phase during which fertility remains close to replacement level.
+Our methodology is based on this sequence of change. For countries that are going
+through the fertility transition from high fertility toward replacement fertility, we decompose the pace of the fertility decline into a systematic decline and random distortion terms.
+The pace of the systematic decline in TFR is modeled as a function of its level, based on the
+current UN methodology. We propose a Bayesian hierarchical model to estimate the parameters of the decline function. A time series model is used for projecting trends in fertility after
+reaching replacement level, assuming that in the long term the TFR will fluctuate around
+replacement-level fertility. The results are country-specific projections that are reproducible
+and take into account past trends.
+We build on the deterministic methodology currently used by the United Nations Population Division for projecting the TFR. The UN Population Division produces projections
+of the total fertility rate for 196 countries that are revised every two years and published
+in the World Population Prospects (United Nations, Department of Economic and Social
+Aﬀairs, Population Division 2009). The UN produces deterministic TFR projections. It
+then decomposes them into projected age-specific fertility rates using fertility schedules, and
+finally combines them with projections of mortality and international migration using the
+cohort-component projection method, to yield the Medium variant of the oﬃcial United
+Nations population projections.
+The eﬀect of lower or higher fertility is illustrated with the Low and High variants of
+the projections. In the high variant, half a child is added to the TFR projections in order
+to examine the influence of higher fertility on the population projections. Similarly, for
+the low variant, half a child is subtracted from the TFR projections. The high and low
+variants highlight the sensitivity of demographic outcomes to diﬀerent assumptions about
+future TFR, but they do not assess the uncertainty in future fertility levels (Bongaarts and
+
+2
+
+Bulatao 2000), nor to what extent the low or high fertility variants are more likely.
+Our projection intervals vary by country. The 80% projection intervals are wider than
+the current UN low-high intervals in most high-fertility countries, and narrower in most
+low-fertility countries. On average, the 80% projection intervals are slightly narrower than
+the UN high-low intervals. For high-fertility countries, the pace of fertility decline in our
+projections is slower compared to corresponding UN projections, but about the same for
+most other countries.
+The paper is organized as follows. The next section describes the Bayesian projection
+model. The following section summarizes the results and the out-of-sample projection validation. The paper concludes with a discussion of the methodology and results, and additional
+details of the model are given in the Appendix.
+
+BAYESIAN PROJECTION MODEL
+The three phases
+We base our projections on the five-year UN estimates of TFR for 1950 to 2010 from the 2008
+revision of the UN World Population Prospects (United Nations, Department of Economic
+and Social Aﬀairs, Population Division 2009). The outcome in each five-year period (t, t + 5)
+is computed between July 1st of year t and July 1st of year t+5, and centered on January 1st
+in year t + 3. Following standard fertility transition theory, the change in TFR is modeled in
+three phases, illustrated in Figure 1. Phase I is the stable pre-transition high fertility phase;
+the fertility transition has not started yet and fertility fluctuates around high TFR levels.
+In some countries there was an increase before the decline started. Phase II is the fertility
+transition from high fertility to replacement-level fertility or below, and Phase III consists
+of the post-transition low fertility, which includes recovery from below-replacement fertility
+toward replacement fertility and oscillations around replacement-level fertility.
+We do not model Phase I explicitly because in all countries, the TFR has now started
+to decline, so Phase I is not relevant for projections. Instead we use a deterministic rule to
+identify the periods during which a country was in Phase I. If the TFR was below 5.5 in
+1950–1955, we define Phase I for that country as having ended before 1950–1955, i.e. before
+the beginning of our data set. For the other countries, we define the start period of the
+fertility decline as the most recent period with a local maximum that is within 0.5 children
+of the global maximum of the TFR within that country. The use of half child is a more
+stringent threshold than the 5% decline proposed by other authors to detect the early stage
+of the fertility transition (Bongaarts 2002b; Casterline 2001).
+Phase III starts after the fertility transition has been completed. To operationalize this
+3
+
+Figure 1: Illustration of the three phases of the evolution of the TFR.
+
+8
+
+9
+
+3 Phases
+Phase I
+Phase II
+Phase III
+
+●
+●
+●
+
+●
+●
+
+●
+
+●
+
+7
+
+●
+
+●
+
+TFR
+4 5 6
+
+●
+
+●
+
+●
+
+3
+
+●
+
+●
+
+2
+
+●
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+0
+
+1
+
+●
+
+Start Phase II Start Phase III
+Time
+
+for countries where this happened during the observation period, we say that Phase III
+started the first time two 5-year increases below a TFR of 2 were observed. More specifically, the start of Phase III is the earliest period t for which: (i) fc,t > fc,t−1 , (ii) fc,t+1 > fc,t ,
+and (iii) fc,p < 2 for p = t − 1, t, t + 1. Thus the start of Phase III is in the middle of two
+
+increments below a TFR of 2 children. By this definition, in 2005–2010 the start of phase
+III has been observed in 20 countries (Belgium, Bulgaria, Channel Islands, Czech Republic, Denmark, Estonia, Finland, France, Germany, Italy, Latvia, Luxembourg, Netherlands,
+Norway, Russian Federation, Singapore, Spain, Sweden, United Kingdom, United States).
+
+Fertility transition model
+When a country is in Phase II, the five-year decline in its TFR is modeled as a sum of
+two logistic functions and a random distortion term. Specifically, fc,t , the TFR in five-year
+period t in country c, is modeled by a random walk model with drift:
+fc,t+1 = fc,t − dc,t + εc,t , for τc ≤ t < λc ,
+
+(1)
+
+where dc,t is the decrement term that models the systematic decline during the fertility
+transition, εc,t are random distortions that model the deviations from the systematic decline,
+τc is the start period of the fertility decline, and λc is the start period of the post-transition
+phase. The decrement dc,t is modeled as a function of the level of the TFR, as follows:
+�
+g(θ c , fc,t ) for τc ≤ t < λc and fc,t ≥ 1;
+dct = d(θ c , λc , τc , fc,t ) =
+(2)
+0
+otherwise,
+4
+
+where g(·, ·) is a parametric decline function. This function specifies a five-year decrement
+(decrease) as a function of the current level of the TFR and parameter vector θ.
+
+The decline function is the sum of two logistic functions, i.e. a double logistic or bilogistic function (Meyer 1994). The first logistic function describes a pace of fast decline at
+high total fertility rates that decreases toward a slower pace as fertility becomes lower. The
+second function describes the opposite force, namely a slowing down of the pace of fertility
+decline over time. The sum of the two is a parametric function that describes a decline in
+fertility that starts with a slow pace at high TFR values, peaks and slows down again at
+lower TFR values, the general shape of the trend in TFR observed in many countries. This
+model underlies the current deterministic UN methodology (United Nations, Department of
+Economic and Social Aﬀairs, Population Division 2006), and it is flexible enough to represent
+a wide range of fertility decline patterns.
+The double logistic function with country-specific parameter vector
+θ c = (�c1 , �c2 , �c3 , �c4 , dc ), is
+�
+
+−dc
+
+ln(9)
+1 + exp − 2�
+(fc,t −
+c1
+
+�
+
+i �ci + 0.5�c1 )
+
+�+
+
+�
+
+dc
+
+ln(9)
+1 + exp − 2�
+(fc,t − �c4 − 0.5�c3 )
+c3
+
+�.
+
+Figure 2 illustrates the parametrization of the double logistic function. The five-year decrements as given by the decline function are plotted against TFR. The TFR is reversed, i.e.
+plotted from high to low outcomes on the horizontal axis so that the five-year decrements
+during the fertility transition are given by the decline curve in chronological order when following the curve from left to right. The maximum possible pace of the decline (the maximum
+five-year decrement) is dc . However, the actual maximum pace tends to be slightly smaller
+than dc ; it depends on the four �ci ’s, which describe the TFR ranges in which the pace of
+the fertility decline changes.
+
+�
+The decline starts at TFR level Uc = 4i=1 �i , where the decrement is between 0 and
+10% of its maximum pace. Between TFR levels Uc and Uc − �c1 , the pace of the decline
+increases from around 0.1dc to over 0.8dc . During the TFR range denoted by �c2 , the TFR
+
+declines at a higher pace than during the rest of the transition: its five-year decrements
+range between 0.8dc and dc . In �c3 the pace of the fertility decline decreases further to 0.1dc
+at TFR level �c4 . The decline is set to zero if the TFR is smaller than one.
+
+The parameters of the decline function are estimated for each country. For countries
+�
+in which the transition started before period 1950–1955, the start level Uc =
+�ci of the
+
+fertility decline is added as a parameter to the model. For countries in which the fertility
+decline started after 1950–1955, the start period τc is within the observation period. For these
+countries, the start level Uc is fixed at the TFR in that period, Uc = fc,τc . The systematic
+decline in the start period is between 0 and 10% of the maximum decline, with a “start
+5
+
+Figure 2: Five-year decrements as given by the double logistic function g(θ c , fc,t ) plotted
+against the TFR. The horizontal TFR axis is negatively oriented (i.e. decreasing from left
+to right).
+dc
+0.8dc
+g(θc, fct)
+
+0.1dc
+0
+Δc1 Δc2
+
+Δc3
+
+Uc=Σ
+ΣΔci
+
+Δc4
+Δc4
+
+0
+
+fct (decreasing)
+
+period” random distortion term εc,τc added to it, to allow a bigger decrease in that specific
+period:
+εc,τc ∼ N (mτ , s2τ ),
+
+(3)
+
+where mτ is the mean and sτ is the standard deviation of the distortion in the start period.
+The distribution of the distortion term εc,t after start period τc is
+εc,t ∼ N (0, σ(fc,t )2 ), for t �= τc .
+
+(4)
+
+The expression for its standard deviation σ(fc,t ) is based on examination of the absolute
+distortions as a function of the TFR level (which shows a higher variance around a TFR of
+4-5, and over time), and is given in the Appendix.
+Given Uc , the five parameters that determine the pace of the fertility decline and the
+time that the transition takes in country c are �c4 , {�ci /(Uc − �c4 ) : i = 1, 2, 3}, and dc .
+Estimating these five parameters presents a challenge, because for any one country there
+are at most 11 observed five-year decrements in Phase II, often fewer. We use a Bayesian
+hierarchical model (Lindley and Smith 1972; Gelman et al. 2004) which allows us to borrow
+strength from the observations in all countries when estimating the parameters for country
+c, and also to assess the uncertainty of the estimates.
+The model assumes that for all countries, each of their unknown decline parameters is
+drawn from a probability distribution that represents the range of outcomes of that decline
+6
+
+parameter across all countries. For a specific country, the posterior distribution of its decline
+parameters is then determined by the world-level experience for all countries combined, as
+well as the observed declines in that country. The resulting estimate can be viewed as based
+on a weighted average of a “world pattern” and information from the country data. In
+the hierarchical model, transformations of parameters are used to restrict their outcomes to
+realistic values.
+The maximum five-year decrement,
+�
+� dc , is transformed to restrict its outcomes to between
+c −0.25
+0.25 and 2.5 child: d∗c = log d2.5−d
+. The upper bound of 2.5 reflects the maximum pace
+c
+of fertility decline observed in the past, i.e. around 2 children per five-year period in China.
+
+The hierarchical distribution of the transformed dc ’s is given by d∗c ∼ N (χ, ψ 2 ), where χ is
+
+the world mean of the d∗c ’s, and ψ 2 is their variance.
+A similar approach yields world distributions of the other decline parameters. The world
+∗
+2
+∗
+distribution for ��c4 is given
+� by �c4 ∼ N (�4 , δ4 ), where �c4 is a logit-transform of �c4 ,
+�c4 −1
+namely �∗c4 = log 2.5−�
+, to restrict it to be between 1 and 2.5 children.
+c4
+
+To define the world distributions of {�ci /(Uc − �c4 ) : i = 1, 2, 3}, we first define
+�3
+ci
+for i = 1, 2, 3, such that
+pci = Uc�
+i=1 pci = 1. For the purpose of computation,
+−�c4
+new parameters γci , i = 1, 2, 3 are introduced, with the pci ’s defined as a function of these
+parameters (Gelman et al. 1996): pci =
+given by γci ∼
+
+N (αi , δi2 ),
+
+�exp(γci ) .
+j exp(γcj )
+
+The hierarchical model for the γci ’s is
+
+where αi is the hierarchical mean of the γci ’s and δi2 is their variance.
+
+To summarize, the complete Phase II model is defined by the random walk with drift as
+described in Eq.(1), the distributions of the random distortion terms given by Eq.(3) and
+(4), hierarchical distributions for country-specific decline parameters, prior distributions on
+the variance parameters of the distortion terms and hierarchical parameters, and a prior
+distribution on Uc for the countries in which the transition started before 1950–1955. A
+Markov Chain Monte Carlo (MCMC) algorithm is used to get samples of the posterior
+distributions of each of the parameters of the fertility transition model (Gelfand and Smith
+1990). The full model and details of the MCMC algorithm are given in the Appendix.
+
+Estimated decline curves
+Figure 3 shows the observed five-year decrements during the fertility transition, against
+decreasing TFR, for all countries combined. The world mean of the double logistic decline
+curve is plotted in red.
+For comparison, we also show the double logistic curves currently used by the UN. The
+UN currently uses three specific double logistic curves, each corresponding to one set of
+double logistic parameters. Each of these is chosen to describe a diﬀerent observed pace of
+decline; they are called “slow-slow,” “fast-slow” and “fast-fast.” For each country, the UN
+7
+
+analyst chooses the decline curve that seems most reasonable for the future fertility decline
+in that country, based on what has been observed to date in that country or its region. The
+TFR is kept constant after it decreases to 1.85. Our method generalizes the current UN
+approach because we allow a wide range of parameter values for the double logistic curve
+rather than restricting it to a small number of possibilities.
+The UN decline functions corresponding to the fast/fast and slow/slow declines are shown
+in blue in Figure 3. The Bayesian world decline curve diﬀers from the UN decline curves at
+high TFR values, but the maximum decrements are comparable between the Bayesian and
+UN curves. The Bayesian world decline curve increases rapidly to its maximum outcome
+after the start of the decline, while the UN decline curves increase more slowly as TFR
+declines and peak around a TFR of 5.
+Figure 4 shows the Bayesian estimates of the double logistic decline curves for Thailand,
+India and Mozambique, together with the observed decrements in those countries and the
+fast/fast and slow/slow UN decline curves. The shapes of the curves for Thailand and India
+are very diﬀerent. Thailand has had a very fast fertility transition, and its median decline
+curve peaked at a five-year decrement of around one child per five-year period. In India the
+transition has been much slower, with a maximum decrement of around 0.4 children every
+five years. The UN decline curves do not capture the extent of the variation between these
+two countries. In Mozambique, the observed and projected decrements are smaller than the
+decrements as given by the UN decline curves. Only a short part of its transition has been
+observed so far, which leads to large uncertainty about the pace of its future transition.
+The 95% projection interval includes decline curves with a maximum decrement that ranges
+between about 0.3 and 0.8 children per five-year period.
+
+Post-transition model
+In long-term projections the TFR is assumed to converge toward and fluctuate around
+replacement-level fertility (around 2.1 children per woman for low-mortality countries). As
+proposed by Lee and Tuljapurkar (1994), this is modeled with a first order autoregressive
+time series model, an AR(1) model, with its mean fixed at the approximate replacement-level
+fertility, µ = 2.1:
+fc,t ∼ N (µ + ρ(fc,t−1 − µ), s2 ) for t > λc ,
+
+(5)
+
+where ρ is the autoregressive parameter with |ρ| < 1 and s is the standard deviation of the
+
+random errors. This can also be written as fc,t = fc,t−1 + (1 − ρ)(µ − fc,t−1 ) + ec,t , with
+errors ec,t ∼ N (0, s2 ). In this model the expected increase or decrease toward 2.1 is larger
+if the current TFR is farther from 2.1, and depends on ρ. For example, at a TFR of 1.5,
+
+the expected next TFR is 2.1 − 0.6ρ; a smaller ρ will give a larger expected increase. The
+8
+
+Figure 3: World (hierarchical) mean of the double logistic decline curve (red), plotted against
+decreasing TFR. The five-year decrements for all countries during the fertility transition are
+plotted in grey. The UN fast/fast and slow/slow decline curves are shown in blue.
+2.0
+
+●
+
+Decrements
+UN declines
+Hierarchical mean
+
+●
+
+●
+
+●
+
+●
+
+1.5
+
+●
+●
+
+●
+
+●
+●
+
+●
+●
+
+1.0
+
+●
+
+● ●
+●
+
+●
+●
+
+●
+●
+
+−0.5
+
+0.0
+
+●
+●● ●
+
+●
+
+●
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+● ●
+●
+●
+●●
+●● ●●● ●
+● ●● ●
+●
+●●
+●
+●
+●●
+●
+●
+●
+●●
+●
+●
+●
+●
+● ●●
+●●●
+●
+● ●●
+●
+●
+●●
+●
+● ● ●
+●
+●
+●
+● ●
+●● ●
+●
+●
+●
+● ●
+● ● ●
+● ●
+● ● ●●
+●
+● ●●
+●
+●
+●● ● ● ●
+● ●
+● ●
+● ● ●●
+●
+● ●
+● ●● ● ●●
+●●
+●
+●
+● ●●
+●
+●●
+●
+●
+●
+●
+●
+●● ● ● ● ● ●
+●
+● ●
+●
+●
+●●
+●
+●
+●● ●
+●● ●
+●
+●
+●● ●
+● ● ● ●
+●● ●
+●● ●●●
+●●
+●● ●
+●
+●
+●●
+●
+●
+●
+●●●●
+●
+● ●
+●
+●
+●
+●●
+●●
+●●
+●
+● ● ● ● ● ●●
+●
+●
+●●
+●
+● ●
+●●
+●● ●
+●
+●
+● ● ●
+●
+● ●
+●●
+●●
+●
+●
+● ● ●●●
+● ● ●●
+●●
+●●
+●
+●●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+● ●●
+●●
+●
+●
+● ●
+●
+● ● ●● ●
+●
+● ● ●
+● ●
+●
+●
+●●
+●● ●
+● ●
+●●
+●●
+●● ●
+●●
+●
+●●
+●
+●●● ●● ●●
+●
+● ● ● ● ●●
+● ● ● ●
+●
+●
+●
+●
+●●●●● ●●●
+● ●●
+●
+● ● ●
+●
+●● ●
+●
+●●● ●● ● ●
+● ● ●●●
+●●●
+● ●●
+● ●●
+● ● ●●● ●●●●
+●●● ●●● ● ●
+● ●
+●● ●
+●
+●●
+●
+●
+● ●●
+●
+●
+●● ● ●
+● ●
+●
+●● ●
+● ● ● ●●● ●● ●
+●●
+●
+● ●●
+● ● ●
+● ●
+●
+●●● ●
+●
+●
+●
+●
+●●● ●
+● ●●●
+●
+●
+●●● ● ●●
+●●
+● ●●●
+●
+● ●
+●
+●
+●
+● ● ●
+●
+●
+●●●●
+●
+●
+●
+●
+● ●●●
+●
+●
+● ●● ●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+● ●
+●
+● ●
+●
+● ●●
+● ●
+● ●●●●● ●●● ●●●●
+● ●●●●
+●●
+●● ●●
+● ●● ●● ●
+● ●● ●
+●
+●●●
+● ● ● ●
+● ●
+●●
+● ●●
+● ●●
+●
+●● ● ● ● ●●
+●● ●●
+●● ● ● ●
+● ● ● ● ●● ●● ● ●
+● ●●
+●
+● ● ● ●●● ●
+● ●
+●●●
+●●
+● ● ●
+● ●
+● ●●
+● ●
+● ●●●●
+●
+● ●
+● ● ●●
+●
+●
+●
+● ●●●● ● ●●●
+●
+● ●
+● ●
+●
+● ● ●● ● ●
+●
+●
+● ●
+●●
+●●
+●● ●
+●● ●●
+●
+●
+●● ●●
+● ●●●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●●
+●
+●
+●●
+● ●●●
+●
+●
+●
+●● ●●
+●
+● ●
+● ●● ●●●
+●
+●
+●●●
+● ● ● ●●
+●●
+● ● ● ●●
+●●
+●● ● ●
+●
+●
+●
+●●
+●●
+●● ●
+●● ●●
+●●
+● ●●
+●
+● ●● ●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●●
+●
+●●
+●●
+●
+●● ● ●
+●● ● ● ●●●● ●●● ●
+●
+● ●●
+●●
+● ●●
+● ●● ●
+●●
+●●
+●●●● ●●
+●
+●
+●● ●●● ●●●● ●
+● ●● ●
+● ● ●●
+● ● ● ● ●
+●
+●● ●
+● ●●
+●
+● ● ● ●●
+●
+●●
+● ●●
+●
+●● ●●●
+●
+●
+●
+●
+●
+● ● ● ●● ●●
+●● ●●
+● ●●
+●
+●● ●
+●
+● ● ● ●●
+●
+● ●●
+●
+●●
+●
+●●
+●●●●
+●
+● ●● ● ●
+● ●● ●
+●
+● ●● ●
+●
+●
+●
+● ● ●
+● ●
+●
+●
+●
+● ● ● ●● ●
+●
+●●
+●●● ● ●●
+●
+● ●●
+●
+● ●
+●
+●
+●
+●● ● ●
+● ●
+●●
+●
+●●
+●
+●●●
+● ● ●●
+● ●●
+●●
+●
+●
+●●
+●●●
+● ●●
+●●
+●
+●
+●
+●
+●●
+●●
+● ●●
+● ● ●● ●●
+● ●
+●
+● ●●
+●
+●
+●
+●
+●
+●
+●
+●
+●●
+●
+●●
+●● ●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●●● ●●
+● ● ●●
+●
+● ●●●● ● ●
+●●
+●
+●●
+●● ●
+● ●●●● ●
+●●●●
+●
+●●●
+●●
+●
+●●
+●●
+●
+● ●● ●
+●● ●
+●
+●
+●
+●
+●
+●●
+●
+●●●
+●
+●
+●
+●
+●● ● ● ● ● ●●●
+●●● ●
+●● ● ●
+●
+●
+●●
+●
+●
+●● ●
+●
+●
+●●
+●●
+● ●● ●
+●
+●●
+●
+●
+●●●● ●●●
+●
+●● ●
+● ● ●●●●
+●
+●● ●
+●
+●●●
+● ●●
+●●
+●●
+●●
+●
+●●
+● ●
+●● ●
+●● ● ● ● ●
+● ●
+●
+●
+●
+● ●●
+●● ● ●
+●● ●
+● ●
+●●
+● ●● ●●
+●
+●● ●●
+●●
+●●●●
+● ● ●
+●
+●
+●
+●
+●
+●●
+●●
+●
+● ●
+●
+● ● ● ●●●
+●
+●
+●●
+●
+●●●
+●●● ●●
+●
+●● ● ●
+●●
+●
+●
+● ● ●
+● ●● ●
+● ●
+● ●
+●
+●● ●
+●●
+●
+●
+●
+●
+● ●
+●●●●
+●
+●● ●
+●●
+●
+●● ●
+●● ●●
+●
+●
+●●
+●
+●
+●●●●
+●
+●
+●●
+●●
+●●
+●● ●
+●
+● ●
+●● ●
+●● ●
+● ●
+●●
+●
+●
+●
+●
+●
+● ●●●
+● ●
+●●
+● ●●●● ●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●●●● ●
+●
+●
+● ●
+●
+● ● ● ● ●●
+● ●●● ● ● ●
+●●
+●
+●
+● ●
+●●
+●
+●
+●● ●
+● ●
+●
+●
+●
+●●●● ●● ●
+●
+●
+●
+●●
+●
+●
+●
+●
+●
+● ● ● ●●
+●
+●
+●
+● ●●
+●●
+●
+●
+●
+●
+●
+●
+●
+● ●
+● ●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●●
+●
+
+●
+
+●
+●
+
+●
+
+●
+● ●●
+●
+
+●
+●
+● ● ●
+● ●
+
+●
+
+0.5
+
+5−year decrement
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+●
+
+●
+●
+
+8
+
+●
+
+●
+
+6
+
+●
+
+4
+
+2
+
+TFR (reversed)
+
+●
+
+●
+
+●
+
+Figure 4: Double logistic decline curves for Thailand, India and Mozambique, plotted against
+decreasing TFR. Examples of the decline curves simulated from the posterior distribution
+are shown in grey. The median and 95% projection intervals for the five-year decrements are
+shown in red. The observed five-year decrements are shown by black dots and the fast/fast
+and slow/slow UN scenarios are shown in blue.
+
+2.0
+
+Median
+95 % PI
+Example curves
+
+0.5
+
+0.5
+
+●
+
+TFR decrement
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+8
+
+4
+
+TFR (reversed)
+
+●
+●
+
+●
+
+2
+
+●
+●
+●
+
+●
+
+8
+
+●●
+●
+●
+
+0.0
+
+●
+
+0.0
+0
+
+Median
+95 % PI
+Example curves
+
+●
+
+●
+
+●
+●
+●
+
+6
+
+5−year decrements
+UN declines
+
+●
+
+●
+
+●
+
+●
+
+1.5
+
+5−year decrements
+UN declines
+
+0.5
+
+TFR decrement
+
+1.0
+
+●
+
+●
+
+0.0
+
+TFR decrement
+
+●
+
+1.0
+
+2.0
+
+Median
+95 % PI
+Example curves
+
+1.5
+
+5−year decrements
+UN declines
+
+Mozambique
+
+1.0
+
+●
+
+India
+
+1.5
+
+2.0
+
+Thailand
+
+6
+
+4
+
+TFR (reversed)
+
+9
+
+2
+
+0
+
+8
+
+6
+
+4
+
+TFR (reversed)
+
+2
+
+0
+
+smaller ρ, the more quickly the TFR will increase toward replacement-level fertility. The
+asymptotic 100(1 − α)% projection interval is
+�
+�
+s
+s
+2.1 − zα �
+, 2.1 + zα �
+,
+1 − ρ2
+1 − ρ2
+
+(6)
+
+where zα is the (1 − α2 ) quantile of the standard normal distribution. For example, for an
+80% projection interval, zα = 1.28 and for a 95% projection interval, zα = 1.96. Equation
+
+(6) is the projection interval for the TFR in the distant future.
+The AR(1) parameters ρ and s are estimated using maximum-likelihood estimation based
+on all the data points after and including period λc . The start of Phase III has been observed
+in 20 countries, giving 52 post-transition outcomes (fc,t−1 , fc,t ) to estimate the parameters
+of the AR(1) process. The maximum-likelihood estimate for ρ is 0.906, and the estimated
+standard deviation of the residuals is 0.09. The 52 post-transition outcomes and fitted
+regression line are shown in Figure 5; the fitted regression line fits the data well. The
+asymptotic 80% projection interval is [1.83, 2.37] and the asymptotic 95% projection interval
+is [1.68, 2.52].
+The estimated value of ρ gives expected increases that are similar to those from the
+current UN methodology. The UN projects increments of 0.05 child for each five-year period,
+until the TFR equals 1.85, as shown in blue in the same figure.
+Figure 5: Observed UN estimates in Phase III, with the TFR in period t plotted against
+its predecessor. The expected outcome for the TFR in the AR(1) model, conditional on its
+previous outcome, is shown in red, with the limits of its 95% projection interval (dashed
+lines). The current UN projection methodology is illustrated in blue.
+
+2.1
+
+f(t) = f(t−1)
+UN: f(t) = f(t−1) + 0.05
+AR(1): f(t) = f(t−1) + 0.1(2.1−f(t−1))
+●
+●
+
+●
+●
+
+●
+
+1.8
+
+●
+
+f(t)
+
+●
+
+●
+
+●
+
+1.5
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+●
+
+● ●●●
+●
+
+●
+● ●
+● ● ●
+
+●
+●
+
+●●
+
+●
+
+●
+●
+
+●
+●
+
+●
+●
+
+●
+●
+●
+
+●
+
+●●
+
+●
+●
+
+●
+●
+
+0.9
+
+1.2
+
+●
+
+0.9
+
+1.2
+
+1.5
+f(t−1)
+
+10
+
+1.8
+
+2.1
+
+TFR projections
+TFR projections during the fertility transition are based on the Phase II model, using the
+sample from the posterior distribution of the model parameters. The result is a sample from
+the predictive distribution of future TFR trajectories for each country. For example, consider
+projecting fc,t+1 , the TFR in country c in period (t + 1), assuming that it is in Phase II. The
+(i)
+predictive distribution is represented by a sample {fc,t+1 : i = 1, . . . , I}. The i-th member
+(i)
+
+(i)
+
+(i)
+
+(i)
+
+(i)
+
+(i)
+of the sample, fc,t+1 , is then given by fc,t+1 = fc,t − d(θ (i)
+c , fc,t ) + εc,t , where θ c is the i-th
+(i)
+
+sample of parameter vector θ c , and εc,t is a random draw from N (0, σ(fc,t )(i) ).
+
+In each trajectory, Phase III is projected to start when the TFR has decreased to a TFR
+level which is around replacement-level fertility, and after the pace of the fertility decline has
+decreased to zero. These assumptions are incorporated into the definition of the projected
+(i)
+
+(i)
+
+start of Phase III, which is given by the earliest period t such that (i) mint {fc,t } ≤ �c4 , and
+(i)
+
+(i)
+
+(i)
+
+(ii) fc,t > fc,t−1 . The TFR level �c4 is the TFR outcome at which the pace of the fertility
+
+declines has decreased to 10% of the maximum five-year decrement, and is restricted to be
+between 1 and 2.5 children, to ensure that the fertility transition ends around replacementlevel fertility. The TFR increases in period t when the sum of the expected fertility decrement
+(given by the decline parameters) and the random distortion term is positive. The chance of
+an increasing TFR in period t increases as the expected fertility decrements decrease, and is
+thus more likely to occur at the end of the fertility transition. This definition of the start of
+Phase III means that the projected start period depends on the decline parameters, as well
+as the random distortion terms. The start of Phase III will vary between trajectories, which
+quantifies the uncertainty in the start of the recovery phase. For projections during Phase
+III, the AR(1) model is used, with the parameters as described in the previous section.
+In all projections, an additional prior distribution is put on future TFR outcomes, fc,t+1 ∼
+
+U [0, Uc ]. The upper bound is used to exclude TFR trajectories in which the fertility transition
+does not take oﬀ. The lower bound ensures positive TFR outcomes. This prior is enforced
+by resampling any future distortion term that results in TFR outcomes outside its prior
+bounds.
+After constructing a large sample of TFR trajectories, the “best” TFR projection is given
+by the median outcome of the TFR trajectories in each period, and the bounds of the 80%
+projection intervals are given by the 10th and 90th percentiles.
+
+11
+
+RESULTS
+Probabilistic TFR projections
+We now illustrate the results of the Bayesian projection model (BPM) for several countries.
+The results for all countries are given in the Appendix. Figure 6 shows the projection intervals
+for future TFR in six countries with diﬀerent fertility pasts and prospects, namely Italy,
+China, the USA, India, Israel and Mozambique. We also show the current UN projections
+and the result of adding and subtracting half a child to and from the median BPM projection,
+by analogy with how the UN constructs its high and low variants. The most recent UN
+estimates for 2005–2010 and projections for 2045–2050 and 2095–2100 for these countries
+are shown in Table 1.
+Table 1: Projection results for 2045–2050 and 2095–2100 for selected countries, ordered by
+increasing TFR in 2005–2010. “Low” and “High” refer to the lower and upper bounds of
+the 80% projection interval.
+Country
+Italy
+China
+USA
+India
+Israel
+Mozambique
+
+UN
+2005–09 2045–50
+1.38
+1.74
+1.77
+1.85
+2.09
+1.85
+2.76
+1.85
+2.81
+1.90
+5.11
+2.41
+
+BPM 2045–2049
+Low Median High Width
+1.52
+1.76
+2.02
+0.50
+1.08
+1.66
+2.03
+0.95
+1.86
+2.10
+2.36
+0.50
+1.37
+1.83
+2.31
+0.94
+1.58
+2.06
+2.57
+0.99
+1.85
+2.61
+3.42
+1.57
+
+BPM 2095–2100
+Low Median High Width
+1.68
+1.97
+2.26
+0.57
+1.56
+1.92
+2.22
+0.66
+1.84
+2.10
+2.38
+0.54
+1.28
+1.75
+2.13
+0.85
+1.30
+1.80
+2.23
+0.92
+1.32
+1.83
+2.41
+1.10
+
+Italy: Italy is one of the countries, mostly in Europe, that have had “lowest-low” fertility
+during the past two decades, as documented by Kohler, Billari, and Ortega (2002), Billari and
+Kohler (2004) and Frejka and Sobotka (2008). Various possible explanations of this have
+been reviewed by Morgan and Taylor (2006). After some recovery over the past decade,
+Italy’s TFR is currently 1.38. Our method projects a slow recovery, with relatively tight
+80% projection intervals of about plus or minus a quarter of a child, much tighter in this
+case than the UN’s scenarios of plus or minus half a child. The UN projects a recovery of
+TFR toward 1.85 while our method projects movement toward 2.1. However, the average
+recovery projected by our model is so slow that the UN medium projection and the Bayesian
+median projection are essentially the same for 2045–50 (1.77 and 1.76). Even by 2100 the
+Bayesian median projection is still below 2.1 (1.97), although there is a real possibility of
+recovery by then (the upper bound is 2.26).
+12
+
+Figure 6: Projection intervals for Italy, China, United States of America, India, Israel and
+Mozambique. The median projection (solid red line), 80% projection intervals (purple dashed
+lines) and 95% projection intervals (red dashed lines) are shown, as well as the median
+projection plus and minus half a child (green dashed lines). The UN estimates and projections
+(2008 revision) are shown in blue.
+Italy
+
+China
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.0
+
+●
+
+TFR
+
+●
+
+1.0
+
+●
+●
+
+●
+
+1.5
+
+●
+
+1.5
+
+TFR
+
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+0.5
+
+1.0
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+United States of America
+
+India
+
+3.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+4
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+3
+
+●
+
+TFR
+
+●
+
+2
+
+2.0
+
+●
+
+1
+
+1.5
+
+TFR
+
+●
+
+●
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Israel
+
+Mozambique
+
+3.5
+3.0
+
+UN estimates
+UN projection
+
+●
+
+●
+
+●
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+●
+
+●
+
+●
+
+4
+
+TFR
+
+3
+
+2.0
+
+2
+
+1.5
+1.0
+
+UN estimates
+UN projection
+
+1
+
+●
+
+0.5
+
+TFR
+
+2.5
+
+5
+
+●
+
+6
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+13
+
+Our projection of a recovery is supported by the more detailed analysis by region, age
+and social group conducted by Caltabiano, Castiglioni, and Rossina (2009). One possible
+explanation is given by Myrskyla, Kohler, and Billari (2009), who postulate a recent reversal
+of the negative relationship between fertility and socioeconomic factors that prevailed during
+the fertility transition.
+This paper is concerned with projecting period TFR, which UN incorporates into its
+population projections. Bongaarts and Feeney (1998) have pointed out that current belowreplacement period TFRs may be lower than the cohort TFRs for the currently fertile cohorts,
+reflecting a tempo rather than a quantum eﬀect. Our AR(1) model for the low fertility Phase
+III predicts a recovery from below-replacement period TFR, as does the Bongaarts-Feeney
+work, and so it may to some extent capture this phenomenon. Bongaarts (2002a), Lutz,
+O’Neill, and Scherbov (2003) and Sobotka (2005) have estimated the average tempo eﬀect
+on TFR in Europe to be in the range of 0.2–0.3 children, and as a result Lutz et al. (2003)
+predicted that average TFR in Europe would increase from about 1.5 to about 1.8. This is
+compatible with our projections.
+The probabilistic TFR projections of the Uncertain Population in Europe project (Alho
+et al. 2006; Alders, Keilman, and Cruijsen 2007; Alho, Jensen, and Lassila 2008) yield
+much wider intervals than our method for the below replacement European countries, with
+widths of their 80% intervals averaging around 1.7 compared with our 0.6 or so. They based
+their intervals on past projection errors by projecting agencies, and these tended to greatly
+underestimate the pace of decline, leading to large errors. Our projection method would
+have made much smaller errors in the past, leading to tighter projection intervals for the
+future.
+China: According to the UN estimates, Chinese TFR fell precipitously from the 1960s to
+the late 1990s, but has remained constant for the past 15 years or so, at its current level of
+1.77. The Bayesian median projection is that the fertility transition is not yet finished, and
+that a further small decline will be followed by a slow recovery. The UN projection is quite
+diﬀerent, remaining essentially constant at 1.85.
+Our projection intervals for China are much wider than for Italy — one child compared
+to half a child — even though both countries are currently below replacement. This reflects
+the unusual form of the Chinese data, with a steep fall followed by the abrupt end of the
+decline.
+In fact there is controversy about whether the sudden halt to the decline over the past 15
+years is real. The UN estimate of 1.77 for China’s TFR in 2005–2010 was based on oﬃcial
+estimates. However, Gu and Cai (2009) argue that current Chinese TFR is lower, at about
+
+14
+
+1.5, summarizing several other studies (Retherford et al. 2005; Zhang and Zhao 2006; Cai
+2008; Morgan, Guo, and Hayford 2009). A decline of the TFR to 1.5 over the past 15 years
+would also be more in line with the experience of other countries than the reported abrupt
+end of the decline. Reflecting this, our 80% projection intervals are also compatible with a
+lower current TFR value.
+United States: The United States is the only country so far that has recovered to replacement level from a below-replacement turnaround (about 1.75 in the mid-1970s). Our
+projection is flat, with a width of about half a child. The UN projection declines fairly
+quickly to 1.85, and stays there. This value of 1.85 is on the edge of our 80% interval. By
+comparison, the US Census Bureau projects a TFR of 2.0 in 2045–2049, which is higher than
+the UN projection and well within our interval.
+Preston and Hartnett (2008) analyzed the eﬀect of population changes on fertility, and
+concluded that the two most predictable changes in population composition, educational
+attainment and ethnicity, are expected to induce relatively small changes in fertility by
+2025–29, and that these changes essentially cancel one another out. Their estimated changes
+in the TFR related to the tempo eﬀect, increasing ratio of female to male earnings, and
+possible restrictions on abortion access (0.15, -0.24 and 0.1 respectively) would yield TFR
+projections that are within our projection interval.
+Israel: Israel is an unusual case because it has a technologically advanced market economy,
+but its TFR of 2.8 is much higher than in most other such countries. Over the past 60 years
+its fertility has declined, but more slowly than in most other countries. Our projection
+reflects this, with a likely slow decline for the rest of the century. In contrast, the UN
+projects a faster decline.
+DellaPergola (2007, 2009) and Nahmias and Stecklov (2007) analyzed proximate determinants of fertility in Israel, including fertility intentions, and concluded that future fertility
+decline would be slow, or perhaps non-existent. Our projection is compatible with this, with
+an upper bound for 2045–2050 of 2.6, only 0.2 children below the current level. The unusual
+nature of the Israeli fertility transition is reflected in a relatively wide projection interval of
+one child in 2045–2049.
+India: India has a TFR of 2.8 and has had a typical, fairly rapid fertility decline. The
+Bayesian median projection indicates that the steady decline will continue to below replacement level, bottoming out late in the century and followed by a gradual recovery that will
+likely continue into the next century. As with other countries with mid-level fertility, there
+
+15
+
+is considerable uncertainty about the timing, leading to fairly wide projection intervals of
+slightly less than one child.
+Mozambique: Like most other countries in sub-Saharan Africa, Mozambique’s TFR of
+5.1 is high and has experienced a late and slow fertility decline. Reflecting this, our method
+projects a continued slow decline. It also reflects considerable uncertainty, with an interval
+of width 1.6 children in 2045–2049.
+The UN projects a faster decline than our method, for Mozambique as well as most other
+high-fertility countries. This is because the UN method is restricted to a small number of
+double logistic decline functions, none of which fit the Mozambique experience well, as shown
+in Figure 4(c). In contrast, the double logistic curve estimated by the Bayesian method does
+fit the Mozambique experience well.
+This is the largest diﬀerence between the UN medium projection and the Bayesian median projection for the selected countries. For 2045–50 in Mozambique these are 2.4 (UN),
+and 2.6 (Bayesian). The US Census Bureau projection is much higher than either, at 3.2,
+anticipating an even slower decline. Guengant and May (2002) analyzed the proximate determinants of fertility, including contraceptive use, in sub-Saharan Africa, and concluded
+that the fertility decline was likely to continue to be slow. Timaeus and Moultrie (2008) and
+Moultrie and Timaeus (2009) analyzed the evidence for stopping, spacing and postponing
+in these countries, and also concluded that continued slow decline is the most likely future.
+These analyses lead to conclusions similar to those from our method.
+Regional averages: A summary of the average results by region for 2045–50 is given in
+Table 2. Western, Middle and Eastern Africa have the highest projected fertility in 2045–50
+and the widest projection intervals, because of high current levels of fertility. The mean
+uncertainty as given by the 80% projection interval is around 1.4 children. The widths of
+the 80% projection intervals are around 1 child for Asia, Latin America and the Pacific, and
+around 0.6 children for Europe. The widths of the 95% projection intervals are about 50%
+wider than the widths of the 80% projection intervals.
+Diﬀerences by 2045–2050 between the UN medium TFR projection and the BPM median
+TFR projection are overall small for regional averages (|12|% at most). Main diﬀerences between the two approaches can be roughly summarized as follows; for regions with countries
+that have experienced fast fertility declines in recent decade(s), the BPM projects lower
+fertility by 2045–2050 than in the current UN projection (e.g., Asia, Northern and Southern
+Africa), while for other regions with high-fertility countries in 2005–2010 that have experienced slower fertility declines, the BPM projects a slower fertility decline than in the UN
+
+16
+
+projection (e.g., Western, Eastern and Middle Africa and part of Oceania).
+Table 2: Mean projection results by region for 2045–50; UN projection and median projection with Bayesian projection model, and the mean widths of the 80% and 95% projection
+intervals (PI). Note that regional averages are not population weighted, the results are the
+arithmetic means of the country-specific outcomes within the region.
+Region
+Eastern Africa
+Middle Africa
+Northern Africa
+Southern Africa
+Western Africa
+Eastern Asia
+South-Central Asia
+South-Eastern Asia
+Western Asia
+Eastern Europe
+Northern Europe
+Southern Europe
+Western Europe
+Caribbean
+Central America
+South America
+Northern America
+Australia/New Zealand
+Melanesia
+Micronesia
+Polynesia
+
+UN 2008
+4.6
+5.0
+2.7
+3.2
+5.1
+1.4
+2.9
+2.8
+2.8
+1.3
+1.7
+1.4
+1.6
+2.1
+2.8
+2.5
+1.8
+1.9
+3.4
+3.1
+3.4
+
+Projection
+UN BPM
+2.3
+2.6
+2.4
+2.5
+1.9
+1.7
+2.0
+1.8
+2.5
+2.8
+1.6
+1.6
+2.0
+1.8
+2.0
+1.8
+1.9
+1.8
+1.8
+1.7
+1.8
+1.9
+1.8
+1.7
+1.8
+1.8
+1.9
+1.7
+1.8
+1.8
+1.9
+1.8
+1.8
+1.9
+1.8
+1.7
+2.0
+2.2
+1.8
+2.0
+2.1
+2.3
+
+Mean width
+95% PI 80% PI
+2.1
+1.4
+2.2
+1.4
+1.4
+1.0
+1.4
+0.9
+2.3
+1.5
+1.2
+0.7
+1.5
+1.0
+1.5
+1.0
+1.5
+1.0
+0.9
+0.5
+0.9
+0.6
+1.1
+0.7
+0.9
+0.5
+1.4
+0.9
+1.4
+1.0
+1.4
+0.9
+1.0
+0.6
+1.4
+0.9
+1.6
+1.0
+1.4
+0.9
+1.6
+1.1
+
+Model validation
+We validated our projection model using out-of-sample projections. In the first set of outof-sample projections, we used the Bayesian projection model to construct projections for
+1980–2010 based on the UN estimates up to and including the five-year period 1975–1980.
+In the second set of out-of-sample projections, we used the BPM to construct projections
+for 1995–2010 based on the UN estimates up to and including the five-year period 1990–
+1995. The first set of projections was compared to the UN estimates for the six five-year
+periods from 1980–1985 up to 2005–2010, and the second set of projections was compared to
+the UN estimates for the three five-year periods 1995–2000, 2000–2005 and 2005–2010. In
+17
+
+both comparisons, we did not include countries that were still in Phase I at the start of the
+projection period. This is because currently there are no countries in Phase I, so predictive
+performance for these countries is not relevant to the current projection task.
+Table 3 shows the proportion of left-out UN estimates that fall outside their projection
+intervals. If the projection model is valid, on average we expect about 10% of the values
+to fall above the upper bound of the 80% projection interval and about 10% to fall below
+its lower bound. Similarly, we expect about 2.5% to fall above the upper bound of the
+95% interval and about 2.5% to fall below its lower bound. The projection intervals were
+reasonably well calibrated in both out-of-sample projections, although the TFR was slightly
+overpredicted in the more recent periods.
+Table 3: Model validation results: Mean squared error (MSE) and proportion of left-out UN
+estimates that falls above the median projected TFR, and above or below their 80% and 95%
+projection intervals in future periods, when projecting from 1975–1980 and from 1990–1995.
+Data until 1980
+
+1980–1985
+1985–1990
+1990–1995
+1995–2000
+2000–2005
+2005–2010
+Data until 1995
+
+1995–2000
+2000–2005
+2005–2010
+
+MSE
+
+0.11
+0.22
+0.38
+0.59
+0.63
+0.59
+MSE
+
+0.07
+0.17
+0.21
+
+Above
+Median
+
+Above
+95%PI
+0.05
+0.03
+0.04
+0.03
+0.02
+0.02
+
+0.49
+0.51
+0.45
+0.38
+0.38
+0.39
+Above
+Median
+
+Above
+95%PI
+0.02
+0.02
+0.02
+
+0.33
+0.37
+0.39
+
+Proportion of obs.
+Below Above
+95%PI 80%PI
+0.01
+0.11
+0.05
+0.11
+0.07
+0.08
+0.10
+0.07
+0.07
+0.07
+0.04
+0.07
+Proportion of obs.
+Below Above
+95%PI 80%PI
+0.08
+0.04
+0.05
+0.06
+0.03
+0.05
+
+Below
+80%PI
+0.11
+0.10
+0.14
+0.21
+0.21
+0.15
+Below
+80%PI
+0.19
+0.19
+0.11
+
+DISCUSSION
+We have proposed a new unified approach to projecting the total fertility rate for all countries
+of the world. It uses a Bayesian projection model that incorporates worldwide fertility
+experience over the last 60 years. The method produces a full predictive distribution of
+future fertility trajectories. We assessed it in terms of out-of-sample predictive performance,
+and it yielded reasonably well-calibrated intervals.
+To summarize our results in this paper we have presented the median projections and
+18
+
+80% and 95% projection intervals. For policy planning purposes, the 80% projection interval
+may often give enough insight into future scenarios. It has the appealing interpretation that
+there is one chance in ten of the true value being above the interval, and one chance in ten
+of it being below. The 95% projection interval is wider and can be viewed as encompassing
+most plausible possibilities.
+The projection intervals as presented here are based on the UN estimates of past and
+current TFR. However, the UN estimates themselves measure the true TFR with some error,
+and to that extent our projections may underestimate uncertainty about future true TFR.
+They can be viewed validly as probabilistic projections of future UN TFR estimates. Ideally,
+uncertainty about the UN estimates would be incorporated into our uncertainty assessment,
+but the wide variation in data availability and quality around the world makes this diﬃcult.
+For one eﬀort to assess uncertainty about the UN TFR estimates, see Alkema et al. (2008b).
+It is possible that the projections could be improved by including information about
+future trends in determinants or predictors of fertility, such as child mortality and economic
+development. However, this would require good projections of these variables themselves far
+into the future, and they are arguably harder to predict than fertility itself. This has been
+done for several countries at the national level (Lutz 1994; Sanderson 1998). However, it
+would be hard to do this for all countries on a comparable basis.
+The projections produced by our method could in practice provide a basis for UN projections of future TFR, to be evaluated and if necessary revised by the UN analysts. Recent
+values and short-term projections of proximate determinants such as contraceptive use and
+fertility intentions could be especially useful for doing this. As these are not available on
+a uniform basis for all countries, modifications of the results of our method based on these
+could be incorporated in a more informal way by analysts, as is currently done with the UN’s
+deterministic projections.
+
+References
+Alders, M., N. Keilman, and H. Cruijsen (2007). Assumptions for long-term stochastic
+population forecasts in 18 European countries. European Journal of Population 23,
+33–69.
+Alho, J. M., M. Alders, H. Cruijsen, N. Keilman, T. Nikander, and D. Q. Pham (2006).
+New forecast: Population decline postponed in Europe. Statistical Journal of the United
+Nations Economic Commission for Europe 23, 1–10.
+Alho, J. M., S. E. H. Jensen, and J. Lassila (2008). Uncertain Demographics and Fiscal
+Sustainability. Cambridge University Press.
+19
+
+Alkema, L. (2008). Uncertainty Assessments of Demographic Estimates and Projections.
+Ph. D. thesis, University of Washington.
+Alkema, L., A. E. Raftery, P. Gerland, S. J. Clark, and F. Pelletier (2008a, April). Assessing uncertainty in fertility estimates and projections. In Proceedings of the 2008
+Annual Meeting of the Population Association of America, New Orleans, La., USA.
+http://paa2008.princeton.edu/abstractViewer.aspx?submissionId=80115.
+Alkema, L., A. E. Raftery, P. Gerland, S. J. Clark, and F. Pelletier (2008b). Estimating the
+total fertility rate from multiple imperfect data sources and assessing its uncertainty.
+Working Paper 89. Available at http://www.csss.washington.edu/Papers/.
+Alkema, L., A. E. Raftery, P. Gerland, S. J. Clark, and F. Pelletier (2009). Probabilistic
+projections of the total fertility rate. In Proceedings of the 2009 Annual Meeting of
+the International Union for the Scientic Study of Population, Marrakech, Morocco.
+http://iussp2009.princeton.edu/abstractViewer.aspx?submissionId=93084.
+Billari, F. C. and H. P. Kohler (2004). Patterns of low and lowest-low fertility in Europe.
+Population Studies 58, 161–176.
+Bongaarts, J. (2002a). The end of the fertility transition in the developed world. Population
+and Development Review 28, 419–443.
+Bongaarts, J. (2002b). The end of the fertility transition in the developing world.
+In Completing the Fertility Transition. United Nations, Department of Economic
+and Social Aﬀairs, Population Division. Available at ESA/P/WP.172/Rev.1.
+http://www.un.org/esa/population/publications/completingfertility/ RevisedBONGAARTSpaper.PDF. Accessed on 2 December 2005.
+Bongaarts, J. and R. Bulatao (2000). Beyond Six Billion: Forecasting the World’s Population. National Research Council (U.S.), Washington, D.C.: National Academy Press.
+Bongaarts, J. and G. Feeney (1998). On the quantum and tempo of fertility. Population
+and Development Review 24, 271–292.
+Booth, H., S. Pennec, and R. Hyndman (2009). Stochastic population forecasting using
+functional data methods: the case of france. In Proceedings of the 2009 Annual Meeting
+of the International Union for the Scientic Study of Population, Marrakech, Morocco.
+http://iussp2009.princeton.edu/abstractViewer.aspx?submissionId=92126.
+Bos, E., M. T. Vu, E. Massiah, and R. Bulatao (1994). World Population Projections
+1994-95: Estimates and Projections with Related Demographic Statistics. Baltimore,
+Md.: Johns Hopkins University Press for the World Bank.
+
+20
+
+Cai, Y. (2008). Assessing fertility levels in China using variable-r method. Demography 45,
+371–381.
+Caltabiano, M., M. Castiglioni, and A. Rossina (2009). Lowest-low fertility: Signs of a
+recovery in italy? Demographic Research 21, 681–718.
+Casterline, J. B. (2001). The pace of fertility transition: national patterns in the second
+half of the twentieth century. In R. Bulatao and J. Casterline (Eds.), Global Fertility
+Transition, pp. 17–52. Volume 27 (Supplement): Population and Development Review
+(New York).
+DellaPergola, S. (2007). Population trends and scenarios in israel and palestine. In A. M.
+Kacowicz and P. Lutomski (Eds.), Population Resettlement in International Conflicts:
+A Comparative Study, pp. 183–207. Rowman and Littlefield.
+DellaPergola, S. (2009). Actual, intended, and appropriate family size among Jews in
+Israel. Contemporary Jewry 29, 127–152.
+Frejka, T. and T. Sobotka (2008). Fertility in Europe: Diverse, delayed and below replacement. Demographic Research 19, 15–45.
+Gelfand, A. and A. F. M. Smith (1990). Sampling-based approaches to calculating
+marginal densities. Journal of the American Statistical Association 85, 398–409.
+Gelman, A., F. Bois, and J. Jiang (1996). Physiological pharmacokinetic analysis using
+population modeling and informative prior distributions. Journal of the American Statistical Association 91, 1400–1412.
+Gelman, A., J. B. Carlin, H. S. Stern, and D. B. Rubin (2004). Bayesian Data Analysis
+(2nd ed.). Boca Raton, Fl.: Chapman & Hall/CRC.
+Gu, B. and Y. Cai (2009). Fertility prospects in China. In United Nations
+Expert Group Meeting on Recent and Future Trends in Fertility. United
+Nations, Department of Economic and Social Aﬀairs, Population Division.
+Available at http://www.un.org/esa/population/meetings/EGM-Fertility2009/egmfertility2009.html.
+Guengant, J. P. and J. F. May (2002). Impact of the proximate determinants on the
+future course of fertility in sub-Saharan Africa. Population Bulletin of the United Nations 46/47, 71–96.
+Hirschman, C. (1994). Why fertility changes. Annual Review of Sociology 20, 203–233.
+Hyndman, R. J. and H. Booth (2008). Stochastic population forecasts using functional data
+models for mortality, fertility and migration. International Journal of Forecasting 24,
+21
+
+323–342.
+Keyfitz, N. (1981). The limits of population forecasting. Population and Development
+Review 7, 579–593.
+Kohler, H. P., F. C. Billari, and J. A. Ortega (2002). The emergence of lowest-low fertility
+in Europe during the 1990s. Population and Development Review 28, 641–680.
+Lee, R. D. (1993). Modeling and forecasting the time series of US fertility: Age distribution, range and ultimate level. International Journal of Forecasting 9, 187–202.
+Lee, R. D. and L. Carter (1992). Modeling and forecasting the time series of US mortality.
+Journal of the American Statistical Association 87, 659–671.
+Lee, R. D. and S. Tuljapurkar (1994). Stochastic population forecasts for the United States:
+Beyond high, medium and low. Journal of the American Statistical Association 89,
+1175–1189.
+Lindley, D. V. and A. F. M. Smith (1972). Bayes estimates for the linear model. Journal
+of the Royal Statistical Society, Series B 34, 1–41.
+Lutz, W. (1994). Population-Development-Environment: Understanding Their Interactions in Mauritius. New York: Springer-Verlag.
+Lutz, W., B. C. O’Neill, and S. Scherbov (2003). Europe’s population at a turning point.
+Science 299, 1991–1992.
+Lutz, W., W. C. Sanderson, and S. Scherbov (2001). The end of world population growth.
+Nature 412, 543–545.
+Mason, K. O. (1997). Explaining fertility transitions. Demography 34, 443–454.
+Meyer, P. (1994). Bi-Logistic Growth. Technological Forecasting and Social Change 47,
+89–102.
+Morgan, P. S., Z. Guo, and S. R. Hayford (2009). China’s below-replacement fertility:
+Recent trends and future prospects. Population and Development Review 35, 605–629.
+Morgan, S. P. and M. G. Taylor (2006). Low fertility at the turn of the twenty-first century.
+Annual Review of Sociology 32, 375–399.
+Moultrie,
+
+T. A. and I. M. Timaeus (2009). Stopping,
+
+spacing and post-
+
+poning — evidence of a uniquely African pattern of fertility decline. In
+XXVI International Population Conference of the IUSSP, Marrakesh, Morocco. International Union for the Scientific Study of Population. Available at
+http://iussp2009.princeton.edu/download.aspx?submissionId=90376.
+
+22
+
+Myrskyla, M., H. P. Kohler, and F. C. Billari (2009). Advances in development reverse
+fertility declines. Nature 460, 741–743.
+Nahmias, P. and G. Stecklov (2007). The dynamics of fertility amongst Palestinians in
+Israel from 1980 to 2000. European Journal of Population 23, 71–99.
+Neal, R. M. (2003). Slice sampling. The Annals of Statistics 31, No. 3, 705–767.
+Preston, S. H. and C. S. Hartnett (2008). The future of American fertility.
+Working Paper 14498, National Bureau of Economic Research. Available at
+http://www.nber.org/papers/w14498.
+Raftery, A. E., L. Alkema, P. Gerland, S. J. Clark, F. Pelletier, T. Buettner, G. Heilig,
+ˇ c´ıkov´a (2009). White paper: Probabilistic projections of the
+N. Li, and H. Sevˇ
+total fertility rate for all countries for the 2010 world population prospects. In
+United Nations Expert Group Meeting on Recent and Future Trends in Fertility.
+United Nations, Department of Economic and Social Aﬀairs, Population Division.
+Available at http://www.un.org/esa/population/meetings/EGM-Fertility2009/egmfertility2009.html.
+Raftery, A. E. and S. M. Lewis (1992). How many iterations in the Gibbs sampler? In J.
+M. Bernardo et al. (Ed.), Bayesian Statistics 4, pp. 763–773. Oxford University Press.
+Raftery, A. E. and S. M. Lewis (1996). Implementing MCMC. In W. R. Gilks, D. J.
+Spiegelhalter, and S. Richardson (Eds.), Markov Chain Monte Carlo in Practice, pp.
+115–130. London: Chapman and Hall.
+Raftery, A. E., S. M. Lewis, and A. Aghajanian (1995). Demand or ideation? Evidence
+from the Iranian marital fertility decline. Demography 32, 159–182.
+Retherford, R., M. K. Choe, J. Chen, X. Li, and H. Cui (2005). Fertility in China: How
+much has it really declined? Population and Development Review 19, 57–84.
+Sanderson, W. C. (1998). Knowledge can improve forecasts: A review of selected socioeconomic population projection models. Population and Development Review 24 (Suppl.),
+88–117.
+Sobotka, T. (2005). Is lowest-low fertility in Europe explained by the postponement of
+childbearing? Population and Development Review 30, 195–220.
+Stoto, M. (1983). The accuracy of population forecasts. Journal of the American Statistical
+Association 78, 13–20.
+Timaeus, I. M. and T. A. Moultrie (2008). On postponement and birth intervals. Population and Development Review 34, 483–510.
+23
+
+U. S. Census Bureau (2009). International data base: Population estimates and projections
+methodology. Available at http://www.census.gov/ipc/www/idb/estandproj.pdf.
+United Nations, Department of Economic and Social Aﬀairs, Population Division (2006).
+World Population Prospects. The 2004 Revision, Vol. III, Chapter VI. Methodology of the United Nations population estimates and projections, pp. 100–104.
+http://www.un.org/esa/population/publications/WPP2004/WPP2004 Volume3.htm.
+United Nations, Department of Economic and Social Aﬀairs, Population Division
+(2009, forthcoming). World Population Prospects. The 2008 Revision. CD-ROM Edition - Extended Dataset in Excel and ASCII formats, United Nations publication,
+http://www.un.org/esa/population/publications/wpp2008/.
+Zhang, G. and Z. Zhao (2006). Reexamining China’s fertility puzzle: Data collection and
+data use in the last two decades. Population and Development Review 32, 293–321.
+
+24
+
+APPENDIX: METHODOLOGY
+The complete fertility transition model is given by:
+fc,t+1 = fc,t − dc,t + εc,t , for c = 1, . . . , C, t = τc , . . . , λc − 1,
+εc,t ∼ N (0, σ(fc,t )2 ), for t �= τc ,
+
+εc,τc ∼ N (mτ , s2τ ),
+
+dc,t = d(θ c , λc , τc , fc,t ),
+�
+g(θ c , fc,t ) for τc ≤ t < λc and fc,t ≥ 1;
+d(θ c , λc , τc , fc,t ) =
+0
+otherwise,
+θ c = (�c1 , �c2 , �c3 , �c4 , dc ),
+−dc
+�
+�
+g(θ c , fc,t ) =
+�
+ln(9)
+1 + exp − 2�
+(f
+−
+�
++
+0.5�
+)
+c,t
+ci
+c1
+i
+c1
++
+
+τc =
+Uc
+
+�
+
+�
+
+dc
+
+�
+
+ln(9)
+1 + exp − 2�
+(fc,t − �c4 − 0.5�c3 )
+c3
+
+max{t : (Mc − Lc,t ) < 0.5},
+1950 − 1955,
+
+= fc,τ ,
+∼ U (min{5.5, max fc,t }, 8.8)
+t
+
+�,
+
+if Lc,t > 5.5;
+otherwise.
+if τc ≥ 1950 − 1955;
+for τc < 1950 − 1955,
+
+where Mc = max fc,t is the maximum observed TFR outcome in country c, and Lc,t denote
+t
+
+local maxima. The upper bound of the prior distribution for Uc for countries in which the
+decline had possibly already started before 1950–1955 is based on the observed maximum in
+the UN estimates, namely 8.7. Its lower bound is the minimum of the maximum observed
+TFR value and 5.5 children (5.5 children is based on examining decline curves, the minimum
+level at which the decline starts is slightly under 6).
+The expression for the standard deviation σ(fc,t ) of the distortion terms after start period
+τc is:
+�
+�
+��
+σ(fc,t ) = c1975 (t) σ0 + (fc,t − S) −aI[S,∞) (fc,t ) + bI[0,S) (fc,t ) ,
+
+where σ0 is the maximum standard deviation of the distortions, attained at TFR level S,
+and a and b are multipliers of the standard deviation, to model the linear decrease for larger
+and smaller outcomes of the TFR. The constant c1975 (t) is added to model the higher error
+variance of the distortions before 1975, and is given by:
+�
+c1975 , t ∈ [1950 − 1955, 1970 − 1975];
+c1975 (t) =
+1,
+t ∈ [1975 − 1980, ∞).
+25
+
+(7)
+
+The hierarchical part of the transition model is given by:
+�
+�
+dc − 0.25
+∗
+dc = log
+,
+2.5 − dc
+d∗c ∼ N (χ, ψ 2 ),
+�
+�
+�c4 − 1
+∗
+�c4 = log
+,
+2.5 − �c4
+�∗c4 ∼ N (�4 , δ42 ),
+�ci
+pci =
+for i = 1, 2, 3,
+Uc − �c4
+exp(γci )
+pci = �3
+,
+j=1 exp(γcj )
+γci ∼ N (αi , δi2 ).
+
+The country-specific parameters in the model are given by {γci , Uc , dc , �c4 }, i = 1, 2, 3.
+
+The hyperparameters in the model are given by {χ, ψ 2 , �4 , δ4 , α, δ} and {a, b, S, σ0 , c1975 , mτ , sτ }.
+The prior distributions on the hyperparameters are given by:
+χ ∼ N (−1.5, 0.62 ),
+
+1/ψ 2 ∼ Gamma(1, 0.62 ),
+α1 ∼ N (−1, 1),
+α2 ∼ N (0.5, 1),
+α3 ∼ N (1.5, 1),
+
+1/δi2 ∼ Gamma(1, 1), for i = 1, . . . , 4
+δ4 ∼ N (0.3, 1),
+a ∼ U [0, 0.2],
+b ∼ U [0, 0.2],
+σ0 ∼ U [0.01, 0.6],
+c1975 ∼ U [0.8, 2],
+S ∼ U [3.5, 6.5],
+
+mτ ∼ N (−0.25, 0.42 ),
+
+1/s2τ ∼ Gamma(1, 0.42 ),
+The prior distributions on the hyperparameters are chosen based on (i) initial least-squares
+fits to fertility declines in countries that had observed most of the transition and/or (ii)
+guesses of reasonable outcomes. All priors are more spread out than their posterior distributions (i.e. the posterior is determined mostly by the data).
+26
+
+A Markov Chain Monte Carlo (MCMC) algorithm is used to get samples of the posterior
+distributions of each of the parameters of the fertility transition model (Gelfand and Smith
+1990). This algorithm is a combination of Gibbs sampling, Metropolis-Hastings and slice
+sampling steps (Neal 2003).
+The MCMC sampling algorithm was implemented in the statistical package R. The results
+are based on a run of 102,000 iterations, discarding the first 2,000. Convergence of all model
+parameters was assessed using the run length diagnostic of Raftery and Lewis (1992, 1996).
+The length of the MCMC chain exceeded the required sample size for estimating the 2.5%
+and 97.5% percentiles of the posterior distributions of all model parameters to within +/0.0125 accuracy with probability 0.95. Convergence of αi , i = 1, 2, 3, was assessed on the
+�
+transformed scale, i.e. αi /( 3j=1 αj ), as these parameters are only weakly identified on
+
+their original scale (the likelihood of the data conditional on these parameters, and thus the
+projections, are not altered when adding a constant to all three αi ’s). Similarly for the γci ’s,
+�
+i = 1, 2, 3, c = 1, . . . , C, convergence was assessed for γci /( 3j=1 γcj ), i = 1, 2, 3, c = 1, . . . , C.
+
+APPENDIX: RESULTS
+
+27
+
+7
+
+Burundi
+
+●
+
+●
+
+5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+6
+
+Comoros
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+4
+
+5
+
+●
+●
+
+3
+
+TFR
+
+4
+1
+
+1
+
+2
+
+2
+
+3
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Djibouti
+
+Eritrea
+
+5
+
+●
+
+6
+
+●
+
+●
+
+●
+
+3
+
+3
+
+TFR
+
+4
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1
+
+1
+
+2
+
+2
+
+TFR
+
+4
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Ethiopia
+
+Kenya
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+6
+
+6
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+5
+
+7
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+5
+
+6
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+
+4
+TFR
+
+3
+
+4
+●
+
+UN estimates
+UN projection
+
+1
+
+1
+
+2
+
+2
+
+3
+
+TFR
+
+5
+
+●
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 7: Projections for Burundi, Comoros, Djibouti, Eritrea, Ethiopia, Kenya
+
+28
+
+Madagascar
+
+Malawi
+
+●
+
+●
+
+●
+
+5
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+6
+
+6
+
+●
+
+7
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+4
+
+TFR
+
+4
+
+2
+
+2
+
+3
+
+3
+
+TFR
+
+5
+
+●
+
+UN estimates
+UN projection
+
+UN estimates
+UN projection
+
+●
+
+1
+
+1
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Mauritius
+
+Mayotte
+6
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+2.0
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+5
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+4
+
+●
+●
+
+●
+
+2
+1
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Mozambique
+
+Reunion
+
+●
+
+●
+
+5
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+3.0
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+2.5
+
+6
+
+●
+
+3
+
+TFR
+
+1.5
+1.0
+
+TFR
+
+●
+
+●
+
+●
+
+●
+
+2.0
+1.5
+
+TFR
+
+4
+
+1.0
+●
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+1
+
+2
+
+3
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 8: Projections for Madagascar, Malawi, Mauritius, Mayotte, Mozambique, Reunion
+
+29
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+●
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+●
+
+4
+
+TFR
+UN estimates
+UN projection
+
+UN estimates
+UN projection
+
+●
+
+1
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Uganda
+
+United Republic of Tanzania
+
+●
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+●
+●
+
+●
+
+4
+
+TFR
+
+2
+
+2
+
+3
+
+3
+
+4
+
+TFR
+
+5
+
+6
+
+●
+
+6
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+5
+
+7
+
+1
+
+2
+
+2
+
+3
+
+3
+
+TFR
+
+4
+
+5
+
+5
+
+●
+
+●
+
+6
+
+●
+
+6
+
+Somalia
+7
+
+Rwanda
+
+UN estimates
+UN projection
+
+UN estimates
+UN projection
+
+●
+
+1
+
+1
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Zambia
+
+Zimbabwe
+
+7
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+6
+
+●
+
+●
+
+5
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+4
+
+●
+
+5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+1
+
+2
+
+2
+
+3
+
+TFR
+
+4
+3
+
+TFR
+
+●
+
+1
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 9: Projections for Rwanda, Somalia, Uganda, United Republic of Tanzania, Zambia,
+Zimbabwe
+
+30
+
+Cameroon
+
+●
+
+6
+
+●
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+6
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+
+5
+
+7
+
+Angola
+
+●
+
+4
+TFR
+
+3
+
+4
+2
+
+2
+
+3
+
+TFR
+
+5
+
+●
+
+1
+
+UN estimates
+UN projection
+
+●
+
+1
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Central African Republic
+
+Chad
+
+●
+
+5
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+7
+
+●
+
+●
+●
+
+4
+
+TFR
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1
+
+1
+
+2
+
+2
+
+3
+
+3
+
+TFR
+
+4
+
+5
+
+●
+
+●
+
+6
+
+6
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Congo
+
+Democratic Republic of the Congo
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+●
+
+●
+
+4
+
+TFR
+●
+
+UN estimates
+UN projection
+
+1
+
+1
+
+2
+
+2
+
+3
+
+3
+
+TFR
+
+5
+
+4
+
+●
+
+●
+
+6
+
+5
+
+●
+
+7
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 10: Projections for Angola, Cameroon, Central African Republic, Chad, Congo,
+Democratic Republic of the Congo
+
+31
+
+●
+
+Gabon
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+4
+
+5
+
+●
+
+5
+
+6
+
+Equatorial Guinea
+
+3
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1
+
+1
+
+2
+
+2
+
+3
+
+TFR
+
+4
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Sao Tome and Principe
+
+Algeria
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+4
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+4
+
+5
+
+●
+
+3
+
+●
+
+TFR
+
+●
+●
+
+1
+
+1
+
+2
+
+2
+
+3
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Egypt
+
+Libyan Arab Jamahiriya
+
+●
+
+4
+
+4
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+3
+
+3
+
+●
+
+●
+
+●
+
+TFR
+1
+
+1
+
+2
+
+2
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+0
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 11: Projections for Equatorial Guinea, Gabon, Sao Tome and Principe, Algeria,
+Egypt, Libyan Arab Jamahiriya
+
+32
+
+Morocco
+
+Sudan
+
+3
+
+6
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+5
+
+4
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+
+4
+
+●
+
+TFR
+
+1
+
+2
+
+3
+
+●
+
+2
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Tunisia
+
+Western Sahara
+
+3.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+4
+
+3.0
+
+1
+
+UN estimates
+UN projection
+
+●
+
+3
+
+2.5
+
+●
+
+●
+
+TFR
+
+2.0
+
+●
+●
+
+●
+
+0.5
+
+1
+
+1.0
+
+2
+
+1.5
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Botswana
+
+Lesotho
+
+●
+
+●
+
+4
+
+4
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+
+3
+
+●
+
+3
+
+TFR
+●
+
+1
+
+1
+
+2
+
+2
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 12: Projections for Morocco, Sudan, Tunisia, Western Sahara, Botswana, Lesotho
+
+33
+
+South Africa
+
+●
+
+4
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+3.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+3.0
+
+5
+
+Namibia
+
+●
+●
+
+2.5
+
+●
+
+TFR
+
+2.0
+
+●
+
+1.5
+
+3
+1
+
+1.0
+
+2
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Swaziland
+
+Benin
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+●
+
+5
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+6
+
+5
+
+●
+
+4
+
+7
+
+6
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+●
+
+4
+
+TFR
+
+1
+
+2
+
+2
+
+3
+
+3
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+UN estimates
+UN projection
+
+●
+
+1
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Burkina Faso
+
+Cape Verde
+
+●
+
+6
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+5
+
+4
+
+●
+
+5
+
+7
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+3
+
+4
+
+TFR
+
+●
+
+1
+
+2
+
+2
+
+3
+
+TFR
+
+●
+
+1
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 13: Projections for Namibia, South Africa, Swaziland, Benin, Burkina Faso, Cape
+Verde
+
+34
+
+●
+●
+
+6
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+5
+
+Gambia
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+●
+
+●
+
+●
+
+5
+
+6
+
+Cote d'Ivoire
+
+TFR
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1
+
+1
+
+2
+
+2
+
+3
+
+3
+
+TFR
+
+4
+
+4
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Ghana
+
+Guinea
+7
+
+6
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+6
+
+5
+
+●
+
+●
+
+●
+
+4
+
+TFR
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1
+
+1
+
+2
+
+2
+
+3
+
+3
+
+TFR
+
+4
+
+5
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Guinea−Bissau
+
+Liberia
+
+●
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+5
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+●
+
+6
+
+6
+
+7
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1
+
+●
+
+1
+
+4
+
+TFR
+2
+
+2
+
+3
+
+3
+
+TFR
+
+4
+
+5
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 14: Projections for Cote d’Ivoire, Gambia, Ghana, Guinea, Guinea-Bissau, Liberia
+
+35
+
+Mauritania
+
+7
+
+Mali
+
+●
+
+●
+
+●
+
+5
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+5
+
+6
+
+●
+
+6
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+TFR
+
+3
+
+4
+2
+
+2
+
+3
+
+TFR
+
+4
+
+●
+
+1
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Niger
+
+Nigeria
+7
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+●
+●
+
+●
+
+●
+
+●
+
+4
+
+2
+
+2
+
+3
+
+4
+
+TFR
+
+5
+
+6
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+6
+
+8
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+TFR
+
+UN estimates
+UN projection
+
+●
+
+1
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1
+
+UN estimates
+UN projection
+
+●
+
+Period
+
+Senegal
+
+Sierra Leone
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+●
+●
+
+5
+
+6
+
+●
+
+5
+
+6
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+7
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+TFR
+
+3
+
+4
+●
+
+UN estimates
+UN projection
+
+1
+
+1
+
+2
+
+2
+
+3
+
+TFR
+
+4
+
+●
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 15: Projections for Mali, Mauritania, Niger, Nigeria, Senegal, Sierra Leone
+
+36
+
+China
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+5
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+6
+
+Togo
+
+2.0
+
+●
+
+●
+
+4
+
+●
+
+TFR
+
+●
+
+1.5
+
+●
+
+0.5
+
+1
+
+2
+
+1.0
+
+3
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+China, Hong Kong SAR
+
+China, Macao SAR
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+TFR
+
+1.5
+
+2.0
+
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+1.5
+
+TFR
+
+UN estimates
+UN projection
+
+●
+
+●
+
+●
+
+1.0
+
+●
+
+1.0
+
+●
+●
+●
+
+●
+●
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Dem. People's Republic of Korea
+
+Japan
+
+●
+
+2.5
+
+●
+
+2.0
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+●
+
+1.5
+
+TFR
+
+1.5
+
+●
+●
+●
+
+●
+
+0.5
+
+●
+
+0.5
+
+1.0
+
+1.0
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 16: Projections for Togo, China, China, Hong Kong SAR, China, Macao SAR, Dem.
+People’s Republic of Korea, Japan
+
+37
+
+4
+
+Mongolia
+
+Republic of Korea
+
+2.0
+
+3
+
+●
+
+●
+
+1.5
+
+TFR
+
+●
+
+●
+
+2
+
+TFR
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Afghanistan
+
+Bangladesh
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+
+4
+
+8
+
+0.5
+
+1
+
+1.0
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+3
+
+6
+
+●
+
+TFR
+
+●
+
+2
+
+4
+
+1
+
+2
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Bhutan
+
+India
+
+6
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+4
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+
+●
+
+3
+
+4
+
+●
+
+TFR
+
+3
+
+TFR
+
+●
+●
+
+1
+
+1
+
+2
+
+2
+
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 17: Projections for Mongolia, Republic of Korea, Afghanistan, Bangladesh, Bhutan,
+India
+
+38
+
+3.0
+
+Kazakhstan
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+2.5
+
+4
+
+Iran (Islamic Republic of)
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+
+TFR
+
+TFR
+
+2.0
+
+3
+
+●
+
+●
+
+1.5
+
+2
+
+●
+
+1
+
+1.0
+
+●
+
+UN estimates
+UN projection
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Kyrgyzstan
+
+Maldives
+
+3
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+5
+
+4
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+4
+
+●
+
+●
+
+TFR
+
+TFR
+2
+
+3
+
+●
+●
+
+●
+
+1
+
+1
+
+2
+
+●
+
+UN estimates
+UN projection
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Nepal
+
+Pakistan
+
+●
+
+●
+
+4
+
+●
+
+●
+
+4
+TFR
+
+●
+
+●
+
+1
+
+1
+
+2
+
+2
+
+●
+
+3
+
+3
+
+●
+
+TFR
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+6
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+5
+
+5
+
+0
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 18: Projections for Iran (Islamic Republic of), Kazakhstan, Kyrgyzstan, Maldives,
+Nepal, Pakistan
+
+39
+
+Tajikistan
+
+●
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+
+4
+
+2.5
+
+3.0
+
+Sri Lanka
+
+●
+
+UN estimates
+UN projection
+
+0.5
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Turkmenistan
+
+Uzbekistan
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+4
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+3
+
+●
+
+3
+
+4
+
+1
+
+1.0
+
+2
+
+3
+
+TFR
+
+●
+
+1.5
+
+TFR
+
+2.0
+
+●
+
+●
+
+●
+
+1
+
+1
+
+2
+
+2
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Brunei Darussalam
+
+Cambodia
+6
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+3.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+5
+
+3.0
+
+●
+
+TFR
+
+TFR
+
+●
+
+●
+
+4
+
+2.5
+
+●
+
+●
+
+3
+
+TFR
+
+2.0
+
+●
+
+●
+
+0.5
+
+●
+
+1
+
+1.0
+
+2
+
+1.5
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 19: Projections for Sri Lanka, Tajikistan, Turkmenistan, Uzbekistan, Brunei Darussalam, Cambodia
+
+40
+
+Lao People's Democratic Republic
+
+●
+
+●
+
+5
+
+●
+
+●
+
+4
+
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+1
+
+1.0
+
+2
+
+1.5
+
+TFR
+
+●
+
+3
+
+2.0
+
+●
+
+TFR
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+6
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+3.0
+
+3.5
+
+Indonesia
+
+Period
+
+Malaysia
+
+Myanmar
+
+●
+
+3.0
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+2.5
+
+●
+
+2.5
+
+●
+
+●
+●
+
+1.5
+
+2.0
+
+TFR
+
+●
+
+2.0
+
+3.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+3.0
+
+3.5
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+4.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1.0
+
+1.0
+
+1.5
+
+TFR
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Philippines
+
+Singapore
+
+4
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+TFR
+
+●
+
+●
+
+2
+
+1.5
+
+TFR
+
+3
+
+2.0
+
+●
+
+●
+
+1
+
+1.0
+
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 20: Projections for Indonesia, Lao People’s Democratic Republic, Malaysia, Myanmar, Philippines, Singapore
+
+41
+
+Thailand
+
+7
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+6
+
+2.5
+
+●
+
+●
+
+5
+
+2.0
+
+Timor−Leste
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1
+
+0.5
+
+2
+
+1.0
+
+3
+
+4
+
+TFR
+
+●
+
+1.5
+
+TFR
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Viet Nam
+
+Armenia
+
+●
+
+2.0
+
+3
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+TFR
+
+●
+
+1.5
+
+●
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Azerbaijan
+
+Bahrain
+4
+
+3.5
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+3
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+2.5
+
+3.0
+
+●
+
+1.0
+
+2
+
+●
+
+1
+
+TFR
+
+●
+
+●
+
+●
+●
+
+2
+
+TFR
+
+2.0
+
+●
+●
+
+1
+
+1.0
+
+1.5
+
+TFR
+
+●
+
+0.5
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 21: Projections for Thailand, Timor-Leste, Viet Nam, Armenia, Azerbaijan, Bahrain
+
+42
+
+Cyprus
+
+2.5
+2.0
+
+2.0
+
+TFR
+
+●
+
+●
+
+1.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+
+0.5
+
+0.5
+
+1.0
+
+1.0
+
+●
+
+●
+
+1.5
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+TFR
+
+Georgia
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Iraq
+
+Israel
+3.5
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+5
+
+●
+
+3.0
+
+6
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+1
+
+1.0
+
+2
+
+1.5
+
+2.0
+
+TFR
+
+4
+
+●
+
+3
+
+TFR
+
+2.5
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Jordan
+
+Kuwait
+
+3.0
+
+●
+
+5
+
+●
+
+2.5
+
+4
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+3.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+
+●
+
+2.0
+
+TFR
+
+0.5
+
+1
+
+1.0
+
+2
+
+1.5
+
+3
+
+TFR
+
+●
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 22: Projections for Cyprus, Georgia, Iraq, Israel, Jordan, Kuwait
+
+43
+
+7
+
+●
+
+●
+
+●
+
+5
+
+2.0
+
+TFR
+
+●
+
+●
+
+2
+
+1.0
+
+3
+
+1.5
+
+TFR
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+2.5
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+6
+
+●
+
+Occupied Palestinian Territory
+
+4
+
+3.0
+
+3.5
+
+Lebanon
+
+UN estimates
+UN projection
+
+UN estimates
+UN projection
+
+●
+
+1
+
+0.5
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Oman
+
+Qatar
+
+7
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+5
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+4
+
+6
+
+●
+
+3
+
+●
+
+●
+
+TFR
+
+4
+TFR
+
+●
+
+●
+
+1
+
+1
+
+2
+
+2
+
+3
+
+●
+
+UN estimates
+UN projection
+
+UN estimates
+UN projection
+
+●
+
+0
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Saudi Arabia
+
+Syrian Arab Republic
+
+6
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+4
+
+5
+
+●
+
+●
+
+4
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+●
+
+3
+
+TFR
+
+1
+
+1
+
+2
+
+2
+
+3
+
+TFR
+
+●
+
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 23: Projections for Lebanon, Occupied Palestinian Territory, Oman, Qatar, Saudi
+Arabia, Syrian Arab Republic,
+
+44
+
+United Arab Emirates
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+4
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+3.0
+
+3.5
+
+Turkey
+
+●
+
+3
+
+●
+
+●
+
+TFR
+
+2.0
+
+●
+
+2
+
+●
+
+UN estimates
+UN projection
+
+0.5
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Yemen
+
+Belarus
+
+6
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+8
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+2.0
+
+●
+
+●
+
+1.5
+
+4
+
+TFR
+
+●
+
+TFR
+
+●
+
+1
+
+1.0
+
+1.5
+
+TFR
+
+●
+
+●
+
+●
+
+1.0
+
+2
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Bulgaria
+
+Czech Republic
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+TFR
+
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.0
+
+TFR
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+●
+
+1.5
+
+1.5
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+1.0
+
+1.0
+
+●
+
+UN estimates
+UN projection
+
+●
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 24: Projections for Turkey, United Arab Emirates, Yemen, Belarus, Bulgaria, Czech
+Republic
+
+45
+
+Hungary
+
+Poland
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.0
+
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+TFR
+1.5
+
+1.5
+
+TFR
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Republic of Moldova
+
+Romania
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+●
+
+2.0
+
+2.0
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+0.5
+
+●
+
+●
+
+1.5
+
+●
+
+TFR
+
+●
+
+1.5
+
+TFR
+
+●
+
+1.0
+
+1.0
+
+●
+
+●
+
+1.0
+
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Russian Federation
+
+Slovakia
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+1.5
+
+TFR
+
+2.0
+
+TFR
+
+1.5
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+0.5
+
+1.0
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+●
+
+1.0
+
+1.0
+
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 25: Projections for Hungary, Poland, Republic of Moldova, Romania, Russian Federation, Slovakia
+
+46
+
+Channel Islands
+3.0
+
+Ukraine
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.0
+
+TFR
+
+TFR
+
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+1.5
+
+1.5
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+Period
+
+Denmark
+
+Estonia
+3.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+TFR
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.0
+
+3.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+2.0
+
+TFR
+
+1.0
+
+1.0
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+1.5
+
+1.5
+
+●
+
+●
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Finland
+
+Iceland
+
+3.0
+
+3.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+TFR
+
+2.0
+
+●
+
+●
+
+●
+
+●
+
+●
+
+1.5
+
+1.0
+
+●
+
+●
+
+1.5
+
+2.0
+
+TFR
+
+UN estimates
+UN projection
+
+●
+
+1.0
+
+●
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 26: Projections for Ukraine, Channel Islands, Denmark, Estonia, Finland, Iceland
+
+47
+
+Ireland
+
+●
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+2.0
+
+●
+
+TFR
+
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+1.5
+
+TFR
+
+Latvia
+
+1.5
+
+●
+
+1.0
+
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+1.0
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Lithuania
+
+Norway
+3.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+TFR
+
+1.5
+
+●
+
+2.0
+
+TFR
+
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+1.0
+
+1.5
+
+●
+
+UN estimates
+UN projection
+
+●
+
+Period
+
+Sweden
+
+United Kingdom
+3.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+TFR
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+2.0
+
+3.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+2.5
+TFR
+
+2.0
+
+UN estimates
+UN projection
+
+●
+
+●
+
+●
+●
+●
+
+●
+
+1.5
+
+●
+
+1.5
+
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 27: Projections for Ireland, Latvia, Lithuania, Norway, Sweden, United Kingdom
+
+48
+
+Albania
+
+2.5
+
+2.0
+
+●
+
+2.0
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+3.0
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+1.5
+
+TFR
+
+●
+●
+
+●
+
+1.5
+
+TFR
+
+Bosnia and Herzegovina
+
+●
+
+0.5
+
+0.5
+
+1.0
+
+1.0
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Croatia
+
+Greece
+3.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+TFR
+
+2.0
+
+2.0
+
+●
+
+●
+
+1.5
+
+TFR
+
+1.5
+
+UN estimates
+UN projection
+
+●
+
+●
+●
+
+●
+
+●
+●
+
+1.0
+
+1.0
+
+●
+
+UN estimates
+UN projection
+
+0.5
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Italy
+
+Malta
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+1.5
+
+TFR
+
+2.0
+
+TFR
+
+●
+
+●
+
+1.0
+
+1.5
+
+●
+
+●
+●
+
+●
+
+●
+
+0.5
+
+1.0
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 28: Projections for Albania, Bosnia and Herzegovina, Croatia, Greece, Italy, Malta
+
+49
+
+Montenegro
+
+Portugal
+
+2.5
+
+2.0
+
+●
+
+●
+
+●
+●
+
+0.5
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Serbia
+
+Slovenia
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+●
+
+2.0
+
+●
+
+●
+
+TFR
+
+2.0
+
+●
+
+1.0
+
+1.5
+
+●
+
+1.5
+
+TFR
+
+●
+
+1.0
+
+TFR
+
+●
+
+●
+
+1.5
+
+1.5
+
+TFR
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+1.0
+
+●
+
+1.0
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Spain
+
+TFYR Macedonia
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+1.5
+
+●
+●
+
+1.0
+
+TFR
+
+2.0
+
+●
+
+1.5
+
+TFR
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+0.5
+
+1.0
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 29: Projections for Montenegro, Portugal, Serbia, Slovenia, Spain, TFYR Macedonia
+
+50
+
+Belgium
+3.0
+
+Austria
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+●
+
+●
+
+2.0
+
+TFR
+
+TFR
+
+1.5
+
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+1.0
+
+●
+
+●
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1.0
+
+0.5
+
+1.5
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+France
+
+Germany
+
+3.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+TFR
+
+2.0
+
+●
+
+●
+
+1.5
+
+TFR
+
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+Luxembourg
+
+Netherlands
+3.0
+
+Period
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+TFR
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.0
+
+3.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+●
+●
+
+●
+
+●
+
+●
+
+1.5
+
+1.5
+
+●
+
+UN estimates
+UN projection
+
+●
+
+●
+
+●
+
+1.0
+
+●
+
+1.0
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+2.0
+
+TFR
+
+1.0
+
+1.5
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 30: Projections for Austria, Belgium, France, Germany, Luxembourg, Netherlands
+
+51
+
+Switzerland
+
+Aruba
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.0
+
+2.0
+
+●
+
+TFR
+●
+
+●
+
+1.0
+
+●
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Bahamas
+
+Barbados
+
+●
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.0
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+●
+
+●
+●
+
+●
+
+●
+
+1.0
+
+1.0
+
+1.5
+
+TFR
+
+●
+
+1.5
+
+3.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+2.0
+
+2.5
+
+●
+
+1.5
+
+●
+
+1.0
+
+1.5
+
+TFR
+
+●
+
+●
+
+TFR
+
+●
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Cuba
+
+Dominican Republic
+
+3.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+3.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+1.5
+
+●
+
+TFR
+
+●
+
+●
+
+1.5
+
+●
+
+2.0
+
+2.5
+
+●
+
+●
+
+UN estimates
+UN projection
+
+0.5
+
+0.5
+
+1.0
+
+1.0
+
+TFR
+
+2.0
+
+●
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 31: Projections for Switzerland, Aruba, Bahamas, Barbados, Cuba, Dominican Republic
+
+52
+
+Guadeloupe
+
+●
+
+2.0
+
+2.5
+
+●
+
+●
+
+●
+
+●
+●
+
+TFR
+
+2.0
+
+●
+
+1.0
+
+1.0
+
+1.5
+
+●
+
+1.5
+
+TFR
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+3.0
+
+3.5
+
+4.0
+
+Grenada
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Haiti
+
+Jamaica
+
+●
+
+●
+
+2.5
+
+5
+4
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+3.0
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+●
+
+2.0
+
+TFR
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+1
+
+1.0
+
+2
+
+1.5
+
+3
+
+TFR
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Martinique
+
+Netherlands Antilles
+
+3.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+2.5
+2.0
+TFR
+
+●
+
+●
+●
+
+1.0
+
+1.5
+
+TFR
+
+●
+
+●
+
+1.0
+●
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+0.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+
+1.5
+
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 32: Projections for Grenada, Guadeloupe, Haiti, Jamaica, Martinique, Netherlands
+Antilles
+
+53
+
+Puerto Rico
+
+Saint Lucia
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+3.5
+3.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+2.5
+
+●
+
+●
+
+TFR
+
+●
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+0.5
+
+1.0
+
+1.0
+
+1.5
+
+1.5
+
+TFR
+
+●
+
+2.0
+
+2.0
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Saint Vincent and the Grenadines
+
+Trinidad and Tobago
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+3.0
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+2.0
+
+●
+
+●
+
+●
+
+TFR
+
+●
+●
+
+●
+
+0.5
+
+0.5
+
+1.0
+
+1.0
+
+1.5
+
+2.0
+
+●
+
+1.5
+
+TFR
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+United States Virgin Islands
+
+Belize
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+3
+
+●
+
+●
+
+●
+
+2.0
+
+TFR
+
+●
+
+0.5
+
+1
+
+1.0
+
+2
+
+1.5
+
+TFR
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+4
+
+●
+
+2.5
+
+3.0
+
+3.5
+
+5
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 33: Projections for Puerto Rico, Saint Lucia, Saint Vincent and the Grenadines,
+Trinidad and Tobago, United States Virgin Islands, Belize
+
+54
+
+El Salvador
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+4
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+
+3.0
+
+3.5
+
+Costa Rica
+
+●
+
+●
+
+3
+
+●
+
+TFR
+
+2.0
+
+●
+
+●
+
+2
+
+●
+
+0.5
+
+1
+
+1.0
+
+1.5
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Guatemala
+
+Honduras
+
+6
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+5
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+4
+
+●
+
+5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+4
+
+●
+
+3
+
+TFR
+UN estimates
+UN projection
+
+●
+
+1
+
+1
+
+2
+
+2
+
+3
+
+TFR
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Mexico
+
+Nicaragua
+5
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+3.0
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+4
+
+3.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+2.5
+
+●
+
+●
+
+3
+
+●
+●
+●
+
+0.5
+
+1
+
+1.0
+
+2
+
+1.5
+
+2.0
+
+TFR
+
+●
+
+TFR
+
+UN estimates
+UN projection
+
+●
+
+Figure 34:
+Nicaragua
+
+●
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Projections for Costa Rica, El Salvador, Guatemala, Honduras, Mexico,
+
+55
+
+3.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+2.5
+
+●
+
+2.5
+
+Argentina
+
+3.0
+
+3.0
+
+Panama
+
+●
+
+●
+
+1.0
+
+1.0
+
+1.5
+
+2.0
+
+TFR
+
+2.0
+1.5
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+0.5
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Bolivia
+
+Brazil
+
+●
+
+2.5
+
+5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+4
+
+3.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+●
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+2.0
+
+●
+
+TFR
+
+1.5
+
+3
+
+●
+
+UN estimates
+UN projection
+
+●
+
+Period
+
+Chile
+
+Colombia
+3.5
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+●
+
+2.0
+
+●
+●
+
+●
+
+2.0
+1.5
+
+1.5
+
+TFR
+
+●
+
+1.0
+
+1.0
+
+TFR
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+2.5
+
+●
+
+3.0
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+●
+
+●
+
+UN estimates
+UN projection
+
+0.5
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+3.0
+2.5
+
+0.5
+
+1
+
+1.0
+
+2
+
+TFR
+
+●
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 35: Projections for Panama, Argentina, Bolivia, Brazil, Chile, Colombia
+
+56
+
+French Guiana
+
+●
+
+4
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+3.0
+
+3.5
+
+4.0
+
+Ecuador
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+●
+
+●
+
+●
+
+3
+TFR
+2
+
+2.0
+1.0
+
+1.5
+
+TFR
+
+2.5
+
+●
+●
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Guyana
+
+Paraguay
+
+●
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+4
+
+3.0
+2.5
+
+1
+
+UN estimates
+UN projection
+
+●
+
+●
+
+●
+
+●
+
+TFR
+
+3
+
+●
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+1
+
+1.0
+
+2
+
+1.5
+
+TFR
+
+2.0
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Peru
+
+Suriname
+
+3.0
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+2.5
+
+4
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+3
+
+●
+
+●
+
+●
+
+●
+
+●
+
+2.0
+
+TFR
+
+1
+
+1.0
+
+1.5
+
+2
+
+TFR
+
+●
+
+UN estimates
+UN projection
+
+0.5
+
+●
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 36: Projections for Ecuador, French Guiana, Guyana, Paraguay, Peru, Suriname
+
+57
+
+Venezuela (Bolivarian Republic of)
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+3.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+3.0
+
+2.5
+
+3.0
+
+Uruguay
+
+●
+
+●
+●
+
+2.5
+
+●
+
+TFR
+
+2.0
+
+●
+
+1.0
+
+1.0
+
+1.5
+
+1.5
+
+TFR
+
+2.0
+
+●
+
+UN estimates
+UN projection
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+0.5
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Canada
+
+United States of America
+3.0
+
+3.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+TFR
+
+●
+
+●
+●
+
+1.5
+
+●
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Australia
+
+New Zealand
+
+3.0
+
+3.0
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.5
+2.0
+
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+●
+●
+
+●
+
+TFR
+
+1.5
+
+●
+
+1.0
+
+1.5
+
+●
+●
+
+1.0
+
+TFR
+
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+0.5
+
+●
+
+2.0
+
+1.5
+
+●
+
+1.0
+
+TFR
+
+2.0
+
+2.5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 37: Projections for Uruguay, Venezuela (Bolivarian Republic of), Canada, United
+States of America, Australia, New Zealand,
+
+58
+
+New Caledonia
+
+●
+
+3.0
+
+●
+
+●
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+1.5
+
+2.0
+
+TFR
+
+2.5
+
+●
+
+1.0
+
+1.0
+
+1.5
+
+TFR
+
+●
+
+2.5
+
+●
+
+3.0
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+2.0
+
+3.5
+
+3.5
+
+Fiji
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Papua New Guinea
+
+Solomon Islands
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+4
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+5
+
+5
+●
+
+6
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+●
+
+TFR
+
+●
+
+1
+
+1
+
+2
+
+3
+
+3
+2
+
+TFR
+
+4
+
+●
+
+UN estimates
+UN projection
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Vanuatu
+
+Guam
+
+●
+
+3.0
+
+5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+4
+
+3.5
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+●
+
+●
+
+2.0
+
+●
+
+1.5
+
+3
+
+TFR
+
+2.5
+
+●
+
+●
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+1
+
+1.0
+
+2
+
+TFR
+
+UN estimates
+UN projection
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 38: Projections for Fiji, New Caledonia, Papua New Guinea, Solomon Islands, Vanuatu, Guam,
+
+59
+
+●
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+2.5
+
+●
+
+3.0
+
+5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+4
+
+French Polynesia
+3.5
+
+Micronesia (Fed. States of)
+
+●
+
+●
+
+2.0
+
+TFR
+
+1.5
+
+3
+1
+
+1.0
+
+2
+
+TFR
+
+●
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Samoa
+
+Tonga
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+●
+
+●
+●
+
+4
+
+5
+
+Median projection
+Median +/− 0.5 child
+80% PI
+95% PI
+
+●
+
+3
+2
+
+3
+
+TFR
+
+●
+
+2
+
+TFR
+
+4
+
+●
+
+5
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+●
+
+●
+
+UN estimates
+UN projection
+
+1
+
+1
+
+UN estimates
+UN projection
+
+●
+
+0.5
+
+UN estimates
+UN projection
+
+●
+
+●
+
+UN estimates
+UN projection
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+1993 2008 2023 2038 2053 2068 2083 2098
+
+Period
+
+Period
+
+Figure 39: Projections for Micronesia (Fed. States of), French Polynesia, Samoa, Tonga
+
+60
+
+

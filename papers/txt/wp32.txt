@@ -1,0 +1,1643 @@
+Bilinear Mixed Effects Models for Dyadic Data
+Peter D. Hoff
+
+1
+
+Working Paper no. 32
+Center for Statistics and the Social Sciences
+University of Washington
+July 3, 2003
+
+1
+
+Peter D. Hoff is Assistant Professor of Statistics, Box 354322, University of Washington, Seattle WA
+
+98195-4322, Email: hoff@stat.washington.edu, Web: www.stat.washington.edu/hoff. This research was supported by Office of Naval Research grant N00014-02-1-1011. The author thanks Mark Handcock and Michael
+Ward for helpful discussions.
+
+Abstract
+This article discusses the use of a symmetric multiplicative interaction effect to capture certain types
+of third-order dependence patterns often present in social networks and other dyadic datasets. Such
+an effect, along with standard linear fixed and random effects, is incorporated into a generalized
+linear model, and a Markov chain Monte Carlo algorithm is provided for Bayesian estimation and
+inference. In an example analysis of international relations data, accounting for such patterns
+improves model fit and predictive performance.
+KEY WORDS: social network, balance, inner product scaling, generalized linear model.
+
+1
+
+Introduction
+
+Dyadic data consist of measurements that are made on pairs of objects or under a pair of conditions,
+so that yi,j denotes the value of the (possibly directed) measurement from i to j. Examples include
+social network analysis, “round robin” experiments in psychology, and comparative data in which
+yi,j might be a measure of similarity between units i and j. In the social networks literature,
+modeling has focused on the binary case where y i,j is either zero or one, indicating the presence or
+absence of a “link” from i to j. This has led to the development of data analysis tools based on
+directed graphs and the study of exponentially parameterized random graph models (Wasserman
+and Pattison 1996). For valued (non-binary) dyadic datasets, a perceived lack of statistical tools
+has sometimes led to ad-hoc reductions of valued responses to binary data. However, ANOVA
+methods are available for valued dyadic data: the so-called social relations model (Warner, Kenny,
+and Stoto 1979; Wong 1982) allows for the decomposition of the variance into sender and receiver
+specific effects, as well as allows for correlation between responses within a dyad. Such a model
+has been studied in the context of a linear group symmetry model by Li (2002), and advances in
+variance component analysis have been made by and Gill and Swartz (2001) and Li and Loken
+(2002). These models generally presume normally distributed data and additive effects, and thus
+the lack of any sort of dependence beyond those specified by second-order moments. In contrast,
+many observed dyadic datasets exhibit certain forms of third-order dependence, and often it is of
+scientific interest to quantify these higher order patterns.
+In this article we propose a class of generalized additive models based on the social relations
+model, but incorporate third order dependence via a bilinear effect. The bilinear effect for a pair
+(i, j) is simply the inner product of unobserved characteristic vectors z i and zj , specific to units i
+and j respectively. This approach is similar in spirit to the latent variable methods proposed by
+Hoff, Raftery, and Handcock (2002) to capture transitivity in a social network dataset, but has
+some computational and conceptual advantages. The bilinear effect is also a type of multiplicative
+interaction (Gabriel 1978; Marasinghe and Johnson 1982; Oman 1991). The models presented in
+this article are similar to the generalized bilinear regression models studied by Gabriel (1998), who
+considered approximate maximum likelihood estimation in the context of factorial designs. In this
+article, we show how a bilinear effect can be used to represent certain forms of dependence often
+seen in dyadic data, and develop a Markov chain Monte Carlo algorithm based on Gibbs sampling,
+providing arbitrarily exact Bayesian inference. With some modifications, the algorithm can be used
+as a means of making Bayesian inference for a broad class of generalized bilinear regression models
+with mixed effects.
+In the next section, we discuss the basic linear mixed effects model for dyadic data and the
+resulting dependence structure. In Section 3, we discuss types of third-order dependence often seen
+in network datasets and the use of a bilinear effect to capture such dependence. Section 4 gives
+a Markov chain Monte Carlo (MCMC) algorithm which can be used to obtain samples from the
+
+1
+
+posterior distribution of the parameters. Issues such as model fit, model selection and interpretation
+are discussed in the context of a data analysis on international relations in Section 5. A discussion
+follows in Section 6.
+
+2
+
+Linear Mixed Effects Models for Exchangeable Dyadic Data
+
+Suppose we are only interested in estimating the linear relationships between responses y i,j and a
+possibly vector valued set of variables x i,j , which could include characteristics of unit i, characteristics of unit j, or characteristics specific to the pair. In this case we might consider the regression
+model
+yi,j = β 0 xi,j + i,j ,
+
+(1)
+
+where yi,i is typically not defined. The generalized least squares estimate βˆ and its covariance
+matrix depend on the joint distribution of the  i,j ’s only through their covariance. It is often
+assumed in regression problems that the regressors x i,j contain enough information so that the
+distribution of the errors is invariant under permutations of the unit labels. This assumption is
+equivalent to the n × n matrix of errors (with an undefined diagonal) having a distribution that is
+invariant under identical row and column permutations, so that { i,j : i 6= j} is equal in distribution
+to {π(i),π(j) : i 6= j} for any permutation π of {1, . . . , n}. This condition is called weak row-andcolumn exchangeability of an array. For undirected data, such exchangeability implies a “random
+effects” representation of the errors, in that  i,j is equal in distribution to f (µ, ai , aj , γi,j ) where
+µ, ai , aj , γi,j are independent random variables and f is a function to be specified (Aldous 1985,
+Theorem 14.11). If in addition to the above invariance assumption we also model the errors as
+Gaussian, then the joint distribution can be represented in terms of a linear random effects model.
+In the more general case of directed observations, we can represent the joint distribution of the
+i,j ’s as follows:
+i,j = ai + bj + γi,j
+(ai , bi )0 ∼
+(γi,j , γj,i )0 ∼
+
+(2)
+
+multivariate normal(0, Σa,b ), Σab =
+multivariate normal(0, Σγ ),
+
+Σγ =
+
+σa2
+
+σab
+
+σab
+
+σb2
+
+σγ2
+
+ρσγ2
+
+ρσγ2
+
+σγ2
+
+!
+!
+
+,
+
+with effects otherwise being independent. The covariance structure of the errors (and thus the
+observations) is as follows:
+E(2i,j ) = σa2 + 2σab + σb2 + σγ2 E(i,j i,k ) = σa2
+E(i,j j,i ) = ρσγ2 + 2σab
+
+E(i,j k,j ) = σb2
+
+E(i,j k,l ) = 0
+
+E(i,j k,i ) = σab
+
+2
+
+and so σa2 represents the dependence of observations having a common sender, σ b2 that of observations having a common receiver, and ρ represents the correlation of observations within a dyad
+(often interpreted as “mutuality” or “reciprocity”). This has been called the “social relations” or
+“round robin” model (Warner et al. 1979; Wong 1982), and is related to a model for diallel cross
+data used by Cockerham and Weir (1977). The model is a special case of a linear group symmetry
+model (Andersson and Madsen, 1998), and has been studied in this context by Li (2002). Recent
+advances in variance component estimation have been made by Gill and Swartz (2001) and Li and
+Loken (2002).
+To analyze responses in particular sample spaces, the error structure described above can be
+added to a linear predictor in a generalized linear model:
+θi,j = β 0 xi,j + ai + bj + γi,j
+
+(3)
+
+E(yi,j |θi,j ) = g(θi,j )
+Y
+p(yi,j |θi,j ).
+p(y1,2 . . . , yn,n−1 |θ1,2 . . . , θn,n−1 ) =
+i6=j
+
+This is a generalized linear mixed-effects model with inverse-link function g(θ), in which the observations are modeled as conditionally independent given the random effects, but are unconditionally
+dependent. The covariance pattern for the observations is given approximately as
+Cov(yi1 ,j1 , yi2 ,j2 ) = E[Cov(yi1 ,j1 , yi2 ,j2 |θi1 ,j1 , θi2 ,j2 )] + Cov[E(yi1 ,j1 |θi1 ,j1 ), E(yi2 ,j2 |θi2 ,j2 )]
+= E[0] + Cov[g(θi1 ,j1 ), g(θi2 ,j2 )]
+≈ Cov(θi1 ,j1 , θi2 ,j2 ) × g 0 (β 0 xi1 ,j1 )g 0 (β 0 xi2 ,j2 ),
+where the pattern for Cov(θi1 ,j1 , θi2 ,j2 ) is the same as that for the i,j ’s given above. However, unlike
+ˆ and
+the linear regression case, βˆ is not given by linear combinations of the observations, and E( β)
+ˆ are not functions of only the first and second order moments of the data. Model lack of fit,
+Cov(β)
+or third and higher order dependence, will affect our inference on β. Many dyadic datasets exhibit
+certain forms of third order dependence. Indeed, it is these higher order patterns of dependence
+that are often of interest, and may also provide information useful for predictive inference.
+
+3
+
+Modeling Third Order Dependence Patterns
+
+Some dependence patterns commonly seen in dydaic datasets have been given the descriptive titles
+of transitivity, balance, and clusterability. In the context of binary data, graph theoretic definitions
+of these concepts appear in Wasserman and Faust (1994, chapter 6) and are as follows:
+Transitivity: For directed binary data, an ordered triad i, j, k is transitive if whenever y i,j = 1
+and yj,k = 1, we have yi,k = 1, i.e. “a friend of a friend is a friend.”
+
+3
+
+Balance: For signed unordered relations, a triad i, j, k is said to be balanced if y i,j × yj,k × yk,i > 0.
+The idea is that if the relationship between i and j is “positive” then they will relate to
+another unit k in an identical fashion, so that if y i,j > 0 then yj,k and yk,i are either both
+positive or both negative.
+Clusterability: This is a relaxation of the concept of balance. A triad is clusterable if it is balanced
+or the relations are all negative. The idea is that a clusterable triad can be divided into groups
+where the measurements are positive within groups and negative between groups.
+In a statistical sense, a dataset will display varying degrees of transitivity, balance, or clusterability.
+Often it is found that there are more transitive, balanced, or clusterable triads than would be
+expected under models (2) or (3). Another indication of third order dependence would be if after
+fitting a regression model and obtaining the residuals ˆi,j , the average value of ˆi,j × ˆj,k × ˆk,i is
+substantially larger than zero, the expected value presumed by model (2).
+Hoff et al. (2002) used simple functions of latent characteristic vectors in a fixed effects setting
+to capture some forms of transitivity, balance, and clusterability. For example, they considered
+models in which θi,j = β 0 xi,j + f (zi , zj ) where f (zi , zj ) = −|zi − zj | (“the distance model”) or
+f (zi , zj ) = zi0 zj /|zj | (“the projection model”). In what follows, we consider a similar approach
+using the inner product kernel f (zi , zj ) = zi0 zj , and give random and fixed effects interpretations.
+Adding the bilinear effect zi0 zj to the linear random effects in models (2) and (3) gives
+i,j = ai + bj + γi,j + ξi,j
+
+(4)
+
+ξi,j = zi0 zj
+where the random effects ai , bj and γi,j are modeled with the multivariate normal distributions
+described above. We have written ξi,j = zi0 zj to suggest the interpretation of zi0 zj as a mean-zero
+random effect: If the z’s are modeled as independent k-dimensional multivariate normal random
+vectors with mean zero and covariance matrix Σ z , then the resulting distribution for the ξ’s has
+the following moment properties:
+• E(ξi,j ) = 0;
+2 ) = trace Σ2 ;
+• E(ξi,j
+z
+
+• E(ξi,j ξj,k ξk,i ) = trace Σ3z ;
+with all other second and third order moments equal to zero. Note that an orthogonal transformation of the z’s leaves zi0 zi invariant, so we can assume Σz is a diagonal matrix (otherwise, the
+off-diagonal terms are non-identifiable). For simplicity we focus on the case Σ z = σz2 Ik×k , for which
+the above moments are 0, kσz4 , and kσz6 respectively. With ξi,j added to the error term, the nonzero
+
+4
+
+second and third order moments are
+E(2i,j ) = σa2 + 2σab + σb2 + σγ2 + kσz4 E(i,j i,k ) = σa2
+E(i,j j,i ) = ρσγ2 + 2σab + kσz4
+
+E(i,j k,j ) = σb2
+
+E(i,j j,k k,i ) = kσz6
+
+E(i,j k,i ) = σab .
+
+Thus the effect ξi,j = zi0 zj can be interpreted as a mean-zero random effect able to induce a particular
+form of third-order dependence often found in dyadic datasets. Marginally, as k increases the
+distribution of ξi,j will converge to a normal distribution, due to the central limit theorem. Jointly,
+the Markov dependence graph for the ξ’s has two dyads as neighbors if they have at least one unit
+in common.
+Considered as fixed effects, the ξ’s can be viewed as interaction terms that are highly constrained
+due to the functional dependence on the z’s. The constraint is easy to visualize in terms of the
+z’s: If zi and zj are vectors of similar direction and magnitude, then z i0 zk and zj0 zk will not be too
+different. This feature can be related to transitivity, which is conceptually a measure of how ξ i,k
+is a function of ξi,j and ξj,k . Considering for the moment z’s scaled to have unit length so that
+p
+|zi − zj | = 2(1 − zi0 zj ), by the triangle inequality we have
+q
+or
+1 − zi0 zk ≤ 1 − zi0 zj + 1 − zj0 zk + 2 (1 − zi0 zj )(1 − zj0 zk ),
+
+
+q
+ξi,k ≥ ξi,j + ξj,k − 1 + 2 (1 − ξi,j )(1 − ξj,k ) ,
+which gives a lower bound for ξi,k in terms of ξi,j and ξj,k .
+Balance and clusterability describe how similar ξ i,k and ξj,k are as a function of ξi,j . For scaled
+z’s, we have
+|ξi,k − ξj,k | = |zk0 (zi − zj )| ≤ |zk | × |zi − zj | = |zi − zj |.
+Noting that zi0 zj = cos(φi − φj ), where φi is the angle of zi from a fixed axis, we have
+|zi − zj | = 2 sin[(φi − φj )/2]
+1
+= 2 sin cos−1 (zi0 zj )
+q 2
+=
+
+and so |ξi,k − ξj,k | ≤
+
+2(1 − ξi,j ),
+
+p
+2(1 − ξi,j ). If ξi,j is large, the difference between ξi,k and ξj,k must be small.
+
+If ξi,j is negative one, the difference is unconstrained and could range from zero to a maximum of
+two (in this scaled case).
+
+4
+
+Parameter Estimation
+
+In the frequentist setting, approximate estimation for generalized linear mixed effects models often
+proceeds via Taylor expansions and iteratively reweighted least squares for the fixed effects, along
+5
+
+with approximate restricted maximum likelihood estimation for the variance components (Schall
+1991; Breslow and Clayton 1993; Wolfinger and O’Connell 1993; McGilchrist 1994). The accuracy
+of these approximate methods is generally dependent on the sample size, see Booth and Hobert
+(1998) for a discussion. Gabriel (1998) suggests an algorithm along these lines for the generalized
+bilinear mixed effects model. Alternatively, Zeger and Karim (1991), Gelfand, Sahu and Carlin
+(1996), and Natarajan and Kass (2000) have proposed Gibbs sampling approaches to parameter
+estimation for generalized linear mixed effects models. However, estimation is more difficult for the
+complicated dependence structure of the random effects in the invariant normal model (2). Gill
+and Swartz (2001) have proposed a Gibbs sampling scheme for estimation of random effects in the
+linear case with the identity link, although we have found that their algorithm does not mix well
+when covariates are included, due to a weak identifiability of the unit level random effects and
+certain regression coefficients: As discussed in Gelfand, Sahu, and Carlin (1995) the random effects
+a and b will be confounded to a degree with each other and to regression parameters associated with
+predictors that do not vary across receivers (i.e. sender-specific effects) or across senders (receiverspecific effects). For example, a population-level intercept is one such parameter. To obtain a
+“cleaner” partition of the variance and a more efficient MCMC sampling scheme, we decompose
+xi,j into xi,j = (xd,i,j , xs,i , xr,j ), i.e. into dyad specific regressors x d,i,j , sender specific regressors xs,i
+and receiver specific regressors xr,j . The generalized bilinear model is then rewritten as
+θi,j = βd0 xd,i,j + (βs0 xs,i + ai ) + (βr0 xr,j + bj ) + γi,j + zi0 zj
+or equivalently
+θi,j = βd0 xd,i,j + si + rj + γi,j + zi0 zj
+si = βs0 xs,i + ai
+ri = βr0 xr,i + bi .
+This parameterization for the linear unit-level effects is similar to the “centered” parameterizations
+suggested by Gelfand et al. (1995, 1996). Note that an intercept can be thought of as both a sender
+or receiver specific effect. For symmetry, we include the constant 1/2 at the beginning of each x s,i
+and xr,j vector, and estimate the first components of β s and βr as being equal.
+Using the above reparameterization for θ i,j , we estimate the parameters for the generalized
+bilinear regression model by constructing a Markov chain in {β d , βs , βr , Σab , Z, σz2 , Σγ } (where Z
+denotes the k × n matrix of latent vectors), having p(β d , βs , βr , Σab , Z, σz2 , Σγ |Y ) as the invariant
+distribution. This is obtained via an algorithm based on Gibbs sampling, which also samples s, r
+and the θ’s. The basic algorithm is to iterate the following steps:
+1. Sample linear effects:
+(a) Sample βd , s, r|βs , βr , Σab , Σγ , θ, Z (linear regression);
+6
+
+(b) Sample βs , βr |s, r, Σab (linear regression);
+(c) Sample Σab and Σγ from their full conditionals.
+2. Sample bilinear effects:
+(a) For i = 1, . . . , n: sample zi |{zj , j 6= i}, θ, β, s, r, Σz , Σγ (a linear regression);
+(b) Sample Σz from its full conditional.
+3. Sample dyad specific parameters: Update {θ i,j , θj,i } using a Metropolis-Hastings step:
+(a) Propose (
+(b) Accept (
+
+∗
+θi,j
+∗
+θj,i
+∗
+θi,j
+∗
+θj,i
+
+) ∼ MVN( (
+
+β 0 xi,j + ai + bj + zi0 zj
+β 0 xj,i + aj + bi + zj0 zi
+
+) with probability
+
+), Σγ );
+
+∗ )p(y |θ ∗ )
+p(yi,j |θi,j
+j,i j,i
+p(yi,j |θi,j )p(yj,i |θj,i )
+
+∧ 1.
+
+Various combinations of the above steps can be used to estimate different models. The steps in 1
+alone provide a Bayesian estimation procedure for the linear regression problem having an error
+covariance as in (2). Bayesian estimation of the normal bilinear model with the identity link could
+proceed by replacing each θi,j with yi,j and only iterating steps 1 and 2. Estimation of a generalized
+linear mixed effects model with random effects structure given by (2) could proceed by iterating
+steps 1 and 3. The full conditional distributions required to perform steps 1 and 2 are given below.
+Note that the θ’s are essentially unrestricted in the above sampling scheme. At this level the
+fit is saturated and does not depend on the regressors, at least to the degree that the prior for
+Σγ is diffuse. What the MCMC algorithm above provides is essentially a saturated fit for the θ’s
+(although somewhat smoothed by the common variance) and an ANOVA-like decomposition of the
+θ’s into regressor, sender, receiver and inner-product effects.
+
+4.1
+
+Conditional Distributions for the Linear Effects Components:
+
+Noting that θi,j − zi0 zj = βd0 xi,j + si + rj + γi,j , we see that conditional on the θ’s and z’s, the
+other parameters can be sampled using a standard Bayesian normal-theory regression approach,
+although with a complicated covariance structure.
+Full conditional of (βd , s, r):
+we let ui,j =
+
+θi,j + θj,i − 2zi0 zj
+
+Similar to Wong’s (1982) approach to the invariant normal model,
+
+and vi,j = θi,j − θj,i for i < j. We then have
+
+
+!
+!
+! βd
+
+δ
+u
+Xu 
+u
+ s +
+,
+=
+
+
+δv
+v
+Xv
+r
+
+(5)
+
+where Xu and Xv are the appropriate design matrices and δ u and δv are vectors of independent
+error terms with variances σu2 = 2σγ2 (1 + ρ) and σv2 = 2σγ2 (1 − ρ) respectively. The full conditional
+distribution of (βd , s, r) is then proportional to p(u, v|β d , s, r, Σγ ) × p(s, r|βs , βr , Σab ) × p(βd ). For
+7
+
+a multivariate normal (µβd , Σβd ) prior distribution on βd , the term in the exponent of the full
+conditional is
+φ
+
+0
+
+"
+
+Σ−1
+β d µβ d
+Σ−1
+sr Xsr βsr
+
+!
+
++
+
+Xu0 u/σu2
+
++
+
+Xv0 v/σv2
+
+#
+
+1
+− φ0
+2
+
+"
+
+Σ−1
+βd
+
+0
+
+0
+
+Σ−1
+sr
+
+!
+
++
+
+Xu0 Xu /σu2
+
++
+
+Xv0 Xv /σv2
+
+#
+
+φ
+
+where φ0 = (βd0 s0 r 0 ), Xsr and βsr are the combined design matrix and regression parameters for s
+and r, and Σsr is the covariance matrix of (s0 r 0 )0 , which is easily derived from Σab . The conditional
+distribution is thus multivariate normal (µ, Σ) where
+#
+!
+"
+Σ−1
+β
+βd d0
++ Xu0 u/σu2 + Xv0 v/σv2
+µ = Σ
+Σ−1
+X
+β
+sr sr
+sr
+#−1
+!
+"
+Σ−1
+0
+βd
++ Xu0 Xu /σu2 + Xv0 Xv /σv2
+.
+Σ =
+0
+Σ−1
+sr
+Note that the inverse of Σsr is given by
+Σ−1
+sr =
+
+(σb2 /∆)In×n
+
+−(σab /∆)In×n
+
+−(σab /∆)In×n
+
+(σa2 /∆)In×n
+
+Full conditional of (βs , βr ):
+
+!
+
+2
+.
+, ∆ = σa2 σb2 − σab
+
+The full conditional of (βs , βr ) is proportional to p(s, r|βs , βr , Σab )×
+
+p(βs , βr ). Assuming a multivariate normal (µ βsr , Σβsr ) prior distribution for the combined regression
+parameters, the full conditional is a multivariate normal distribution with mean and variance (µ, Σ)
+given by
+
+Full conditional of Σab :
+
+µ = Σ
+
+"
+
+Σ =
+
+(Σ−1
+βs,r
+
+Σ−1
+βsr µβsr
+
++ Xsr Σ−1
+sr
+
+s
+r
+
+!#
+
+−1
+0
+Σ−1
++ Xsr
+sr Xsr )
+
+The full conditional of Σab is proportional to p(s, r|βs , βr , Σab )p(Σab ).
+
+Using a prior distribution of Σab ∼ inverse Wishart(Σab0 , ν) (parameterized so that E(Σab ) =
+Σab0 /(ν − 3)), the full conditional of Σab is Σab |a, b ∼ inverse Wishart(Σab0 + (a b)0 (a b), ν + n),
+where a = (s − Xs βs ) and b = (r − Xr βr ).
+Using prior distributions of σu2 ∼ inverse gamma(αu1 , αu2 ) and σv2 ∼
+
+inverse gamma(αv1 , αv2 ), the full conditionals are given by σ u2 |u ∼ inverse gamma(αu1 + 12 n2 , αu2 +
+
+P
+1P
+2 ) and σ 2 |v ∼ inverse gamma(α + 1 n , α + 1
+[u
+−ˆ
+u
+]
+[vi −ˆ
+vi,j ]2 ), where u
+ˆi,j = E[ui,j |βd , xi,j , si , rj ] =
+i
+i,j
+v1
+v2 2
+v
+2
+2 2
+Full conditional of Σγ :
+
+βd0 (xi,j + xj,i ) + si + sj + ri + rj , and vˆi,j is given similarly. The covariance matrix Σ γ can be reconstructed from σu2 and σv2 via σγ2 = (σu2 + σv2 )/4 and ρ = (σu2 − σv2 )/(σu2 + σv2 ).
+
+8
+
+4.2
+
+Conditional distributions for the Bilinear Effects Component:
+
+Let ei,j = (θi,j + θj,i − u
+ˆi,j )/2, the residual of the symmetric part of the matrix of θ’s after fitting
+the linear effects, and let δu,i,j = γi,j + γj,i . Considering the full conditional of z i , we have
+ei,1 = zi0 z1 + δu,i,1 /2
+ei,2 = zi0 z2 + δu,i,2 /2
+..
+.
+ei,n = zi0 zn + δu,i,n /2,
+
+and we see that sampling zi from its full conditional is equivalent to a (Bayesian) linear regression
+problem. Modeling the z’s as a priori independent multivariate normal (0, Σ z ) variables, the full
+conditional of zi is multivariate normal (µ, Σ) with
+µ = 4 Σ Z−i ei,−i /σu2
+0
+2 −1
+Σ = (Σ−1
+z + 4 Z−i Z−i /σu )
+
+where Z−i denotes the k × (n − 1) matrix obtained by removing the ith column of Z, and e i,−i
+denotes the vector of residuals {ei,j : j 6= i}. Using an inverse-Wishart(Σ z0 , ν) prior, the full
+conditional of Σz is inverse-Wishart(Σz0 + ZZ 0 , ν + n). Alternatively, if we restrict Σ z to be
+σz2 Ik×k and use an inverse gamma(α0 , α1 ) prior, then the full conditional is given by σ z2 |Z ∼ inverse
+gamma(α0 + (nk)/2, α1 + trace(Z 0 Z)/2).
+
+5
+
+Data Analysis: International Relations in Central Asia
+
+We analyze data on international relations in central Asia as recorded by the Kansas Event
+Data Project (http://www.ku.edu/∼keds/project.html) and described by Schrodt, Simpson,
+and Gerner (2001). News stories are downloaded from the Reuters Business Briefing Service on
+Afghanistan, Armenia, Azerbaijan, and the former Soviet Republics of Central Asia, and political
+interactions between countries are recorded and categorized. We take our response y i,j to be the
+total number of “positive” actions reportedly initiated by country i with target j from 1992 to 1999
+(i.e. after the breakup of the Soviet Union), as recorded by the KEDS project. Positive actions
+here include such events as approval, endorsement or praise of one government by another, military
+assistance, formation of alliances, promises of financial or policy support and others (essentially all
+events having Goldstein scale values greater than 2.5, except cease-fire or ceding of power. See the
+KEDS project webpage for more details). We include in our population the 99 countries closest in
+geographic distance to Afghanistan, plus the United States, giving a total of n = 100 countries for
+analysis. We note that seventeen of the one-hundred countries had zero actions as either initiators
+or targets of actions over the seven year period.
+9
+
+5.1
+
+Data Description
+
+P
+Some descriptive plots of the raw data are given in Figure 1. Panel (a) plots log(1 + j:j6=i yi,j )
+P
+P
+P
+versus log(1 + j:j6=i yj,i ) for each country i. The quantities j:j6=i yi,j and j:j6=i yj,i are typically
+called the outdegree and indegree of unit i, respectively. Note the strong correlation, which suggests
+
+a large value of σab /(σa σb ) in the random effects model being considered. In panel (b) we plot the
+P
+log of each country’s outdegree plus one, log(1 + j:j6=i yi,j ), versus log population, which suggests
+a positive relationship between response and population (a plot of log-indegree versus population is
+
+similar). In panel (c) we plot the response on a log scale versus the geographic distance in thousands
+of miles between countries i and j. More precisely, this distance is the “minimum distance” between
+two countries, and is zero if i and j share a border. On average, the number of events between two
+countries decreases as geographic distance increases. This pattern is made more clear by separating
+out the measurements involving the United States (which are circled).
+
+1
+
+Hungary
+Uganda
+Ethiopia
+Estonia
+Latvia
+Burundi
+Bahrain
+Romania
+Yemen
+Oman
+Croatia
+Cambodia
+Slovenia
+
+2
+3
+4
+5
+log(indegree+1)
+
+6
+
+7
+
+10
+
+12
+
+14
+16
+18
+log(population)
+
+6
+5
+4
+0
+
+0
+
+Bosnia
+and
+Herzegovina
+Myanmar
+Djibouti
+Nepal
+Philippines
+Senegal
+Seychelles Brunei
+Austria
+Maldives
+Macau
+MaltaMauritania
+Macedonia
+Moldova
+Laos
+North
+Korea
+Darussalam
+Bhutan
+Tunisia
+Tanzania
+Rwanda
+Comoros
+Slovakia
+Somalia
+
+0
+
+1
+
+log(yij + 1)
+3
+
+Hungary
+Uganda
+Ethiopia
+Estonia
+Latvia
+Burundi
+Bahrain
+Romania
+Yemen
+Oman
+Croatia
+Cambodia
+Slovenia
+
+Bosnia
+and
+Herzegovina
+Myanmar
+Djibouti
+Nepal
+Philippines
+Senegal
+Seychelles
+Austria
+Mauritania
+Maldives
+Moldova
+Macau
+Malta
+Laos
+Macedonia
+North
+Korea
+Brunei
+Bhutan
+Darussalam
+Tanzania
+Tunisia
+Rwanda
+Comoros
+Slovakia
+Somalia
+
+0
+
+2
+
+6
+
+Iraq
+Sweden
+SerbiaNorway
+Syrian
+Arab Viet
+Republic
+Switzerland
+Netherlands
+Nam
+Bulgaria
+Indonesia
+Belgium
+SriTaiwan
+Lanka
+Malaysia
+Czech Republic
+Lebanon
+Poland
+Albania
+Thailand
+Singapore
+Cyprus
+Lithuania
+Palestine
+Greece
+Sudan
+Mongolia
+Bangladesh
+Kuwait
+Hong
+Kong
+Algeria
+Kenya
+Libya
+Qatar Denmark
+Finland Jordan
+
+2
+
+Iraq
+Sweden
+Norway
+Serbia
+Syrian
+Arab
+Republic
+Switzerland
+Netherlands
+Viet
+Nam
+Bulgaria
+Indonesia
+Belgium
+Taiwan
+Sri
+Lanka
+Malaysia
+CzechLebanon
+Republic
+Poland
+Albania
+Thailand
+Singapore
+Cyprus Sudan
+Lithuania
+Palestine
+Greece
+Mongolia
+Bangladesh
+Kuwait
+Hong
+Kong
+Algeria
+Kenya
+Libya
+Qatar
+Finland
+Denmark Jordan
+
+(c)
+
+Russia
+Pakistan
+Iran
+Afghanistan
+Kazakstan
+United States
+AzerbaijanTurkey
+Armenia
+Tajikistan
+Uzbekistan
+PR China
+Turkmenistan
+Kyrgyzstan
+Saudi Arabia
+Ukraine
+France
+United
+Kingdom India
+United Arab
+Emirates
+Georgia
+Belarus
+Italy
+Israel Korea
+Germany
+Egypt
+
+log(outdegree+1)
+3
+4
+5
+
+6
+log(outdegree+1)
+3
+4
+5
+2
+1
+
+(b)
+
+Russia
+Pakistan
+Iran
+Afghanistan
+Kazakstan
+United States
+Azerbaijan
+Turkey
+Armenia
+Tajikistan
+Uzbekistan
+PR China
+Turkmenistan
+Kyrgyzstan
+Saudi Arabia
+Ukraine
+France
+India
+United
+Kingdom
+United
+Arab
+Emirates
+Georgia
+Belarus
+Italy
+Israel
+Korea
+Germany
+Egypt
+
+1
+
+(a)
+
+20
+
+0
+
+5
+10
+geographic distance
+
+15
+
+Figure 1: Relationships between (a) Outdegree and indegree; (b) Outdegree and population; (c)
+Response and geographic distance. Responses involving the United States are circled.
+
+5.2
+
+Model and Priors
+
+Note that the data are from an observational study, and that the data are not randomly sampled.
+Rather, we have defined a population of units based on geographic distance and have measurements
+on all pairs. For this analysis, we primarily interpret a probability model as a tool for describing
+the variance in the dataset, and the regression coefficients as measures of the multiplicative, or
+log-linear, components of the relationship between response and regressors.
+We fit the random effects model (4) to the data using a Poisson distribution and the log-link,
+so that each response yi,j is assumed to have come from a Poisson distribution with mean e θi,j , and
+
+10
+
+that the y’s are conditionally independent given the θ’s. We decompose the variance in the θ’s as
+follows:
+θi,j = β0 + βd xi,j + βs xi + βr xj + i,j
+i,j = ai + bj + γi,j + zi0 zj ,
+where xi,j is the geographic distance between i and j and x i is the log population of i. For estimation
+of variance components, we model the random effects as having the following multivariate normal
+distributions: (ai , bi )0 ∼ MVN(0, Σab ), (γi,j , γj,i )0 ∼ MVN(0, Σγ ), zi ∼ MVN(0, σz2 Ik×k ). Prior
+distributions of the parameters are taken to be
+• β ∼ multivariate normal(0, 100 × I4×4 );
+• Σab ∼ inverse Wishart(I2×2 , 4);
+• σu2 , σv2 ∼ i.i.d. inverse gamma(1, 1), σγ2 = (σu2 + σv2 )/4, ρ = (σu2 − σv2 )/(σu2 + σv2 ).
+Posterior calculations proceed as described in Section 4.
+
+5.3
+
+Selecting the Latent Dimension:
+
+One issue in model fitting is the selection of the dimension k of the latent variables z. Selection of k
+could depend on the goal of the analysis. For example, if the goal is descriptive, i.e. the desired end
+result is a decomposition of the variance into interpretable components, then a choice of k = 1, 2
+or 3 would allow for a simple graphical presentation of a multiplicative component of the variance.
+Alternatively, one could examine model fit as a function of k based on the log-likelihood, or use a
+cross-validation criterion if one is primarily concerned with predictive performance.
+Considering likelihood-based measures of fit, the log-probability of the data given the values of
+P
+the parameters gets evaluated for each update of the θ’s, and so log p(Y |θ) = i6=j log p(yi,j |θi,j ) can
+
+be calculated with no extra effort. However, such a quantity is not appropriate for selecting between
+
+models. As described in Section 4, the model is essentially unrestricted in the θ’s, giving a nearly
+saturated fit which does not depend much on the choice of k or the regressors (provided the prior
+for Σγ is sufficiently diffuse). A likelihood that is more appropriate is the marginal probability of
+P
+data within a pair, log p(Y |β, a, b, Z, Σ γ ) = (i,j) log p(yi,j , yj,i |β, ai , bj , aj , bi , zi , zj , Σγ ), where the
+
+sum is over unordered pairs. This is essentially the log-likelihood treating the a, b, and z’s as fixed
+
+effects. Note that in general log p(y i,j , yj,i |β, ai , bj , aj , bi , zi , zj , Σγ ) is an integral over γi,j and γj,i
+that needs to be approximated, except in the case of the normal model with the identity link.
+In some situations the purpose of the model is to make predictions of unobserved data. For
+example, suppose only a subset of the n(n − 1) responses were randomly chosen to be measured.
+As long as we have some measurements for each unit, we can estimate the effects a, b and z for each
+unit and make predictions for missing responses based on these estimates. Although prediction is
+11
+
+k
+
+LLP(k)
+
+ˆ a
+ˆ Σ
+ˆ )
+log p(y|β,
+ˆ, ˆb, Z,
+
+AIC
+
+0
+
+-3558.78
+
+-2432.54
+
+-2638.54
+
+1
+
+-3351.76
+
+-2316.56
+
+-2622.56
+
+2
+
+-3078.79
+
+-2214.68
+
+-2620.68
+
+3
+
+-3076.73
+
+-2123.49
+
+-2629.49
+
+4
+
+-3077.30
+
+-2038.05
+
+-2644.05
+
+Table 1: Selection of k
+not the goal for these data, for illustrative purposes we compare the marginal probability criterion
+discussed above to the following four-fold cross validation procedure:
+1. Randomly split the set of ordered pairs {i, j : i 6= j} into four test sets A 1 , A2 , A3 , A4 .
+2. For k = 0, 1, 2, 3, 4 :
+(a) For l = 1, 2, 3, 4 :
+i. perform the MCMC algorithm using only {y i,j : {i, j} 6∈ Al }, but sample values of
+θi,j for all ordered pairs.
+ii. Based on the sampled values of θi,j compute the posterior mean θˆi,j for {i, j} ∈ Al
+P
+and the log predictive probability lpp(A l ) = {i,j}∈Al log p(yi,j |θˆi,j ).
+P
+(b) Measure the predictive performance for k as LPP(k) = 4l=1 lpp(Al ).
+
+3. Select k based on LPP(k).
+
+For these data, the marginal likelihood and cross-validation criteria for selecting k are given
+in Table 2. The cross validation procedure suggests that models having a dimension of k = 2, 3
+or 4 have roughly the same predictive performance. In terms of the marginal likelihood criterion,
+the biggest improvements in fit are in going from k = 0 to k = 1 and from k = 1 to k = 2. The
+improvements in fit in going from 2 to 3 and from 3 to 4 dimensions are smaller. Using an AIC-like
+criterion and penalizing the improvement in likelihood by the number of additional parameters (100
+per additional dimension), we would choose k = 2. Based on these results (and our ability to plot
+results in two-dimensions) we choose to present the results for the k = 2 model in more detail.
+
+5.4
+
+Results for k = 2
+
+Two Markov chains of length 200,000 each were constructed using the algorithm described above.
+The first chain used starting values of zero for all regression coefficients and country-specific intercepts, the identity matrix for Σ ab and Σγ , a value of 0.1 for σz2 , and components of Z sampled
+independently from a normal (0, σz2 ) distribution. The second chain used starting values obtained
+12
+
+−0.10
+
+−5
+
+βd
+−0.20
+
+−7
+β0
+
+−0.30
+
+−9
+−11
+
+50000
+
+100000
+iteration
+
+150000
+
+200000
+
+0
+
+50000
+
+100000
+iteration
+
+150000
+
+200000
+
+0
+
+50000
+
+100000
+iteration
+
+150000
+
+200000
+
+0
+
+50000
+
+100000
+iteration
+
+150000
+
+200000
+
+0.4
+
+0.4
+
+0.8
+
+βr
+0.8
+
+βs
+
+1.2
+
+1.2
+
+1.6
+
+1.6
+
+0
+
+Figure 2: Marginal MCMC output for regression coefficients. Solid lines are from the Markov chain
+with data-informed starting values, dashed lines from the chain with uninformed starting values.
+βd
+
+βs
+
+βr
+
+σa2
+
+σb2
+
+σab
+
+σγ2
+
+ρ
+
+σz2
+
+mean
+
+-0.18
+
+1.00
+
+0.94
+
+6.46
+
+6.37
+
+6.4
+
+1.23
+
+0.95
+
+1.99
+
+sd
+
+0.04
+
+0.17
+
+0.17
+
+1.23
+
+1.2
+
+1.21
+
+0.14
+
+0.01
+
+0.27
+
+Table 2: Posterior means and standard deviations for k = 2
+from the following procedure: Maximum likelihood estimates of β d , s and r were obtained by fitting an ordinary generalized linear model using geographic distance as a regressor and sender and
+receiver labels as factor variables. Estimates of β 0 , βs , βr , and Σab were obtained from the estimates of s and r. The iteratively reweighted least-squares fitting procedure produces a matrix R of
+working residuals, with the off diagonal elements undefined. An estimate Zˆ of Z was then obtained
+by approximating R with a matrix product of the form Z 0 Z. This can be done with an iterative
+least-squares procedure, similar to the Gibbs sampling procedure outlined in Section 4.2: see ten
+Berge and Kiers (1989) for more details on this problem. An estimate of Σ γ is then obtained from
+ˆ
+R − Zˆ 0 Z.
+Samples of parameter values were saved from the Markov chains every 100 iterations, and are
+plotted in Figures 2 and 3. Both chains appear to have achieved stationarity after about 50,000
+iterations, and so we base our inference on the saved samples after this point. Posterior means and
+standard deviations of the model parameters, based on the 3000 saved MCMC samples (1500 from
+each chain), are given in Table 2. As in the raw data, we see a negative relation between response
+and geographic distance (E[βd |y] = −0.18), and a positive relation between response and country
+
+13
+
+8 10
+0
+
+0
+
+2
+
+2
+
+4
+
+σ2b
+4 6
+
+σ2a
+6 8 10
+
+50000
+
+100000
+iteration
+
+150000
+
+200000
+
+0
+
+50000
+
+100000
+iteration
+
+150000
+
+200000
+
+0
+
+50000
+
+100000
+iteration
+
+150000
+
+200000
+
+0
+
+50000
+
+100000
+iteration
+
+150000
+
+200000
+
+σ2ε
+1.0 1.2 1.4 1.6
+
+σ2z
+1.0 1.5 2.0 2.5 3.0
+
+0
+
+Figure 3: Marginal MCMC output for variance component parameters.
+populations (E[βs |y] = 1.00, E[βr |y] = 0.94). We also estimate a strong positive correlation of
+within-dyad responses as well as the within-country random effects a and b.
+Next, we analyze the posterior distribution of the the k × n matrix of latent vectors Z. Note
+that the probability model depends on Z only through the matrix of inner products Z 0 Z, which is
+invariant under rotations and reflections of Z. Therefore, log Pr(Y |Z, β, X) = log Pr(Y |Z ∗ , β, X)
+for any Z ∗ which is equivalent to Z under the operations of rotation or reflection. Values of Z
+sampled from the posterior distribution may seem at first to be highly variable, but perhaps are
+nearly rotations of each other and are thus not highly variable in terms of the resulting inner
+product matrices. To appropriately compare sample values of Z, we must first rotate them to
+a common orientation. For these data this is done using a “Procrustean” transformation (Sibson
+1978), in which for each sample Z we find the rotation Z ∗ of Z that has the smallest sum of squared
+deviations from an arbitrary fixed reference matrix Z 0 . The rotated matrix Z ∗ which minimizes the
+sum of squares is given by Z ∗ = Z0 Z 0 (ZZ00 Z0 Z 0 )−1/2 Z. See Hoff et al. (2002) for further discussion.
+The resulting mean of Z ∗ is given in Figure 4. Marginal uncertainty in the z’s could be displayed
+by plotting sample z ∗ ’s over the plot of the means, using colors to distinguish between countries.
+Generally, two countries will be modeled as having z’s in the same direction if they have large
+responses to one another relative to their total number of actions and covariate values, and/or if
+their responses involving other countries are similar (a model which can distinguish between these
+two phenomena is proposed in the discussion). For example, Croatia and Slovenia are each recorded
+as the initiator of an action with the other as a target, and each initiates an action with Serbia as
+well. With the exception of one action from Slovenia to Italy, these are the only events recorded
+for Croatia and Slovenia, and so these countries are “similar” in that they have actions involving
+
+14
+
+2
+
+Burundi
+Tanzania
+Hong Kong
+
+Singapore
+
+Malaysia
+Germany
+Palestine
+Cambodia
+Bahrain
+Bulgaria Indonesia
+PR China
+TajikistanIsrael
+Romania
+Korea
+Somalia
+Kenya
+Uzbekistan
+Mauritania
+Belarus
+Hungary
+Austria
+Djibouti
+Bhutan
+Slovakia
+Viet
+Nam
+Brunei
+DarussalamUnited Arab Emirates
+Moldova
+Senegal
+Finland
+Jordan
+Sri Lanka
+Nepal
+Laos
+Seychelles
+Malta
+Maldives
+Thailand
+Myanmar
+Comoros
+Ukraine
+Macau
+Croatia
+Taiwan
+Kazakstan Qatar
+Bosnia and Herzegovina
+Serbia Oman
+UgandaPakistan
+Denmark
+Slovenia
+India
+Algeria
+Rwanda
+Saudi
+Arabia
+Russia
+France Kuwait
+Afghanistan
+Turkey Mongolia
+United
+States
+Norway Turkmenistan
+Iran
+Azerbaijan
+North Korea
+Tunisia
+Egypt
+Greece
+Italy
+Yemen
+Bangladesh
+Syrian Arab Republic
+Georgia
+Cyprus
+Armenia
+Belgium
+United Kingdom
+Libya
+Iraq
+Lebanon
+Netherlands
+
+−2
+
+−1
+
+0
+
+1
+
+Czech Republic
+Philippines
+Switzerland
+Poland
+Ethiopia
+AlbaniaMacedonia
+Kyrgyzstan
+
+Latvia
+
+−3
+−4
+
+Sudan
+
+Lithuania
+
+Estonia
+Sweden
+
+−2
+
+0
+
+2
+
+Figure 4: Posterior mean of Z
+each other and to Serbia, and only one other action involving another country. Bosnia-Herzegovina
+and Denmark have no actions with Croatia or Slovenia, but like Croatia and Slovenia they each
+have one action with Serbia and very few actions otherwise (each has one action with Azerbaijan,
+and no other actions), and are thus located in a similar direction. Serbia, although active with
+this group of countries (on the scale of their response rates), has actions with 10 other countries,
+and is therefore placed more towards the center. Of course, the posterior variances of the z’s for
+Croatia, Slovenia, Bosnia-Herzegovina, and Denmark are quite high, as our information about them
+is coming primarily from the few nonzero responses among them.
+Finally, we evaluate some aspects of model adequacy via goodness of fit statistics. This is
+done by comparing the observed value of a statistic of interest T (Y ) to its posterior predictive
+distribution p(T (Ypred )|Y ). Samples from the posterior predictive distribution are obtained by
+simulating datasets using the parameters sampled by the Markov chain (see, for example Gelman,
+Carlin, Stern and Rubin 1995 chapter 6).
+In the present case we might be interested in any over or under dispersion of the data relative
+to the Poisson model. We evaluate any such lack of fit by considering as test statistics the overall
+sample variance of log(yi,j +1), as well as the sample variance of {log(y i,j +1) : j 6= i} for each i, that
+is, the variance of responses from each sender, on a log scale. The posterior predictive distributions
+of these quantities were estimated by sub-sampling 1000 values of (β d , s, r, Z, Σγ ) from the two
+15
+
+(b)
+
+0
+
+0.0
+
+5
+
+Density
+10
+15
+
+20
+
+predicted sender specific variance
+0.5
+1.0
+1.5
+2.0
+
+(a)
+
+0.18
+
+0.20
+
+0.22
+0.24
+var[log(yij + 1)]
+
+0.26
+
+0.28
+
+0.0
+
+0.5
+1.0
+1.5
+sender specific variance
+
+Figure 5: Goodness of fit tests: (a) Posterior predictive distribution of population variance. (b)
+Posterior predictive confidence regions for country-specific variance in action initiation.
+Markov chains, generating a dataset from each sub-sampled set of parameter values, and then
+computing the statistics from each generated dataset. The results are plotted in Figure 5. The first
+panel gives a histogram of 1000 samples from the posterior predictive distribution of the overall
+variance. The posterior predictive distribution is centered around the observed overall variance,
+given by the vertical line, and no lack of fit is indicated by this statistic. The second panel of Figure
+5 plots the observed sender-specific variances for each country versus a 95% posterior predictive
+interval for that quantity. The confidence intervals contain the observed values for 97 of the 100
+countries, and thus do not indicate much lack-of-fit. The Poisson model seems to fit the variance
+in response reasonably well, at least in terms of these statistics.
+
+6
+
+Discussion
+
+This article has presented an approach to modeling third order dependence patterns often seen
+in dyadic datasets, such as social networks. The models are based on generalized linear mixed
+effects models with the addition of a reduced-rank interaction term composed of inner products
+of latent characteristic vectors. Such an approach allows for the analysis of dyadic data using
+familiar regression tools, but also allows one to capture patterns such as transitivity, balance, and
+clusterability which are often of interest to social science researchers. Other approaches to capturing
+such dependence patterns have used metric distances (Hoff et al. 2002) and ultrametric distances
+(Schweinberger and Snijders, 2003), although not in the presence of the covariance structure (2).
+While such latent distance models may be easy to understand, the inner-product approach has
+some conceptual appeal, as the term z i0 zj can be viewed as a mean-zero random effect.
+
+16
+
+Another dependence pattern often of interest to researchers is that of stochastic equivalence,
+in which two units i and j are said to be stochastically equivalent if their responses have the
+same probability distribution, i.e. p(y i,1 , . . . , yi,n ) = p(yj,1 , . . . , yj,n ). The model considered in this
+paper, as well as the latent distance approaches mentioned above, potentially confound stochastic
+equivalence patterns with those of clusterability and balance: two units will generally be estimated
+to have similar latent characteristic vectors if they have strong relations to each other, or have
+similar relations to others unit units. However, in some datasets there may be clusters of units that
+relate similarly to others, but not strongly to each other. Nowicki and Snijders (2001) considered
+a latent class model which identified clusters of such stochastically equivalent units, but did not
+separately consider clustering based on strength of relations. A possible approach to modeling both
+types of patterns is to extend the bilinear effect discussed in this paper to a more general asymmetric
+bilinear effect such as zi0 Rzj , where R is a k × k matrix. Estimation of similar types of effects has
+been considered by by Gabriel (1998), and least squares representations of an asymmetric matrix
+Y by Z 0 RZ has been considered by ten Berge and Kiers (1989), Kiers (1989) and Trendafilov
+(2002), among others. In the present application, the vector z i could be interpreted as giving
+grades of membership for unit i to each of k classes, and R lm as the response rate from class l to m.
+Interestingly, the restriction of each z i to be unity at one component and zero at the others gives
+a representation of the latent class model of Nowicki and Snijders (2000). Unrestricted estimation
+of zi0 Rzj , in the presence of the error structure (2), is a topic of current research by the author.
+The data analyzed in Section 5, along with R-functions for implementing the proposed methods,
+are available at the author’s website www.stat.washington.edu/hoff.
+
+References
+´
+Aldous, D. J. (1985), “Exchangeability and related topics,” in Ecole
+d’´et´e de probabilit´es de SaintFlour, XIII—1983, vol. 1117 of Lecture Notes in Math., pp. 1–198, Springer, Berlin.
+Andersson, S. and Madsen, J. (1998), “Symmetry and lattice conditional independence in a multivariate normal distribution,” The Annals of Statistics, 26, 525–572.
+Booth, J. G. and Hobert, J. P. (1998), “Standard errors of prediction in generalized linear mixed
+models,” Journal of the American Statistical Association, 93, 262–272.
+Breslow, N. E. and Clayton, D. G. (1993), “Approximate inference in generalized linear mixed
+models,” Journal of the American Statistical Association, 88, 9–25.
+Cockerham, C. C. and Weir, B. S. (1977), “Quadratic analyses of reciprocal crosses,” Biometrics,
+33, 187–204.
+Gabriel, K. R. (1978), “Least squares approximation of matrices by additive and multiplicative
+models,” Journal of the Royal Statistical Society. Series B. Methodological, 40, 186–196.
+17
+
+Gabriel, K. R. (1998), “Generalised bilinear regression,” Biometrika, 85, 689–700.
+Gelfand, A. E., Sahu, S. K., and Carlin, B. P. (1995), “Efficient parameterisations for normal linear
+mixed models,” Biometrika, 82, 479–488.
+Gelfand, A. E., Sahu, S. K., and Carlin, B. P. (1996), “Efficient parametrizations for generalized
+linear mixed models,” in Bayesian statistics, 5 (Alicante, 1994), Oxford Sci. Publ., pp. 165–180,
+Oxford Univ. Press, New York.
+Gelman, A., Carlin, J. B., Stern, H. S., and Rubin, D. B. (1995), Bayesian data analysis, Chapman
+& Hall Ltd, London.
+Gill, P. S. and Swartz, T. B. (2001), “Statistical analyses for round robin interaction data,” The
+Canadian Journal of Statistics, 29, 321–331.
+Hoff, P. D., Raftery, A. E., and Handcock, M. S. (2002), “Latent space approaches to social network
+analysis,” Journal of the American Statistical Association, 97, 1090–1098.
+Kiers, H. A. L. (1989), “An alternating least squares algorithm for fitting the two- and three-way
+DEDICOM model and the IDIOSCAL model,” Psychometrika, 54, 515–521.
+Li, H. (2002), “Modeling through group invariance: an interesting example with potential applications,” The Annals of Statistics, 30, 1069–1080.
+Li, H. and Loken, E. (2002), “A unified theory of statistical analysis and inference for variance
+component models for dyadic data,” Statistica Sinica, 12, 519–535.
+Marasinghe, M. G. and Johnson, D. E. (1982), “A test of incomplete additivity in the multiplicative
+interaction model,” Journal of the American Statistical Association, 77, 869–877.
+McGilchrist, C. A. (1994), “Estimation in generalized mixed models,” Journal of the Royal Statistical Society. Series B. Methodological, 56, 61–69.
+Natarajan, R. and Kass, R. E. (2000), “Reference Bayesian methods for generalized linear mixed
+models,” Journal of the American Statistical Association, 95, 227–237.
+Nowicki, K. and Snijders, T. A. B. (2001), “Estimation and prediction for stochastic blockstructures,” Journal of the American Statistical Association, 96, 1077–1087.
+Oman, S. D. (1991), “Multiplicative effects in mixed model analysis of variance,” Biometrika, 78,
+729–739.
+Schall, R. (1991), “Estimation in generalized linear models with random effects,” Biometrika, 78,
+719–727.
+
+18
+
+Schrodt, P. A., Simpson, E. M., and Gerner, D. J. (2001), “Monitoring conflict using automated coding of newswire sources,” Paper presented at the High-Level Scientific Conference on Identifying
+Wars, Uppsala University, Uppsala, Sweden. http://www.pcr.uu.se/Schrodt_Uppsala.pdf.
+Schweinberger, M. and Snijders, T. (2003), “Settings in social networks: A measurement model.”
+Submitted.
+Sibson, R. (1978), “Studies in the robustness of multidimensional scaling,” Journal of the Royal
+Statistical Society, Series B, Methodological, 40, 234–238.
+ten Berge, J. M. F. and Kiers, H. A. L. (1989), “Fitting the off-diagonal DEDICOM model in the
+least-squares sense by a generalization of the Harman and Jones MINRES procedure of factor
+analysis,” Psychometrika, 54, 333–337.
+Trendafilov, N. T. (2002), “GIPSCAL revisited. A projected gradient approach,” Statistics and
+Computing, 12, 135–145.
+Warner, R., Kenny, D. A., and Stoto, M. (1979), “A new round robin analysis of variance for social
+interaction data,” Journal of Personality and Social Psychology, 37, 1742–1757.
+Wasserman, S. and Faust, K. (1994), Social Network Analysis: Methods and Applications, Cambridge University Press, Cambridge.
+Wasserman, S. and Pattison, P. (1996), “Logit models and logistic regressions for social networks:
+I. An introduction to Markov graphs and p*,” Psychometrika, 61, 401–425.
+Wolfinger, R. and O’Connell, M. (1993), “Generalized linear mixed models: A pseudo-likelihood
+approach,” Journal of Statistical Computation and Simulation, 48, 233–243.
+Wong, G. Y. (1982), “Round robin analysis of variance via maximum likelihood,” Journal of the
+American Statistical Association, 77, 714–724.
+Zeger, S. L. and Karim, M. R. (1991), “Generalized linear models with random effects: A Gibbs
+sampling approach,” Journal of the American Statistical Association, 86, 79–86.
+
+19
+
+

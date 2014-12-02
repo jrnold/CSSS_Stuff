@@ -1,0 +1,1162 @@
+Bayesian Probabilistic Projection of International
+Migration Rates
+Jonathan J. Azose and Adrian E. Raftery
+University of Washington
+Working Paper no. 136
+Center for Statistics and the Social Sciences
+University of Washington
+October 26, 2013
+
+i
+
+Abstract
+We propose a method for obtaining joint probabilistic projections of migration rates
+for all countries, broken down by age and sex. Joint trajectories for all countries are
+constrained to satisfy the requirement of zero global net migration. We evaluate our
+model using out-of-sample validation and compare point projections to the projected
+migration rates from a persistence model similar to the method used in the United
+Nations’ World Population Prospects, and also to a state of the art gravity model.
+We also resolve an apparently paradoxical discrepancy between growth trends in the
+proportion of the world population migrating and the average absolute migration rate
+across countries.
+Keywords: Autoregressive model, Bayesian hierarchical model, Gravity model, Markov
+chain Monte Carlo, Persistence model, World Population Prospects.
+
+ii
+
+China Rates
+
+2
+1
+−3
+
+−1 0
+
+Net Migration Rate
+
+0 2 4 6 8
+−4
+
+Net Migration Rate
+
+3
+
+United States of America Rates
+
+2000
+
+2050
+
+2100
+
+1950
+
+2000
+
+2050
+
+Time
+
+Time
+
+Netherlands Rates
+
+Zimbabwe Rates
+
+2100
+
+1950
+
+2000
+
+2050
+
+2100
+
+10
+0
+−20 −10
+
+Net Migration Rate
+
+4
+2
+0
+−4 −2
+
+Net Migration Rate
+
+6
+
+1950
+
+1950
+
+Time
+
+2000
+
+2050
+
+2100
+
+Time
+
+Figure 1: Probabilistic Projections of Net International Migration Rates: 80% and 95%
+prediction intervals for four countries, with example trajectories included in gray.
+
+1
+
+Introduction
+
+In this paper we propose a method for probabilistic projection of net international migration
+rates. Our technique is a simple one that nonetheless overcomes some of the usual difficulties of migration projection. First, we produce both point and interval estimates, providing
+a natural quantification of uncertainty. Second, since our model uses only demographic
+variables as inputs, we can make long-term projections without explosion in the degree of
+uncertainty. Third, simulated trajectories from our model satisfy the common sense requirement that worldwide net migration sum to zero for each sex and age group. Fourth, our
+projected trajectories approximately replicate the observed frequency of countries switching
+between positive and negative net migration. Lastly, we sidestep the difficulty in projecting
+a complete large matrix of pairwise flows by instead working directly with net migration
+rates. Sample projections from our model for several countries are given in Fig. 1.
+We also highlight an apparent paradox in the evolution of migration trends over time.
+We provide an explanation for this paradox and show that our model successfully reproduces
+it.
+In the remainder of Section 1, we provide background and describe global trends in
+migration rates. In Section 2, we describe our data and methods for producing probabilistic
+1
+
+projections. Section 3 summarizes our main results, including an evaluation of our model’s
+performance and what our projections predict about future global migration trends. Finally,
+Section 4 contains evaluative discussion.
+
+1.1
+
+Motivation and background
+
+There is a clear demand for migration projections. Organizations including the United
+Nations and the UK Office for National Statistics have identified a necessity for migration
+forecasts (United Nations Population Division, 2011; Wright, 2010).
+Our work is motivated by the needs of the UN Population Division in producing probabilistic population projections for all countries. The UN has recently adopted a Bayesian
+approach to projecting the populations of all countries as the basis for its official medium
+projection, and has issued probabilistic projections on an experimental basis (Raftery et al.,
+2012; United Nations Population Division, 2013), The underlying method can account for
+uncertainty about fertility and life expectancy though Bayesian hierarchical models (Alkema
+et al., 2011; Raftery et al., 2013). However, the approach does not yet take account of uncertainty about international migration. Instead the UN probabilistic population projections
+are conditional on deterministic migration projections that essentially amount to assuming
+that current migration rates will continue into the future in the medium term. To make
+the method fully probabilistic would require probabilistic projections of net international
+migration for all countries.
+Lutz and Goldstein (2004), in answering the question of how to deal with uncertainty in
+population forecasting, point to the need for simple approaches to probabilistic forecasting
+of migration. Our paper attempts to meet this need. Despite the demand, some experts
+have been pessimistic about the possibility of predicting migration at all. ter Heide (1963)
+felt that the task of finding a usable model for migration is “virtually impossible”. This
+opinion was updated by Bijak and Wi´sniowski (2010), who drew the similarly disheartening
+conclusions that “migration is barely predictable” and “forecasts with too long horizons are
+useless.”
+Nevertheless, there have been efforts to forecast international migration. These attempts have mostly been limited in geographic and/or chronological scope. Bijak and
+Wi´sniowski (2010) produced migration projections for seven European countries until 2025
+using Bayesian hierarchical models. Using another geographically focused method, Fertig
+and Schmidt (2000) projected migration flows from a set of 17 mostly European countries to
+Germany over the 1998-2017 time period. One drawback of these approaches in the context
+of population projections for all countries is that both require the use of data on migration
+flows between pairs of countries. Estimates of reasonable quality of these flows are now
+2
+
+available for most pairs of European countries (Abel, 2010), making such techniques feasible
+for Europe and other developed regions. Estimates for global pairwise migration flows are
+also available (Abel, 2013), but the quality of these estimates varies with the reliability of
+record keeping in the countries involved.
+Another forecasting method was provided by Hyndman and Booth (2008), who gave
+a stochastic model for indirect migration forecasting by forecasting fertility and mortality,
+taking migration to be the appropriate quantity to satisfy the balancing equation. Their
+method provides estimates for individual countries, but joint estimates for all countries
+would in general not satisfy the requirement that worldwide net migration be zero. A
+simpler approach is taken by the United Nations World Population Prospects (2013), which
+includes point projections that generally project migration rates to persist at or near current
+levels for the next couple of decades and drop deterministically to zero in the long horizon.
+Finally, Cohen (2012) provides a method for point projections of migration counts for all
+countries using a gravity model.
+
+1.2
+
+Theory of International Migration
+
+There is a general consensus about the major causes of international migration. On the
+individual level, desire to migrate is caused in large part by economic factors (Esipova et al.,
+2011; Massey et al., 1993). Refugee movements may be precipitated by political or social
+factors rather than economic ones (Richmond, 1988). However, both economic and political
+factors are unlikely to be predictable in the long run with any useful degree of certainty.
+For the purposes of projection, Kim and Cohen (2010) argue for the use of more predictable
+demographic variables in place of unpredictable economic ones. They propose a model for
+prediction of migration flows which incorporates life expectancy, infant mortality rate, and
+potential support ratio as predictor variables. Kim and Cohen find these variables to be significant predictors of migration flows. Furthermore, as demographic variables tend to change
+much more slowly than economic or political ones, it is often possible to project the values
+of demographic variables decades into the future with a lower degree of uncertainty. Our
+model projects net migration rates on the basis of only past migration rates and projected
+populations for all countries, for which forecasts can be made with enough precision to be
+useful.
+One further demographic variable of interest in modeling migration is age structure. Age
+structure is important to migration modeling in two different ways. First, projected age
+structures for all countries can potentially be used as predictor variables in projections of
+future migration. Since labor migration is common, the age structure of the sending and/or
+receiving countries can be used in making projections (Fertig & Schmidt, 2000; Hatton &
+3
+
+Williamson, 2002, 2005). Kim and Cohen (2010), in a study of pairwise migration flows,
+found that a young age structure in the country of origin is associated with high migration
+flows, while a young age structure in the country of destination is associated with low flows.
+Second, it may be of interest to project not only net migration rates, but also age-specific
+net migration rates. Rogers and Castro (1981) provided a parametric multiexponential model
+migration schedule which can be used in converting from projected net migration rates to
+age-specific rates. Their model incorporates a principal migration peak among young adults,
+who often migrate for reasons of economics, marriage, or education, as well as a secondary
+childhood peak for the children of those young adult migrants. They include a further
+option for waves of retirement and post-retirement migration which are common patterns of
+regional migration but less common internationally. Raymer and Rogers (2007) point out
+the complication that the age structure of a migrating population is dependent on direction
+of migration. For example, we would expect a labor migration and a subsequent return
+migration to have different age structures. This fact is unfortunately difficult to incorporate
+into a model like ours which works with net rates rather than gross pairwise flows.
+For projection purposes, Bayesian modeling is well suited to modeling international migration. The difficulty in making accurate point projections emphasizes the need for an approach that produces estimates of uncertainty. As our data set includes only 12 time points
+per country, non-Bayesian inference could be difficult; the Bayesian approach alleviates this
+by allowing us to borrow strength across countries. Studies with limited geographical scope
+confirm this intuition. In a comparison of several methods for forecasting migration to Germany, Br¨
+ucker and Siliverstovs (2006) found performance of a hierarchical Bayes estimator
+to be superior to that of a simpler OLS estimator. Good results have also come out of
+Bayesian forecasting efforts for fertility and mortality (Alkema et al., 2011; Lalic & Raftery,
+2012; Raftery et al., 2012, 2013). In addition to forecasting, estimation of demographic
+variables also lends itself to Bayesian methodology (Abel, 2010; Congdon, 2010; Wheldon et
+al., 2013).
+
+1.3
+
+Migration trends
+
+The primary goal of our model is to produce point and interval projections. However, it is also
+desirable for our model to replicate current trends in the migration data. When looking at
+migration trends over roughly the last 60 years, we find an apparent contradiction. Consider
+the question of whether migration increased between 1950 and 2010. One sensible way to
+answer this question is to look at the number of individuals migrating within each five-year
+time period per thousand individuals of the world population. We will denote this quantity
+
+4
+
+1950
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+5.0
+
+5.5
+
+6.0
+
+6.5
+
+Mean Abs. Migration Rate
+Mean Abs. Migration Rate
+
+Prop. of World Pop.
+
+0.5 0.6 0.7 0.8 0.9 1.0
+
+Proportion of World Pop. Migrating
+
+1950
+
+Time
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+Time
+
+Figure 2: Global Trends in International Migration: Left: Time series of the estimated
+proportion of the world population migrating. Right: Average absolute migration rate,
+averaged across all countries at each time point. Both plots show number of migrants per
+thousand population. The red lines are ordinary least squares regression lines.
+by prop(t).1 The left panel of Fig. 2 shows the trend in prop(t) over the period from 1950
+to 2010. There is a clear upward trend, with 74% growth in prop(t) between the 1950 time
+period and the 2005 time period. This growth is significant. A t-test shows strong evidence
+of non-zero slope (p = 0.00087, R2 = 0.69).
+On the other hand, we might answer the question of whether migration is increasing over
+time at the country level rather than the global level. We can do so by computing the mean
+absolute migration rate, mamr(t), averaged across all countries. The right panel of Fig. 2
+shows this trend over the period from 1950 to 2010. Whereas there was clear growth in
+prop(t) over this time period, mamr(t) shows a much smaller amount of growth, with only
+13% growth between the 1950 time period and the 2005 time period. A t-test does not show
+evidence of non-zero slope (p = 0.74, R2 = 0.00005).
+Thus, there is an apparent contradiction: How is it possible that more people are migrating than in the past but countries’ migration rates are not increasing on average? In Section
+3.2 we resolve this paradox.
+A second feature of the historical migration data to consider is the frequency with which
+countries switch between being net senders and net receivers of migrant. Such switches have
+1
+
+To calculate this quantity, we used data that take the form of net numbers of migrants per country
+rather than gross counts. We made the approximation that most countries are either purely senders or
+purely receivers, so that gross numbers can be approximated by net numbers. For our purposes, what is
+important is that this approximation not become much better or worse over time.
+
+5
+
+been relatively common over the past 50 years. In fact, in the 2005-2010 time period, 46%
+of countries had different migration parity than they had in 1955-1960 (i.e., they switched
+either from net senders to net receivers or vice versa.) In contrast, the current United Nations
+methodology (United Nations Population Division, 2013) projects no crossovers between now
+and 2100. Our model projects crossover behavior that is more in line with historical trends.
+Further analysis of projected parity changes is given in Section 3.3.1.
+
+2
+
+Methods
+
+2.1
+
+Data
+
+We use data from the 2010 revision of the United Nations Population Division’s biennial
+World Population Prospects (WPP) report (United Nations Population Division, 2011).
+WPP reports contain estimates of countries’ past age- and sex-specific fertility, mortality
+and net international migration rates, as well as projections of future rates.
+The quantity we are interested in forecasting is rc,t , the net annual migration rate for
+country c in time period t, reported in units of migrants per thousand individuals in the
+WPP data. For calculations, we sometimes convert rates rc,t to corresponding counts yc,t .
+Our method also requires knowledge of the average population of countries, nc,t , indexed by
+country and time, and projections of nc,t into the future for all countries.
+
+2.2
+
+Probabilistic Projection Method
+
+Our technique is to fit a Bayesian hierarchical first-order autoregressive, or AR(1), model to
+net migration rate data for all countries. We model the migration rate, rc,t , in country c and
+time period t as
+(rc,t − µc ) = φc (rc,t−1 − µc ) + εc,t ,
+where εc,t is a normally-distributed random deviation with mean zero and variance σc2 . We
+put normal priors on each country’s theoretical equilibrium migration rate µc , and a uniform prior on the autoregressive parameter φc . Under this model, simulation of trajectories
+requires us to estimate or specify values of µc , φc , and σc2 for all countries, so the complete
+parameter vector is given by θ = (µ1 , . . . , µC , φ1 , . . . , φC , σ12 , . . . , σC2 ), where C is the number
+of countries.
+The full specification of the model, including prior distributions, is as follows:
+(
+Level 1
+
+(rc,t − µc ) = φc (rc,t−1 − µc ) + εc,t
+ind
+εc,t ∼ N (0, σc2 )
+6
+
+
+iid
+
+ φc ∼ U (0, 1)
+Level 2 µc iid
+∼ N (λ, τ 2 )
+
+ 2 iid
+σc ∼ IG(a, b)
+
+a ∼ U (1, 10)
+
+
+
+b|a ∼ U (0, 100(a − 1))
+Level 3
+λ ∼ U (−100, 100)
+
+
+
+τ ∼ U (0, 100),
+where X ∼ N (µ, σ 2 ) indicates that the random variable X has a normal distribution with
+mean µ and variance σ 2 (and hence standard deviation σ), U (c, d) denotes a uniform distribution between the limits c and d, and IG(a, b) denotes an inverse gamma distribution with
+probability density function (as a function of x) proportional to x−a−1 e−b/x .
+We obtain draws from the posterior distributions of all parameters using Markov Chain
+Monte Carlo methods. In our implementation, we use the Just Another Gibbs Sampler
+(JAGS) software package for Markov chain Monte Carlo simulations (Plummer, 2003).
+Having obtained a sample (θ 1 , . . . , θ N ) of draws from the joint distribution of the parameters, we use these draws to obtain a sample from the joint posterior predictive distribution.
+For each sampled point θ k from the joint posterior distribution of the parameters, we first
+(k)
+
+simulate a set of joint trajectories r˜c,t for net migration rates at time points until 2100,
+where k indexes the trajectory. However, this procedure generally produces trajectories
+which are impossible in that they give nonzero global net migration counts. We therefore
+∗(k)
+
+create corrected net migration rate trajectories r˜c,t , using the following method:
+1. On the basis of the parameter vector θ k , project net migration rates for all countries a
+single time point into the future. Denoting the next time period in the future by t0 , this
+(k)
+
+allows us to obtain a collection of (uncorrected) projected values r˜c,t0 for all countries c.
+(k)
+
+(k)
+
+2. Convert net migration rate projections r˜c,t0 to net migration count projections y˜c,t0 . This
+is done by multiplying by a projection of each country’s population, n
+˜ c,t0 . We obtain these
+projections from WPP 2010 (United Nations Population Division, 2011).
+3. Further break down migration counts by age a and sex s to obtain estimates of net male
+(k)
+
+and female migration counts for all countries and age groups, y˜c,t0 ,a,s . This is done by
+applying projected model migration schedules to all countries. We take each country’s
+age- and sex-specific migration schedule to be the same as the distribution of migration
+by age and sex in the most recent time point for which detailed data were available for
+that country.
+
+7
+
+4. For each simulated trajectory, within each age and sex category, apply a correction to
+ensure zero worldwide net migration. The correction we apply redistributes any overflow
+migrants to all countries, in proportion to their projected populations. Specifically, take
+∗(k)
+the corrected migration count projection y˜c,t0 ,a,s to be
+∗(k)
+y˜c,t0 ,a,s
+
+=
+
+(k)
+y˜c,t0 ,a,s
+
+n
+˜ c,t0
+
+− PC
+
+j=1
+
+n
+˜ j,t0
+
+C
+X
+
+(k)
+
+y˜j,t0 ,a,s .
+
+j=1
+∗(k)
+
+5. Convert the corrected age- and sex-specific net migration counts y˜c,t0 ,a,s back to corrected
+∗(k)
+
+net migration rates r˜c,t0 by disaggregating and converting counts to rates.
+6. Continue projecting trajectories one time step at a time into the future by repeating steps
+1-5.
+Note that, although the uncorrected net migration rates r˜c,t0 come from the desired
+marginal posterior predictive distributions, the correction in step 4 changes those distributions by projecting them onto a lower dimensional space. Sensitivity analysis suggests that
+the correction introduces only minor changes between the marginal distributions with and
+without the correction.
+
+3
+3.1
+
+Results
+Evaluation
+
+We do not know of any other model that produces probabilistic projections of all countries’
+migration rates. However, we can take our model’s median projections to be point projections
+and compare them with models that produce point projections only. First, as a baseline for
+comparison, we evaluate them against the simple persistence model which projects migration
+rates to continue at the most recently observed levels indefinitely into the future. In the
+short to medium horizon, the persistence model is similar to the expert knowledge-based
+projections in the WPP (United Nations Population Division, 2011).
+Second, we compare against point projections produced separately for all countries using
+the gravity model based method of Cohen (2012). The gravity model produces projected
+migration counts, but we convert these to rates for comparability with our method. For each
+country c, the gravity model makes projections as follows: Let L(t) be the population of
+country c at time t, and let M (t) be the population of the rest of the world at time t. Then
+expected in-migration to country c is given by a × L(t)α M (t)β , where a is a country-specific
+proportionality constant. The exponents α and β are constant across countries, with values
+8
+
+estimated by Kim and Cohen (2010). Similary, expected out-migration from country c has
+the form b × L(t)γ M (t)δ , where b is to be estimated and γ and δ come from Kim and Cohen
+(2010). The constants of proportionality a and b for each country are chosen to minimize
+the sum of squared deviations between estimates of net migration produced by the gravity
+model and true historical values of net migration from the WPP 2010 revision (United
+Nations Population Division, 2011). Having estimated a and b for a particular country, net
+migration projections are then given by a × L(t)α M (t)β − b × L(t)γ M (t)δ , where L(t) and
+M (t) are now projected populations. Implementation details are given in the appendix.
+Our historical data consist of a series of migration rates rc,t for 197 countries at 12 time
+points in five-year time intervals, spanning the period from 1950 to 2010. We performed an
+out-of-sample evaluation by holding out the data from the m most recent time points for
+all countries and producing posterior predictive distributions on the basis of the remaining
+(12 − m) time points. As point forecasts we used the median of the posterior predictive
+distribution. We report out-of-sample mean absolute error as a measure of the quality of
+point forecasts, and interval coverage as a measure of quality of our interval predictions.
+Table 1 contains these evaluation metrics for our Bayesian hierarchical model and the
+mean absolute errors for the persistence and gravity models. Across the board, our point
+projections outperformed both the persistence model and the gravity model, and our interval
+projections achieved reasonably good calibration.
+Table 1: Predictive Performance of Different Methods: Mean absolute errors (MAE) and
+prediction interval coverage for our Bayesian hierarchical model, the gravity model, and the
+persistence model.
+Validation time period
+5 years
+
+15 years
+
+30 years
+
+Model
+MAE 80% Cov. 95% Cov.
+Bayesian
+3.24
+91.4%
+96.4%
+Gravity
+4.70
+—
+—
+Persistence 3.57
+—
+—
+Bayesian
+4.76
+84.9%
+93.4%
+Gravity
+6.57
+—
+—
+Persistence 6.74
+—
+—
+Bayesian
+5.12
+77.2%
+89.3%
+Gravity
+12.32
+—
+—
+Persistence 7.17
+—
+—
+
+9
+
+3.2
+
+Paradox Resolution
+
+In this section, we resolve the apparent paradox that migration rates have been roughly constant when averaged across countries despite growing numbers of global migrants over time.
+We first provide an algebraic explanation for how the proportion of the world population
+migrating, prop(t), can grow over time while the mean absolute migration rate, mamr(t),
+stays roughly constant. We then check that this algebraic explanation is consistent with the
+observed data.
+We are interested in the change in two numbers over time: the mean absolute migration
+rate,
+PC
+mamr(t) =
+
+c=1
+
+|rc,t |
+
+,
+C
+and the proportion of the world’s population migrating, defined here as
+P
+C
+C
+1X
+1X
+1 C
+nc,t
+c=1 |yc,t |
+|rc,t | PC
+|rc,t |ψc,t ,
+=
+=
+prop(t) ≈ PC
+2 j=1 nj,t
+2 c=1
+2
+n
+j,t
+j=1
+c=1
+where ψc,t =
+
+nc,t
+PC
+j=1 nj,t
+
+is the proportion of the world population residing in country c in time
+
+period t. (The factor of 1/2 is so that migrants are not double-counted as both immigrants
+and emigrants.) Thus, mamr(t) and prop(t) are both weighted averages of absolute migration
+rates. The former uses uniform weights across all countries and the latter weights countries
+proportionally to their size.
+The question of interest is how prop(t) can experience steady growth and increase by
+74% between 1950 and 2010 while mamr(t) oscillates and grows by only 13%. From a
+purely algebraic perspective, there is no inherent contradiction in these two different weighted
+averages growing at different rates, so long as some combination of the following two things
+is true: (1) the weights ψc,t are changing over time in such a way that growth in ψc,t happens
+disproportionately among countries with high values of |rc,t |, and (2) growth in absolute
+migration rate is somehow related to country size.
+In fact the population-based weights ψc,t do not change much over the period we are
+investigating. Countries which were large half a century ago are generally still large today.
+In fact, the growth in prop(t) is mostly driven by growth in |rc,t | for the most heavily weighted
+(i.e. most populous) countries. Over the time period from 1950 to 2010, we see nearly acrossthe-board increases in absolute migration rates among the very highly populated countries.
+Figure 3 shows this growth among the largest countries. Orange bars show absolute migration
+rates for the 25 largest countries in 2005-2010, ordered from largest to smallest population.
+Blue bars show absolute migration rates from 1950-1955.
+Of the 25 countries with the largest populations in 2005-2010, 23 had higher absolute
+migration rates in 2005-2010 than they did in 1950-1955. This collection of countries covers
+10
+
+1950−1955
+2005−2010
+
+5
+4
+3
+2
+
+KOR
+
+ZAF
+
+ITA
+
+COD
+
+GBR
+
+FRA
+
+THA
+
+IRN
+
+TUR
+
+EGY
+
+ETH
+
+DEU
+
+VNM
+
+PHL
+
+MEX
+
+JPN
+
+RUS
+
+BGD
+
+NGA
+
+PAK
+
+BRA
+
+IDN
+
+USA
+
+IND
+
+CHN
+
+0
+
+1
+
+Abs. Migration Rate
+
+6
+
+7
+
+Abs. Migration Rates Among Largest Countries
+
+Figure 3: Absolute annual migration rates per thousand individuals in the 25 most populous
+countries. Labels on the x-axis are three-letter ISO country codes.
+a majority of the world population—76% of the world population in 1950-1955 and 75% in
+2005-2010. The mean absolute migration rate among the 25 largest countries was extraordinarily low in 1950-1955—only 0.42 per thousand, compared to a global average of 4.71 per
+thousand. By 2005-2010, the mean absolute migration rate among the 25 largest countries
+had grown to 1.74 per thousand against a global average of 5.31 per thousand. Notably,
+the mean absolute migration rate among large countries is still much lower than the worldwide average. Nevertheless, this small growth in absolute migration rates for the 25 largest
+countries provides the majority of the increase in prop(t).
+The model we presented in Section 2 produces projections that are consistent with the
+observed trends in prop(t) and mamr(t), despite containing no assumptions about or parameters directly tied to either prop(t) or mamr(t). Projections are shown in Fig. 4. We
+forecast that prop(t) will continue to grow, leveling off in the long horizon and that mamr(t)
+will remain roughly constant.
+One way to interpret this projection is as a continued trend towards globalization. A
+defining feature of globalization is an increase in transnationalism in general which manifests
+itself by increases in cross-border flows of various kinds (Castles & Miller, 2003). The
+continued growth of proportion of the world population migrating is therefore consistent
+with an increase in globalization. One result of globalization’s characteristic transnational
+
+11
+
+1950
+
+2000
+
+2050
+
+2100
+
+5.0
+
+6.0
+
+7.0
+
+8.0
+
+Mean Abs. Migration Rate
+Mean Abs. Migration Rate
+
+1.4
+1.0
+0.6
+
+Prop. of World Pop.
+
+1.8
+
+Proportion of World Pop. Migrating
+
+1950
+
+Time
+
+2000
+
+2050
+
+2100
+
+Time
+
+Figure 4: In black, observed historical data on mean annual proportion of the world population migrating (left; per thousand) and mean absolute annual migration rate (right; per
+thousand) for five-year time periods from 1950 to 2010. In red, median estimates and 80%
+and 95% prediction intervals from our model for time periods out to 2100.
+flows is an increase in homogeneity across nations (Robertson, 1992). In this sense, too, our
+projections are consistent with an increase in globalization. Our model is projecting that
+net international migration rates among high-population countries will continue to converge
+towards those of the rest of the world.
+
+3.3
+3.3.1
+
+Case Studies
+Denmark
+
+Denmark experienced net emigration through the 1950s, but has consistently received net
+immigration since the 1960s. This pattern of changing from a net sender to a net receiver
+within the last 60 years is common to many of the European countries, including Norway,
+Finland, the UK, and Spain, among others. This serves as a reminder that the global migration to northern and western Europe which seems so firmly established now is a relatively
+recent phenomenon.
+Our median predictions for Denmark have the country continuing to be a net receiver of
+migrants for as far out into the future as we care to project. However, we also see that the
+probability of Denmark switching over to a net sender increases over time. Based on the
+history of the 20th century, it seems realistic to include the possibility of changeovers in Denmark and other European countries in probabilistic migration projections. Correspondingly,
+projections that do not take account of this possibility seem unrealistic.
+12
+
+6
+4
+2
+0
+−4 −2
+
+Net Migration Rate
+
+8
+
+Denmark Rates
+
+1950
+
+2000
+
+2050
+
+2100
+
+Time
+
+Figure 5: Probabilistic Projections of Net International Migration Rates: 80% and 95%
+prediction intervals for Denmark, with example trajectories included in gray.
+The European countries are not alone in having oscillated between being net senders
+and net receivers of migrants. As mentioned in Section 1.3, 46% of countries had different
+migration parity in the 1955-1960 time period than they had in 2005-2010 (i.e., they switched
+either from net senders to net receivers or vice versa.) Our Bayesian hierarchical model
+projects 49% of countries will have different migration parity in 2055-2060 than they do
+now. This projection is in line with the number of historical parity changes. In contrast, the
+gravity model (Cohen, 2012) projects only 29% of countries to change parity by 2055-2060.
+The persistence model and the WPP migration projections (United Nations Population
+Division, 2013) both project no parity changes.
+3.3.2
+
+Nicaragua
+
+Migration rates in Nicaragua have increased steadily in magnitude over the last six decades.
+Nevertheless, although our model projects a small probability of continued growth in the
+magnitude of the net migration rate, it gives higher probability to scenarios in which migration rates move back towards zero. In general, our model favors trajectories in which
+net migration rates move towards zero rather than continuing current trends of growth in
+magnitude where such trends exist.
+Statistically, this tendency for migration rates on average to reverse course and tend
+back towards zero arises from the hierarchical nature of the model. Specifically, all of the µc
+values, which we can think of as the long-horizon median migration rates for each country,
+are assumed to come from a common N (λ, τ 2 ) distribution. As a result, the hierarchical
+“sharing of strength” has a tendency to pull all the µc values towards a common center, λ,
+which has a posterior distribution with a mode close to zero. It should be noted that while
+13
+
+0
+−5
+−10
+−15
+
+Net Migration Rate
+
+5
+
+Nicaragua Rates
+
+1950
+
+2000
+
+2050
+
+2100
+
+Time
+
+Figure 6: Probabilistic Projections of Net International Migration Rates: 80% and 95%
+prediction intervals for Nicaragua, with example trajectories included in gray.
+
+1
+0
+−1
+−3
+
+−2
+
+Net Migration Rate
+
+2
+
+3
+
+India Rates
+
+1950
+
+2000
+
+2050
+
+2100
+
+Time
+
+Figure 7: Probabilistic Projections of Net International Migration Rates: 80% and 95%
+prediction intervals for India, with example trajectories included in gray.
+our model’s median projections tend to predict reversal in growth trends, the predictive
+probability distributions give substantial probability to continuation and growth of rates.
+3.3.3
+
+India
+
+Historically, India has had relatively small net migration rates, on the order of less than 1
+per thousand. The 95% prediction intervals from our model are quite a bit wider than the
+range of India’s historical data, expanding out to roughly ±3 per thousand.
+Statistically, the width of a country’s prediction intervals from our model is primarily
+controlled by the error variance σc2 . (The autoregressive parameters, φc , also influence the
+width of prediction intervals, but to a lesser extent.) The excess width of India’s prediction
+
+14
+
+20
+0
+−40 −20
+
+Net Migration Rate
+
+40
+
+Rwanda Rates
+
+1950
+
+2000
+
+2050
+
+2100
+
+Time
+
+Figure 8: Probabilistic Projections of Net International Migration Rates: 80% and 95%
+prediction intervals for Rwanda, with example trajectories included in gray.
+intervals above its range of observed migration history is statistically a result of the hierarchical “sharing of strength”. Since most other countries have larger ranges of migration
+rates, India’s posterior distribution on σc2 gets inflated somewhat to values more in line with
+the rest of the world. The same inflation of σc2 occurs in China, which also has experienced
+uncommonly small migration rates in the past.
+Substantively, this seems realistic given the increasing globalisation we have documented.
+As the largest countries become more like other countries in terms of migration patterns, it
+seems reasonable to expect that the variability of their migration rates in the future would
+also increase to become more like the levels of other countries.
+3.3.4
+
+Rwanda
+
+In the early 1990s, Rwanda experienced high net out-migration, followed by high net inmigration in the late 1990s. These migration spikes were a result of emigration during the
+Rwandan genocide in 1994 and subsequent return migration. Outside of the 1990s, Rwanda
+had quite small and stable migration rates. This pattern of stability punctuated by large
+shocks poses a problem for probabilistic projections: Do we get better performance with
+wide prediction intervals which encompass the high migration rates during the shock, or
+narrow prediction intervals which reflect the decades of stability around it?
+Our model opts for wide prediction intervals in cases like Rwanda. A model which puts
+a heavy-tailed t distribution on the εc,t ’s rather than a normal distribution would produce
+narrower prediction intervals. However, we found that the normal model achieved better
+calibration. Section 4 contains a brief further discussion of a model with t-distributed errors.
+
+15
+
+3.3.5
+
+The least-developed countries
+
+The United Nations publishes a list of the least-developed countries, with countries classified
+as least-developed based on assessments of their economic vulnerability, human capital, and
+gross national income (Committee for Development Policy and United Nations Department
+of Economic and Social Affairs, 2008). A total of 46 countries in our data fall into the
+least-developed category. We now consider briefly the projections that our model makes for
+these least-developed countries in comparison to all other countries.
+In the 2005-2010 time period, only 26% of the least-developed countries were net receivers
+of migration, as compared to 43% of all other countries. The least-developed countries had
+an average net migration rate of -0.97 per thousand, compared with an average of 2.64
+per thousand in all other countries. However, our model projects that this gap in migration
+between currently least-developed and all other countries will narrow over time. Key findings
+are summarized in Table 2. Over the coming decades, we project growth in net migration
+rates among the least developed countries and decline in net migration rate on average across
+all other countries.
+Table 2: Mean projected change in migration rates (per thousand) among least-developed
+countries (LDC) versus all other countries (Other).
+By 2020
+By 2040
+By 2060
+
+4
+
+LDC Other
++0.02 -1.49
++0.29 -2.12
++0.34 -2.29
+
+Discussion
+
+We have presented a method for projecting net migration rates. Our method is novel in that
+it provides probabilistic projections for all countries. Furthermore, it satisfies the requirement
+that simulated trajectories have zero global net migration for each sex and age group.
+Additionally, we observe a paradoxical trend in the evolution of global migration rates.
+Although there is more migration than in the past as a proportion of the world population,
+countries’ absolute migration rates have not been increasing on average. We resolve this
+paradox by noting the tendency of large countries to have small migration rates. Our method
+successfully reproduces this pattern, which seems desirable for migration projection methods
+in general.
+Our model includes the assumption that the random error terms εc,t are independent
+across countries and time. That assumption is mathematically convenient, but for many pairs
+16
+
+of countries we expect to see non-zero correlations. For example, it is reasonable to expect
+that if Mexico undergoes particularly high net emigration during a quinquennium, then the
+United States will experience higher than usual net immigration during the same period.
+Thus we might expect to observe negative correlation between the random errors for Mexico
+and the United States. At the same time, it is not unreasonable to expect positive correlation
+between error terms in neighboring pairs of countries whose economic fortunes tend to move
+together. Such a pattern is observed, for example, among the Baltic states. We attempted to
+find an optimal non-trivial covariance structure by constructing a variance-covariance matrix
+as a linear combination of matrices whose off-diagonal elements are pairwise, time-invariant
+covariates. However, this method offered no significant improvement over the assumption of
+independent residuals.
+Migration rate data characteristically have outliers. Wars and refugee movements, for
+example, produce migration rates which are on a much larger scale than are typical during
+times of stability. This suggests that a model with a long-tailed error distribution like
+a t distribution might be more appropriate than a model with normal errors. However, in
+practice we found that models with normally distributed errors tended to outperform models
+with t errors in out-of-sample predictive evaluation. Models with t errors often produce 80%
+and 95% prediction intervals that are so tight that they do not come close to covering
+the range of observed historical migration rates. Statistically, the root of the problem is
+that in models with t errors, large outliers often do not have a large effect on the inferred
+scale parameter. Although using t errors often results in models with a high likelihood
+of the observed data, high likelihood does not necessarily correspond to good calibration
+of prediction intervals or qualitatively realistic migration rates. In our judgment, there is
+more value in forecasting distributions with reasonable prediction intervals than distributions
+which are likely to assign high probability density to future observations, and so we have
+used the normal model thoughout.
+Acknowledgements This work was supported by the Eunice Kennedy Shriver National
+Institute of Child Health and Development through grants nos. R01 HD054511 and R01
+HD070936, and by a Science Foundation Ireland E. T. S. Walton visitor award, grant reference 11/W.1/I2079. The authors are grateful to Patrick Gerland and Joel Cohen for sharing
+data and helpful discussions.
+
+References
+Abel, G. J. (2010). Estimation of international migration flow tables in Europe. Journal of
+the Royal Statistical Society: Series A (Statistics in Society), 173 , 797–825.
+17
+
+Abel, G. J. (2013). Estimating global migration flow tables using place of birth data.
+Demographic Research, 28 , 505–546.
+Alkema, L., Raftery, A. E., Gerland, P., Clark, S. J., Pelletier, F., Buettner, T., & Heilig,
+G. K. (2011). Probabilistic projections of the total fertility rate for all countries.
+Demography, 48 , 815–839.
+Bijak, J., & Wi´sniowski, A. (2010). Bayesian forecasting of immigration to selected European
+countries by using expert knowledge. Journal of the Royal Statistical Society: Series
+A (Statistics in Society), 173 , 775–796.
+Br¨
+ucker, H., & Siliverstovs, B. (2006). On the estimation and forecasting of international
+migration: How relevant is heterogeneity across countries? Empirical Economics, 31 ,
+735–754.
+Castles, S., & Miller, M. J. (2003). The age of migration: International population movements in the modern world. London: Macmillan.
+Cohen, J. E.
+(2012).
+Projection of net migration using a gravity model.
+In Proc. XXVII IUSSP International Population Conference.
+(Retreived
+from
+http://www.iussp.org/sites/default/files/event call for papers/
+IUSSPsession020CohenProjectionNetMigrationGravityModelUNPopDiv2012corrected
+.pdf)
+Committee for Development Policy and United Nations Department of Economic and Social
+Affairs. (2008). Handbook on the least developed country category: Inclusion, graduation, and special support measures.
+Congdon, P. (2010). Random-effects models for migration attractivity and retentivity: a
+Bayesian methodology. Journal of the Royal Statistical Society: Series A (Statistics in
+Society), 173 , 755–774.
+Esipova, N., Ray, J., & Publiese, A. (2011). Gallup world poll. The many faces of global
+migration. IOM Migration Research Series(43).
+Fertig, M., & Schmidt, C. M. (2000). Aggregate-level migration studies as a tool for forecasting future migration streams (Tech. Rep.). IZA Discussion paper series.
+Hatton, T. J., & Williamson, J. G. (2002). What fundamentals drive world migration?
+(Tech. Rep.). National Bureau of Economic Research.
+Hatton, T. J., & Williamson, J. G. (2005). Global migration and the world economy: Two
+centuries of policy and performance. Cambridge Univ Press.
+Hyndman, R. J., & Booth, H. (2008). Stochastic population forecasts using functional data
+models for mortality, fertility and migration. International Journal of Forecasting, 24 ,
+323–342.
+Kim, K., & Cohen, J. E. (2010). Determinants of international migration flows to and
+from industrialized countries: A panel data approach beyond gravity. International
+Migration Review , 44 , 899–932.
+Lalic, N., & Raftery, A. E. (2012). Joint probabilistic projection of female and male life
+expectancy. Presented at the annual meeting of Population Association of America.
+(http://paa2012.princeton.edu/abstracts/120140)
+Lutz, W., & Goldstein, J. R. (2004). Introduction: How to deal with uncertainty in population forecasting? International Statistical Review , 72 , 1–4.
+Massey, D. S., Arango, J., Hugo, G., Kouaouci, A., Pellegrino, A., & Taylor, J. E. (1993).
+Theories of international migration: a review and appraisal. Population and Develop18
+
+ment Review , 431–466.
+Plummer, M. (2003, March). JAGS: A program for analysis of Bayesian graphical models
+using Gibbs sampling. In Proceedings of the 3rd international workshop on distributed
+statistical computing (pp. 20–22).
+ˇ c´ıkov´a, H. (2013). Bayesian probabilistic
+Raftery, A. E., Chunn, J. L., Gerland, P., & Sevˇ
+projections of life expectancy for all countries. Demography, 50 , 777–801.
+ˇ c´ıkov´a, H., Gerland, P., & Heilig, G. K. (2012). Bayesian probaRaftery, A. E., Li, N., Sevˇ
+bilistic population projections for all countries. Proceedings of the National Academy
+of Sciences, 109 , 13915–13921.
+Raymer, J., & Rogers, A. (2007). Using age and spatial flow structures in the indirect
+estimation of migration streams. Demography, 44 , 199–223.
+Richmond, A. H. (1988). Sociological theories of international migration: the case of refugees.
+Current Sociology, 36 , 7–25.
+Robertson, R. (1992). Globalization: Social theory and global culture (Vol. 16). Sage.
+Rogers, A., & Castro, L. J. (1981). Model migration schedules. Laxenburg, Austria: International Institute for Applied Systems Analysis.
+ter Heide, H. (1963). Migration models and their significance for population forecasts. The
+Milbank Memorial Fund Quarterly, 41 , 56–76.
+United Nations Population Division. (2011). World population prospects: The 2010 revision.
+United Nations.
+United Nations Population Division. (2013). World population prospects: The 2012 revision.
+United Nations.
+Wheldon, M. C., Raftery, A. E., Clark, S. J., & Gerland, P. (2013). Estimating demographic parameters with uncertainty from fragmentary data. Journal of the American
+Statistical Association, 108 , 96–110.
+Wright, E. (2010). 2008-based national population projections for the United Kingdom and
+constituent countries. Population Trends, 139 , 91–114.
+
+Appendix: Gravity Model Implementation
+We implemented a version of Cohen’s (2012) gravity model which projects net migration
+counts for five-year intervals starting at 2010 and ending at 2100. Projections are made for
+each country independently, with no redistribution step to ensure zero global net migration.
+For each country, projections are produced as follows: Let L(t) be the population of country
+c at time t (in millions) and M (t) be the population of the rest of the world at time t (in
+millions). Then expected in-migration to country c is given by a × L(t)α M (t)β , where a is
+a country-specific proportionality constant and the exponents α and β are constant across
+countries, with values estimated by Kim and Cohen (2010). Similary, expected out-migration
+from country c has the form b × L(t)γ M (t)δ , where b is to be estimated and γ and δ come
+from Kim and Cohen (2010).
+The constants of proportionality a and b for each country are chosen to minimize the
+
+19
+
+2.0
+1.5
+1.0
+0.5
+
+Net Migrants (millions)
+
+Projected Net Migration Counts for USA
+
+1950
+
+2000
+
+2050
+
+2100
+
+Year
+
+Figure 9: Gravity model based projections of net international migration counts for the
+USA.
+sum of squared deviations between estimates of net migration from the gravity model and
+WPP estimates of net migration (United Nations Population Division, 2011) given in units
+of millions of net annual migrants. We used the values α = 0.728, β = 0.602, γ = 0.373,
+and δ = 0.948, reported by Cohen (2012). For each country, having estimated a and b, net
+migration projections are then given by a × L(t)α M (t)β − b × L(t)γ M (t)δ , where L(t) and
+M (t) are now projected populations also taken from WPP’s 2010 revision (United Nations
+Population Division, 2011).
+Our implementation appears to reproduce the results in Cohen (2012). Cohen reports the
+values of the proportionality constants, a and b, obtained for the United States, and provides
+a plot of the projections from his implementation of the gravity model. Using these, we are
+able to confirm that our results agree with those from Cohen’s implementation. Cohen
+reports a = 3.43 × 10−4 and b = −8.28 × 10−4 . We find very similar values of a = 3.42 × 10−4
+and b = −8.33 × 10−4 . The slight discrepancies may come from having used only three
+decimal places of the values for α, β, γ, and δ in our implementation. Furthermore, Figure 9
+shows the projected net migration counts for the United States using our implementation of
+the gravity model. Our projections appear to be essentially the same as the gravity model
+projections plotted in Figure 1(b) of Cohen (2012).
+
+20
+
+

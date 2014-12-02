@@ -1,0 +1,3918 @@
+A Dynamic Hierarchical Bayesian Model for the Probability of
+Default
+Yousung Parka , Sibel Sirakayab,∗ and Tae Young Kimc
+a
+b
+
+Department of Statistics, Korea University, Seoul, South Korea.
+
+Departments of Economics and Statistics & Center for Statistics and Social Sciences,
+University of Washington, Seattle, WA 98195-4320.
+c
+
+Risk Solution Team, Korea Enterprise Data, Seoul, South Korea.
+
+Working Paper no. 98
+Center for Statistics and the Social Sciences
+University of Washington
+Feb 23, 2010
+
+∗
+
+Corresponding author. E-mail: sirakaya@u.washington.edu.
+
+Abstract
+The internal ratings-based approach under Basel II allows banks to use their internal
+rating systems to determine capital requirements for credit risk, subject to explicit
+supervisory approval. The probability of default is one of the key parameters used in the
+calculation of regulatory capital. All banks must provide supervisors with an internal
+estimate of the probability of default. This paper proposes a dynamic hierarchical
+Bayesian model for the estimation of the probability of default in the presence of missing
+data, a common occurrence in financial applications. Our framework not only allows us
+to impute such missing information but also to account for both serial and cross-sectional
+correlations in the estimation of the probability of default. We can also measure the
+impact of a stress situation on the credit rating. Our model is applied to data on obligors
+of a domestic bank in South Korea between 2000 and 2003. For comparison, we also
+consider a hierarchical Bayesian model with a stationary time correlation structure and
+a classical logistic regression model.
+JEL classication: G21; G28; G32; C11; C13.
+Keywords: Probability of Default, Bayesian Inference, Latent Variables, Markov Chain
+Monte Carlo.
+
+1
+
+Introduction
+Credit risk is defined as the risk of loss resulting from failure of obligors to honor their
+
+payment obligations. The 1988 Basel Accord (“Basel I”), issued by the Basel Committee
+on Banking Supervision, is a framework for credit risk measurement and requires banks to
+maintain a capital to risk-weighted asset ratio of at least 8%. The 2004 Basel Accord (“Basel
+II”) is a revision of Basel I, aiming to promote the soundness of the financial system. It is
+based on three pillars: (1) minimum capital requirements; (2) supervisory review processes;
+and (3) market discipline. Keeping the capital to risk-weighted asset ratio of at least 8%
+requirement of the first Basel accord, the revision adjusts capital requirements to credit risk,
+operational risk and market risk. Credit risk in this context is the focus of this paper.
+Basel II allows banks to evaluate the credit risk using either a standardized approach
+or an internal ratings-based (IRB) approach. The standardized approach relies on external
+ratings, such as those assigned by external credit assessment institutions, to determine risk1
+
+weights for capital charges, whereas the IRB allows banks to develop their own internal
+ratings for risk-weighting purposes subject to supervisory approval and strict disclosure
+requirements. Some large banks start with the IRB approach. However, most banks start
+with the standardized approach and progress toward the more advanced IRB approaches
+that generate lower capital charges as they meet incremental requirements.
+The probability of default (PD) is one of the key IRB risk parameters. It plays a central
+role in pricing of credit assets, portfolio management, and capital allocation. Banks must
+categorize exposures into risk classes and for each class estimate a PD. This estimate is one
+of the inputs to a formula that gives risk capital requirements for an asset in a given class.
+Three main issues have been raised in estimating the PD. The first issue is handling
+the missing values for obligors’ financial variables such as cash flow, net borrowing, and
+inventory turnover ratio. Internal data on such variables are the primary data source for
+the PD estimates. However, in practice, internal records are often incomplete and/or do
+not have long enough history to estimate the PD. Missing data are especially problematic
+in the case of low default portfolios characterized by no or very few default records.
+A survey of five international journals in banking and finance shows that missing data
+are a common feature of many financial applications (Kofman and Sharpe, 2003). The
+easiest method to handle missing data is complete case analysis, where incomplete cases
+are removed from the study. However, this method, at best, gives unbiased but ineﬃcient
+estimates, and at worst, biased estimates. An alternative is to use ad-hoc methods of single
+imputation, which substitute a plausible value such as average or median for each missing
+value. Biased estimates, understated variances and lower coverage rates are some of the
+major problems generally associated with these methods.1 In order to reflect uncertainty
+arising from imputation of missing values into the imputation procedure, maximization of
+the incomplete data likelihood (Dempster, Laird and Rubin, 1977) and maximization of the
+posterior distribution (Tanner and Wong, 1987) have also been suggested. However, as indicated by Schafer (1997) and King, Honaker, Joseph and Scheve (1998), such maximization
+methods can produce incorrect standard errors in financial applications where non-normality
+and small samples are common occurrences.
+The second issue is accounting for cross-sectional and serial correlations in the estima1
+
+See Rubin (1987) and Little and Rubin (2002) for a comprehensive discussion of such adverse eﬀects.
+
+2
+
+tion of the PD. It is well accepted that default data has both cross-sectional and time-series
+dependence. Cross-sectional dependence in default rates are due to common factors (e.g.,
+interest rates, changes in economic growth) aﬀecting all obligors, and direct business relations among obligors (Davis and Lo, 2001; Egloﬀ, Leippold and Vanini, 2007), while serial
+dependence caused by the cyclical behavior of economic factors (Nickell, Perraudin and
+Varotto, 2000; Bangia, Diebold, Kronimus, Schagen and Schuermann, 2002; Hu, Kiesel and
+Perraudin, 2002; McNeil and Wendin, 2006).
+The final issue is adequately assessing the ability of an obligor to perform under stress
+conditions, such as financial crises. Such stress situations result in extraordinary values
+of financial variables, changing the PD dramatically. Since banks are interested in each
+obligor’s performance under a stress situation at a future time, they have to estimate the
+extreme values of the relevant financial variables at a future time for each obligor. This
+implies that the distributions of the relevant financial variables at each time for each obligor
+should be obtained. However, this is not possible in the real loan world mainly due to lack
+of data.
+This paper proposes a dynamic hierarchical Bayesian model to simultaneously address
+these three issues. We employ the small area estimation method to handle missing data. It
+is an indirect estimation technique that ‘borrows strength’ by using values of the variable of
+interest from related areas and/or time periods to increase the eﬀective sample size and thus
+improve the accuracy of estimates for the small areas. Small area estimators have long been
+employed in survey sampling. Demographers frequently use indirect methods for small area
+estimation of population and other characteristics of interest, based on either census or on
+administrative records. Models that are commonly used to develop small area estimators
+can be classified into two groups: (1) Area level models that relate the small area means
+to area-specific auxiliary variables. These models are essential if unit level data are not
+available. (2) Unit level models that relate the unit values of the study variable to unitspecific auxiliary variables with known area means. As we need the PD for each obligor, we
+use a unit level model to impute the missing values of obligors’ financial variables. We also
+provide a comparison of this imputation technique with two alternative methods.
+Latent variables are introduced to incorporate cross-sectional and time-series correlations
+into the PD estimation. The correlations among obligors are represented by the variance of
+
+3
+
+the latent variables, while the mean vector of the latent variables, which varies over time
+with random walk dynamics, represents the serial correlations. The mean vector of the
+latent variables is a linear function of financial variables and their coeﬃcients. Since this
+mean vector determines the PD and the distributions of the coeﬃcients are given by their
+posterior distributions, we can calculate the PD under a stress situation. Furthermore, using
+the random walk dynamic structure of the mean vector, we can forecast the PD for each
+obligor at a future time. We also compare our model with a hierarchical Bayesian model
+with a stationary time correlation structure and a classical logistic regression model. The
+Bayesian models that we present are estimated using a Markov chain Monte Carlo (MCMC)
+algorithm based on the Gibbs sampler (see Gilks, Richardson and Spiegelhalter, 1996 for a
+general discussion of MCMC methods).
+The balance of the paper is as follows. Section 2 reviews the related literature. In Section 3, first a hierarchical Bayesian model with a stationary time correlation structure is
+presented. Next, we modify this model to build a dynamic hierarchical Bayesian model. Finally, the derivation of the Bayes factor, which we use for various model comparisons, within
+our modeling framework is discussed. Section 4 applies our model to data on obligors of a
+domestic bank in South Korea between 2000 and 2003. First, we present a comparison of
+our imputation method with two alternative methods. We then calculate the discriminatory
+power of our model and compare its performance to a hierarchical Bayesian model with a
+stationary time correlation structure and a classical logistic regression model. The Bayes
+Factor is also computed and used for further model comparisons. Finally, we discuss the estimation of the PD and the corresponding credit grade under a stress situation. Conclusions
+follow.
+
+2
+
+Related Literature
+
+The two most common modeling approaches to defaults in the literature are hazard rate
+models and latent variable models. In hazard rate models, default time is the first jump of a
+point process, most often conditional poisson. In latent variable models, default occurs when
+a variable, often interpreted as the obligor’s underlying asset value, falls below a threshold,
+often interpreted as the obligor’s underlying liability value.
+Empirical study of corporate defaults is one of the research areas where hazard rate
+4
+
+models are widely used. Early studies include the work of Lane, Looney, and Wansley (1986)
+on bank failures using a Cox proportional hazard model with time-dependent covariates.
+Lee and Urrutia (1996) compare logit and hazard models of corporate defaults. Lando and
+Skodeberg (2002) analyze corporate ratings transitions within a continuous-time, hazardbased framework. Couderc and Renault (2004) study the impact of macroeconomic variables
+on times to default and default probabilities.
+Recent studies following the hazard rate approach include Duﬃe, Saita and Wang
+(2007)’s work which models and estimates term structures of default probabilities using
+a joint model for hazard rates and the dynamics of the underlying time-dependent covariates. Das, Duﬃe, Kapadia and Saita (2007) find empirical evidence of default clustering
+in excess of that implied by the conventional models based merely on observable factors.
+Based on this observation, Duﬃe, Eckner, Horel and Saita (2008) propose a frailty correlated
+default model in which latent frailty factor is unobservable and time-varying.
+A number of studies have employed the latent variable approach to study individual
+default behaviour. Some examples include Altman (1968), Ohlson (1980), Kealhofer (2003),
+Hillegeist, Keating, Cram and Lundstedt (2004) and Bartram, Brown and Hund (2007).
+Latent variable models have also been used to investigate correlations between individual
+defaults (e.g., Zhou, 2001 and de Servigny and Renault, 2002).
+Several studies have adapted the latent variable approach to analyze the linkages between business cycles, and default probabilities and ratings transitions. McNeil and Wendin
+(2006, 2007) propose Generalized Linear Mixed Models (GLMM) as a framework for studying corporate defaults and ratings transitions in which the underlying factors are serially
+correlated, and relate their findings to the evolution of business cycles. Other examples
+include Nickell, Perraudin and Varotto (2000), Koopman and Lucas (2005) and Koopman,
+Lucas and Klaassen (2005). Pesaran, Schuermann, Treutler and Weiner (2006) and Pesaran, Schuermann and Weiner (2004) employ a global macro model and link its output to
+default data and bank loan portfolio performance to study how defaults behave conditional
+on particular stress scenarios.
+The GLMM setting allows for the inclusion of serial dependence of latent risk factors.
+A downside of this technique is that the serially correlated latent risk factors lead to highdimensional integrals which are diﬃcult to calculate with standard maximum likelihood
+
+5
+
+techniques. Instead, McNeil and Wendin (2006, 2007) use the MCMC techniques. However,
+the MCMC sampling is expensive in the of case of high dimensionality, causing slow convergence of parameters (Chib and Carlin, 1999; Sun, Tsutakawa and Speckman, 1999; Sun,
+Tsutakawa and He, 2001). Our model allows the incorporation of serial correlations while
+avoding high dimensionality.
+Note that discrete-choice models, such as logit and probit, are also latent variable models
+as defaults occur when latent variables cross thresholds. For example, Schumway (2001)
+employs a discrete time logit model to study corporate defaults combining marked-based
+variables and financial ratios.
+
+3
+
+Model
+
+3.1
+
+A Hierarchical Bayesian Model with a Stationary Correlation Structure
+
+3.1.1
+
+Model Specification
+
+Let ytil be independent binary-valued random variables, where ytil = 1 if the ith obligor in
+industry l defaults at time t and ytil = 0 otherwise. As the observed number of obligors
+may vary over time, i ranges from 1 to It for t = 1, 2, · · · , T . There are L industries, so l =
+
+1, 2, · · · , L. Let P [ytil = 1] = πtil . We assume that πtil is related to a p-dimensional vector of
+�
+
+covariates, xtil , that may be continuous or discrete via a link function H: πtil = H(xtil bl ),
+
+where bl is the p × 1 parameter vector to be estimated and H() is a known cdf. The probit
+
+model is obtained if H is the standard Gaussian cdf, whereas the logit model is obtained if
+H is the logistic cdf.
+One diﬃculty with this specification is that the posterior distribution of bl cannot be
+expressed in an explicit form due to the discreteness of ytil . Following the strategy outlined in
+Albert and Chib (1993), we introduce independent, continuous latent variables ztil and relate
+them to ytil as ytil = 1 if ztil > 0 and ytil = 0 if ztil ≤ 0 to obtain a convenient functional form
+for the conditional posterior distribution of bl . We further assume that the latent variable ztil
+�
+
+follow a t distribution with location xtil bl , scale parameter 1/0.6342 and degrees of freedom
+8. Albert and Chib (1993) show that this t-distribution can be used as an approximation
+
+6
+
+to the logistic function:
+�
+
+πtil = P [ytil = 1] = P [ztil > 0 | bl ] ≈
+
+extil bl
+�
+
+1 + extil bl
+
+.
+
+The distribution of ztil can equivalently be written as the following scale mixture of
+a normal distribution with the introduction of an additional random variable λ that is
+gamma-distributed with scale and shape 8/2:
+�
+
+ztil | λ, bl ∼ N (xtil bl , 1/(0.6342 λ))
+
+(1)
+
+We write a multivariate version of (1) in order to incorporate both cross-sectional and
+serial correlations into ztil as
+�
+
+ztil = xtil bl + ξtil
+
+(2)
+�
+
+where ξtil ∼ N (0, 1/(0.6342 λ)) and Corr(ξtil , ξt� i� l ) = φ|t−t | ρii� for i �= i� .
+
+This correlation structure implies that the serial correlation is an autoregressive process
+�
+
+with order 1 and parameter φ. The cross-sectional correlation ρii� between obligors i and i
+
+is often considered as a default correlation. The most common approach to modeling default
+correlation is to approximate it by the correlation between obligors’ returns in equity market.
+A typical example is J.P. Morgan’s CreditMetrics, which is one of the widely used value at
+risk methodologies to calculate credit risk. The CreditMetrics methodology determines
+default correlations as ρii� = wi × wi� where wi is the square root of the determinant
+
+coeﬃcient (i.e., R2 ) between the return of obligor i as regressand and the index return (e.g.,
+Kospi 200) as regressor. We use CreditMetrics default correlations as a proxy for the crosscorrelation ρii� in (2) and assume that wi is known because it can be easily obtained using
+data from equity market. To complete the model given in (2), we assume non-informative
+priors for bl and φ: p(bl ) ∝ 1 and φ ∼ U (−1, 1), where U denotes a uniform distribution.
+�
+
+The covariate vector xtil = (xtil1 , xtil2 , · · · , xtilp ) is central in calculating the PD. How-
+
+ever, some elements of xtil are often missing. To impute the missing values, we use the
+small area estimation method. The basic idea of this technique is to borrow strength from
+the neighbors of a small area to improve the estimates of characteristics of interest for the
+small area. For example, when we impute missing values for the inventory turnover ratios
+of obligors in a service industry, we borrow information from the inventory turnover ratios
+in light manufacturing, information technology, wholesales and retail, and other industries.
+7
+
+Let the superscript (h) stand for a non-defaulted obligor when h = 0 and a defaulted
+(0)
+
+obligor when h = 1. So xtilj is the jth variable for the ith non-defaulted obligor belonging
+(1)
+
+to the lth industry at time t. Similarly, xtilj is the jth variable for the ith defaulted obligor
+belonging to the lth industry at time t. Assume that unit-specific auxiliary q × 1 vector
+(h)
+
+(h)
+
+(h)
+
+(h)
+
+(h)
+
+�
+
+dtilj = (dtilj1 , dtilj2 , · · · , dtiljq ) is available and related to xtilj through the following one-fold
+nested error linear regression model:
+(h)� (h)
+
+(h)
+
+xtilj = dtilj βj
+
+(h)
+
+(h)
+
++ ulj + etilj ,
+
+h = 0, 1
+
+(3)
+
+(h)
+
+where ulj is the lth industry eﬀect for the jth variable. It is a i.i.d normal random variable
+2(h)
+
+with mean zero and variance ηj
+
+(h)
+
+2(h)
+
+. etilj is i.i.d normal with mean zero and variance σj
+
+(h)
+
+(h)
+
+and is independent of ulj . Thus, the distribution of xtilj is given by
+(h)
+
+(h)
+
+(h)� (h)
+
+(h)
+
+xtilj | βj , ulj ∼ N (dtilj βj
+
+(h)
+
+2(h)
+
++ ulj , σj
+
+).
+
+(4)
+
+Since we treat the missing data as parameters to be estimated by a MCMC scheme,
+we complete the hierarchical specification of the unit-level model for the imputation of the
+(h)
+
+(h)
+
+jth covariate xtilj by assuming that the parameters ulj , βj
+
+2(h)
+
+and σj
+
+follow the prior
+
+distributions:
+(h)
+
+2(h)
+
+ulj | ηj
+
+2(h)
+
+∼ N (0, ηj
+
+(h)
+
+2(h)
+
+), p(βj ) ∝ 1, σj
+
+(h)
+
+(h)
+
+2(h)
+
+∼ IG(aσj , bσj ), ηj
+(h)
+
+(h)
+
+(h)
+
+(h)
+
+(h)
+
+∼ IG(aηj , bηj ) (5)
+(h)
+
+where IG denotes the inverse gamma distribution, and aσj , bσj , aηj , and bηj are known.
+Let nl be the number of obligors belonging to the lth industry from t = 1 to t + T . Then
+�
+
+zl = (z11l , z12l , · · · , zT IT l ) is a nl × 1 vector and the corresponding covariate Xl is a nl × p
+matrix. We denote the correlation matrix of zl by Rl .
+
+The model specifications (1) through (5) produce the following joint posterior distribu-
+
+8
+
+tion.
+ztil , bl , λ, φ, xtilj , βj , ulj , σj2 , ηj2 | ytil ∼
+�
+
+It
+T �
+�
+[I(ztil > 0, ytil = 1) + I(ztil ≤ 0, ytil = 0)]
+t=1 i=1
+
+�
+0.6342 λ
+8
+�
+−1/2
+1/2
+−1
+× λ | Rl |
+exp −
+(zl Izl − Xl bl ) Rl (zl Izl − Xl bl ) × λ8/2−1 exp(− λ)
+2
+2
+�
+�
+p
+I
+T
+L
+1
+t
+�
+���� �
+1
+1 � (h)
+(h)� (h)
+(h) 2
+�
+×
+exp − 2(h) xtilj − dtilj βj − ulj
+2(h)
+2σj
+t=1 i=1 j=1 l=1 h=0
+2πσj
+
+�
+�
+p �
+L �
+1
+�
+1
+(h)
+� 1
+×
+exp − 2(h) (ulj )2 
+2(h)
+2ηj
+2πηj
+j=1 l=1 h=0
+
+
+�
+�a(h)
+�
+�
+��
+p �
+1
+σj −1
+�
+1
+1
+
+
+(h)
+×
+exp −bσj
+
+
+2(h)
+2(h)
+σj
+σj
+j=1 h=0
+
+
+�
+�a(h)
+�
+�
+��
+−1
+p
+1
+ηj
+��
+1
+1
+
+(h)
+×
+exp −bηj
+(6)
+ 2(h)
+
+2(h)
+ηj
+ηj
+j=1 h=0
+
+Using this posterior distribution, we can sample not only the missing values but also the
+
+parameters relevant to the calculation of the PD using the MCMC procedure described in
+the following section.
+3.1.2
+
+Derivation of Full Conditional Posterior Distributions
+
+We implement the following Gibbs sampling scheme using the full conditional posterior
+distributions of the parameters of interest. First, the missing data, denoted by xm
+tilj , are
+imputed using the small area estimation method. Next, the latent variable ztil and the
+(h)
+
+(h)
+
+related parameters bl , λ, and φ are sampled. Finally, we draw the parameters βj , ulj ,
+2(h)
+
+σj
+
+2(h)
+
+, and ηj
+
+for the small area estimation model and calculate the PD for the ith obligor
+
+belonging to the lth industry using (2),
+√
+�
+�
+πtil = Φ 0.634 λ x�til bl .
+
+where Φ is the cumulative distribution function of a standard normal random variable.
+Algorithm 1:
+For each j = 1, 2, · · · , p and the lth industry of interest,
+m
+o
+2 2
+o
+1. Sample {xm
+tilj } from xtilj | {xtilj }, zl , bl , λ, φ, βj , ulj , σj , ηj where xtilj is the observed
+
+jth covariate for the ith obligor belonging to the lth industry.
+9
+
+o
+2. Sample zl from zl | {xm
+tilj }, {xtilj }, bl , λ, φ
+o
+3. Sample bl from bl | {xm
+tilj }, {xtilj }, zl , λ, φ
+o
+4. Sample λ from λ | {xm
+tilj }, {xtilj }, zl , bl , φ
+o
+5. Sample φ from φ | {xm
+tilj }, {xtilj }, zl , bl , λ
+(h)
+
+(h)
+
+6. Sample β j
+
+from β j
+
+(h)
+
+2(h)
+
+o
+| {xm
+tilj }, {xtilj }, σj
+
+(h)
+
+(h)
+
+, ulj for h = 0, 1
+
+(h)
+
+2(h)
+
+o
+7. Sample ulj from ulj | β j , {xm
+tilj }, {xtilj }, σj
+2(h)
+
+from σj
+
+2(h)
+
+from ηj
+
+8. Sample σj
+9. Sample ηj
+
+(h)
+
+2(h)
+
+, ηj
+
+2(h)
+
+o
+| {xm
+tilj }, {xtilj }, β j , ulj , aσ , bσ for h = 0, 1
+
+2(h)
+
+| ulj , aη , bη
+
+(h)
+
+(h)
+
+(h)
+
+(h)
+
+for h = 0, 1
+
+(h)
+
+(h)
+
+for h = 0, 1
+
+10. Repeat steps 1 to 9 using the most recent values of the conditioning variables until a
+convergence criterion is met.
+To sample xm
+tilj for step 1, note from (2) that,
+�
+� �
+�
+(−j) (−j)
+zl − Xl bl
+1
+1
+| xlj ∼ N xlj , 2
+Rl
+blj
+blj 0.6342 λ
+(−j)
+
+where Xl
+
+(7)
+
+is nl ×(p−1) covariate matrix deleting the jth covariate xlj = (x11lj , x12lj , · · · , xT IT lj )�
+(−j)
+
+from Xl and bl
+
+is (p − 1) × 1 vector deleting the jth parameter blj from bl .
+
+Without loss of generality, we assume that the covariate matrix Xl is arranged according
+(0)�
+
+(1)�
+
+(0)
+
+to the obligors’ default statuses so that the jth column is xlj = (xlj , xlj )� where xlj is the
+(1)
+
+jth covariate observed for the non-defaulted obligors and xlj is the jth covariate observed
+for the defaulted obligors. From (4), we have
+
+ 
+(0) (0)
+(0)
+2(0)
+D
+β
++
+u
+1
+(0)
+lj n
+ lj j
+  σj In(0)
+(0)
+(1) (0) (1)
+l
+l
+xlj | β j , β j , ulj , ulj ∼ N 
+,
+(1) (1)
+(1)
+Dlj β j + ulj 1n(1)
+0
+l
+
+(h)
+
+(h)
+
+where Dlj is nl
+
+0
+2(1)
+σj In(1)
+l
+
+(h)
+
+× q unit-specific auxiliary matrix for the jth variable, nl
+
+
+
+
+ (8)
+
+is the number
+
+of non-defaulted or defaulted obligors depending on the value of h, and 1 is a unit vector.
+
+10
+
+The distributions (7) and (8) produce the following normal conditional posterior distribution for xlj :2
+�
+�
+xlj | others ∼ N (Flj−1 + Plj−1 )−1 (Flj−1 Elj + Plj−1 Qlj ), (Flj−1 + Plj−1 )−1
+
+
+
+
+(0) (0)
+(0)
+2(0)
+0
+ Dlj β j + ulj 1n(0)
+
+ σj In(0)
+
+l
+l
+where Elj = 
+, Flj = 
+
+, Plj =
+(1) (1)
+(1)
+2(1)
+Dlj β j + ulj 1n(1)
+0
+σj In(1)
+l
+
+and Qlj = (zl −
+
+1
+1
+R
+b2lj 0.6342 λ l
+
+l
+
+(−j) (−j)
+Xl bl )/blj .
+
+�
+
+�
+
+�
+
+xlj can be rearranged as xlj = (xljo , xljm ) where xm
+lj is the vector of missing values and
+
+xolj is the vector of observed values. The distribution of this rearranged xlj can be written
+as
+
+
+
+N 
+
+µolj
+µm
+lj
+
+ 
+,
+
+Σoo
+lj
+
+Σom
+lj
+
+Σmo
+Σmm
+lj
+lj
+
+
+
+
+Hence, we have
+�
+�
+� o
+�
+o
+m
+mo
+oo −1
+mo
+oo −1 om
+xm
+xlj − µolj , Σmm
+lj | xlj , others ∼ N µlj + Σlj (Σ )lj
+lj − Σlj (Σ )lj Σlj
+
+Combined with the conditional conjugacy of our prior specification, the full conditional
+posterior distributions of zl , bl and λ for Steps 2 - 4 are available in the closed forms as:
+�
+�
+1
+zl | others ∼ N Xl bl ,
+Rl
+0.6342 λ
+with ztil truncated above (below) if ytil = 1 (ytil = 0).
+
+The conditional posterior distribution of bl from the posterior distribution (6) is the
+usual posterior density for the regression parameter in the normal linear model. Thus,
+under the flat prior on bl , the conditional posterior distribution of bl is
+�
+�
+bl | others ∼ N µbl , Σbl
+� ��
+� ��
+�−1 �−1
+�−1 �
+1
+1
+where Σbl = Xl 0.634
+Xl
+, µbl = Σbl Xl 0.634
+zl .
+2 λ Rl
+2 λ Rl
+
+It is also straightforward to see that the conditional posterior distribution of λ is
+�
+�
+�
+0.6342 (zl − Xl bl ) R−1
+1
+l (zl − Xl bl )
+λ | others ∼ Γ
++ 4,
++4
+2
+2
+
+2
+
+“others” here refers to all conditioning variables given in the corresponding step of Algorithm 1, but the
+
+observed jth covariate. It is used in place of all conditioning variables given in the corresponding step of
+Algorithm 1 everywhere else. We use it in a similar way in Section 3.2.2 as well.
+
+11
+
+The conditional posterior distribution of the time correlation φ for Step 5, however,
+cannot be expressed in a closed form from the posterior distribution (6), and is proportional
+to
+p(φ | zl , bl , λ, Xl ) ∼ | Rl |−1/2 exp
+
+�
+
+�
+
+0.6342 λ(zl − Xl bl ) Rl −1 (zl − Xl bl )
+2
+
+�
+
+(9)
+
+To simulate φ from this distribution, we use the Metropolis Hastings (MH) algorithm
+(Chib and Greenberg, 1995). The objective of the MH algorithm is to generate samples
+from a complicated target density f (x) = p(x)/C, where p(x) is an unnormalized density
+on Rn with the possibly unknown normalizing constant C, via an instrumental or proposal
+distribution that can be sampled from by some known method. The algorithm is defined
+as:
+Given an arbitrary starting value φ0 , repeat for r = 1, 2, · · · , N :
+(1) Sample new φr from the proposal distribution given the current value φr−1
+J(φr | φr−1 ) = f (φr | φr−1 , c2 δφ , νφ )
+
+(10)
+
+where f is a t distribution with degrees of freedom νφ , location parameter φr−1 and
+scale parameter c2 δφ . δφ is obtained from the negative inverse of the second derivative
+of the logarithm of (9) at the current value φr−1 , and c and the degrees of freedom νφ
+are appropriately chosen for a stable φ. Here φ is bounded in the stationary region
+(−1, 1). Therefore, the choice of the t distribution for the proposal distribution satisfies
+J(φr | φr−1 ) = J(φr−1 | φr ).
+(2) Calculate the ratio
+α(φr−1 , φr ) =
+
+p[φr | zl , bl , λ, Xl ] J(φr−1 | φr )
+p[φr−1 | zl , bl , λ, Xl ] J(φr | φr−1 )
+
+where p[φr | zl , bl , λ, Xl ] is given by (9).
+(3) Set
+
+ φr with probability min(α, 1)
+φr =
+ φr−1
+otherwise
+12
+
+We then calculate the correlation matrix, Rl using φ and ρii� .
+(h)
+
+(h)
+
+2(h)
+
+To define the conditional posterior distributions of β j , ulj , σj
+
+2(h)
+
+and ηj
+
+in Steps 6 - 9
+
+�
+
+�
+
+for the imputation model, let xj = (x�1j , x�2j , · · · , x�Lj ) where xlj = (x11lj , x12lj , · · · , xT IT lj )
+
+is a nl × 1 vector with nl being the number of obligors belonging to the lth industry. Rear� (0)
+
+� (1)
+
+range xj to be (xj , xj )� according to the default statuses of the obligors. Furthermore,
+�
+��
+(h)
+(h) �
+(h) �
+(h) �
+(h)
+let uj = u1j 1 (h) , · · · , ulj 1 (h) , · · · , uLj 1 (h) and Dj be N (h) × q unit-specific auxn1
+nl
+nL
+�
+(h)
+(h)
+(h)
+(h)
+iliary matrix obtained by stacking D1j , D2j , · · · , DLj where N (h) = L
+is the total
+l=1 nl
+number of obligors in all industries over time from t = 1 to t = T .
+(h)
+
+(h)
+
+Since xj −uj
+
+(h)�
+
+= Dj
+
+(h)
+
+2(h)
+
+β j +�(h) where �(h) ∼ N (0, σj
+
+IN (h) ) is a normal linear model,
+
+similarly to the derivation of the conditional posterior distribution of bl , the conditional
+(h)
+
+posterior distribution of β j for Step 6 under a flat prior is
+��
+�
+�
+�
+�
+� �
+(h)
+(h)� (h) −1 (h)�
+(h)
+(h)
+2(h)
+(h)� (h) −1
+β j | others ∼ N Dj Dj
+Dj
+xj − uj
+, σj
+Dj Dj
+(h)
+
+The conditional posterior distribution of ulj from the the posterior distribution (6) is
+proportional to
+(h)
+ulj
+
+It
+T �
+�
+
+�
+
+1
+
+1
+
+�
+
+(h)
+xtilj
+
+�
+(h) 2
+ulj
+
+(h)� (h)
+dtilj βj
+
+�
+
+�
+exp − 2(h)
+−
+−
+2(h)
+2σj
+2πσj
+
+�
+�
+1
+1
+(h)
+× �
+exp − 2(h) (ulj )2 
+2(h)
+2ηj
+2πηj
+
+�
+� T I
+�
+�2 
+q
+IT
+T �
+(h)
+T
+�
+�
+�
+�
+n
+1
+(h)
+(h)
+(h)
+(h)
+(h)
+(h)
+
+=�
+exp − l2(h) ulj −
+xtilj /nl −
+dtiljr /nl
+βjr
+2(h)
+2σ
+t=1 i=1
+r=1 t=1 i=1
+2πσj
+j
+
+�
+�
+1
+1
+(h)
+× �
+exp − 2(h) (ulj )2  .
+2(h)
+2ηj
+2πηj
+| others ∝
+
+t=1 i=1
+
+(h)
+
+Completing this as the quadratic form in ulj , we have the conditional posterior distri(h)
+
+bution of ulj for Step 7 as
+(h)
+
+ulj | others ∼ N
+(h)
+
+where x
+¯lj =
+
+�T
+
+(h)
+
+of vector β j .
+
+t=1
+
+�IT
+
+�
+
+2(h)
+
+ηj
+2(h)
+ηj
+
++
+
+2(h)
+(h)
+σj /nl
+
+(h)
+(h)
+i=1 xtilj /nl ,
+
+�
+
+(h)
+
+x
+¯lj −
+
+q
+�
+r=1
+
+(h) (h)
+d¯ljr βjr
+
+�
+
+,
+
+2(h) 2(h)
+(h) �
+σj /nl
+2(h)
+2(h)
+(h)
+ηj + σj /nl
+
+ηj
+
+� � T (h)
+(h)
+(h)
+(h)
+d¯ljr = Tt=1 Ii=1
+dtiljr /nl and βjr is the rth element
+13
+
+2(h)
+
+For the conditional posterior distribution of σj
+
+, note that the joint posterior distribu-
+
+tion (6) yields
+2(h)
+
+σj
+
+| others ∝
+
+It �
+T �
+L
+�
+
+1
+
+�
+
+1
+
+�
+
+(h)
+xtilj
+
+�
+exp − 2(h)
+−
+2(h)
+2σ
+t=1 i=1 l=1
+2πσj
+j
+
+
+(h)
+�
+�aσ −1
+�
+�
+��
+1
+1
+
+
+×
+exp −b(h)
+
+σ
+2(h)
+2(h)
+σj
+σj
+∝
+(h)
+
+where Aj
+
+�
+
+2(h)
+
+2(h)
+
+2(h)
+
+� N (h) +a(h)
+σ −1
+2
+
+−
+
+�
+(h) 2
+ulj
+
+�
+
+� �
+��
+��
+1 � (h) (h)
+1
+exp −
+A Aj + b(h)
+σ
+2(h)
+2 j
+σ
+
+σj
+j
+�
+�
+(h)
+(h) (h)
+(h)
+= xj − Dj β j − uj
+. Hence, this gives the conditional posterior distri-
+
+bution of σj
+σj
+
+1
+
+(h)� (h)
+dtilj β j
+
+for Step 8:
+�
+
+N (h)
+1 � (h) (h)
+| others ∼ IG
++ a(h)
+Aj + b(h)
+σ , Aj
+σ
+2
+2
+
+�
+2(h)
+
+Similary, we can obtain the conditional posterior distribution of ηj
+�
+�
+L �
+�
+�
+L
+2(h)
+(h) 2
+(h) 1
+(h)
+ηj | others ∼ IG
++ aη ,
+ulj
++ bη
+2
+2
+
+for Step 9 as
+
+l=1
+
+.
+
+3.2
+
+A Dynamic Hierarchical Bayesian model
+
+The stationary time correlation structure of the model in the previous section implies that
+the eﬀect of any stress circumstance on the PD eventually dies out. However, this framework
+may not be suitable to address stress circumstances such as adverse economic conditions
+which are usually recognized to have a permanent eﬀect on the PD. To reflect this characteristics of the real loan world, we present a dynamic hierarchical Bayesian model as
+follows.
+3.2.1
+
+Model Specification
+
+The model specification is completely the same as in Section 3.1.1 except that the model
+parameters vary over time and the error term now regulates only the cross-sectional corre14
+
+lations. We start with the latent variable ztil :
+�
+
+ztil = xtil btl + ξtil
+
+(11)
+
+where ξtil is normally distributed with mean 0, variance 1/(0.6342 λt ), and Corr(ξtil , ξt� i� l ) = ρii�
+�
+
+when t = t� and 0 otherwise. The cross-sectional correlation ρii� between obligors i and i is
+calculated as before. We assume that btl varies over time with the following dynamics:
+∆btl = Γ∆bt−1,l + �tl and �tl ∼ N (0, Ψ) for t = 1, 2, 3, · · · , T
+
+(12)
+
+where ∆btl = btl − bt−1,l , Γ = Diag(γ1 , γ2 , · · · , γp ) and Ψ = Diag(ψ1 , ψ2 , · · · , ψp ).
+
+Note that since the diﬀerenced btl follows a vector AR(1) process, btl behaves like
+
+a random walk. Moreover, because ξtil and btl are assumed to be stationary and non�
+
+stationary, respectively, and btl is a random variable and xtil is not in Bayesian perspective,
+ztil = non-stationary + stationary = non-stationary. This means that the dynamics of ztil
+are completely driven by btl , and ztil too behaves like a random walk. This is why the
+impact of a shock is permanent in this framework.
+To complete our model specification, we assign an independent uniform prior over
+U (−1, 1) to γj and an inverse gamma prior IG(aψ , bψ ) to ψj where aψ and bψ are known.
+To impute the missing values, we consider the unit-specific model (3) in Section 3.1.1
+with time dependent parameters. Namely, we assume
+(h)
+
+(h)
+
+(h)
+
+(h)�
+
+(h)
+
+(h)
+
+2(h)
+
+xtilj | β tj , utlj ∼ N (dtilj β tj + utlj , σtj )
+
+(13)
+(h)
+
+(h)
+
+2(h)
+
+where the hyper priors on the time dependent parameters β tj , utlj , and σtj
+
+are same as
+
+the hyper priors on the time independent parameters in (3):
+(h)
+
+2(h)
+
+utlj | ηtj
+
+2(h)
+
+∼ N (0, ηtj ),
+
+(h)
+
+p(β tj ) ∝ 1,
+
+2(h)
+
+σtj
+
+15
+
+2(h)
+
+(h)
+∼ IG(a(h)
+σ , bσ ), and ηtj
+
+(h)
+∼ IG(a(h)
+η , bη ).
+
+The following joint posterior distribution is generated by (11) - (13):
+2
+2
+ztil , btl , Γ, Ψ, λt , xtilj , β tj , utlj , σtj
+, ηtj
+
+| ytil
+
+It
+T �
+�
+∼
+[I(ztil > 0, ytil = 1) + I(ztil ≤ 0, ytil = 0)]
+t=1 i=1
+
+��
+λt
+�
+(ztl Iztl − Xtl btl ) Rtl −1 (ztl Iztl − Xtl btl )
+2
+t=1
+�
+� �
+�
+�
+� ��
+p �
+T
+�
+8
+1 aψ −1
+1
+8/2−1
+×
+λt
+exp − λt ×
+exp −bψ
+2
+ψj
+ψj
+×
+
+T �
+�
+
+�
+
+1/2
+
+0.634λt | Rtl |−1/2 exp −
+
+t=1
+
+j=1
+
+�
+�
+1
+−1
+×
+|Ψ|
+exp − (btl − bt−1,l − Γ∆bt−1,l ) Ψ (btl − bt−1,l − Γ∆bt−1,l )
+2
+t=1
+�
+�
+p �
+It �
+T �
+L �
+1
+�
+�
+1
+1 � (h)
+(h)� (h)
+(h) 2
+�
+×
+exp − 2(h) xtilj − dtilj βtj − utlj
+2(h)
+2σtj
+t=1 i=1 j=1 l=1 h=0
+2πσtj
+
+�
+�
+p �
+T �
+L �
+1
+�
+1
+(h)
+� 1
+×
+exp − 2(h) (utlj )2 
+2(h)
+2ηtj
+t=1 j=1 l=1 h=0
+2πηtj
+
+
+
+�
+�a(h)
+�
+�
+�� �
+�a(h)
+�
+�
+��
+σ −1
+η −1
+p �
+T �
+1
+�
+1
+1
+1
+1
+
+
+
+×
+exp −b(h)
+exp −b(h)
+
+  2(h)
+
+σ
+η
+2(h)
+2(h)
+2(h)
+σtj
+σtj
+ηtj
+ηtj
+t=1 j=1 h=0
+T
+�
+
+−1/2
+
+�
+
+(14)
+
+�
+
+where ztl = (zt1l , zt2l , · · · , ztIt l ) , Rtl is the correlation matrix of ztl , and Xtl is the corresponding covariate matrix.
+3.2.2
+
+Derivation of Full Conditional Posterior Distributions
+
+The posterior distribution (14) can be generated by sampling from the full conditional distributions of unknown parameters with the MCMC method. Let xtlj = (xt1lj , xt2lj , · · · , xtIt lj )� =
+o
+m
+o
+m
+(x� otlj , x� m
+tlj ), where xtlj (xtlj ) is the vector of observed (missing) values with size It (It ).
+�
+
+(0)
+
+(1)
+
+Further, let xtj = (xt1j , xt2j , · · · , xtLj ) = (x� tj ), x� tj ), where the superscript denotes the
+obligors’ default statuses as before.
+Algorithm 2
+For each t = 1, 2, · · · , T , ach j = 1, 2, · · · , p and the lth industry of interest,
+m
+o
+2
+2
+1. sample xm
+tlj from xtlj | xtlj , ztl , btl , λt , β tj , utlj , σtj , ηtj
+o
+2. Sample ztl from ztl | xm
+tlj , xtlj , btl , λt
+o
+3. Sample btl from btl | xm
+tlj , xtlj , ztl , λt , Ψ, Γ
+
+16
+
+4. Sample ψj from ψj | btl , γj , aψ , bψ
+5. Sample γj from γj | btl , ψj
+o
+6. Sample λt from λt | xm
+tlj , xtlj , ztl , btl
+(h)
+
+(h)
+
+(h)
+
+2(h)
+
+(h)
+
+(h)
+
+(h)
+
+7. For h = 0, 1, sample β tj from β tj | xtj , σtj , utlj
+(h)
+
+(h)
+
+2(h)
+
+2(h)
+
+8. For h = 0, 1, sample utlj from utlj | β tj , xtlj , σtj , ηtj
+2(h)
+
+from σtj
+
+2(h)
+
+from ηtj
+
+9. For h = 0, 1, sample σtj
+10. For h = 0, 1, sample ηtj
+
+2(h)
+
+| xtj , β tj , utlj , aσ , bσ
+
+(h)
+
+2(h)
+
+| utlj , aη , bη .
+
+(h)
+
+(h)
+
+(h)
+
+(h)
+
+(h)
+
+(h)
+
+(h)
+
+11. Repeat steps 1 to 10 using the most recent values of the conditioning variables until a
+convergence criterion is met.
+Using notation similar to the notation of Section 3.1.2, define
+
+
+
+
+(0) (0)
+(0)
+2(0)
+0
+ Dtlj β tj + utlj 1n(0)
+
+ σtj In(0)
+
+tl
+tl
+Etlj = 
+, Ftjl = 
+
+,
+(1) (1)
+(1)
+2(1)
+Dtlj β tj + utlj 1n(1)
+0
+σtj In(1)
+tl
+tl
+�
+�
+(−j) (−j)
+ztl − Xtl btl
+1
+1
+Ptlj =
+Rtl , Qtlj =
+btlj
+b2tlj 0.6342 λt
+(h)
+
+(h)
+
+(h)
+
+where Dtlj is Itl × q unit-specific auxiliary matrix obtained by stacking q × 1 vector dtilj
+(−j)
+
+over i, Xtl
+
+(h)
+
+(−j)
+
+is ntl × (p − 1) covariate matrix deleting the jth covariate and btl
+
+is the
+
+corresponding vector of regression parameters deleting the jth parameter btlj . Then, one
+can show that
+�
+�
+−1
+−1 −1
+−1
+−1
+−1
+−1 −1
+xtlj | others ∼ N (Ftlj
++ Ptlj
+) (Ftlj
+Etlj + Ptlj
+Qtlj ), (Ftlj
++ Ptlj
+)
+�
+
+�
+
+�
+
+(15)
+
+o , x m ) . We can define the corresponding means
+After rearranging xtlj so that xtlj = (xtlj
+tlj
+
+and variances from (15) as
+
+
+
+
+om
+µotlj
+Σoo
+Σ
+tlj
+tlj 
+
+µtlj = 
+Σtlj = 
+.
+m
+mo
+mm
+µtlj
+Σtlj Σtlj
+
+Thus, the conditional posterior distribution of xm
+tlj is
+�
+�
+� o
+� mm
+o
+m
+mo oo−1
+o
+mo oo−1 om
+xm
+|
+x
+,
+others
+∼
+N
+µ
++
+Σ
+Σ
+x
+−
+µ
+,
+Σ
+−
+Σ
+Σ
+Σ
+tlj
+tlj
+tlj
+tlj
+tlj
+tlj
+tlj
+tlj
+tlj
+tlj tlj .
+17
+
+Using the same approach as in Section 3.1.2, the full conditional posterior distributions
+of ztl , btl , ψj , γj , and λt for Steps 2 - 6 can be summarized as below.
+�
+�
+1
+ztl | others ∼ N Xtl btl ,
+R
+tl
+0.6342 λt
+
+(16)
+
+with ztil truncated above (below) if ytil = 1 (ytil = 0).
+�
+�
+btl | others ∼ N µbtl , Σbtl
+
+where
+
+�
+
+Σbtl = Ψ
+
+−1
+
+�
+
+�
+
++ Xtl
+
+µbtl = Σbtl Ψ
+
+−1
+
+�
+
+(17)
+
+1
+Rtl
+0.6342 λt
+
+�−1
+
+Xtl
+
+�−1
+�
+
+(bt−1,l + Γ∇bt−1,l ) + Xtl
+
+�
+
+1
+Rtl
+0.6342 λt
+
+�−1
+
+�
+
+ztl .
+
+The conditional posterior distribution of ψj from the posterior distribution (14) is
+�
+�
+�2
+�T �
+b
+−
+b
+−
+γ
+(b
+−
+b
+)
+T
+j
+tlj
+t−1,lj
+t−1,lj
+(t−2)lj
+ψj | others ∼ IG
++ aψ , t=1
++ bψ .
+2
+2
+The conditional posterior distribution of γj is
+��
+�
+T
+∇b
+b
+ψ
+tlj
+t−1,lj
+j
+γj | others ∼ N �t=1
+, �T
+.
+T
+2
+2
+t=1 (∇bt−1,lj )
+t=1 (∇bt−1,lj )
+
+(18)
+
+Finally, the conditional posterior distribution of λt is
+�
+�
+�
+1
+0.6342 (ztl − Xtl btl ) Rtl −1 (ztl − Rtl btl )
+λt | others ∼ Γ
++ 4,
++4 .
+2
+2
+(h)
+
+(19)
+(h)
+
+2(h)
+
+We can also obtain the full conditional posterior distributions of β tj , utlj , σtj
+2(h)
+
+ηtj
+
+for Steps 7 - 10 as follows.
+(h)
+
+(h)
+
+Let Dtj be the Nt
+(h)
+
+dtilj
+
+and
+
+× q unit-specific auxiliary matrix stacking the q × 1 auxiliary vector
+�
+(h)
+(h)
+over i and l where Nt = L
+l=1 ntl . Using this notation, we have
+��
+�−1
+�
+��
+�
+�
+� �
+�
+(h)
+(h)
+(h)
+(h)
+(h)
+(h)
+2(h)
+(h)
+(h)
+β tj | others ∼ N
+Dtj Dtj
+Dtj
+xtj − utj , σtj
+Dtj Dtj
+
+where
+
+(h)
+utj
+
+=
+
+�
+
+(h) �
+(h) �
+ut1j 1 (h) , ut2j 1 (h) , · · ·
+n
+n
+t1
+
+t2
+
+(h) �
+, utLj 1 (h)
+n
+tL
+
+��
+
+(h)
+
+.
+2(h)
+
+2(h)
+
+The conditional posterior distributions of utlj , σtj and ηtj are
+�
+�
+�
+2(h)
+2(h) 2(h)
+(h) �
+q
+�
+ηtj
+ηtj σtj /ntl
+(h)
+(h)
+(h)
+(h)
+utlj | others ∼ N
+x
+¯tlj −
+d¯tljr βtjr , 2(h)
+2(h)
+2(h)
+(h)
+2(h)
+(h)
+ηtj + σtj /ntl
+ηtj + σtj /ntl
+r=1
+18
+
+(h)
+
+where x
+¯tlj =
+(h)
+
+β tj ,
+2(h)
+σtj
+
+�It
+
+(h)
+(h)
+i=1 xtilj /ntl ,
+
+�
+
+� t (h)
+(h)
+(h)
+(h)
+d¯tljr = Ii=1
+dtiljr /ntl and βtjr is the rth element of vector
+
+(h)
+
+Nt
+| others ∼ IG
+2
+
++
+
+a(h)
+σ ,
+
+1 � (h) (h)
+A A + b(h)
+σ
+2 tj tj
+
+�
+
+�
+�
+(h)
+(h)
+(h) (h)
+(h)
+where Atj = xtj − Dtj β tj − utj , and
+2(h)
+ηtj
+
+3.3
+
+�
+
+�
+L �
+�
+�
+L
+(h) 2
+(h) 1
+(h)
+| others ∼ IG
++ aη ,
+utlj
++ bη .
+2
+2
+l=1
+
+Bayes Factor
+
+Which Bayesian model is more appropriate to address the serial correlation in the PD? How
+much does the CreditMetrics default correlations improve the PD estimated by the two
+Bayesian models introduced in the previous two sections?
+One natural approach to answer these questions is to compare the competing models on
+the basis of their posterior probabilities given the data. Using Bayes rule, this is proportional
+to the prior probability for the model, p(M ) multiplied by the likelihood of the data given
+the model, p(D | M ). Thus, the choice between two models M1 and M2 can be made on
+the basis of the ratio
+
+p(M2 | D)
+p(M2 ) p(D | M2 )
+=
+.
+p(M1 | D)
+p(M1 ) p(D | M1 )
+A large value of this ratio gives support for M2 over M1 . The second term in this expression,
+the ratio of the marginal likelihoods, is called the Bayes factor (Kass and Raftery, 1995).
+Unlike a likelihood ratio, it is obtained by integrating over θ instead of maximising, so that
+�
+p(D | Mi ) = p(D | Mi , θi )p(θi | Mi )dθi , i = 1, 2. Here, θi is the (vector) parameter of Mi ,
+p(D | Mi , θi ) is the likelihood and p(θi | Mi ) is the prior distribution of θi .
+
+However, the Bayes factor is not in general easy to evaluate analytically mainly because
+
+of the integration over θ. We compute it from the MCMC output using the method proposed
+by Chib(1995) and Chib and Jeliazkov (2001). The log marginal likelihood can be written
+as, at some specific point θ∗ ∈ Θ,
+logp(D) = logp(D | θ∗ ) + logp(θ∗ ) − logp(θ∗ | D)
+where M is dropped to simplify notation.
+19
+
+Since the likelihood function p(D | θ∗ ) and prior distribution p(θ∗ ) are completely known,
+
+we discuss how to estimate the posterior distribution p(θ∗ | D) from the MCMC output using
+the dynamic hierarchical Bayesian model described in Section 3.2.
+
+For simplicity, we assume that the missing covariate values are imputed according to
+Algorithm 2. We are then left with the five parameters: ztl , btl , Ψ, Γ and λt . We specify
+them by their posterior means and denote them by z∗tl , b∗tl , Ψ∗ , Γ∗ and λ∗t .
+Since the log posterior distribution can be partitioned into the following five posterior
+distributions, for t = 1, 2, · · · , T ,
+logp(z∗tl , b∗tl , Ψ∗ , Γ∗ , λ∗t | D)
+= logp(z∗tl | D) + logp(b∗tl | z∗tl , D) + logp(Ψ∗ | z∗tl , b∗tl , D)
++logp(Γ∗ | z∗tl , b∗tl , Ψ∗ , D) + logp(λ∗t | z∗tl , b∗tl , Ψ∗ , Γ∗ , D),
+
+(20)
+
+logp(z∗tl , b∗tl , Ψ∗ , Γ∗ , λ∗t | D) can be estimated if we estimate the five posterior distributions
+in (20).
+
+Since p(z∗tl | D) =
+
+�
+
+p(z∗tl | btl , λt , D)p(btl , λt | D)dbtl dλt and z∗tl | btl , λt , D follows
+
+the normal distribution given by (16) in Section 3.2.2, we can estimate p(z∗tl | D) by, for
+suﬃciently large G,
+pˆ(z∗tl
+
+�
+�
+1
+1 �
+(g)
+N Xtl btl ,
+R
+| D) =
+(g) tl
+G g
+0.6342 λ
+
+(21)
+
+t
+
+where g denotes the gth repetition of Algorithm 2.
+�
+Observe that p(b∗tl | z∗tl , D) = p(b∗tl | z∗tl , Ψ, Γ, λt , D)p(Ψ, Γ, λt | z∗tl , D)dΨdΓdλt and
+btl | others ∼ N [µbtl , Σbtl ] where Σbtl and µbtl are defined in (17). Thus, p(b∗tl | z∗tl , D) can
+be estimated with samples of Ψ, Γ and λt from MCMC at fixed z∗tl (i.e., after deleting the
+step generating z∗tl from Algorithm 2) as
+1 � � (g) (g) �
+pˆ(b∗tl | z∗tl , D) =
+N µbtl , Σbtl
+G g
+�
+�
+�
+(g)
+
+�
+
+(22)
+−1
+
+�−1
+
+1
+where Σbtl = Ψ−1(g) + Xtl
+Xtl
+(g) Rtl
+0.6342 λt
+�
+�
+� ∗
+�
+�
+−1(g)
+(g)
+∗
+and µbtl = Σbtl Ψ
+b t−1,l + Γ ∇b t−1,l + Xtl
+
+By the same argument used above,
+�
+�
+1 �
+pˆ(ψj ∗ | z∗tl , b∗tl , Γ, D) =
+IG A, B (g)
+G g
+20
+
+1
+(g) Rtl
+0.6342 λt
+
+�−1
+
+�
+
+ztl .
+
+(23)
+
+where A =
+
+T
+2
+
++ aψ and B (g) =
+
+z∗tl and b∗tl are fixed.
+
+1 �T
+t=1
+2
+
+�
+
+�2
+(g)
+b∗tlj − b∗(t−1)lj − γj (b∗(t−1)lj − b∗(t−2)lj ) + bψ , and
+
+Finally, since p(Γ∗ | z∗tl , b∗tl , Ψ∗ , D) and p(λ∗t | z∗tl , b∗tl , Ψ∗ , Γ∗ , D) depend only on z∗tl , Ψ∗
+
+and b∗ tl as shown by (18) and (19), respectively, we have
+� �T
+�
+∗
+∇b∗tlj b∗(t−1)lj
+ψ
+t=1
+j
+pˆ(γj∗ | z∗tl , b∗tl , Ψ∗ , D) = N �T
+, �T
+∗
+∗
+2
+2
+t=1 (∇b(t−1)lj )
+t=1 (∇b(t−1)lj )
+and
+
+pˆ(λ∗t
+
+|
+
+z∗tl , b∗tl , Ψ∗ , Γ∗ , D)
+
+=Γ
+
+�
+
+(24)
+
+�
+�
+0.6342 (z∗tl − Xtl b∗tl ) Rtl −1 (z∗tl − Rtl b∗tl )
+1
++ 4,
++ 4 (25)
+2
+2
+
+The log marginal likelihood logp(z∗tl , b∗tl , Ψ∗ , Γ∗ , λ∗t | D) in (20) for the Bayes factor can
+
+now be estimated using (21) - (25).
+
+4
+
+Application
+
+We apply the models discussed in Section 3 to data on 402 companies in the service industry that borrowed from a domestic bank in South Korea between 2000 and 2003. First, we
+compare our imputation method for the missing data with two conventional alternatives.
+Second, the Bayesian model with a stationary time correlation structure, the dynamic hierarchical Bayesian model and the traditional logistic regression model are compared with
+respect to their discriminatory powers. Third, we investigate if the introduction of the
+CreditMetrics cross-sectional correlations improve the estimation of the PD using the Bayes
+factor. Fourth, the estimation of the PD and the corresponding credit grade under a stress
+situation is discussed. Finally, we present the convergence diagnostics for the dynamic
+hierarchical Bayesian model.
+
+4.1
+
+Data
+
+Our data are collected by a domestic bank in South Korea to build its internal credit risk
+model. The data are on 402 large companies (companies with more than 100 employees) in
+the service industry that borrowed from the bank during the four years from 2000 to 2003.
+As summarized in Table 1, defaults were rare. Only 13 defaults were observed over the data
+collection period.
+21
+
+We use six financial ratios to estimate the PD, which are classified into four categories
+as measuring a firm’s profitability, stability, activity and cash flow. Tables 2 and 3 present
+these financial ratios along with their definitions and the number of values they are missing.
+Two have missing values. ‘Borrowing Structure’ is missing for 100 non-defaulted companies
+and 2 defaulted companies, while ‘Inventory Turnover Ratio’ is missing for 104 non-defaulted
+companies and 2 defaulted companies. We provide the descriptive statistics in Table 4.
+These six financial ratios are chosen among more than 200 as follows. First, highly
+correlated variables, those with a correlation of more than 0.9 in absolute value, are removed.
+We then use t-test to choose the variables that significantly discriminate between defaulted
+and non-defaulted companies. Among these chosen variables, we finally select the covariates
+that are statistically significant (at a significant level of 5%) in a logistic regression model.
+The missing values are imputed using the ten unit-specific auxiliary variables displayed in
+Table 5. In selecting these variables, first, the financial statements with missing information
+are discarded. Next, we remove the covariates with high correlations (more than 0.9 in
+absolute value). Finally, the covariates resulting in the highest adjusted R2 are retained.
+The descriptions of the industries the small area estimation method borrows strength
+from and the number of obligors belonging to each industry in the data are presented in
+Tables 6 and 7. This classification of industries is commonly used by domestic banks in
+developing their internal credit risk models.
+
+4.2
+
+Model Comparisons
+
+To implement the Gibbs sampler, we set the initial values of the missing data to the estimates
+obtained with the small area estimation using the observed data. We start with b equal
+to the maximum likelihood estimate under the logistic regression model and set λ = 1 as
+in Albert and Chib (1993).3 The starting value of φ is randomly taken from U (−1, 1). We
+(h)
+
+generate σj2 and ηj2 from the inverted gamma distribution with aσ
+(h)
+
+(h)
+
+= bσ
+
+= 0.001 and
+
+(h)
+
+aη = bη = 0.001, respectively. Thus, σj2 and ηj2 are noninformative. The initial values for
+the other parameters are taken to be the estimates computed with the observed data.
+We compare our small area estimation imputation to two well-known imputation methods: the mean imputation and the regression imputation. The mean imputation uses the
+3
+
+Note that the industry subscript is dropped as we have data only from a single industry.
+
+22
+
+mean of the observed values to fill-in the missing value. The regression imputation uses
+the observed data to regress the covariates with missing values on the relevant auxiliary
+variables. The missing values are then imputed as the predicted values from the regression
+equation.
+We obtain three complete data sets with the three imputation methods, including ours.
+Next, the classical logistic regression model is fitted using each of the three complete data
+sets. Finally, we measure each fitted model’s discriminatory power, its ability to diﬀerentiate
+defaulted and non-defaulted obligors.
+The Accuracy Ratio (AR) is used as a measure of model discriminatory power. The AR
+is the most well-summarized index of the Cumulative Accuracy Profiles (CAPs) (Sobehart,
+Keenan and Stein, 2000). The CAPs is a curve constructed by measuring all obligors’ PDs
+and ordering them from highest to lowest on the x axis and then associating every PD on
+the x axis with the cumulative percentage of defaults with a PD equal to or higher than
+that PD in the test data on the y axis. The AR is defined as the ratio of the area between
+the CAPs of the estimated rating model and the CAPs of the perfect rating model. Thus,
+a model with a AR closer to 1 is a better model.
+In Table 8, we present the ARs for the three fitted classical logistic regression models.
+Our imputation method through the small area estimation outperforms its competitors.
+Next, we compare the dynamic hierarchical Bayesian model in Section 3.2 (dynamic model),
+the hierarchical Bayesian model with a stationary time correlation structure in Section 3.1
+(stationary model) and the classical logistic regression model (logistic model). Each model’s
+missing data are imputed using the small area estimation method. As can be seen in Table
+9, the dynamic model does best in terms of the AR.
+We then partition the data set into two halves. The first half consists of the obligors
+from 2000 to 2002 and is the in-sample or the training data for model fit. The second
+half consists of the year 2003 obligors and is the out-of-sample or the validation data for
+model validation. We fit the two Bayesian models and the logistic regression model using
+the in-sample data and then apply the fitted models to the out-of-sample data to calculate
+the ARs of the three models as shown in Table 10.
+The AR of the dynamic model is larger than those of the stationary model and the
+logistic model. The AR of the dynamic model slightly falls when the dynamic model is
+
+23
+
+applied to the out-of-sample data. However, the percentage fall in the AR of the dynamic
+model is substantially lower than the percentage falls in the ARs of the other two models
+when they are applied to the same out-of-sample data. Thus, the dynamic model is much
+more robust than the other two models.
+Note that AR is a good choice for comparison of the three imputation methods and the
+three models because we use the frequentest logistic regression model. We can, however,
+compare the two Bayesian models using the Bayes factor. It is equal to 146.7 (for the
+dynamic model over the stationary model), implying that the dynamic model is strongly
+favorable to the stationary one.
+We can also examine the relevance of cross-sectional correlations among obligors using
+the Bayes factor. As the dynamic model outperforms the other two models, we use it to check
+if the introduction of default correlations among obligors improves the PD estimation. The
+Bayes factor (for the dynamic model with the default correlations over the model without the
+default correlations) is 18.7, providing strong evidence for the relevance of the cross-sectional
+correlations.
+Running time is also an important factor when systemizing the model to use it as a part
+of the credit risk management system. The dynamic model does better than the stationary
+model in terms of the running time as well. Using the SAS/IML procedure on a Compaq
+8510w Windows XP notebook computer, the dynamic model takes 30 seconds to run, while
+the stationary model takes about 18 minutes.
+The posterior means of bt and their 95% credibility intervals are summarized in Table 11.
+The variables that aﬀect the obligor’s PD to a great extent are ‘Net Borrowings Dependency
+Ratio’, ‘Borrowing Structure’, ‘Inventory Turnover Ratio’, and ‘Trade Receivables Turnover
+Ratio’. ‘Cash Flow/Total Borrowings’ and ‘Long-term Debt Repayment Capacity’ variables
+are, on the other hand, insignificant because their 95% credibility intervals include zero
+for all the four years. The signs of the coeﬃcients indicate that the PD increases as the
+financial ratios with a positive (negative) coeﬃcient increase (decrease). Also note from
+Table 11 that the signs of the coeﬃcients of ‘Net Borrowings Dependency Ratio’, ‘Inventory
+Turnover Ratio’, and ‘Trade Receivables Turnover Ratio’, do not remain the same but vary
+over time, suggesting that the PD does not vary monotonically with these financial ratios.
+Finally, we diagnose the convergence of the estimates in the dynamic model based on
+
+24
+
+the MCMC output. This could be done by calculating the potential scale reduction factor
+(Gelman and Rubin, 1992). If stationarity is attained, the potential scale reduction factor
+will be close to one. Otherwise, more burn-in repetitions are required. To do this, we
+simulate five parallel independent sequences of five diﬀerent starting points from an initial
+value ˆbtj to ˆbtj ± σbtj and ˆbtj ± 2σbtj where ˆbtj is the posterior mean and σbtj is its standard
+deviation. Each of the five sequence is simulated with the lengths, 1000, 2000, 5000, 10000,
+20000 and 40000 (after discarding the first half of the simulation) for each btj . All potential
+scale reduction factors of the six btj ’s close to 1 after 20000 iterations, indicating that 40000
+simulation runs in our data analysis are suﬃcient for convergence.
+
+4.3
+
+Predicting the Obligor’s Grade under Stress Circumstances
+
+Basel II requires banks to periodically conduct stress tests to assess their regulatory capital
+adequacy. Stress testing should be able to link major changes in the economic environment
+to the bank’s portfolio. Banks should identify stress scenarios and assess the eﬀects of
+the scenarios on key performance measures. This requires the estimation of key financial
+variables at a future time for each obligor. In other words, the distributions of the financial
+variables relevant to the PD at each time and for each obligor should be obtained. However,
+this is not possible in the real loan world mainly due to lack of data.
+To overcome this diﬃculty, as the PD is a symmetric function of the financial variables
+relevant to the PD and their coeﬃcients, we use the posterior distributions of the coeﬃcients
+instead of those of the financial variables to calculate the PD under a stress situation, which
+is equivalent to the one that would be obtained from the distributions of the financial
+variables. Once we obtain the PD under a stress circumstance, we can also assign a credit
+grade to it as demonstrated below.
+Note that obligor i’s PD, πti is given by the probit model under the dynamic hierarchical
+Bayesian model.
+πti = Φ(.634
+
+�
+λt x�ti bt )
+
+(26)
+
+where Φ is the cumulative distribution function of a standard normal random variable.
+This probability is symmetric about x� ti bt . Under a stress situation, x�ti bt is expected
+to increase. In a Bayesian perspective, xti is a constant but bt is a random variable with
+a completely known posterior distribution. Thus, instead of predicting xti under a stress
+25
+
+situation, we can choose an appropriate value of bt using its posterior distribution so that
+the chosen value of bt yields a high value of the PD.
+We can now predict each obligor’s financial variables that are relevant to the PD under
+a stress situation by equating these two quantities:
+�
+
+x�ti b∗t = x∗ti bt
+
+(27)
+
+where xti and x∗ti are financial variables observed under the non-stress situation and predicted in a stress situation, respectively; bt and b∗t are the posterior mean under the nonstress situation and the expected value in a stress situation, respectively. The x�ti b∗t on
+the left-hand side of (27) is known because xti is observed and b∗t is given by its posterior
+distribution. Thus, the predicted value of x∗ti is easily obtained by replacing the coeﬃcient
+b∗t under a stress situation with the posterior mean bt under the non-stress situation.
+For example, as shown in Table 12 for year 2003, the coeﬃcient of ‘Net Borrowings
+Dependency Ratio’ has mean of 0.1296, and its 75th percentile is 0.1694, which is considered
+to be the expected value of ‘Net Borrowings Dependency Ratio’ under a stress situation.
+An observed value of ‘Net Borrowings Dependency Ratio’ for an obligor in year 2003 was
+1.34. Thus, we have 0.2270 = 1.34 × 0.1694 under a stress situation and the value of
+‘Net Borrowings Dependency Ratio’ becomes 1.75 (= 0.2270/0.1296). The left-hand side of
+
+Table 12 lists posterior means of the six coeﬃcients and their 75th percentiles. These 75th
+percentiles yield about 2 times the PD obtained under non-stress (i.e., obtained with the
+posterior mean values of the six coeﬃcients). The right-hand side of Table 12 presents the
+mean values of the six financial ratios and their predicted values under a stress situation,
+corresponding to the 75th percentiles of their respective coeﬃcients. The predicted values
+are computed using the equality (27).
+In order to assign a credit grade to the PD of each obligor, we use the distribution of the
+grades for corporate bonds issued during the four years between 2000 and 2003 (see Table
+13). Using the coeﬃcients under the non-stress situation in Table 12, we determine six cutoﬀ points for the PDs to distinguish the seven credit grades according to the proportion of
+grades in Table 13. We then calculate the PDs under a stress situation using the coeﬃcients
+under stress in Table 12 and apply the six cut-oﬀ points to them to obtain the corresponding
+credit grades under a stress situation. The resulting grades are provided in the last column
+of Table 14. We compare these predicted grades with the observed grades of the bonds issued
+26
+
+in 1998 (Asian financial crisis and IMF incidence), which are listed in the second column
+of Table 14, and find them to be very close to each other. In particular, the proportions
+of junk grades (BB ∼ C) are very similar. Also note that as expected, the proportion of
+junk grades increase in a stress situation (taking the first column of Table 14, which is just
+a copy of Table 13, as reference grades).
+Credit grades obtained with the PDs that incorporate stress scenarios will be relatively
+stable in economic cycles. The main idea is that the credit grade using PDs under stress
+scenarios are “cyclically neutral” in the sense that while they move as the particular circumstances change, they do not respond to changes in overall business conditions. Our model
+fulfills this desirable property through the dynamic structure of btl . Since btl is a random
+walk process, the eﬀect of a shock will be spread over time.
+To see this, we use the coeﬃcients under stress in Table 12 for year 2003. Then the
+dynamic structure (12) forecasts the coeﬃcients under stress for t = 2004 as bt1l = 0.1562,
+bt2l = 0.0021, bt3l = 0.0314, bt4l = 0.0137, bt5l = 0.0021, and bt6l = 0.4370. To forecast
+the PDs for t = 2004, we assume that λt and xtil for t = 2004 are the same as those for
+t = 2003. This is only for computational convenience and one may use other values of them
+from a forecasting mechanism. After forecasting the PDs for t = 2004, use the same six
+cut-oﬀ points as used in Table 14 to determine obligor’ grades for t = 2004. Table 15 is the
+transition matrix for grades from 2003 to 2004 under the stress circumstance. This table
+shows that the grades between the two years remain the same in most cases and move only
+one-step upward or downward, satisfying the desirable property in a stress circumstance.
+The persistence ratio of grades is 85.58%, which satisfies the 2004 guidelines suggested by
+Financial Supervisory Service (FSS) of South Korea.
+
+5
+
+Conclusions
+
+We have investigated if a dynamic hierarchical Bayesian model can address the three main
+challenges in estimating the PD. The first challenge is the imputation of the missing values
+of obligors’ financial variables. The second challenge is incorporating the cross-sectional and
+serial correlations into the estimation of the PD. The final challenge is the estimation of the
+PD under stress circumstances. Our empirical findings show that the dynamic hierarchical
+Bayesian model can successfully overcome these diﬃculties.
+27
+
+We first showed that our imputation method employing the small area estimation improves the AR of the classical logistic regression model compared to classical methods of
+imputation such as mean imputation and regression imputation. Next, we compared the
+dynamic hierarchical Bayesian model with two competing models, namely the classical logistic regression model and the hierarchical Bayesian model with a stationary time correlation
+structure. After imputing each model’s missing data using the small area estimation model,
+we computed their ARs. The dynamic hierarchical Bayesian model outperformed its competitors in terms of the AR. The AR of the dynamic hierarchical Bayesian model for outof-sample was also larger than the out-of-sample ARs of the other two models. Moreover,
+when switched from in-sample to out-of-sample, our model’s AR was only slightly reduced
+whereas the AR of the other two models showed a significant decrease. Hence, the dynamic
+hierarchical Bayesian model is much more robust than the other two models.
+We also compared the two Bayesian models using the Bayes factor and obtained strong
+evidence for the dynamic hierarchical Bayesian model. The dynamic hierarchical Bayesian
+model outperforms the Bayesian model with a stationary correlation structure in terms of
+the running time as well.
+We then investigated if the inclusion of CreditMetrics cross-sectional correlations improve the estimation of the PD by computing the Bayes factor in the dynamic hierarchical
+Bayesian model. The computed result was a strong evidence for the relevance of the crosssectional correlations. Our model’s convergence diagnostics was also checked by calculating
+the potential scale reduction factor.
+Finally, we illustrated how to forecast the PD and the credit grade under stress circumstances using dynamic structures and the symmetry of the probit model. We predicted the
+credit grade for each obligor under a stress scenario as required by Basel II. To see whether
+the grades predicted by our model reflected the stress situation such as the Asian financial
+crisis of 1998, we compared the predicted grades with the observed grades of the bonds issued in 1998. In addition, by using the transition matrix for grades under a stress situation
+from 2003 to 2004, we calculated the persistence ratio of grades in order to test whether our
+grades complied with the Basel II requirement, which says the credit grades under a stress
+situation should not sensitive to the business cycles. Our results showed that the grades
+predicted by our model under a stress situation adequately reflected changes in obligor’s
+
+28
+
+credit quality caused by the stress situation and complied with the Basel II requirement.
+This paper proposed solutions for the three main issues raised in estimating the PD
+under the binary probit model. The extension of our work to multinomial probit models is
+immediate.
+
+References
+[1] Albert, J. H. and Chib, S. (1993). Bayesian Analysis of Binary and Polychotomous
+Response Data. Journal of the American Statistical Association, 88, 669-679.
+[2] Altman, E. I. (1968). Financial Ratios, Discriminant Analysis, and the Prediction of
+Corporate Bankruptcy. Journal of Finance, 23(4), 589609.
+[3] Bangia, A., Diebold, F., Kronimus, A., Schagen, C., and Schuermann, T. (2002). Ratings Migration and Business Cycle, with Application to Credit Portfolio Stress Testing.
+Journal of Banking and Finance. 26(2-3), 445-474.
+[4] Bartram, S. M., G. W. Brown, and J. E. Hund (2007). Estimating Systematic Risk in
+the International Financial System. Journal of Financial Economics, 86(3), 835869.
+[5] Basel Committee on Banking Supervision (1988). International Convergence of Capital
+Measurement and Capital Standards. Bank for International Settlements.
+[6] Basel Committee on Banking Supervision (2004). International Convergence of Capital
+Measurement and Capital Standards: A Revised Framework. Bank for International
+Settlements.
+[7] Chib, S. (1995). Marginal likelihood from the Gibbs output. Journal of the American
+Statistical Association, 90, 1313-1321.
+[8] Chib, S. and Greenberg, E. (1995). Understanding the Metropolis-Hastings algorithm.
+The American Statistician, 49. 327-335.
+[9] Chib, S. and Jeliazkov, I. (2001). Marginal likelihood from the Metropolis-Hastings
+output. Journal of the American Statistical Association, 96, 270-281.
+
+29
+
+[10] Chib, S. and Carlin, B. P. (1999). On MCMC Sampling in Hierarchical Longitudinal
+Models. Statistics and Computing, 9, 17-26.
+[11] Couderc, F. and Renault, O. (2004). Times-to-Default: Life Cycle, Global and Industry
+Cycle Impacts. Working paper, University of Geneva, Geneva.
+[12] Das, S. R., Duﬃe, D., Kapadia, N. and Saita, L. (2007). Common Failings: How
+Corporate Defaults are Correlated. Journal of Finance 62, 93-117.
+[13] Davis, M. and Lo, V. (2001). Infectious Defaults. Quantitative Finance 1, 382-387.
+[14] de Servigny, A. and Renault, O. (2002). Default Correlation: Empirical Evidence.
+Working paper, Standard and Poors, London.
+[15] Dempster, A., Laird, N., and Rubin, D. (1977). Maximum likelihood from incomplete
+data via the EM algorithm. Journal of the Royal Statistical Society, Series B, 39(1),
+138.
+[16] Duﬃe, D., Saita, L. and Wang, K. (2007). Multi-period Corporate Default Prediction
+with Stochastic Covariates, Journal of Financial Economics 83, 635-665.
+[17] Duﬃe, D., Eckner, A., Horel, G. and Saita, L. (2008). Frailty Correlated Default.
+Journal of Finance, forthcoming.
+[18] Egloﬀ D., Leippold, M. and Vanini, P. (2007). A Simple Model for Credit Contagion.
+Journal of Banking and Finance, 31, 2475-2492.
+[19] Gelman, A.. and Rubin, D. B. (1992). Inference from Iterative Simulation Using Multiple Sequences. Statistical Science, 7, 457-72.
+[20] Gilks, W., Richardson, S. and Spiegelhalter, D. (1996). Markov Chain Monte Carlo in
+Practice. Chapman & Hall, New York.
+[21] Hillegeist, S. A., Keating, E. K., Cram, D. P. and Lundstedt, K. G. (2004). Assessing
+the Probability of Bankruptcy. Review of Accounting Studies, 9(1), 5-34.
+[22] Hu, Y. T., Kiesel, R. snd Perraudin, W. (2002). The Estimation of Transition Matrices
+for Sovereign Credit Ratings Journal of Banking and Finance, 26(7), 1383-1406.
+30
+
+[23] Kass, R. E. and Raftery, A. E. (1995). Bayes factors. Journal of the American Statistical
+Association, 90, 773-795.
+[24] King G., Honaker J., Joseph A. and Scheve K. (1998). Listwise Deletion is Evil: What to
+Do About Missing Data in Political Science. http://Gking.Harvard.Edu, Unpublished.
+[25] Kofman, P. and Sharpe, I. G. (2003). Using Multiple Imputation in the Analysis of
+Incomplete Observations in Finance. Journal of Financial Econometrics, 1(2), 216-249.
+[26] Koopman, S.J., Lucas, A. and Klaassen, P. (2005). Empirical credit cycles and capital
+buﬀer formation. Journal of Banking & Finance, 29, 3159-3179.
+[27] Koopman, S.J., Lucas, A. and Monteiro, A. (2008). The multi-state latent factor intensity model for credit rating transitions. Journal of Econometrics, 142, 399-424.
+[28] Kealhofer, S. (2003). Quantifying Credit Risk I: Default Prediction. Financial Analysts
+Journal, 59(1), 30-44.
+[29] Lando, D. and Skodeberg, T. (2002). Analyzing Rating Transitions and Rating Drift
+with Continuous Observations. Journal of Banking and Finance, 26(2-3), 423444.
+[30] Lane, W., Looney, S. W. and Wansley, J. W. (1986). An Application of the Cox Proportional Hazards Model to Bank Failure. Journal of Banking and Finance, 10, 511531.
+[31] Lee, S. H. and J. L. Urrutia (1996). Analysis and Prediction of Insolvency in the
+Property-Liability Insurance Industry: A Comparison of Logit and Hazard Models.
+The Journal of Risk and Insurance, 63(1), 121130.
+[32] Little, R.J.A. and Rubin, D. B. (2002). Statistical Analysis with Missing Data. New
+York: Wiley.
+[33] McNeil, A. and Wendin, J. (2006). Dependent Credit Migrations. Journal of Credit
+Risk, 2, 87114.
+[34] McNeil, A. and Wendin, J. (2007). Bayesian Inference for Generalized Linear Mixed
+Models of Portfolio Credit Risk. Journal of Empirical Finance, 14(2), 131149.
+[35] Nickell, P., Perraudin, W. and Varotto, S. (2000) Stability of Rating Transitions, Journal of Banking and Finance, 10, 423-444.
+31
+
+[36] Ohlson, J. A. (1980). Financial Ratios and the Probabilistic Prediction of Bankruptcy.
+Journal of Accounting Research, 18(1), 109131.
+[37] Pesaran, M., Schuermann, T. and Weiner, S. (2004). Modeling Regional Interdependencies Using a Global Error-Correcting Macroeconomic Model. Journal of Business
+and Economic Statistics, 22, 129162.
+[38] Pesaran, M., Schuermann, T., Treutler, B. and Weiner, S. (2006). Macroeconomic Dynamics and Credit Risk: A Global Perspective. Journal of Money, Credit and Banking,
+38(5), 12111261.
+[39] Rubin, D. B. (1987). Multiple Imputation for Nonresponse in Surveys. J. Wiley & Sons,
+New York.
+[40] Schafer, J. L. (1997). Analysis of Incomplete Multivariate Data. Chapman & Hall,
+London.
+[41] Schumway, T. (2001). Forecasting Bankruptcy More Accurately: A Simple Hazard
+Model. Journal of Business, 74(1), 101124.
+[42] Sobehart, J. R., S. C. Keenan and Stein, R. R. (2000). Benchmarking Quantitative Default Risk Models: A Validation Methodology. Moody’s Risk Management.
+(http://riskcalc.moodysrms.com/us/research/crm.asp)
+[43] Sun, D., Tsutakawa, R.K., and He, Z. (2001). Propriety of Posteriors with Improper
+Priors in Hierarchical Linear Mixed Models. Statistica Sinica, Vol. 11, 77-95.
+[44] Sun, D., Tsutakawa R. K. and Speckman, P. (1999). Posterior Distribution of Hierarchical Models using CAR (1) Distributions. Biometrika, 86, 341-350.
+[45] Tanner, M. A. and Wong, W. H. (1987). The Calculation of Posterior Distributions by
+Data Augmentation (with discussion). Journal of the American Statistical Association,
+82, 528550
+[46] Zhou, C. (2001). The Term Structure of Credit Spreads with Jump Risk. Journal of
+Banking and Finance, 25(11), 20152040.
+
+32
+
+Appendix:
+Table 1: Defaults in the Data
+Year
+
+# of Firms
+
+# of Defaulted
+
+Annual Default Rate
+
+2000
+
+78
+
+1
+
+1.28%
+
+2001
+
+102
+
+2
+
+1.96%
+
+2002
+
+111
+
+4
+
+3.60%
+
+2003
+
+111
+
+6
+
+5.41%
+
+Total
+
+402
+
+13
+
+3.23%
+
+Table 2: Financial Ratios used in the PD Estimation and Number of Missing Values
+Number of Missing Values
+Category
+
+Variable Name
+
+Non-defaulted
+
+Defaulted
+
+Profitability
+
+Net Borrowings Dependency Ratio
+
+0
+
+0
+
+Stability
+
+Borrowing Structure
+
+100
+
+2
+
+Activity
+
+Inventory Turnover Ratio
+
+104
+
+2
+
+Activity
+
+Trade Receivables Turnover Ratio
+
+0
+
+0
+
+Cash Flow
+
+Cash Flow/Total Borrowings
+
+0
+
+0
+
+Stability
+
+Long-term Debt Repayment Capacity
+
+0
+
+0
+
+Table 3: Definition of Financial Ratios used in the PD Estimation
+• Net Borrowings Dependency Ratio = 100×((Funding Cost - Interest Income)/Sales Amount)
+• Borrowing Structure = Short-term Debts/Total Debts
+• Inventory Turnover Ratio = Sales/Inventory
+• Receivables Turnover Ratio = Net Credit Sales/Average Accounts Receivable
+• Cash Flow/Total Borrowings = 100×(Cash Flow/(Short-term Borrowings + Current Portion of
+Long-term Debts + Long-term Borrowings + Private Loan + Financial Lease))
+• Long-term Debt Repayment Capacity = EBITDA/Total Debts, where
+EBITDA = (Operating Income + Depreciation Cost + Depreciation on Intangible Asset)/Sale Amount
+
+1
+
+Table 4: Descriptive Statistics for the Financial Ratios used in the PD Estimation
+Variable Name
+
+Mean
+
+St. Dev.
+
+Min
+
+Median
+
+Max
+
+Net Borrowings Dependency Ratio
+
+1.9
+
+3.8
+
+-5.6
+
+1.2
+
+9.1
+
+Borrowing Structure
+
+63.3
+
+32.9
+
+0.3
+
+64.2
+
+100.0
+
+Inventory Turnover Ratio
+
+58.8
+
+25.5
+
+6.6
+
+76.9
+
+79.5
+
+Trade Receivables Turnover Ratio
+
+13.2
+
+9.7
+
+0.8
+
+9.4
+
+25.4
+
+Cash Flow/Total Borrowings
+
+46.6
+
+55.9
+
+-95.9
+
+41.2
+
+143.7
+
+Long-Term Debt Repayment Capacity
+
+0.7
+
+0.5
+
+0.1
+
+0.7
+
+1.6
+
+Net Borrowings Dependency Ratio
+
+1.3
+
+3.2
+
+-5.1
+
+0.8
+
+7.7
+
+Borrowing Structure
+
+69.2
+
+30.7
+
+1.6
+
+80.2
+
+100.0
+
+Inventory Turnover Ratio
+
+59.6
+
+28.7
+
+6.2
+
+72.6
+
+84.3
+
+Trade Receivables Turnover Ratio
+
+13.4
+
+9.1
+
+0.8
+
+11.8
+
+25.2
+
+Cash Flow/Total Borrowings
+
+37.0
+
+53.7
+
+-103.3
+
+30.8
+
+140.1
+
+Long-Term Debt Repayment Capacity
+
+0.7
+
+0.5
+
+-0.3
+
+0.7
+
+1.7
+
+Net Borrowings Dependency Ratio
+
+1.2
+
+2.9
+
+-5.0
+
+0.7
+
+10.3
+
+Borrowing Structure
+
+69.9
+
+29.0
+
+0.4
+
+72.1
+
+100.0
+
+Inventory Turnover Ratio
+
+60.0
+
+27.3
+
+5.3
+
+75.8
+
+100.0
+
+Trade Receivables Turnover Ratio
+
+13.2
+
+9.1
+
+0.7
+
+11.5
+
+44.9
+
+Cash Flow/Total Borrowings
+
+37.2
+
+46.5
+
+-100.7
+
+42.7
+
+134.8
+
+Long-Term Debt Repayment Capacity
+
+0.7
+
+0.5
+
+-0.7
+
+0.7
+
+1.5
+
+Net Borrowings Dependency Ratio
+
+1.1
+
+2.9
+
+-4.4
+
+0.4
+
+14.5
+
+Borrowing Structure
+
+69.7
+
+34.3
+
+1.2
+
+83.9
+
+100.0
+
+Inventory Turnover Ratio
+
+58.7
+
+23.7
+
+6.4
+
+73.9
+
+100.0
+
+Trade Receivables Turnover Ratio
+
+13.5
+
+8.7
+
+0.8
+
+11.2
+
+35.2
+
+Cash Flow/Total Borrowings
+
+48.2
+
+52.9
+
+-99.4
+
+42.7
+
+161.4
+
+Long-Term Debt Repayment Capacity
+
+0.7
+
+0.5
+
+-0.7
+
+0.7
+
+2.9
+
+2
+
+Year 2000
+
+Year 2001
+
+Year 2002
+
+Year 2003
+
+Table 5: Definitions of the Auxiliary Variables used in the Small Area Estimation
+• Quick Ratio = (Current Assets - Inventories) / Current Liabilities
+• Current Ratio = Current Assets/Current Liabilities
+
+• Total Borrowings and Bonds Payable to Total Assets = 100×((Short-term Borrowings + Current
+Portion of Long-term Debts + Long-term Borrowings
++ Private Loan + Financial Lease)/ Total Assets)
+• Cash Ratio = Total Cash and Cash Equivalents / Current Liabilities
+
+• Current Quick Ratio = (Cash + Short-term Financial Instruments)/Total Assets
+• Fixed Asset Turnover Ratio = Net Sales / (Net Property, Plan and Equipment)
+
+• Operating Assets Turnover Ratio = Sales Amount/(Trade Receivables + Inventory Assets)
+
+• Total Borrowings and Bonds Payable to Total Assets = 100×(Borrowed Money/Gross Capital)
+
+• Operating Capital Trend = ln(Avg. Current Assets in 2 Year / Short-term Debt in 2 Year) / St.
+Dev. of Short-term Debt in 3 Year
+
+• EBITDA, defined in Table 3
+
+Table 6: Industries used in the Small Area Estimation
+Name
+
+Number of Obligors
+
+Light Manufacturing
+
+345
+
+Heavy Manufacturing
+
+894
+
+Information Technology
+
+333
+
+Construction
+
+145
+
+Wholesale and Retail
+
+317
+
+3
+
+Table 7: Description of the Industries used in the Small Area Estimation
+• Light Manufacturing: is an industry characterized by less capital-intensive and
+
+more labor-intensive operations. Light manufacturing products tend to target end
+users rather than other businesses. Consumer electronics, clothing and furniture manufacturing are examples of light manufacturing.
+
+• Heavy Manufacturing: is a capital- and/or labor-intensive industry, such as automobile, industrial machinery, steel, rubber, mining or petroleum.
+
+• Information Technology (IT) Industry: is defined as the design and manufacture
+
+of computers and computer peripherals, telecommunications equipment, and computer
+software; computer system installation, repair and maintenance; computer consultancy
+services; computer programming; systems analysis services; and activities which are
+incidental, ancillary or complimentary to these activities.
+
+• Construction Industry: concerns with the building or assembling of infrastructure.
+• Wholesale and Retail Trade Industry: The wholesale and retail trade sector is
+made up of two parts: the wholesale trade sector and the retail trade sector. The
+
+wholesale trade sector comprises establishments engaged in wholesaling merchandise,
+which is an intermediate step in the distribution of merchandise. Wholesalers are
+organized to sell or arrange the purchase or sale of (a) goods for resale (i.e., goods sold
+to other wholesalers or retailers), (b) capital or durable non-consumer goods, and (c)
+raw and intermediate materials and supplies used in production.
+The retail trade sector comprises establishments engaged in retailing merchandise,
+which is the final step in the distribution of merchandise. Retailers are, therefore,
+organized to sell merchandise in small quantities to the general public.
+• Service Industry: involves the provision of services to businesses as well as final
+
+consumers. Examples include accounting, tradesmanship (like mechanic or plumber
+services), restaurants and tourism.
+
+4
+
+Table 8: Accuracy Ratios for Comparing Three Imputation Methods
+Imputation Method
+Mean Imputation
+
+Regression Imputation
+
+Small Area Estimation
+
+0.733
+
+0.675
+
+0.754
+
+Table 9: Accuracy Ratios of the Two Hierarchical Bayesian Models and the Logistic Model
+Dynamic Model
+
+Stationary Model
+
+Logistic Model
+
+0.894
+
+0.766
+
+0.754
+
+Table 10: Accuracy Ratios Using In-Sample and Out-of-Sample Data
+Sample
+
+Dynamic Model
+
+Stationary Model
+
+Logistic Model
+
+In-Sample Data
+
+0.896
+
+0.764
+
+0.756
+
+Out-of-Sample Data
+
+0.809
+
+0.652
+
+0.416
+
+Table 11: Posterior Means and 95% Credibility Intervals for bt
+Coeﬃcient
+Net Borrowings Dependency Ratio
+
+Borrowing Structure
+
+Inventory Turnover Ratio
+
+Trade Receivables Turnover Ratio
+
+Cash Flow/Total Borrowings
+
+Long-term Debt Repayment Capacity
+
+2000
+
+2001
+
+2002
+
+2003
+
+1.5823
+
+-2.0383
+
+-0.0640
+
+0.1296
+
+(0.0849 , 3.0834)
+
+(-2.7879, -0.9307)
+
+(-0.1911 , 0.0449)
+
+(0.0212 , 0.2866)
+
+0.0990
+
+-0.3024
+
+-0.0291
+
+-0.0003
+
+(-0.0172 , 0.1979)
+
+(-0.4520, -0.1265)
+
+(-0.0797 , -0.0051)
+
+(-0.0089 , 0.0076)
+
+0.1615
+
+-0.0978
+
+0.0097
+
+0.0227
+
+(0.0056 , 0.3315)
+
+(-0.1428, -0.0427)
+
+(0.0028, 0.0167)
+
+(0.0064 , 0.0422)
+
+-1.5504
+
+0.2228
+
+0.0155
+
+0.0093
+
+(-2.2203 , -0.2928)
+
+(0.0596, 0.3981)
+
+(-0.0106 , 0.0423)
+
+(-0.0065 , 0.0285)
+
+0.0038
+
+0.0289
+
+-0.0079
+
+0.0008
+
+(-0.0898 , 0.1031)
+
+(-0.0309, 0.0837)
+
+(-0.0274 , 0.0060)
+
+(-0.0037 , 0.0061)
+
+-6.0417
+
+-3.9798
+
+-0.9978
+
+0.2334
+
+(-19.9681 , 5.3674)
+
+(-9.0627, 0.5776)
+
+(-2.2263 , 0.0507)
+
+(-0.4738 , 1.1359)
+
+5
+
+Table 12: Posterior Means of Financial Ratios and Their Coeﬃcients for Year 2003*
+Coeﬃcients
+Variable Name
+
+Financial Ratios
+
+Non-stress
+
+Stress
+
+Non-stress
+
+Stress
+
+0.1296
+
+0.1694
+
+1.34
+
+1.75
+
+0.0021
+
+68.61
+
+0
+
+0.0287
+
+49.24
+
+62.25
+
+0.0147
+
+12.24
+
+19.35
+
+0.0022
+
+36.67
+
+100.84
+
+0.4620
+
+0.65
+
+1.29
+
+Net Borrowings Dependency Ratio
+
+(0.0212, 0.2866)
+Borrowings Structure
+
+-0.0003
+(-0.0089, 0.0076)
+
+Inventory Turnover Ratio
+
+0.0227
+(0.0064, 0.0422)
+
+Trade Receivables Turnover Ratio
+
+0.0093
+(-0.0065, 0.0285)
+
+Cash Flow/Total Borrowings
+
+0.0008
+(-0.0037, 0.0061)
+
+Long-term Debt Repayment Capacity
+
+0.2334
+(-0.4738, 1.1359)
+
+*95% credibility intervals are in parentheses.
+
+Table 13: The Proportion of the Grades of Corporate Bonds Issued between 2000 and 2003
+Grade
+
+AAA
+
+AA
+
+A
+
+BBB
+
+BB
+
+B
+
+portion
+
+6.86%
+
+10.29%
+
+22.19%
+
+32.29%
+
+22.57%
+
+3.80%
+
+Source: National Information & Credit Evaluation, Inc., Seoul, South Korea.
+
+Table 14: The Distribution of Grades under a Stress Circumstance
+Grade
+
+Non-stress*
+
+IMF (1998)*
+
+Stress
+
+AAA
+
+6.86%
+
+0.50%
+
+1.71%
+
+AA
+
+10.29%
+
+2.00%
+
+6.75%
+
+A
+
+22.19%
+
+25.50%
+
+21.66%
+
+BBB
+
+32.29%
+
+36.50%
+
+30.13%
+
+BB
+
+22.57%
+
+23.50%
+
+26.85%
+
+B
+
+3.80%
+
+3.50%
+
+7.43%
+
+CCC ∼ C
+
+2.00%
+
+1.74%
+
+5.47%
+
+Investment Grade
+
+71.63%
+
+64.50%
+
+60.25%
+
+Junk Grade
+
+28.37%
+
+35.50%
+
+39.75%
+
+*Source: National Information & Credit Evaluation, Inc., Seoul, South Korea.
+
+6
+
+CCC ∼ C
+2.00%
+
+Table 15: Transition Matrix for Grades between 2003 and 2004 under a Stress Circumstance
+T = 2003
+
+AAA
+
+AA
+
+A
+
+BBB
+
+BB
+
+B
+
+CCC∼C
+
+T = 2004
+AAA
+
+AA
+
+A
+
+BBB
+
+BB
+
+B
+
+CCC ∼ C
+
+SUM
+
+1
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+1
+
+(100%)
+
+(0%)
+
+(0%)
+
+(0%)
+
+(0%)
+
+(0%)
+
+(0%)
+
+(100%)
+
+0
+
+6
+
+0
+
+0
+
+0
+
+0
+
+0
+
+6
+
+(0%)
+
+(100%)
+
+(0%)
+
+(0%)
+
+(0%)
+
+(0%)
+
+(0%)
+
+(100%)
+
+0
+
+0
+
+16
+
+3
+
+0
+
+0
+
+0
+
+19
+
+0%)
+
+(0%)
+
+(84.2%)
+
+(15.8%)
+
+(0%)
+
+(0%)
+
+0%)
+
+(100%)
+
+0
+
+0
+
+4
+
+31
+
+3
+
+0
+
+0
+
+38
+
+(0%)
+
+(0%)
+
+(10.5%)
+
+(81.6%)
+
+(7.9%)
+
+(0%)
+
+(0%)
+
+(100%)
+
+0
+
+0
+
+0
+
+2
+
+29
+
+1
+
+0
+
+32
+
+(0%)
+
+(0%)
+
+(0%)
+
+(6.3%)
+
+(90.7%)
+
+(3.0%)
+
+(0%)
+
+(100%)
+
+0
+
+0
+
+0
+
+0
+
+0
+
+6
+
+1
+
+7
+
+(0%)
+
+(0%)
+
+(0%)
+
+(0%)
+
+(0%)
+
+(85.7%)
+
+(14.3%)
+
+(100%)
+
+0
+
+0
+
+0
+
+0
+
+0
+
+2
+
+6
+
+8
+
+(0%)
+
+(0%)
+
+(0%)
+
+(0%)
+
+(0%)
+
+(25%)
+
+(75%)
+
+(100%)
+
+7
+
+

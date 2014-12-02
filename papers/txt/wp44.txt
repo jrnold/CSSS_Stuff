@@ -1,0 +1,829 @@
+Interval Estimates for Epidemic Thresholds in Two-Sex
+Network Models 1
+Mark S. Handcock
+University of Washington, Seattle
+James Holland Jones
+Stanford University, Palo Alto
+
+Working Paper no. 44
+Center for Statistics and the Social Sciences
+University of Washington
+14 March 2003; Minor revision August 2004
+
+1
+
+Mark S. Handcock is Professor of Statistics and Sociology, Department of Statistics, University of
+Washington, Box 354322, Seattle WA 98195-4322. E-mail: handcock@stat.washington.edu;
+Web: www.stat.washington.edu/handcock; James Holland Jones is Assistant Professor,
+Department of Anthropological Sciences, Stanford University, Stanford, CA 94305-2117 (E-mail:
+jhj1@stanford.edu). We gratefully acknowledge the critical feedback we have received from Steve
+Goodreau and Martina Morris. We especially wish to thank Dr. Bo Lewin, Professor of Sociology, Uppsala University and head of the research team responsible for the “Sex in Sweden” study for providing
+the Swedish data used in this study. This research supported by Grant DA012831 from NIDA and Grant
+HD041877 from NICHD.
+
+Abstract
+Epidemic thresholds in network models of heterogeneous populations characterized by highly
+right-skewed contact distributions can be very small. When the population is above the threshold, an epidemic is inevitable and conventional control measures to reduce the transmissibility of
+a pathogen will fail to eradicate it. We consider a two-sex network model for a sexually transmitted disease which assumes random mixing conditional on the degree distribution. We calculate
+interval estimates for the epidemic threshold for stochastic process models in three human populations based on representative surveys of sexual behavior (Uganda, Sweden, USA). For Uganda
+and Sweden, the epidemic threshold is greater than zero with high confidence. For the USA, the
+interval includes zero. We discuss the implications of these findings along with the limitations of
+epidemic models which assume random mixing.
+
+1 Introduction
+Epidemic models exhibit critical behavior. When a population is below some critical threshold,
+a major outbreak of an infectious disease (i.e., an epidemic) can not occur. Classically, epidemic
+thresholds were seen in terms of a critical number of susceptible hosts: a population with too
+few susceptible could not support an epidemic (Bailey, 1975). More modern treatments have
+focused on the threshold parameter R0 , the basic reproduction number (Heesterbeek, 2002). R0
+is defined as the expected number of secondary cases produced by a single (typical) index case in
+a completely susceptible population (Diekmann et al., 1990). For a homogeneous, one-sex model
+of a directly-transmitted pathogen and one disease state, this expected number of cases is given
+simply by the product of the transmissibility of the agent (β), the average contact rate between
+susceptible and infected members of the population (c),
+¯ and the duration of infectiousness, usually
+defined by the reciprocal of the recovery rate (δ = ν −1 ):
+R0(U ) = β cδ,
+¯
+
+(1)
+
+where the superscript (U ) indicates that R0 applies to a homogeneous (uniform) population.
+This somewhat schematic definition of R0 enjoys the great advantage of easy interpretation.
+Public health campaigns designed to eliminate STIs focus on one of three strategies suggested by
+(1): (a) reduce transmissibility (β) through vaccines, barrier contraceptive use, or, in the case of
+non-curable viral infections, therapeutics (e.g., HAART), (b) reduce the contact rate (c)
+¯ through education, or (c) increase the recovery rate (ν) through treatment of curable STIs. Some interventions
+combine strategies. For example, contact-tracing combines contact-reducing and recovery-rate increasing interventions (Janssen et al., 2001; Golden, 2002).
+The definition of R0 in heterogeneous populations is somewhat more complex, though by discretizing “generations” of infections, its calculation is a simple extension of the homogeneous
+case (Diekmann et al., 1990; Diekmann and Heesterbeek, 2000). For many sexually transmitted
+infections (STIs) with one disease state, heterogeneity is incorporated into models by way of a
+mixing matrix in which the population is stratified by sexual activity level and the matrix gives the
+activity-specific probability of interaction (Gupta et al., 1989; Anderson and Garnett, 2000).
+For a population characterized by heterogeneous sexual activity, and and in which there is
+random mixing linearly proportional to activity levels, Anderson et al. (1986) demonstrate that R0
+becomes:
+R0(H ) = R0(U ) (1 + C V 2 ),
+
+(2)
+
+where C V is the coefficient of variation of sexual activity in the population (i.e., the standard deviation divided by the mean of the number of sexual partners). Clearly, populations characterized by
+large variance – and particularly large variance relative to the mean – will have higher reproduction
+numbers and thus, lower epidemic thresholds.
+The great majority of epidemic models that followed from the pioneering work of Anderson
+et al. (1986) are one-sex, either explicitly because they consider homosexual transmission dynamics (e.g., Gupta et al., 1989) or implicitly because they do not model the interaction of the
+sexes(Newman, 2002b).
+Men’s and women’s sexual behavior differs systematically throughout the world as a function
+of cultural norms, gender-power relations, and social institutions regulating individual behavior. In
+1
+
+Africa, home to the world’s largest fraction of HIV sero-positive people, HIV is sexually transmitted primarily by contacts between men and women. Two-sex models admit the possibility of an
+epidemic threshold of zero, even if the behavior of either of the sexes alone would yield a non-zero
+threshold (Newman, 2002b).
+A second, related concern is that the partnership distributions’ variance, while finite, could
+still be high enough to impede the effectiveness of transmissibility-based interventions. Since, for
+example, no vaccine is completely effective (Blower et al., 2001), a non-zero epidemic threshold
+could still pose a practical barrier to disease eradication if it were low enough.
+Pastor-Satorras and Vespignani (2002) note that epidemic thresholds for “bounded scale-free”
+networks are higher than for homogeneous networks. While this result is not particularly novel in
+the context of mathematical epidemiology (cf. Hethcote and Yorke, 1984; Anderson et al., 1986;
+Gupta et al., 1989), it reinforces the need to examine quantitatively the effect of large degrees of
+behavioral heterogeneity on the epidemic thresholds of STIs.
+Furthermore, while the Anderson et al. (1986) result for heterogeneous R0 helps provide the
+intuition for why partnership distributions with power-law behavior can yield epidemics without
+critical behavior (see also May and Lloyd, 2001), this derivation of the epidemic threshold (i.e., at
+R0(H ) > 1) is based on a compartmental model and not on an explicit network epidemic model.
+In this paper we consider models where individuals are represented as nodes in a network
+and edges represent heterosexual sexual contact. Disease spreads only through diffusion over the
+network of sexual contacts. We assume that the network is a realization of a stochastic process
+characterized by random mixing between individuals conditional on the individual activity levels
+(i.e., the nodal degrees) (Newman, 2002b). We focus on models for the population degree distributions in which the variance can greatly exceed the mean. One important class are those that exhibit
+power-law behavior, often loosely referred to as “scale-free” distributions (Liljeros et al., 2001;
+Dezs˝o and Barab´asi, 2002). We estimate thresholds for two-sex epidemics that model the contact
+structure underlying transmission. These thresholds represent for explicitly networked models the
+analogue of R0(H ) as given in (2) for example.
+In Section 2 we develop models for the sexual contact degree distribution. In Section 3, we derive the epidemic thresholds for these models within the random graph model of Newman (2002b).
+The degree distribution models are estimated for three populations (Section 3.1) and the epidemic
+thresholds are estimated (Section 3.2). In Section 6, we discuss the epidemiological relevance of
+these results, and approaches to overcome the limitations of the models.
+
+2
+
+Models for Degree Distributions
+
+Let P(K = k) be the probability mass function of the number of partners within a well defined
+period that a randomly chosen person in a population has had. We say P(K = k) has power-law
+behavior with scaling exponent ρ > 1 if there exist constants c1 , c2 , and M such that 0 < c1 ≤
+P(K = k)k ρ ≤ c2 < ∞ for k > M. Empirical distributions of the number of sex partners,
+both lifetime and over the past year, show a pronounced right-skew, with the great majority of
+people having few partners and some having many (Laumann et al., 1994; Lewin, 1996; Hubert
+et al., 1998; Aral, 1999; Youm and Laumann, 2002). This observation has led a number of authors
+to suggest that sexual partnership distributions have power law behavior (Liljeros et al., 2001,
+2003; Schneeberger et al., 2004). These authors do not consider the wide range of right-skewed
+2
+
+distributions as plausible alternatives.
+For ρ ≤ 3, the variance of a distribution with power-law behavior is infinite. The Anderson
+et al. (1986) approximation for R0 therefore suggests that populations characterized by partnership
+distributions with power-law behavior and ρ ≤ 3 will lack epidemic thresholds, since with infinite
+variance R0(H ) > 1 for arbitrarily small transmissibility or duration of infectiousness. Note that
+an actual population will always have finite variance, and hence the extrapolation of mathematical
+models for the degree distributions that have infinite variance requires a careful assessment of the
+quality of the approximation provided by the model (Jones and Handcock, 2003; Handcock and
+Jones, 2004).
+We focus on two competing stochastic mechanisms for the formation of sexual contact networks. The first is a variation on a preferential attachment process, such as those advocated by
+several recent authors (Barab´asi and Albert, 1999; Pastor-Satorras and Vespignani, 2001; Liljeros
+et al., 2001). The second process is a non-homogeneous Poisson model for partnership formation.
+The limiting distributions of both these mechanisms can be characterized by long tails. They have
+the additional benefit that they have the same number of parameters, facilitating comparison.
+
+2.1 Preferential Attachment Model
+A mechanism that has been suggested for the formation of power-law sexual networks is preferential attachment (Albert and Barab´asi, 2000; Liljeros et al., 2001; Dezs˝o and Barab´asi, 2002). This
+and related stochastic processes have a long history in applied statistics (Simon, 1955; Kendall,
+1961; Irwin, 1963). Consider a population of r people in in which (1) there is a constant probability p that the r + 1st partnership in the population will be initiated from a randomly chosen
+person to a previously sexually inactive person, and (2) otherwise the probability that the r + 1st
+partnership will be to a person with exactly k partners is proportional to k f (k|r ), where f (k|r ) is
+the frequency of nodes with exactly k connections out of the r total links in the population. The
+limiting degree distribution of those connected by this process as r → ∞ is known as the Waring
+distribution (Irwin, 1963). The Yule distribution discussed by Simon (1955) and used by Jones and
+Handcock (2003) to model degree distributions is a special case of the Waring distribution with
+p = (ρ − 2)/(ρ − 1).
+The probability mass function (PMF) of the Waring distribution (Johnson et al., 1992) is:
+(ρ − 1)0(ρ + φ)
+0(k + φ)
+·
+, φ > −1,
+0(φ + 1)
+0(k + φ + ρ)
+where 0(·) is the Gamma function and the mixing parameter φ is related to p via:
+P(K = k|K > 0) =
+
+p=
+
+ρ−2
+.
+ρ+φ−1
+
+(3)
+
+(4)
+
+The Waring distribution has power-law behavior with scaling exponent ρ. The mean and variance of the Waring distribution are:
+E(K |K > 0) =
+V(K |K > 0) =
+
+1
+p
+
+(1 − p) (ρ − 1)
+p 2 (ρ − 3)
+
+3
+
+Thus, the expected value of the Waring distribution is simply the inverse of the probability of
+forming a tie to an individual lacking existing ties. Both the Waring and the Yule distributions
+have been re-discovered, apparently without awareness of their historical antecedents, by Levene
+et al. (2002) and Dorogovtsev et al. (2000) respectively in the context of modeling growth of the
+Internet.
+
+2.2 Non-Homogeneous Poisson Model
+A reasonable alternative model to the preferential attachment mechanism is that people form partnerships according to a Poisson process. One possible behavioral mechanism that underlies this
+model is that people acquire new partners at a constant rate, λ. Clearly, the assumption that all
+people in the population are characterized by the same rate of partner acquisition is unreasonable.
+To include heterogeneity, we can model λ as a random draw from some population distribution
+P(λ).
+Here we model P(λ) as a Gamma distribution with mean µ and standard deviation σ. Let λi +1
+be the expected number of partners for person i in the sub-population of those with at least one
+partner. The model can then be written:
+e−λ λk−1
+0(k)
+−λ/η
+1 (λ/η )η2 −1
+e
+1
+P(λi = λ) =
+η1 0(η2 )
+
+P(K = k|K > 0, λ) =
+
+(5)
+λ>0
+
+(6)
+
+where η = (η1 , η2 ) = (σ 2 /µ, µ2 /σ 2 ). The conditional distribution of K given K > 0 is therefore negative binomial distribution shifted to k = 1, 2, . . . . One interpretation of this distribution
+is that people are following a search for partners that satisfy a certain criterion and continue to
+acquire partners until they have η2 such partners. Partners satisfy the criterion independently and
+each with probability pc . This probability defines the scale parameter of the underlying heterogeneity distribution (η1 = (1 − pc )/ pc ). The mean and variance of the negative binomial in terms
+of the gamma mean-standard deviation parameterization are E(K |K > 0) = µ + µ2 /σ 2 and
+V(K |K > 0) = (σ + µ/σ )2 . If the population heterogeneity distribution P(λ) is right-skewed the
+partner distribution K will also be right-skewed. Thus this model is one plausible alternative to the
+preferential attachment model that can have heavy tails, but does not have power-law behavior. As
+we shall see, this leads to different epidemic potentials for the two models even when their ability
+to describe the observed partnership distributions is similar.
+
+3 Epidemic Models on Random Graphs
+The impact of the degree distribution on the spread of STDs on an arbitrarily-defined contact structure has been studied by Newman (2002b), who gives both one-sex and two-sex results. Suppose
+that the degree distribution of a population has PMF Pθ (K = k) where θ is the (possibly vector)
+parameter. For example, for the Waring model θ = (ρ, p) the scaling exponent and probability of
+
+4
+
+recruiting a novice parameter. The critical transmissibility of an infectious agent is defined by a
+quantity we call the concentration index, C(θ), given by:
+Eθ (K )
+Eθ (K |K > 0)
+=
+,
+(7)
+2
+2
+Eθ (K ) − Eθ (K )
+Eθ (K |K > 0) − Eθ (K |K > 0)
+where Eθ (K ) is the expectation of the random variable K with respect to the PMF Pθ (K = k).
+Higher values of C(θ) ≥ 0 indicate distributions that are more concentrated and a value of zero
+indicates a distribution with infinite variance. We note that Newman (2002b) refers to this quantity
+as the critical transmissibility (Tc ), which it clearly is for the one-sex case. The concentration
+index notation, C(θ ), makes specification of the epidemic threshold in the two-sex case much more
+compact than Newman’s original notation, which was in terms of probability generating functions
+of the nodes and edges of the transmission graph.
+As an application, suppose that the degree distribution of a one-sex population follows the
+Waring model (3) with scaling exponent ρ and recruitment probability p. Then
+ p(ρ−3)
+E(K )
+C(ρ, p) =
+= 2(1− p)(ρ−2) ρ > 3
+(8)
+2
+E(K ) − E(K )
+0
+ρ≤3
+For the negative binomial model, the concentration index is most parsimoniously represented
+using the underlying gamma heterogeneity parameter η:
+C(θ ) =
+
+C(η) =
+
+E(K )
+E(K 2 ) − E(K )
+
+=
+
+1 + η1
+η2 (1 − η1 )2 − η12
+
+(9)
+
+Defining the concentration index as in (7), it is simple to explore epidemic thresholds in twosex, heterosexual transmission models. Suppose that the degree distribution of the men and women
+in a population have PMFs with parameters θm and θ f respectively. The model in Newman (2002b)
+assumes a form of random mixing with respect to degree that satisfies the constraints on the degree
+distributions. We define the epidemic threshold of the population to be:
+T (θm , θ f ) = C(θm )C(θ f )
+
+(10)
+
+Under this model, and assuming that the disease has mutually positive transmissibilities between men and women, Newman shows that an epidemic will occur with probability approaching
+1 as the number of partnerships approaches infinity if either C(θm ) or C(θ f ) is zero (i.e., the variance of either of the distributions is infinite). In this case there is said to be no epidemic threshold
+(T (θm , θ f ) = 0). Based on his results the probability of an epidemic approaches 0 as the number
+of partnerships approaches infinity if
+0 < Tm f T f m ≤ T (θm , θ f )
+
+(11)
+
+where the transmissibility T f m is the average integrated probability of transmission per partnership
+from females to males. The transmissibility Tm f is defined reciprocally. In particular, this means
+that independently of the transmissibility the probability of an epidemic approaches 0 as the number of partnerships approaches infinity if T (θm , θ f ) > 1. The range of values of the population
+distributions that allow for a transition to an epidemic following random infection is defined by
+0 < T (θm , θ f ) < Tm f T f m .
+5
+
+(12)
+
+In this range, the likelihood that an epidemic occurs can be reduced by interventions that decrease the transmissibilities of the pathogen. Examples of such interventions include vaccination,
+barrier contraceptive use, or therapeutics (e.g., anti-retroviral therapy).
+For degree distributions with power-law behavior, such as the Waring, the probability of an
+epidemic approaches 1 as the number of partnerships approaches infinity if either ρm and ρ f is
+less than or equal to 3. The probability of an epidemic approaches 0 as the number of partnerships
+approaches infinity if (ρm − 3)(ρ f − 3) > 4(φm + 1)(φ f + 1) regardless of the transmissibilities.
+The epidemic potential in the intermediate range will depend on the transmissibilities (Tm f , T f m )
+and the scaling parameters (θm , θ f ).
+
+3.1
+
+Estimating The Degree Distribution
+
+Much of the empirical work on characterizing the degree distribution of samples from a variety of
+physical, biological, and social networks is based on regression concepts, in which the scaling parameter is estimated from the regression of the apparently linear region of the plot of the logarithm
+of the survival function P(K ≥ k) against log(k). OLS regression is not an appropriate inferential
+tool for this problem as the data violate a variety of assumptions linear regression (Jones and Handcock, 2003). Furthermore, the apparent linearity of the tail can be a spurious visual illusion owing
+to the cumulative nature of the log-survival plot. In order to move away from ad hoc curve fits,
+Handcock and Jones (2004) advocate the specification of stochastic process models for network
+formation. Such stochastic models are amenable to empirical verification and allow estimation of
+model parameters using Maximum Likelihood.
+We estimated the Waring and negative binomial parameters for three populations: (1) Rakai
+District, Uganda (Wawer, 1992), (2) Sweden (Lewin, 1996), (3) USA (Laumann et al., 1994). Descriptions of these datasets are given in (Handcock and Jones, 2004). We adapt the model to allow
+for the possibility that the tail behavior (i.e., k > 1) of the degree distribution may differ fundamentally from the majority of the observations for which k = 0 or 1 (May and Lloyd, 2001). We
+generalized the models to allow separate parameters to fit the probabilities of lower degrees. The
+parametric model is fit only to values K ≥ kmin > 0, and we use likelihood-based model selection
+procedures (e.g., Burnham and Anderson, 2002) to choose the best fitting model. Specifically, we
+used a corrected Akaike Information Criterion (AI CC )(Simonoff and Tsai, 1999). Full details of
+the fitting procedure can be found elsewhere (Jones and Handcock, 2003; Handcock and Jones,
+2004).
+
+3.2
+
+Confidence Intervals for Epidemic Thresholds
+
+Uncertainty in the network model parameters, θ will produce uncertainty in the concentration index
+and, hence, the epidemic threshold of the population. To assess this uncertainty quantitatively, we
+constructed 95% bootstrap confidence intervals for C(θ) (Efron and Tibshirani, 1993). For each
+population of n individuals, the observed values of individual partner counts were re-sampled with
+replacement to produce 5000 samples of size n and C(θ) for each replicate sample was calculated
+to yield the intervals.
+
+6
+
+Table 1: Parameter estimates for the Waring model. AI Cc is the corrected Akaike Information Criterion for the best fitting Waring model, kmin is the lower cutoff degree, ρ is the scaling exponent,
+p is the second parameter, p is the probability of forming a tie to an individual lacking partners,
+and C(θ) is the concentration index for the parameter values.
+Country
+sex
+AI Cc kmin
+ρ
+φ
+p C(θ)
+Uganda women 1061.3
+1 8.68 -0.56 0.94 7.64
+men 1576.2
+2 4.58 -0.46 0.83 0.97
+Sweden women 2143.9
+2 4.45 1.53 0.49 0.75
+men 3025.0
+2 6.53 1.87 0.61 1.56
+USA
+women 3208.7
+1 3.11 -0.68 0.77 0.17
+men 3247.8
+2 4.47 2.05 0.45 0.24
+Table 2: Parameter estimates for the negative binomial model. AI C is the Akaike Information
+Criterion for the best fitting negative binomial model, kmin is the lower cutoff degree, te is the
+expected stopping time of the negative binomial, pc is the probability a person satisfies the criterion, µ mean of the underlying gamma distribution, σ is the standard deviation of the gamma
+distribution, and C(θ ) is the concentration index for the parameter values. To aid interpretation of
+the model we have included the alternative parametrization: te is the expected stopping time of the
+negative binomial, and pc is the probability a person satisfies the criterion.
+Country
+sex
+AI Cc kmin
+te
+pc
+µ
+σ C(θ)
+Uganda women 1058.3
+2 0.27 0.19 0.22 0.96 6.60
+men 1574.4
+4 3.58 0.52 1.72 1.26 0.82
+Sweden women 2142.9
+1 0.38 0.36 0.24 0.65 2.31
+men 3024.3
+1 0.66 0.25 0.49 1.23 1.21
+USA
+women 3210.0
+4 2.86 0.15 2.42 3.68 1.88
+men 3204.3
+1 0.78 0.26 0.58 1.30 0.93
+
+4
+
+Results
+
+4.1 Degree Models
+The results for the Waring model MLE fits are presented in Table 1. For both men’s and women’s
+networks from all three populations ρ > 3, indicating finite variance. Nonetheless, the parameter
+values for the USA yield quite low values of C(θ).
+The results for the negative binomial model MLE fits are presented in Table 2. For all samples
+but the American women, the negative binomial model fits better than the Waring, as indicated by
+the AI Cc values. Figure 1 plots the inferred distribution of the Poisson parameter λ for the three
+populations. As expected, all three populations show a great deal of right-skew. The heterogeneity
+in propensity to have additional partners is very similar for men and women and for the Western
+countries. In Uganda the women are much less likely to form additional partners than the men.
+
+7
+
+0.005
+
+0.050
+
+0.500
+
+7
+6
+4
+0
+
+1
+
+2
+
+3
+
+density
+
+5
+
+6
+4
+0
+
+1
+
+2
+
+3
+
+density
+
+5
+
+6
+5
+4
+3
+0
+
+1
+
+2
+
+density
+
+USA
+
+7
+
+Sweden
+
+7
+
+Uganda
+
+0.005
+
+0.050
+
+λ
+
+0.500
+
+λ
+
+0.005
+
+0.050
+
+0.500
+
+λ
+
+Figure 1: Gamma heterogeneity in the rate of partner acquisition in the three populations. Women
+are solid blue lines, men are dashed red lines.
+
+4.2 Confidence Intervals on Epidemic Thresholds
+We estimated 95% confidence intervals of the epidemic threshold (equation 12) for each population using each of the four combinations of underlying degree models (e.g., male Waring, female
+Waring, etc.) The confidence intervals for the Waring and negative binomial models are compared
+in figure 2. The intervals for the negative binomial model tend to be higher than those of the Waring
+for the Sweden and the USA. In Uganda the epidemic threshold is much higher and more uncertain than the two countries in the developed world. Figure 3 plots the confidence intervals for the
+best fitting models. For all populations but the USA, all models yielded bounds on the epidemic
+threshold which did not overlap with zero. In the USA, the confidence interval for the joint-Waring
+model included zero. (The test of the hypothesis that the threshold is zero again the alternative that
+it is positive has p-value = 0.69). The USA epidemic threshold confidence intervals for different
+kmin values are presented in Figure 4. For all higher cutoffs the intervals do not include zero.
+
+5
+
+Empirical Concentration Indices and Epidemic Thresholds
+
+Gray et al. (2001) estimate the probability of HIV transmission per coital act for the same population represented in our sample from the Rakai District, Uganda. To calculate a maximally conservative estimate, we can use the upper quintile of their estimate per act (γ = 0.0015), multiplied by
+both the mean number of coital acts reported per month, and the number of months over which the
+local network data were collected (i.e., 12). This yields an estimate of Tm f = T f m = 0.162. For
+an epidemic to occur with any probability under this model it is required that
+T (θm , θ f ) > Tm f T f m = 0.026244,
+√
+or the mean concentration index be 0.026244 = 0.162. It is clear that this is not consistent
+8
+
+with the Rakai data where the estimated values of the epidemic thresholds are T (θm , θ f ) = 7.18
+for the Waring model and T (θm , θ f ) = 5.41 for the negative binomial model. Rakai is home
+to a mature AIDS epidemic. The current estimate of HIV/AIDS prevalence in Rakai is 16%, a
+generalized epidemic by any definition. If the random mixing model is roughly correct, then for
+the Gray et al. (2001) estimate of the transmissibility of HIV-1 in Uganda, an epidemic would
+not be possible. This disjunction between the epidemiology in Rakai and the model predictions is
+clearly problematic and will be taken up in the discussion.
+For Sweden, the MLEs for the Waring model lead to the condition
+0 < Tm f T f m < 0.18
+to ensure an epidemic does not occur. Thus transmissibility would need to be very high for an
+epidemic to occur (it would need to be at least 2.5 times higher than that observed in Uganda).
+Thus this model correctly predicts that there is not a general epidemic in Sweden.
+For the United States, the MLEs for the scaling parameters of the Waring model are ρm = 3.03
+and ρ f = 3.84. Substituting these values into (11) and (8) leads to the condition
+0 < Tm f T f m < 0.22
+for an epidemic not to occur. For an epidemic to occur the transmissibility needs to be nearly three
+times the value of that observed by Gray et al. (2001).
+
+6 Discussion
+Capitalizing on the graph-theoretic epidemic formalism of Newman (2002b), we are able to calculate confidence bounds for epidemic thresholds in three populations. Our results indicate that there
+is very high probability that two of the populations, Uganda and Sweden, are characterized by
+non-zero epidemic thresholds. Confidence intervals for the epidemic threshold in the USA include
+the zero value (i.e., the epidemic threshold may not be positive). The best fitting model suggests
+that there could be no epidemic threshold in the United States. However, the models close to it in
+terms of model fit all indicate confidence intervals for the critical transmissibility does not include
+zero.
+The model predicts no epidemic in Uganda, despite Rakai having one of the most mature
+HIV/AIDS epidemics in the world. Four points may help to explain this apparent paradox. First,
+Rakai is characterized by a declining epidemic and our finding that the concentration index exceeds critical transmissibility may simply reflect the contracting epidemic. This seems somewhat
+unlikely however, since the HIV/AIDS prevalence is still 16%, higher than most other regions
+in the world. A second possibility which is closely related to the first is that there is potential
+censoring of highest-activity people due to premature mortality. The inclusion of more highly active individuals would have made the contact pattern less concentrated, making an epidemic more
+likely. A third intriguing possibility is that epidemiological assumptions underlying the HIV/AIDS
+epidemic in Africa are incorrect. Specifically, some recent research has suggested that the role of
+heterosexual transmission of HIV in Africa has been greatly over-estimated and that a large fraction of HIV is attributable to contaminated needles (Brewer et al., 2003; Gisselquist and Potterat,
+2003). Finally, the epidemic model may simply fail to capture the actual risk structure of Rakai.
+9
+
+While Newman’s two-sex random graph epidemic model is a great advance in realistically
+representing the contact structure of pathogens transmitted by intimate contact, it still contains a
+major weakness which ultimately limits its utility. Specifically, it assumes random mixing conditional on degree. For compartmental epidemic models structured by activity class, departures from
+random mixing can either slow (if mixing is disassortative) or accelerate (if mixing is assortative)
+epidemic growth (Morris, 1991; Marschner, 1992; Garnett and Anderson, 1996). In either case,
+models with heterogeneous activity will yield lower equilibrium prevalence (Anderson and May,
+1991). This point is made clear by the final-size equation given by Anderson and May (1991, 272)
+under heterogeneity:
+2
+
+I = 1 − (1 + 2)−1/C V ,
+
+(13)
+
+where I is the overall fraction of the host population ever infected, 2 is an integrated measure
+of the force of infection over the course of the epidemic, and C V is the coefficient of variation
+of sexual activity in the population - see (2). Clearly, as C V → ∞, I → 0, a point recently
+re-emphasized by May and Lloyd (2001).
+While the effects of heterogeneity on the classical compartmental models for STIs are well
+understood, the implications of heterogeneity in the graph-theoretic epidemic models is less obvious. Through analogy to critical phenomena in percolation theory, the intuition appears to be
+that degree-based non-random interactions will produce lower epidemic thresholds and larger final
+sizes of epidemics.
+Newman (2002a) notes that correlations in the connectivity of nodes in a network can reduce
+epidemic thresholds. The extent of assortative mixing by degree in sexual networks is an open
+empirical question in epidemiology. While Newman (2002a) notes the implications of such correlations for epidemic processes on social networks, the social network data he analyzes come from
+various professional collaboration networks (e.g., scientific co-authoring, business board membership, movie co-starring) and not from epidemiologically relevant network samples. There is no
+reason to believe that the structure of a sexual contact network resembles the collaboration network
+of mathematics papers.
+Empirical work in epidemiology indicates that some networks show assortativeness by degree,
+some do not (Stoner et al., 2000), while some show it weakly (Garnett et al., 1996; Barlow et al.,
+1997). Degree-based correlations based on standard local network sampling procedures (Morris, 1997) are subject to considerable error. Respondents typically have accurate knowledge of
+their partners’ behavior when they believe their partners have other partners (i.e., high specificity).
+However, respondents appear to be much worse judges of their partners’ behavior when they report
+that their partners do not have other partners (i.e., low sensitivity) (Stoner et al., 2003). Unbiased
+estimates of assortative mixing by degree are further complicated by the fact that when sampling
+networks, a random sample of graph nodes does not yield a random sample of the graph’s edges,
+and for STIs, the clear unit of epidemiological analysis is the partnership.
+The answer to the question of degree-based correlations depends on the availability of quality
+data on the structure of the network that is not present in most sexual history surveys. Such surveys
+typically only ask questions about the number of sex partners. However the information necessary
+for evaluating degree-based correlations is available from link-tracing designs and related adaptive
+designs (Goodman, 1961; Thompson and Seber, 1996). These observations emphasize the need
+for partner enrollment studies (e.g., Johnson et al., 2003) to facilitate improved inference on the
+contact structures which support STI epidemics.
+10
+
+In contrast with the recent network research suggesting that properties of sexual networks may
+facilitate STI spread and persistence – effectively lowering epidemic thresholds – the spatiallymotivated work of Sander et al. (2002) suggests that social networks can actually impede the
+spread of an STI. Whether or not the spatial lattice metaphor applies in any way to human intimate
+contacts, the point that localization effects, by partitioning sexual networks, could slow the spread
+of an STI (Keeling, 1999). The localization effects could be, literally, geographic or they could be
+social. For example, Laumann et al. (1994) report effective structural zeros in the NHSLS mixingby-race matrix. African American women are exceptionally unlikely to have white male partners,
+making direct transmission between these compartments rare.
+A large body of research suggests that human sexual relations, like other forms of social interaction, are anything but random (e.g., Morris, 1991; Laumann et al., 1994; Youm and Laumann,
+2002; McPherson et al., 2001). Modeling epidemics on contact structures which reflect, for example, differential homophily by age and race, and low levels of transitivity is a challenging task.
+Nonetheless, strong statements regarding optimal control and eradication strategies must be predicated on the best models for the system in question.
+
+References
+Albert, R. and A. L. Barab´asi (2000). Topology of evolving networks: Local events and universality. Physical Review Letters 85(24), 5234–5237.
+Anderson, R., G. Medley, R. M. May, and A. Johnson (1986). A preliminary study of the transmission dynamics of the Human Immunodeficiency Virus (HIV), the causative agent of AIDS.
+IMA Journal of Mathematics Applied in Medicine and Biology 3, 229–263.
+Anderson, R. M. and G. P. Garnett (2000). Mathematical models of the transmission and control
+of sexually transmitted diseases. Sexually Transmitted Diseases 27(10), 636–643.
+Anderson, R. M. and R. M. May (1991). Infectious diseases of humans: Dynamics and control.
+Oxford: Oxford University Press.
+Aral, S. O. (1999). Sexual network patterns as determinants of STD rates: Paradigm shift in the
+behavioral epidemiology of STDs made visible. Sexually Transmitted Diseases 26(5), 262–264.
+Bailey, N. (1975). The mathematical theory of infectious disease. New York: Hafner Press.
+Barab´asi, A. L. and R. Albert (1999).
+ence 286(5439), 509–512.
+
+Emergence of scaling in random networks.
+
+Sci-
+
+Barlow, D., G. DakerWhite, and B. Band (1997). Assortative sexual mixing in a heterosexual clinic
+population - a limiting factor in HIV spread? AIDS 11(8), 1039–1044.
+Blower, S. M., K. Koelle, D. E. Kirschner, and J. Mills (2001). Live attenuated HIV vaccines:
+predicting the tradeoff between efficacy and safety. Proceedings of the National Academy of
+Sciences of the United States of America 98(6), 3618–3623.
+
+11
+
+Brewer, D. D., S. Brody, E. Drucker, D. Gisselquist, S. F. Minkin, J. J. Potterat, R. B. Rothenberg,
+and F. Vachon (2003). Mounting anomalies in the epidemiology of HIV in Africa: cry the
+beloved paradigm. International Journal of STD & AIDS 14(3), 144–147.
+Burnham, K. and D. Anderson (2002). Model selection and inference: A practical informationtheoretic approach (2nd ed.). New York: Springer.
+Dezs˝o, Z. and A. L. Barab´asi (2002). Halting viruses in scale-free networks. Physical Review
+E 65, art. no. 055103.
+Diekmann, O. and H. Heesterbeek (2000). Mathematical Epidemiology of Infectious Diseases :
+Model Building, Analysis and Interpretation. New York: Wiley.
+Diekmann, O., J. A. P. Heesterbeek, and J. A. J. Metz (1990). On the definition and the computation of the basic reproduction ratio R0 in models for infectious-diseases in heterogeneous
+populations. Journal of Mathematical Biology 28(4), 365–382.
+Dorogovtsev, S. N., J. F. F. Mendes, and A. N. Samukhin (2000). Structure of growing networks
+with preferential linking. Physical Review Letters 85(21), 4633–4636.
+Efron, B. and R. J. Tibshirani (1993). An introduction to the bootstrap. New York: Chapman and
+Hall.
+Garnett, G. P. and R. M. Anderson (1996). Sexually transmitted diseases and sexual behavior:
+Insights from mathematical models. Journal of Infectious Diseases 174, S150–S161.
+Garnett, G. P., J. P. Hughes, R. M. Anderson, B. P. Stoner, S. O. Aral, W. L. Whittington, H. H.
+Handsfield, and K. K. Holmes (1996). Sexual mixing patterns of patients attending sexually
+transmitted diseases clinics. Sexually Transmitted Diseases 23(3), 248–257.
+Gisselquist, D. and J. J. Potterat (2003). Heterosexual transmission of HIV in Africa: an empiric
+estimate. International Journal of STD & AIDS 14(3), 162–173.
+Golden, M. R. (2002). Editorial: HIV partner notification: a neglected prevention intervention.
+Sexually Transmitted Diseases 29(8), 472–475.
+Goodman, L. A. (1961). Snowball sampling. Annals of Mathematical Statistics 32, 148–170.
+Gray, R. H., M. J. Wawer, R. Brookmeyer, N. K. Sewankambo, D. Serwadda, F. Wabwire-Mangen,
+T. Lutalo, X. B. Li, T. vanCott, and T. C. Quinn (2001). Probability of HIV-1 transmission per coital act in monogamous, heterosexual, HIV-1-discordant couples in rakai, uganda.
+Lancet 357(9263), 1149–1153.
+Gupta, S., R. Anderson, and R. May (1989). Networks of sexual contacts: Implications for the
+pattern of spread of HIV. AIDS 3(12), 807–817.
+Handcock, M. S. and J. Jones (2004). Likelihood-based inference for stochastic models of sexual
+network formation. Theoretical Population Biology 65, 413–422.
+
+12
+
+Heesterbeek, J. A. P. (2002). A brief history of r0 and a recipe for its calculation. Acta Biotheoretica 50(3), 189–204.
+Hethcote, H. W. and J. A. Yorke (1984). Gonorrhea: Transmission dynamics and control. Lecture
+Notes in Biomathematics 56, 1–105.
+Hubert, M., N. Bajos, and T. Sandfort (1998). Sexual Behaviour and HIV/AIDS in Europe: Comparisons of National Surveys. London: UCL Press.
+Irwin, J. (1963). The place of mathematics in medical and biological statistics. Journal of the
+Royal Statistical Society Series A (General) 126(1), 1–45.
+Janssen, R. S., D. R. Holtgrave, R. O. Valdiserri, M. Shepherd, H. D. Gayle, and K. M. De Cock
+(2001). The serostatus approach to fighting the HIV epidemic: prevention strategies for infected
+individuals. American Journal of Public Health 91(7), 1019–1024.
+Johnson, K. M., J. Alarcon, D. M. Watts, C. Rodriguez, C. Velasquez, J. Sanchez, D. Lockhart,
+B. P. Stoner, and K. K. Holmes (2003). Sexual networks of pregnant women with and without
+HIV infection. AIDS 17(4), 605–612.
+Johnson, N., S. Kotz, and A. Kemp (1992). Univariate discrete distributions (2nd ed.). Wiley
+series in probability and mathematical statistics. New York: Wiley.
+Jones, J. and M. S. Handcock (2003). An assessment of preferential attachment as a mechanism
+for human sexual network formation. Proceedings of the Royal Society of London, B 270, 1123–
+1128.
+Keeling, M. J. (1999). The effects of local spatial structure on epidemiological invasions. Proceedings of the Royal Society of London Series, B 266(1421), 859–867.
+Kendall, M. (1961). Natural law in the social sciences: Presidential address. Journal of the Royal
+Statistical Society Series A-Statistics in Society 124(1), 1–16.
+Laumann, E., J. Gagnon, T. Michael, and S. Michaels (1994). The social organization of sexuality:
+Sexual practices in the United States. Chicago: University of Chicago Press.
+Levene, M., T. Fenner, G. Loizou, and R. Wheeldon (2002). A stochastic model for the evolution
+of the web. Computer Networks 39(3), 277–287.
+Lewin, B. (1996). Sex in Sweden. Stockholm: National Institute of Public Health.
+˚
+Liljeros, F., C. R. Edling, L. A. N. Amaral, H. E. Stanley, and Y. Aberg
+(2001). The web of human
+sexual contacts. Nature 411(6840), 907–908.
+˚
+Liljeros, F., C. R. Edling, L. A. N. Amaral, H. E. Stanley, and Y. Aberg
+(2003). Authors’ reply.
+Nature 423(6940), 606.
+Marschner, I. C. (1992). The effect of preferential mixing on the growth of an epidemic. Mathematical Biosciences 109(1), 39–67.
+
+13
+
+May, R. M. and A. L. Lloyd (2001). Infection dynamics on scale-free networks. Physical Review
+E 64(6), 066112.
+McPherson, M., L. Smith-Lovin, and J. M. Cook (2001). Birds of a feather: Homophily in social
+networks. Annual Review of Sociology 27, 415–444.
+Morris, M. (1991). A log-linear modeling framework for selective mixing. Mathematical Biosciences 107(2), 349–377.
+Morris, M. (1997). Sexual networks and HIV. AIDS 11, S209–S216.
+Newman, M. E. J. (2002a). Assortative mixing in networks. Physical Review Letters 89(20), art
+no. – 208701.
+Newman, M. E. J. (2002b). Spread of epidemic disease on networks. Physical Review E 66(1),
+art. no.–016128.
+Pastor-Satorras, R. and A. Vespignani (2001). Epidemic dynamics and endemic states in complex
+networks. Physical Review E 63(6), art. no.–066117.
+Pastor-Satorras, R. and A. Vespignani (2002). Epidemic dynamics in finite size scale-free networks. Physical Review E 65(3), art. no.–035108.
+Sander, L. M., C. P. Warren, I. M. Sokolov, C. Simon, and J. Koopman (2002). Percolation on
+heterogeneous networks as a model for epidemics. Mathematical Biosciences 180, 293–305.
+Schneeberger, A., C. H. Mercer, S. J. H. Gregson, N. M. Ferguson, C. A. Nyamukapa, R. M.
+Anderson, A. M. Johnson, and G. P. Garnett (2004). Scale-free networks and sexually transmitted diseases: A description of observed patterns of sexual contacts in britain and zimbabwe.
+Sexually Transmitted Diseases 31(6), 380–387.
+Simon, H. (1955). On a class of skew distribution functions. Biometrika 42(3/4), 435–440.
+Simonoff, J. S. and C.-L. Tsai (1999). Semiparametric and additive model selection using an
+improved akaike information criterion. Journal of Computational and Graphical Statistics 8,
+22–40.
+Stoner, B., W. Whitington, S. O. Aral, J. Hughes, H. H. Handsfield, and K. K. Holmes (2003).
+Avoiding risky sex partners: Perception of partners’ risks vs. partners’ self-reported risks. Sexually Transmitted Infections 79, 197–201.
+Stoner, B. P., W. L. Whittington, J. P. Hughes, S. O. Aral, and K. K. Holmes (2000). Comparative
+epidemiology of heterosexual gonococcal and chlamydial networks - implications for transmission patterns. Sexually Transmitted Diseases 27(4), 215–223.
+Thompson, S. K. and G. A. Seber (1996). Adaptive sampling. New York: Wiley.
+Wawer, M. (1992). HIV prevention study, Grant no. R01HD028886. National Institute of Child
+Health and Human Development.
+Youm, Y. and E. Laumann (2002). Social network effects on the transmission of sexually transmitted diseases. Sexually Transmitted Diseases 29(11), 689–697.
+14
+
+Population
+
+Uganda
+
+Sweden
+
+USA
+
+0
+
+2
+
+4
+
+6
+
+8
+
+10
+
+epidemic threshold
+
+Figure 2: Comparison of the 95% bootstrap confidence intervals for the epidemic threshold given
+by the negative binomial model (solid lines) and the Waring model (dashed lines) for each population.
+
+15
+
+Uganda
+
+Population
+
+Sweden
+
+USA
+
+0
+
+2
+
+4
+
+6
+
+8
+
+10
+
+tepidemic threshold
+
+Figure 3: 95% bootstrap confidence intervals for the epidemic threshold given by the best fitting
+model in each population.
+
+16
+
+3
+
+●
+
+●
+
+2
+1
+
+bootstrap CI conditional on degree at least
+
+4
+
+●
+
+●
+
+0.0
+
+0.1
+
+0.2
+
+0.3
+
+0.4
+
+0.5
+
+0.6
+
+transmissibility threshold
+
+Figure 4: Confidence bounds on the epidemic threshold of the Waring model for the USA.
+
+17
+
+

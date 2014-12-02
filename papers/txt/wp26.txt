@@ -1,0 +1,2422 @@
+Patterns of Supreme Court Decision-Making, 1937-2000∗
+Andrew D. Martin†
+
+Kevin M. Quinn‡
+
+October 29, 2002
+
+Working Paper no. 26
+Center for Statistics and the Social Sciences
+University of Washington
+Box 354320
+Seattle, WA 98195-4320, USA
+
+∗ This
+
+research is supported by the National Science Foundation Law and Social Sciences and
+Methodology, Measurement, and Statistics Sections, Grants SES-0135855 to Washington University
+and SES-0136676 to the University of Washington. Additional financial support was provided by
+the Weidenbaum Center at Washington University as well as the Center for Statistics and the
+Social Sciences with funds from the University Initiatives Fund at the University of Washington.
+All models were estimated in C++ using the Scythe Statistical Library (Martin and Quinn, 2001).
+We thank Tom Hammond for the suggestion of estimating time-lagged measures. Included with
+this paper is a web supplement that contains supplementary tables of results (discussed briefly in
+the paper), and our estimates of the ideal points and related quantities in electronic format for use
+by other researchers. All errors and interpretations remain our sole responsibility.
+† Assistant
+
+Professor, Department of Political Science, Washington University, Campus Box
+1063, One Brookings Drive, St. Louis, MO 63130, (314) 935-5863 [voice], (314) 935-5856 [fax],
+admartin@artsci.wustl.edu
+‡ Assistant
+
+Professor, Department of Political Science and CSSS, University of Washington, Box
+354320, Padelford Hall, C-14-C, Seattle, WA 98195, (206) 221-6981 [voice], (206) 685-7419 [fax],
+quinn@stat.washington.edu
+
+Abstract
+A key explanatory variable in many scientific accounts of the U.S. Supreme Court is the preferred
+policy position (or ideal point) of each justice. In this paper we measure the ideal points of each
+justice serving from 1937 to 2000 using a measurement model derived from a simple, uni-dimensional
+spatial model of votes on the merits. The measures we obtain are dynamic, in that justices’ ideal
+points are allowed to change over time while simultaneously controlling for changes in the content
+of the cases coming before the Court. To assess the validity of our measure, we present strong
+empirical evidence that from 1937 to 2000 the observed votes on the merits are consistent with our
+uni-dimensional model. This is a striking finding given that most previous work has suggested that
+the relevant issue space is multi-dimensional. In addition to estimating the ideal points, we perform
+inference about other quantities of substantive interest about the Court, such as the location of the
+median justice in each term, and the extent to which preferences on the Court are homogenous over
+time. We also compare and contrast the properties of our measure with existing ones. We conclude
+with the implications of our findings for past and future work on Supreme Court decision-making.
+Our measures are available electronically on the world wide web for use by other scholars.
+
+1
+
+1
+
+Introduction
+
+Perhaps the greatest innovation in the field of legislative politics was the creation of the NOMINATE and D-NOMINATE measures by Poole and Rosenthal (1991, 1997). These scores, which are
+estimated using the observed roll call votes in the House and Senate, have been used extensively to
+understand a wide range of legislative and extra-legislative behavior.1 Although these ideal point
+measures are created from the roll call record, and thus should not be used in subsequent statistical
+analyses of roll call voting, their availability has opened doors to scholarship that was previously
+impossible. This is due to the fact that the measures are: comparable across time; account for
+behavior across nearly all substantive issue areas; and are dynamic, in that the ideal points of
+individuals members can change over time. The approach taken by Poole and Rosenthal (1997) is
+conceptually very simple; one posits a theoretical spatial model of voting, and then estimates the
+parameters of the model – including the ideal points – from observed data.
+The field of judicial politics has not been as fortunate. While the most commonly used measure
+of judicial preferences – the Segal and Cover (1989) scores – has the desirable property of being
+exogenous from votes on the merits, its applicability is seriously limited in a number of respects
+(Epstein and Mershon, 1996). Not only is the measure issue-bound to civil liberties, but it assumes
+that the ideal points of justices are fixed and unchanging throughout the course of a justice’s
+career. In this paper we pursue a different approach to estimating the ideal points of Supreme
+Court justices. The goal of this research is to measure them using a simple, uni-dimensional spatial
+model that explains the patterns of decision-making on the Court from 1937 to 2000.2 The model
+is a general model in that it applies equally to all justices serving on the Court and all cases heard
+by the Court. The model estimates these ideal points while simultaneously controlling for possible
+changes in the types of cases that come before the Court. The model is also dynamic, allowing the
+ideal points of justices to change in any smooth fashion. The data suggest that this very simple
+underlying structure explains the overwhelming majority of votes on the merits cast by individual
+
+2
+
+justices.
+We proceed in the following fashion. In Section 2, we review existing measurement strategies,
+and outline some desirable properties of any measurement approach. Section 3 contains the details
+of the theoretical model of decision-making on the Court, and derives the associated statistical
+model that we use to model votes on merits. We turn to issues of measure validity in Section 4, by
+considering evidence of model adequacy, examining the findings for each justice, and performing
+inferences about the Court as a whole. In Section 5 we compare our measures with existing
+ones. Section 6 contains a discussion of the many ways our measures could be used to other
+scholars, highlighting some questions that can not be answered using existing measures. We also
+discuss strategies to statistically model votes on the merits. The final section concludes with both
+substantive and methodological directions for future research.
+
+2
+
+Measuring Judicial Preferences
+
+Over the last fifty years many scholars have devoted a substantial amount of time estimating ideal
+points for Supreme Court justices. There are essentially three different measurement strategies that
+have been employed: (1) summarizing past votes using scaling technology; (2) using observable
+characteristics of the justices as proxies for preferences; and (3) creating exogenous measures using
+newspaper editorials.
+The first type of research grew from the work of Schubert (1959). In these approaches, one uses
+the matrix of votes to estimate ideal points using various data summarization techniques, including
+multidimensional scaling, Guttman (cumulative) scaling, and factor analysis. This research, firmly
+based in behavioral political science, produced a vast amount of knowledge regarding preferences
+of individual justices, and the doctrinal inter-relationships between cases. Schubert (1965) finds
+two primary dimensions – political and economic liberalism – that explain votes on the merits for
+the Court from the late 1940s to the early 1960s. Nine years later, Schubert (1974) again finds
+that these two dimensions structure behavior through the Vinson and Warren Courts. Rohde and
+
+3
+
+Spaeth (1976) take a similar approach, and find three primary values that structure behavior for
+the Warren Court and first five terms of the Burger Court: freedom, equality, and what they term
+“New Dealism.” A similar strategy is to use percent liberalism in past cases in a certain policy area
+as a measure in subsequent analyses. Epstein et al. (1989) use the percentage of pro-criminal rights
+decisions in the previous term to explain decision-making in in all criminal justice cases before the
+Supreme Court between 1946 and 1986. Segal and Spaeth (1989) report the fraction of liberal
+decision on civil liberties and economic cases for all justices serving between 1953 and 1985.
+There are a number of drawbacks to these approaches. First, they are not based on parametric
+statistical models and are best seen as data summarization techniques. The uncertainty in the
+measures cannot be gauged, and one can neither test for dimensionality nor compare various models
+in a principled fashion. This is of particular importance when explaining behavior that happens
+throughout time (see Grofman and Brazill, 2002). Second, these models do not take into account
+changes in the case stimuli, and can only be used when making comparisons within a natural court.
+For example, a justice who voted in the liberal direction 40% of the time on the Warren Court is
+quite different from a justice who voted in the liberal direction the same fraction of the time on the
+Rehnquist Court. It is of utmost importance to control for changes in the types of cases coming
+before the Court when constructing measures that can be used to study behavior over time (Baum,
+1988). These techniques fail to do so.
+Other scholars have used observable characteristics as proxy variables for preferences. One
+literature uses social background characteristics to measure ideal points (Tate, 1981). For example,
+Tate and Handberg (1991) look at the long-term behavior of Supreme Court justices in civil rights
+and economics cases from 1916 to 1988. Their personal attribute model asserts that political factors,
+salient social cleavages, personal origins, and career experience are associated with voting behavior
+on the Court. Others have used the party identification of the justice (George and Epstein, 1992;
+Spiller and Gely, 1992). While these measures are easily obtainable, they possess a number of
+weaknesses. First, they are time invariant, which is a deficiency if it is the case that preferences
+4
+
+change over time. Second, they are extremely coarse-grained, which means that these measures
+will be incapable of explaining subtlety of behavior. Finally, it is difficult theoretically to believe
+that they are explanatory, and thus can be applied out-of-sample. One can view these types of
+variables as being instruments for true preferences; but unless they are outstanding instruments
+(Bound et al., 1995), their utility is quite limited.
+The most novel, and most extensively used, preference measure in the judicial politics literature
+was offered by Segal and Cover (1989).3 The Segal and Cover measure is an exogenous measure
+of judicial preferences constructed from newspaper editorials before confirmation hearings. The
+original measures were computed for all justices serving from Earl Warren to Anthony Kennedy,
+and were updated by Segal et al. (1995) for the Bush appointees. These measures have the desirable
+property of being truly exogenous from the votes on the merits, and can thus be used as explanatory
+variables in subsequent statistical models. However, the weaknesses of the measure are manifest.
+Epstein and Mershon (1996) demonstrate that Segal and Cover scores should only be used for
+explaining aggregated civil liberties votes. The measure does not tap preferences in other issue
+areas; interestingly, less than 20% of the variance in aggregated votes on economics cases – the
+other salient dimension documented in previous scholarship – is accounted for by the measure.
+Epstein and Mershon (1996) also argue that the measure should only be employed during times
+when there is a heterogeneous Court. This is due to the fact that the measure is not terribly subtle,
+and thus cannot distinguish between justices with similar but not identical attitudes. The Segal
+and Cover measure is an inferential one, in that it is an estimated quantity, yet no standard errors
+are reported. And, the measure is time invariant, which presupposes that the preferences of justices
+are constant.
+We contend that there are a number of desirable properties for a measurement model of judicial preferences. First, the model should be based on consequential behavior. For a measurement
+methodology to be facially valid, the inputs to the model must be reliable and substantively meaningful. Due to their importance, in terms of both public policy and law, we view votes on the
+5
+
+merits as consequential behavior. Using consequential behavior limits the possibility that cheap
+talk contaminates the measure. Second, the model should explicitly control for changes in case
+content across time. Baum (1988) raises this precise point, and provides a correction that is effective if the preferences of justices are assumed constant. Third, the model should be dynamic, and
+allow for the possibility that preferences of justices to change over time. Substantively we know
+that some justices, such as Blackmun and Douglas, exhibited change throughout the course of their
+careers. Any viable measurement strategy should allow for this possibility instead of imposing an
+assumption about time invariance. Finally, the measures should be based on an explicit statistical
+model. This allows for quantification of uncertainty, and the ability to perform inferences about
+other quantities of interest, such as the location of the median justice.
+The measurement strategy we outline in the following section meets these desiderata. Its sole
+downside is that the measures cannot be used in subsequent statistical models of votes on the
+merits. However, in Section 6, we outline two viable strategies for overcoming this hurdle, as well
+as the new lines of research that can only be undertaken using a measure with the above properties.
+
+3
+
+A Spatial Measurement Model of Supreme Court Behavior
+
+In this section, we identify the two major components of our theoretical and statistical model: the
+ideal points of the justices, and the parameters that capture the characteristics of each case. Our
+approach is predicated on the assumption that a simple spatial model accounts for Supreme Court
+decision-making.
+
+3.1
+
+The Theoretical Model
+
+We begin with some notational preliminaries to formalize our argument. We let t = 1, . . . , T
+index the terms of the Court under study. In what follows, we examine data from the 1937
+to 2000 terms. We also let K denote the total number of cases heard, and J denote the total
+number of justices who served. For our study, T = 64, J = 41, and K = 4597. For bookkeeping
+purposes let Kt ⊂ {1, 2, . . . , K} denote the set of cases heard by the Supreme Court in term t, and
+6
+
+Jt ⊂ {1, 2, . . . , J} denote the set of justices who sat during term t. Kt is simply the list of cases
+heard in each term. Jt typically contains nine justices, although due to turnover and abstention
+some terms have as many as ten, with others as few as eight.
+The foundational assumption of our model is that there exists an unobserved issue dimension
+which can be represented by the real number line R. One can think of this latent dimension as
+a conservatism scale, with liberal policies taking negative values, moderate policies taking values
+around zero, and conservative policies taking positive values. For example, a judgement upholding
+abortions in any circumstance might get a value −3, abortions up to the second trimester a −2,
+abortions only in the cases of rape and incest 2.5, and banning all abortions in any circumstances
+a 3.4 We assume that the policy outcomes from any judgement of the Court can be represented
+by a single point in this policy space and that the justices have single peaked, symmetric utility
+functions defined on this policy space.
+We summarize the policy in question for each case k using two points in the issue space:
+(a)
+
+xk ∈ R that corresponds to the policy if the lower court decision is affirmed (i.e., the status quo),
+(r)
+
+and xk ∈ R that corresponds to the policy determined by the Supreme Court if the lower court
+decision is reversed (i.e., the alternative).5 For the abortion example above, if the Supreme Court
+took a case from a state court that ruled abortion was unconstitutional in all cases except for rape
+and incest, and decided that the Roe standard should be upheld, the affirmance point might be
+(a)
+
+(r)
+
+xk = 2.5 and the reversal point xk = −2.
+For justice j in term t, let θjt ∈ R denote the ideal point of the justice. This point is the policy
+position the justice prefers over all other conceivable policy positions. More specifically, we assume
+(a)
+
+that the utility ujkt that justice j gets from voting to affirm on case k in term t is given by:
+(a)
+
+(a)
+
+(a)
+
+ujkt = −kθjt − xk k2 + ξjkt .
+
+(1)
+
+This is the commonly used quadratic utility function (Enelow and Hinich, 1984). Similarly, the
+(r)
+
+utility ujkt that justice j gets from voting to reverse the lower court ruling on case k in time t is
+
+7
+
+given by:
+(r)
+
+(r)
+
+(r)
+
+ujkt = −kθjt − xk k2 + ξjkt .
+(a)
+
+(2)
+
+(r)
+
+Here ξjkt and ξjkt are assumed to be Gaussian random variables with means equal to 0 and equal,
+fixed variances. These random variables represent idiosyncratic factors that affect the utility justices
+attach to the policy options. Such idiosyncratic factors might include a particular justice’s beliefs
+about the consequences of a particular vote, the force of precedent, and other factors outside the
+spatial model. It is also assumed that these disturbances are statistically independent of each other
+for all j, k, and t.
+(a)
+
+(r)
+
+This model is linked to behavior by the assumptions that Justice j observes ujkt and ujkt and
+votes for the policy option that yields the higher utility for all j, k, and t. Assuming symmetric
+(r)
+
+(a)
+
+utility functions, the midpoint between the affirmance point and the reversal point [xk + xk ]/2,
+also known as the indifference point, is what splits the justices.6 In the empirical model below,
+we will estimate this quantity for each case. All justices who have ideal points on one side of
+the indifference point are more likely to vote to reverse (affirm) the lower court ruling, while all
+justices who have ideal points on the other side of the indifference point are more likely to vote to
+affirm (reverse) the lower court ruling. For the hypothetical abortion case, the midpoint between
+the affirmance point and the reversal point is 0.25. The model predicts that all justices with ideal
+points to the left of that point will be more likely to vote to reverse, while those to the right of 0.25
+will be more likely to vote to affirm.7
+
+3.2
+
+The Empirical Model
+
+The dependent variable in this analysis is the matrix of observed votes by all J justices on the K
+cases over the T terms. The observed data matrix V is a (K × J) matrix of votes and missing
+values. These votes are either for reversal (vjkt = 1) or affirmance (vjkt = 0).
+(a)
+
+If we could observe the status quo and reversal positions (xk
+
+(r)
+
+and xk ) along with the ideal
+
+points (θjt ) for all j, k, and t, then we could use these quantities as covariates and fit a logit or
+
+8
+
+probit model to explain the observed voting patterns of the justices. Unfortunately, we never get to
+directly observe the case parameters and the ideal points. However, we can draw inferences about
+both the ideal points and the case parameters by collecting vote data and estimating a statistical
+model. For all values of the model parameters, the theoretical model does have strong implications
+regarding the types of voting patterns we would observe. Specifically, if the theoretical model is
+correct, then it will be possible to order the justices in such a way that the probability that justices
+vote to either affirm or reverse an arbitrary lower court ruling will be monotonic in the ordering of
+the justices. This implication of the theoretical model provides the leverage used to pin down the
+ordering of the justices’ ideal points in a particular term. The theoretical model also implies that
+all justices who have ideal points on the affirmance (reversal) side of the the indifference point will
+vote to affirm (reverse) with probability greater than 0.5. This piece of information allows one to
+make inferences about the location of the indifference point.
+Following in the line of research that includes Poole and Rosenthal (1991, 1997), Clinton et al.
+(2000), and Martin and Quinn (2002), among others, we treat the ideal points (θs) and functions of
+the case parameters (x(a) s and the x(r) s) as latent variables that govern the form of the statistical
+dependence between votes. As noted above, we use the leverage provided by our theoretical model
+to identify and estimate the statistical model.
+3.2.1
+
+The Likelihood
+
+Our theoretical model implies that justice j will vote to reverse the lower court ruling if, and only
+(r)
+
+(a)
+
+if, ujkt − ujkt > 0. That is, a justice will vote to reverse if and only if the utility she derives from
+voting for reversal is greater than the utility she derives from voting to affirm.
+(r)
+
+(a)
+
+Let zjkt = ujkt − ujkt denote the difference in utility between voting to reverse and affirm.
+(r)
+
+(a)
+
+Substituting the right hand sides of Equations 1 and 2 for ujkt and ujkt respectively we see that:
+zjkt = αk + βk θjt + εjkt ,
+
+(3)
+
+h
+i
+h
+i
+h
+i
+(a) (a)
+(r) (r)
+(r)
+(a)
+(r)
+(a)
+where αk = xk xk − xk xk , βk = 2 xk − xk , and εjkt = ξjkt − ξjkt (Clinton et al., 2000).
+9
+
+The indifference point between voting for reversal and affirmance is defined by the case when the
+utility differential equals zero; at the point −αk /βk . Since εjkt is the difference of two Gaussian
+random variables it too is a Gaussian random variable. To identify the scale of the latent utilities
+iid
+
+we assume that εjkt ∼ N (0, 1) for all j, k, and t.
+Justice j will vote to reverse on case k in term t if, and only if, zjkt > 0. Thus, the probability
+that j votes to reverse on case k in term t is simply Φ(αk +βk θjt ), where Φ(·) denotes the cumulative
+normal distribution function. This gives rise to the following likelihood function for the observed
+votes:
+L(α, β, θ|V) =
+
+T Y Y
+Y
+
+Φ(αk + βk θjt )vjkt [1 − Φ(αk + βk θjt )](1−vjkt ) .
+
+(4)
+
+t=1 k∈Kt j∈Jk
+
+This likelihood captures the intuition that the probability of voting to affirm or reverse is a function
+of two quantities that we wish to estimate: the ideal points and the case parameters.
+3.2.2
+
+Prior Beliefs
+
+We assume standard, multivariate Normal prior distributions for the case parameters α and β.
+More specifically,
+
+
+αk
+βk
+
+
+∼ N2 (b0 , B0 ) ∀ k ∈ {1, . . . , K} .
+
+(5)
+
+In this application we assume that b0 is a vector of zeros, and B0 is an identity matrix.
+Our dynamic ideal point model departs from the literature in the assumed prior distribution
+on the ideal points. We model the dynamics of the ideal points with a separate random walk prior
+for each justice:
+θjt ∼ N (θj(t−1) , ∆θjt )
+
+for t = T j , . . . , T j and justice j on the Court ,
+
+(6)
+
+where T j is the first term justice j served, and T j is the last term j served.8 This allows the ideal
+points for each justice to change smoothly through time. But the trajectory does not have to be
+linear, or even monotonic; the random walk can take any smooth trajectory. The data determines
+that shape. We do not estimate ideal points for terms in which a justice did not serve. ∆θjt is an
+
+10
+
+evolution variance parameter which is fixed a priori by the researcher. Its magnitude parameterizes
+how much borrowing of strength (or smoothing) takes place from one time period to the next. Note
+that if ∆θjt = 0 this would be the same as assuming temporally constant ideal points. At the other
+extreme, as ∆θjt → ∞ we get a model in which the ideal points are temporally independent. To
+complete the prior, we must anchor each time series at the unobserved time period zero. We assume
+that:
+θj0 ∼ N (mj0 , Cj0 ) .
+
+(7)
+
+We assign informative priors for three justices that together span the entire length of the study.
+This ensures a common interpretation of the issue scale across time. For the results presented
+below, we set the prior mean for the ideal points mj0 to zero for all justices except Black, Stewart,
+and Rehnquist, with prior means −2.0, 1.0, and 3.0 respectively. This corresponds to our subjective
+prior beliefs the ideology of these three justices in their first terms. In other words, the prior values
+assert that in policy space, Black is further away from Rehnquist than Stewart. Choosing these
+values, with Rehnquist taking the largest value, defines the conservatism metric that we estimate.
+These priors are only operative for the first term in which these justices served, and were based on
+our prior substantive knowledge. For all other terms, the ideal point in the previous term serves as
+the prior mean. These informative priors are thus only relevant for three out of the thousands of
+estimated parameters in the model. The prior variances Cj0 were set to 0.1 for these three justices,
+and one for all others. To complete the prior we set the evolution variance ∆θjt = 0.1 for all justices
+in all terms after their first.9
+To estimate the model, we use the Markov chain Monte Carlo method of Martin and Quinn
+(2002), completing 200,000 scans after 20,000 burn-in scans.10 Standard convergence tests suggest
+that the the chain has reached its stationary distribution.11 For details of the Markov chain Monte
+Carlo algorithm used to fit the model we refer the reader to Martin and Quinn (2002).
+
+11
+
+3.3
+
+The Data
+
+Our focus in this study is the Supreme Court from the 1937 to 2000 terms. In principle, the
+approach could be extended back to the Founding. But, as Epstein et al. (2001) document, up
+until the early twentieth century a norm of consensus was operative on the Supreme Court. While
+there were disagreements in Conference, the published opinions reflected near unanimity. Thus, it
+would be inappropriate to use this model before the justices began to reveal preference dissensus
+through votes on the merits. In addition, there is no reliable database of votes on the merits prior
+to 1937.
+We obtain data from three sources: (1) data for the 1953 to 2000 terms comes from the Original
+United States Supreme Court Database (Spaeth, 2001a); (2) data for the 1946 to 1952 terms comes
+from the Vinson-Warren Court Database (Spaeth, 2001b); (3) data for the 1937 to 1945 terms
+comes from an unpublished dataset collected and used by Epstein et al. (1998).12 From these
+datasets we construct the matrix of observed votes V which we treat as our dependent variable.
+As discussed in Section 3.2, there are no observed covariates.
+
+4
+
+Measure Validity: Patterns of Decision-Making
+
+In this section, we present our findings about the patterns of decision-making on the Supreme
+Court. We assess the validity of our measure in two ways. First, we assess the extent two which
+the uni-dimensionality assumption of the model is appropriate by considering other evidence, and
+look at the classification properties of the model across a number of issue areas. Second, we present
+the findings of the model, both with regard to the justices and Court, to assess face validity.
+
+4.1
+
+Assessing Model Adequacy
+
+In the discussion of the model above we focused attention on a uni-dimensional spatial model of
+voting. Given the fact that a wide range of work [for example, Schubert (1965) and Rohde and
+Spaeth (1976)], suggests that several issue areas structure decision-making on the modern Court,
+
+12
+
+the assumption of uni-dimensionality might seem to be untenable. We undertake two tests to assess
+this assumption of uni-dimensionality. First, to get a sense as to whether a uni-dimensional model
+accurately captures the observed pattern of decisions, we employ a diagnostic suggested by Poole
+and Rosenthal (1997). We begin by forming a matrix of agreement scores between the justices in
+each term. We then double-center this matrix as described by Poole and Rosenthal and perform
+an eigenvalue-eigenvector decomposition of this matrix. The dth extracted eigenvalue provides a
+measure of the variability that can be accounted for by the dth principal component. Consequently,
+the number of eigenvalues greater than 1.0 provides an indication as to the correct dimensionality
+of the underlying model.
+Table 1 displays the first two eigenvalues from each of the double-centered agreement score
+matrices for each term. As we can see from this table, the second eigenvalue is never greater than
+1.0 which strongly suggests that uni-dimensional models are appropriate in each term. Indeed, the
+second eigenvalue is never even close to 1.0 except in the 1949 and 1955 terms when it is 0.95
+and 0.92 respectively. We do not think it is possible to overstate the importance of this finding.
+While some existing preference measures do not perform well within some issue areas (Epstein
+and Mershon, 1996), and the legal reasoning underlying each decision may be multi-faceted, the
+observed behavior of U.S. Supreme Court justices is well accounted for by a uni-dimensional spatial
+model. This result is also in line with the findings of Grofman and Brazill (2002).
+How do these results reckon with the multi-dimensional findings of previous work (Schubert,
+1974; Rohde and Spaeth, 1976)? Each of the separate issue scales estimated by these scholars is
+not orthogonal. This implies that the derived scales might in fact be correlated. Our finding of
+uni-dimensionality is consistent with these various scales if our dimension is highly correlated with
+the others. (As discussed below, and presented in Figure 7, it is the case that our single dimension
+correlates strongly with all of these scales.)
+Classification rates across a number of issue areas is another way to assess the assumption of
+uni-dimensionality. In Table 2 we present the issue-by-issue classification rates of the model. The
+13
+
+substantive issues are coded by Spaeth (2001a) based on published decisions.13 The model performs
+very well in the types of cases most salient in this time period: civil rights and civil liberties cases.14
+But the model also performs very well in some difficult areas, such as economics cases. This is a
+clear advantage of our measures over the Segal and Cover (1989) scores, which are bound solely to
+civil liberties cases (Epstein and Mershon, 1996). The model performs worst on the “trickiest” cases
+– those relating to federalism and taxation. Perhaps these cases would be picked up by second issue
+dimension, or perhaps these cases are decided based on other factors; we leave this methodological
+exploration for future research. Nonetheless, the model performs quite well.
+
+4.2
+
+The Justices
+
+To assess face validity, our findings from our dynamic ideal point model are presented in a series
+of five figures (Figures 1-5), each representing a short time period. Each graph shares precisely
+the same y-axis, so comparisons can be easily made across figures. The bottom cell of each graph
+contains the estimated ideal points (the posterior means) for each justice in each term in which
+they served. It is important to keep in mind that there are associated measures of uncertainty for
+each of these measures. These posterior standard deviations, along with the posterior means in
+electronic form, are available in the web supplement for this paper. We use color and shape to allow
+the reader to visually decode the information about each justice. The shapes and colors for each
+justice remain the same across graphs, so comparisons can easily be made across graphs for those
+justices with long careers. The upper cell contains the mean percentage votes correctly classified
+by the model by term. These are essentially term-by-term measures of goodness-of-fit. At its best,
+the model classifies correctly nearly 90% of votes in a term; at its worst it classifies just shy of 70%
+in a term.
+Our first set of results, for the late-Hughes and Stone Courts, are reported in Figure 1. After
+the appointment of Justice Black, President Roosevelt had a reliable 6-3 coalition on the Court,
+with Justices McReynolds, Sutherland, and Butler in dissent. This coalition is apparent in the
+
+14
+
+figure. It is interesting to note that at this time of appointment, and during the 1937-1945 terms,
+Justice Black is the most liberal justice on the Court. The conservative, anti-New Deal block did
+not last very long; all three conservatives were off the Court by 1940.
+There are some interesting dynamics apparent in Figure 1. Justice Roberts becomes increasingly
+conservative over his career, by 1941 he is in fact the most conservative member of the Court. After
+the anti-New Deal block dissipated, the model shows a stable liberal coalition, consisting of Justices
+Black, Douglas, Murphy, and Rutledge. There was also a moderate coalition, led by the newly
+elevated Chief Justice Stone during the latter half of this time period. Indeed, from 1941-1945
+Justice Roberts was the only true conservative sitting on the high bench. The model classifies best
+from 1937-1940, and performs the worst in 1945.
+One theoretically important quantity of interest is the location of the median justice. In each
+term, we not only estimate the location of the median justice (see Figure 6), but we also identify
+the justice with the highest posterior probability of being the median justice. Note that we can
+reliably compute this quantity because we are using a statistical measurement model. All of these
+results are reported in the web supplement. Interestingly, during the Stone Court, Reed was the
+median justice in every term.
+In 1946 Chief Justice Stone passed away, and President Truman appointed Chief Justice Fred
+Vinson. Our ideal point estimates for the Vinson Court are presented in Figure 2. The first thing to
+notice from this figure is the absolute lack of dynamics during this time period; every justices’ ideal
+point remains nearly constant throughout the Vinson Court. A liberal block persisted, although by
+1949 it contained only Justices Douglas and Black. The other coalition was moderate, consisting
+mostly of Roosevelt and Truman appointees. Many important decisions are correctly classified
+by the model. For example, in Wolf v. Colorado (338 U.S. 25, 1949), when the Court ruled the
+states could not conduct unreasonable searches and seizures, the dissents by three liberal justices
+(Douglas, Murphy, and Rutledge) are consistent with the model. The classification properties of the
+model are also quite stable during this time period; in each term about 75% of votes are correctly
+15
+
+classified by the model. In short, our dynamic model suggests that voting patterns on the Vinson
+Court were quite static.
+Things became much more interesting with the appointment of Chief Justice Warren by President Eisenhower in 1953. The estimates for the Warren Court are reported in Figure 3. There
+are some very interesting dynamics to be observed in this figure. At the time of appointment,
+Chief Justice Warren was a moderate justice, and became slightly more liberal throughout the
+course of his career. It is interesting to note that he does not behave as an extreme justice, which
+might be explained by the fact the Chief can maintain agenda setting power through moderation
+(Maltzman and Wahlbeck, 1996a). Justice Douglas grows increasingly more liberal from 1953-1968.
+Justice Harlan exhibits an interesting parabolic trajectory, becoming ever more conservative until
+1963, and then becoming slightly more liberal. Throughout the Warren Court a liberal majority
+was operative, although Justice Harlan, Frankfurter, Whittaker and Stewart formed a conservative
+coalition.
+The Warren Court decided a large number of highly salient cases, most of which are consistent
+with the model. In Baker v. Carr (369 U.S. 186, 1962) the Court held that a “one person, one
+vote” rule is operative for legislative apportionment. Two justices, Frankfurter and Harlan, the
+two most conservative justices on the 1961 Court, were the only justices in dissent. Later in the
+1965 term, the Court was split 5-4 in Miranda v. Arizona (384 U.S. 436, 1966). It found that
+criminal suspects had to be read their rights prior to questioning by the police. The four most
+conservative justices in the 1965 term are also the four dissenters in this case: Justices Harlan,
+Stewart, White, and Clark (who dissented in part). But the model does not correctly classify all
+salient cases. The two dissenters in the contraceptive case Griswold v. Connecticut (381 U.S. 479,
+1965) – Justices Stewart and Black – are not accounted for by the model. The model classifies
+well during the Warren Court. In the early Warren Court, Justices Clark (1953, 1956-1959) and
+Frankfurter (1954-1955) are the median justice. Surprisingly, in the 1967 and 1968 terms Justice
+Marshall is identified as the median justice.
+16
+
+In 1969, President Nixon appointed Chief Justice Burger after Chief Justice Warren tendered
+his resignation. We present the dynamics for the Court from 1969-1985 in Figure 4. Justice Douglas
+remains the most liberal member of the Court until his resignation during the 1974 term. Two
+justices seem to move in tandem from a somewhat liberal position to extreme liberalism: Justices
+Brennan and Marshall. This is not surprising given their similar voting patterns and their shared
+concern over the increasingly conservative bent of the Court. These two justices anchor the liberal
+wing of the Court after Douglas’ departure.
+Perhaps the most widely acknowledged example of revealed preference change on the Supreme
+Court is Justice Blackmun, a Nixon appointee. Justice Blackmun first served in the 1970 term, and
+at the time of appointment is the second most conservative justice on the Court. By 1985, he has
+become much more liberal in absolute terms. In relative terms he became the third most liberal
+justice on the Court (his trend toward liberalism also continued into the Rehnquist Court). The
+most conservative justice on the Court during the Burger Court was Justice Rehnquist. In absolute
+terms, he was the most conservative justice to sit during the time period of our study. Justices
+White and Burger show an interesting trend toward more conservatism in the early 1980s.
+There were many salient cases decided by the Burger Court that comport with our estimates:
+e.g., the death penalty case Furman v. Georgia (408 U.S. 238, 1972), with Burger, Blackmun, Powell,
+and Rehnquist in dissent. Perhaps the most salient cases decided by the Burger Court dealt with
+abortion rights. The model does not classify Roe v. Wade (410 U.S. 113, 1973) correctly; our model
+predicts Chief Justice Burger, not Justice White, should have joined Rehnquist in dissent. Later
+cases, such as City of Akron v. Akron Center for Reproductive Health Inc. (462 U.S. 416, 1983), are
+classified correctly. During the Burger Court the model classifies votes the best during the early
+1970s. It does the worst for the 1977 term, although it still classifies better than 75% of the votes
+correctly.
+Chief Justice Burger resigned at the end of the 1985 term, and President Reagan elevated Justice
+Rehnquist to chief. Our findings for the Rehnquist Court, up to and including the 2000 term,
+17
+
+are presented in Figure 5. Again, many interesting dynamics are apparent in this figure. Chief
+Justice Rehnquist appears to become more ideologically moderate in absolute terms soon after
+being appointed chief, a pattern consistent with the behavior of Chief Justice Warren (although
+not consistent with Chief Justice Burger). Again, one interpretation of this finding is that the Chief
+tends to stake out more ideologically moderate positions for the sake of agenda control (Maltzman
+and Wahlbeck, 1996a).
+When appointed, Justice Scalia was not nearly as conservative as Chief Justice Rehnquist, but
+their paths cross in 1990. After appointment by President Bush and the historic confirmation
+hearings, Justice Thomas began service in the 1991 term. At the time of his appointment he is the
+most conservative member of the Rehnquist Court, and remains so throughout the course of our
+study. His trajectory closely mirrors Justice Scalia. Justice Souter was actually quite conservative at
+the time of appointment, growing increasingly liberal through the 2000 term. After the retirements
+of Justices Brennan and Marshall, Justices Stevens and Blackmun became the most liberal justices
+on the Court. Justice Stevens, who was a solid moderate in the Burger Court, was the most liberal
+justice on the Court from 1990-2000.
+The findings for the current Court mirror precisely our understanding of how the Court operates;
+a conservative coalition of Justices Scalia, Thomas, Rehnquist, a liberal coalition of Justices Souter,
+Stevens, Ginsburg, and Breyer, and Justices Kennedy and O’Connor sitting slightly to the right of
+middle. The model does extremely well classifying votes during the late 1980s and the late 1990s.
+The lowest classification rate remains above 75%, and the model classifies best in the 2000 term
+with a classification rate well above 85%. Many cases fit the patterns suggested by the model,
+including those in issue areas that one might not expect. For example, the majority coalition of
+Justices Rehnquist, Kennedy, O’Connor, Scalia, and Thomas in the federalism case United States
+v. Lopez (514 U.S. 549, 1995), which limited congressional power with respect to the commerce
+clause, is classified correctly by the model. Beginning in 1992, either Justice O’Connor or Kennedy
+is identified as the median justice.
+18
+
+4.3
+
+The Court
+
+Just as the patterns of the individual justices confirm the face validity of the measure, so too do
+the patterns of behavior for the Court as an institution. One item of keen theoretical importance
+is the location of the median justice. In his median voter theorem, Black (1958) proves that
+in one-dimensional political competition the median voter determines the outcome of committee
+decision-making. It is thus of interest to determine the location of the median justice in each
+term from 1937-2000. One advantage of our Bayesian approach is the ability to not only perform
+inference about the parameters of the model, but also perform inference about any function of the
+parameters of the model (Jackman, 2000). To wit, we have computed a Monte Carlo estimate of
+the median justice. Formally, after G scans of our MCMC algorithm, we compute for each term t:
+G
+
+n
+o
+1 X
+(g)
+median θjt
+Jt
+G
+
+(8)
+
+g=1
+
+Where the superscript (g) denotes the scan number, and Jt is the set of justices serving in term t.
+This quantity is the posterior expected value of the location of the median ideal point. The amount
+of heterogeneity or homogeneity of the ideal points across terms is also of interest. We have thus
+also estimated the location of the most liberal and conservative ideal point in each term (using a
+similar Monte Carlo estimate).
+We present these Court-specific estimates in Figure 6. The bottom cell contains the estimated
+location of the median justice, denoted with the bold black dot. The vertical line that runs through
+each dot demonstrates the range of the Court; that is, the distance between the most liberal and
+most conservative justice. Because these ranges do not share a common starting point in each term,
+it is quite difficult to compare their relative lengths in the bottom cell. The top cell thus contains
+the length of the gap between the most liberal and most conservative justice by term to allow for
+quick visual comparison of the amount of heterogeneity.
+Some very interesting patterns emerge. There appears to be a cyclical pattern of the location of
+the median justice. In the 1937 term the Court was liberal, and grew increasingly so until the 1940
+19
+
+term. It became increasingly conservative through the Stone and Vinson Courts, likely due to the
+Truman appointees. Things changed in 1953 with the appointment of Chief Justice Warren, and
+again with the Kennedy and Johnson appointees. Our model suggests that the most liberal Court
+sat in 1940, followed closely by the 1967 term. With the appointment of Chief Justice Burger,
+and the other Nixon appointees, the Court great increasingly conservative until 1972, the most
+conservative Court during the time period of our study. The Court became slightly more liberal
+throughout the 1970s, and returned toward conservatism during the Reagan administration. The
+1988 term is the second most conservative term in our study. The Court moderated a bit due
+to the Clinton appointees, although the location of the median justice in the 2000 term is rather
+conservative.
+There are also clear dynamics in the estimated range for the Court which are discernible from
+the top cell of Figure 6. The most homogenous Court sat from 1945 to 1951, corresponding to the
+static Vinson Court. The Court grew increasingly more heterogeneous during the 1950s and 1970s;
+the most heterogeneous Court sat in 1974. Part of the pattern during the late 1960s and early
+1970s is due to the extremism of Justice Douglas. But even excluding Douglas, there remains a
+wide range of ideal points as compared with other terms. After the retirement of Justice Douglas,
+the estimated range is smaller through the late 1970s and 1980s, although compared to the Court
+in the 1940s and 1950s the Court is still quite heterogeneous. The Court becomes slightly more
+unified with the Clinton appointees, but this disappeared by the 2000 term. We include these
+estimated quantities of interest in the web supplement to this article in electronic form, along with
+the identity of the median justice in each term. We encourage other scholars to be creative in their
+application of these Court-specific measures.
+
+5
+
+Comparisons With Existing Measures
+
+In the previous two sections we have detailed how our measure has a number of important characteristics. It is a model based on consequential behavior. It controls for changes in case stimuli
+
+20
+
+by estimating case parameters for every case. The model is dynamic, which is quite important,
+as the results show a number of justices exhibit significant preference change over the course of
+their careers. The measures are derived from a statistical measurement model, which allows us to
+present measures of uncertainty as well as estimates of other quantities of interest. There is strong
+empirical evidence which suggests that the assumption of uni-dimensionality is valid, and that the
+model classifies well across a number of issue areas. Further, the findings vis-a-vis the justices and
+the Court pass the test of face validity.
+How do the measures compare with existing ones? For the sake of comparison, we compute the
+term-by-term correlations of our ideal point estimates with other available preference measures. We
+plot these correlations in Figure 7. Two existing measures are based on multi-dimensional scaling
+of observed votes: those by Schubert (1974) and Rohde and Spaeth (1976). Schubert (1974) finds
+two primary dimensions that structure the Court: a “C” scale which comprises civil rights and civil
+liberties, and an “E” scale focused primarily on economics cases. Not surprisingly our measure
+correlates highly with the “C” scale. The comparison with the “E” scale is more interesting. Our
+measure is always positively correlated with the “E” scale, very strongly so in the mid-1940s,
+1955 to the early 1960s, and the late 1960s. But there are times when the correlation dips below
+0.5. Our measure is thus picking up something slightly different from the “E” scale, which is likely
+attributable to the dynamic structure of our model. Rohde and Spaeth (1976) find three dimensions
+– “Freedom,” “Equality,” and “New Deal” – that structure behavior from the mid 1950s to the
+late 1970s. But for the “Equality” scale in the mid-1950s, our measure is comparable to all three
+of these scales, including the economics-oriented “New Deal” scale. These findings show the our
+uni-dimensional model is related to the (non-orthogonal) multiple dimensions previously found in
+the literature.
+We also correlate our measure with the Segal and Cover (1989) measure in the final cell of
+Figure 6. The results are important. From 1970 to 1990, and only during this time period, does
+our measure correlate strongly with the Segal and Cover (1989) measure. Indeed, through the
+21
+
+1960s, there is essentially a zero correlation. And, the correlation during the 1990s is modest. This
+suggests a number of things. First, it is interesting to note that our measure only correlates strongly
+with the Segal and Cover (1989) measure when the Court is heterogeneous. As the Court became
+more homogenous in the 1960s, and in the early 1990s, the correlation between the two measures
+dips significantly. Second, since our measures are essentially summaries of past behavior, this calls
+into question the validity of the Segal and Cover (1989) scores.
+Can we compare the classification properties of the measures? In short, no. Since the other
+measures are time invariant, and are not embedded in a statistical model of decision-making that
+includes estimates of case characteristics, comparing classification rates between models is not
+meaningful.15 What we can say is that our measure performs extremely well across a number of
+issue areas, including economics cases, and thus can be employed to study behavior of all types.
+
+6
+
+Applications
+
+The measures that we provide can be used to study all types of judicial and extra-judicial behavior.
+In this section, we highlight many of these applications. In addition, our measure has distinct
+advantages over existing ones. First is the ability to assess the impact of, or at least control for,
+preferences on issues other than civil rights and civil liberties. It is common practice to examine
+decision-making within a single issue domain such as civil liberties cases, criminal procedure cases,
+or search and seizure cases (e.g., Segal, 1984). It is not surprising that little systematic, statistical
+research has focused on economics and federalism cases due to a lack of suitable measures. Our
+measure can be used in these policy areas. Second, our measure can be used to compare the behavior
+of justices over time. Time invariant measures, by definition, cannot account for change. On the
+other hand, our measure can be used to not only study behavior over time, but even change in
+behavior over time by the same justice! In some policy areas, like obscenity or the death penalty,
+some justices clearly have changed their attitudes. Our dynamic measure allows these changes to
+be tapped. Third, our derivative measure of the median justice (and, perhaps, the location of the
+
+22
+
+minimum and maximum justice, or the heterogeneity of the Court, measured via the range) can be
+used to study the relationship between the Court and other institutions of government (Eskridge,
+1991; Spiller and Gely, 1992; Segal, 1997). Such applications may require additional assumptions
+to place actors across institutions on a comparable scale (Bailey and Chang, 2001). Nonetheless,
+our approach provides reliable and valid measures of Court-specific quantities over time.
+The issue preferences of justices, as well as the composition of the Court, are key to understanding the confirmation process (e.g., Segal et al., 1992). Our justice-specific and Court-specific
+measures could be used to study this process, which occurs quite infrequently and over time. Understanding the types of cases that are heard by the Court is another important area of research It
+is clear that issue preferences are key factors in determining for what types of cases cert is granted
+(Brenner and Krol, 1989; Perry, 1991). To understand the importance of agenda setting, it is crucial to understand ex ante the preferences of the key actors. Our dynamic measure might help to
+untangle some of the theoretical literature on strategic grants and defensive denials. Other factors,
+such as amicus participation surely impact cert decision-making as well (Caldeira and Wright,
+1988), but to assess its importance, or the importance of other factors, it is necessary to control for
+the policy preferences of the justices. Once the Court decides to hear a case, the decision-making
+process takes a number of important steps, including voting in the Conference (Maltzman and
+Wahlbeck, 1996b, e.g.,) and oral argument (Johnson, 2001). Opinion assignment (Maltzman and
+Wahlbeck, 1996a), and bargaining over the language in the opinion (Epstein and Knight, 1998),
+are also important areas of scholarship. To assess the influence of judicial issue preferences on final
+outcomes, it is again necessary to statistically control for them.
+A number of scholars also study what happens after the Court makes its decisions. Of course,
+the reactions of the public and other policy actors depend not only on the content of the decision,
+but also the composition of Court. We anticipate our measures being used to study the impact of
+the separation of powers system on the Court (Spiller and Gely, 1992; Segal, 1997), as well as the
+impact of the Court on other institutions of government. Our measures can also be used to help
+23
+
+understand how the Court shapes public opinion (Franklin and Kosaki, 1989; Durr et al., 2000),
+and its broader societal impact (Rosenberg, 1991).
+From the discussion above it is clear that our measures can be used any number of ways to study
+the Supreme Court and its relations with other political actors. However, because our measure was
+constructed from votes on the merits, they cannot be used as explanatory or control variables in
+subsequent statistical models of votes on the merits. Plugging our measures into a subsequent
+statistical model of those same votes on the merits would simply be using votes to explain votes.
+This is one clear advantage of the Segal and Cover (1989) measures. There are at least two ways to
+modify our approach to alleviate the endogeneity problem. First, in supplemental analyses, we have
+estimated ideal points using only the data prior to a given term for each justice. This approach
+requires T models to be fit to get ideal points for justices in T terms and would not allow us to get
+estimates for the first available term. Not being able to model behavior in the first term of service
+for each justice may not be too limiting; Hagle (1993) shows that justices behave quite erratically in
+the their first terms. While this strategy is computationally expensive, it does produce ideal point
+estimates for term t that are exogenous to voting behavior in term t. These supplemental results
+are publicly available for use by other scholars on the world wide web. When studying votes on
+the merits, these lagged estimates can be used as either left-hand side or right-hand side variables.
+A better approach is to write down a full structural model of behavior and jointly estimate the
+ideal points and impact of the other explanatory variables in a unified model. For instance one
+could write the latent utility difference zjkt as:
+0
+zjkt = αk + βk θjt + wjk
+γ + εjkt ,
+
+where wjk is a vector of observed covariates specific to justice j and case k and γ is a vector
+of coefficients to be estimated. Such a model is essentially a multivariate probit model with a
+highly patterned error structure derived from the underlying spatial model. Unfortunately, existing
+software packages do not implement this model. Estimating this structural strategy requires the
+
+24
+
+use of Markov chain Monte Carlo methods (see Clinton et al., 2000; Martin and Quinn, 2002).
+Nonetheless, the approach is quite powerful, in that it allows the researcher to jointly estimate
+the ideal points and structural parameters while simultaneously controlling for both. What can be
+taken from the above discussion is that the measures provided in this paper can be used to study
+many sorts of behavior. Even votes on the merits can be studied with particular care to the manner
+in which measures are employed.
+
+7
+
+Discussion and Extensions
+
+In this paper we provide empirical evidence that decision-making on the U.S. Supreme Court can
+be adequately explained by a simple uni-dimensional spatial model. This model is a general model
+that applies to the votes on the merits of all justices on all cases. Despite the complexity of
+decision-making on the Court, our simple model correctly classify votes well. Further, diagnostic
+checks – including eigenvalue analysis of the vote matrices, and classification rates across issue
+areas – suggest that the unidimensionality assumption is not contradicted by the observed data.
+This latter point is extremely important, since much previous work suggests that the relevant issue
+space is multi-dimensional (Schubert, 1974; Rohde and Spaeth, 1976), which greatly complicates
+theoretical modeling. Nonetheless, the work presented here (which is based on the actual votes on
+the merits) suggests that uni-dimensional theoretical models such as those by Eskridge (1991) and
+Ferejohn and Weingast (1992) are appropriate for modeling behavior on the Court.16
+A useful byproduct of our approach are estimates of the ideal point for every justice serving
+on the Supreme Court from the 1937 to the 2000 term. These ideal points are estimated using
+a dynamic ideal point model, which allows for preference change while controlling for changes in
+case stimuli. We provide our measures, summarized in Figures 1-5, in electronic form for the use
+of others in their research. To study all types of behavior except for final votes on the merits,
+using the posterior means for each justice can be incorporated in subsequent models as explanatory
+variables. Their applicability is only limited by the substantive questions posed and the creativity
+
+25
+
+of the researcher. In Section 6 we discuss alternative modeling strategies for those interested in
+statistically modeling votes on the merits while controlling for preferences.
+The ideal points we have estimated, and their associated dynamics, raise a number of questions
+which we leave for future research. First, can one forecast future decisions with this model? This
+is an important question, as there many circumstances when one would want to forecast the future
+behavior of a committee or legislature using this type of ideal point methodology. The difficulty
+in doing so comes in the case parameters. Since the case parameters are estimated solely from
+the observed votes, it is impossible to forecast where the stimuli will fall for future cases. An
+interesting extension to this research would be to include other information, such as the Court of
+origin, the litigants, the legal questions posed, and so on to model the case parameters. With a
+good set of case-specific explanatory variables that are informative about the location the midpoint
+between the affirmance and reversal point, this model could be used for forecasting. This is in the
+vein of Poole and Rosenthal (1997), who use the votes in congressional committees to estimate the
+midpoint, that is then used to forecast votes on the floor.
+In the paper we document the fact that after controlling for changes in case parameters, many
+justices exhibit preference change throughout the course of their careers. A second research question is: What explains preference change? One answer focuses on the changing decision context.
+Strategic justices may well exhibit very different behavior in different decision contexts. Having
+a different set of colleagues, or facing a different administration or legislative branch might lead
+justices to behave quite differently on certainly issues. Revealed behavior might thus be due to
+strategic concerns (Eskridge, 1991; Epstein and Knight, 1998). On the other hand, it may be the
+case that justices undergo fundamental change in their world views throughout the course of their
+careers for various social-psychological reasons. An important area for future research is explaining
+these oftentimes dynamic (and sometimes static) ideal point trajectories of the justices.
+In addition to the measures that can be used by other scholars, the fundamental result of this
+paper is that a simple one-dimensional model accounts for an enormous amount of variance in the
+26
+
+votes on the merits cast by the justices. During the time period of the study the Court heard
+cases across nearly all areas of law, at times overturning their own precedents, and establishing
+and modifying a great deal of public policy. Nonetheless, a simple, uni-dimensional spatial model
+is able to satisfactorily account for most of the variability in the opinions of the justices.
+
+References
+Bailey, Michael, and Kelly Chang. 2001.
+Inter-institutional Preference Estimation.”
+
+“Comparing Presidents, Senators, and Justices:
+Journal of Law, Economics, and Organization
+
+17(October):477–506.
+Baum, Lawrence. 1988. “Measuring Policy Change in the United States Supreme Court.” American
+Political Science Review 82(September):905–912.
+Black, Duncan. 1958. The Theory of Committees and Elections. Cambridge: Cambridge University
+Press.
+Bound, John, David A. Jaeger, and Regina M. Baker. 1995. “Problems with Instrumental Variables
+Estimation When the Correlation Between the Instruments and the Endogeneous Explanatory
+Variable is Weak.” Journal of the American Statistical Association 90(June):443–450.
+Brenner, Saul, and John F. Krol. 1989. “Strategies in Certiorari Voting on the United States
+Supreme Court.” Journal of Politics 51(November):828–840.
+Caldeira, Gregory A., and John R. Wright. 1988. “Organized Interests and Agenda Setting in the
+U.S. Supreme Court.” American Political Science Review 82(December):1109–1127.
+Clinton, Joshua, Simon Jackman, and Douglas Rivers. 2000. “The Statistical Analysis of Legislative Behavior: A Unified Approach.” Paper presented at the Annual Meeting of the Political
+Methodology Society.
+
+27
+
+Durr, Robert H., Andrew D. Martin, and Christina Wolbrecht. 2000. “Ideological Divergence and
+Public Support for the Supreme Court.” American Journal of Political Science 44(October):768–
+776.
+Enelow, James M., and Melvin J. Hinich. 1984. The Spatial Theory of Voting. Cambridge: Cambridge University Press.
+Epstein, Lee, Valerie Hoekstra, Jeffrey A. Segal, and Harold J. Spaeth. 1998. “Do Political Preferences Change: A Longitudinal Study of U.S. Supreme Court Justices.” Journal of Politics
+60(August):801–818.
+Epstein, Lee, and Jack Knight. 1998. The Choices Justices Make. Washington, DC: CQ Press.
+Epstein, Lee, and Carol Mershon. 1996. “Measuring Political Preferences.” American Journal of
+Political Science 40(February):261–294.
+Epstein, Lee, Jeffrey A. Segal, and Harold J. Spaeth. 2001. “The Norm of Consensus on the U.S.
+Supreme Court.” American Journal of Political Science 45(April):362–377.
+Epstein, Lee, Thomas G. Walker, and William J. Dixon. 1989. “The Supreme Court and Criminal Justice Disputes: A Neo-Institutional Perspective.” American Journal of Political Science
+33(November):825–841.
+Eskridge, William N. 1991. “Overriding Supreme Court Statutory Interpretation Decisions.” Yale
+Law Journal 101(November):331–417.
+Ferejohn, John, and Barry Weingast. 1992. “Limitation of Statutes: Strategic Statutory Interpretation.” Georgetown Law Journal 80(February):565–582.
+Franklin, Charles H., and Liane C. Kosaki. 1989.
+
+“Republican Schoolmaster: The United
+
+States Supreme Court, Public Opinion, and Abortion.” American Political Science Review
+83(September):751–771.
+28
+
+George, Tracey, and Lee Epstein. 1992. “On the Nature of Supreme Court Decision Making.”
+American Political Science Review 86(June):323–337.
+Geweke, John. 1992. “Evaluating the Accuracy of Sampling-Based Approaches to Calculating
+Posterior Moments.” In Bayesian Statistics 4 ( J.M. Bernardo, J.O. Berger, and A.F.M Smith,
+editors), Oxford, UK: Clarendon Press.
+Grofman, Bernard, and Timothy J. Brazill. 2002. “Identifying the Median Justice on the Supreme
+Court through Multidimensional Scaling: Analysis of “Natural Courts” 1953-1991.” Public
+Choice 112(July):55–79.
+Hagle, Timothy M. 1993. “Freshman Effects for Supreme Court Justices.” American Journal of
+Political Science 37(November):1142–1157.
+Heidelberger, P., and P.D. Welch. 1981. “A Spectral Method for Confidence Interval Generation
+and Run Length Control in Simulation.” Communications of the ACM 24(April):233–245.
+Jackman, Simon. 2000. “Estimation and Inference via Bayesian Simulation: An Introduction to
+Markov Chain Monte Carlo.” American Journal of Political Science 44(April):369–398.
+Johnson, Timothy R. 2001. “Information, Oral Arguments, and Supreme Court Decision Making.”
+American Politics Research 29(July):331–351.
+Maltzman, Forrest, and Paul J. Wahlbeck. 1996a. “May It Please the Chief? Opinion Assignments
+in the Rehnquist Court.” American Journal of Political Science 40(May):421–443.
+Maltzman, Forrest, and Paul J. Wahlbeck. 1996b. “Strategic Policy Considerations and Voting
+Fluidity on the Burger Court Strategic policy considerations and voting fluidity on the burger
+court.” American Political Science Review 90(September):581–592.
+Martin, Andrew D., and Kevin M. Quinn. 2001.
+http://scythe.wustl.edu/.
+29
+
+“Scythe Statistical Library, Release 0.1.”
+
+Martin, Andrew D., and Kevin M. Quinn. 2002. “Dynamic Ideal Point Estimation via Markov
+Chain Monte Carlo for the U.S. Supreme Court, 1953-1999.” Political Analysis 10(Spring):134–
+153.
+Perry, H.W. 1991. Deciding to Decide: Agenda Setting on the U.S. Supreme Court. Cambridge:
+Harvard University Press.
+Poole, Keith T., and Howard Rosenthal. 1991. “Patterns of Congressional Voting.” American
+Journal of Political Science 35(February):228–278.
+Poole, Keith T., and Howard Rosenthal. 1997. Congress: A Political-Economic History of Roll-Call
+Voting. Oxford: Oxford University Press.
+Rohde, David W., and Harold J. Spaeth. 1976. Supreme Court Decision Making. San Francisco:
+W. H. Freeman.
+Rosenberg, Gerald N. 1991. The Hollow Hope. Chicago: University of Chicago Press.
+Schubert, Glendon. 1959. Quantitative Analysis of Judicial Behavior . Glencoe, IL: Free Press.
+Schubert, Glendon. 1965. The Judicial Mind: The Attitudes and Ideologies of Supreme Court
+Justices, 1946-1963 . Evanston: Northwestern University Press.
+Schubert, Glendon. 1974. The Judicial Mind Revisited: Psychometric Analysis of Supreme Court
+Ideology. London: Oxford University Press.
+Segal, Jeffrey A. 1984. “Predicting Supreme Court Cases Probabilistically: The Search and Seizure
+Cases (1962-1981).” American Political Science Review 78(December):891–900.
+Segal, Jeffrey A. 1997. “Separation-of-Powers Games in the Positive Theory of Law and Courts.”
+American Political Science Review 91(March):28–44.
+
+30
+
+Segal, Jeffrey A., Charles M. Cameron, and Albert D. Cover. 1992. “A Spatial Model of Roll Call
+Voting: Senators, Constituents, Presidents, and Interest Groups in Supreme Court Confirmations.” American Journal of Political Science 36(February):96–121.
+Segal, Jeffrey A., and Albert D. Cover. 1989. “Ideological Values and the Votes of U.S. Supreme
+Court Justices.” American Political Science Review 83(June):557–565.
+Segal, Jeffrey A., Lee Epstein, Charles M. Cameron, and Harold J. Spaeth. 1995. “Ideological Values
+and the Votes of U.S. Supreme Court Justices Revisited.” Journal of Politics 57(August):812–
+823.
+Segal, Jeffrey A., and Harold J. Spaeth. 1989. “Decisional Trends on the Warren and Burger Courts:
+Results from the Supreme Court Data Base Project.” Judicature 73(June-July):103–107.
+Spaeth, Harold J. 2001a. United States Supreme Court Judicial Database, 1953-2000 Terms [Computer File] . Ann Arbor, MI: Inter-University Consortium for Political and Social Research, 16th
+edition.
+Spaeth, Harold J. 2001b. The Vinson-Warren Supreme Court Judicial Database, 1946-1968 Terms
+[Computer File] . Ann Arbor, MI: Inter-University Consortium for Political and Social Research,
+first edition.
+Spiller, Pablo T., and Rafael Gely. 1992. “Congressional Control or Judicial Independence: The
+Determinants of U.S. Supreme Court Labor-Relations Decisions, 1949-1988.” RAND Journal of
+Economics 23(Winter):463–492.
+Tate, C. Neal. 1981. “Personal Attribute Models of Voting Behavior of U.S. Supreme Court Justices:
+Liberalism in Civil Liberties and Economics Decisions.” American Political Science Review
+75(June):355–367.
+Tate, C. Neal, and Roger Handberg. 1991. “Time Binding and Theory Building in Personal At-
+
+31
+
+tribute Models of Supreme Court Voting Behavior, 1916-88.” American Journal of Political
+Science 35:460–480.
+
+Notes
+
+1A
+
+cited reference search at http://isiknowledge.com/ on 24 October 2002 indicates that the
+
+Poole and Rosenthal (1991) D-NOMINATE measures have been cited in 121 articles, which does
+not include the other scores discussed in other published work, nor the book that summarizes the
+entire project (Poole and Rosenthal, 1997).
+2 Throughout
+
+this paper we use the terms “preferences” and “ideal points” interchangeably to
+
+mean revealed preferences. These quantities are essentially summaries of behavior consistent with
+a theoretical issue space revealed through the votes of the justices (Epstein and Mershon, 1996).
+Whether these derive solely from the justices’ political attitudes, or from strategic considerations,
+is beyond the scope of this research. We return to this issue in Section 7 when we discuss possible
+explanations for preference change.
+3A
+
+cited reference search at http://isiknowledge.com/ on 24 October 2002 indicates that the
+
+original Segal and Cover (1989) measures have been cited in 92 articles, which does not include
+books or journals excluded from the database, nor the updated scores published by Segal et al.
+(1995).
+4 The
+
+scale on which conservatism or liberalism are measured is completely arbitrary. In our
+
+application, the prior probabilities on the ideal points define the metric.
+5 In
+
+some instances there are multiple affirmance points because similar cases arise from different
+
+circuits, or from different state courts. However, the justices always hear a single case, for which
+the policy under affirmance is well-defined.
+32
+
+6 The
+
+assumption of symmetric utility functions is a common one; see, for example, the Gaussian
+
+utility function used by Poole and Rosenthal (1997), or the quadratic utility function of Enelow
+and Hinich (1984).
+
+7 Any
+
+justice whose ideal point equals the indifference point is assumed to vote randomly with
+
+probability 0.5 of voting for either option.
+
+8 This
+
+notation is a bit clumsy because justices serve a variable number of terms with different
+
+starting and ending dates. Nonetheless, we use 0 to denote the term before the justice began
+serving, T j to denote the first term served, and T j to denote the last term served. This results in
+series that, for example, look like 0, 1963, 1964, · · · , 1976 in the data.
+
+9 The
+
+findings are robust to other prior specifications. The results are not substantively different
+
+if no informative prior means are used (although reasonable starting values have to be employed to
+solve rotational invariance). The results also look quite similar for other evolution variances. We
+have fit models with ∆θjt = 0.01, ∆θjt = 0.25, ∆θjt = 0.5, and ∆θjt = 3.0 and find nearly identical
+results.
+
+10 The
+
+11 We
+
+software to estimate the model is written in C++, and is available in the web supplement.
+
+utilized the diagnostic tests of Geweke (1992) and Heidelberger and Welch (1981).
+
+12 The
+
+unit of analysis is the case citation (ANALU=0). We select cases where the type of
+
+decision (DEC TYPE) equals 1 (orally argued cases with signed opinions), 5 (cases with an equally
+divided vote), 6 (orally argued per curiam cases), or 7 (judgements of the Court), and drop all
+unanimous cases. As discussed by Martin and Quinn (2002), dropping unanimous cases does not
+impact estimation of ideal points or case parameters because these cases do not contribute to the
+likelihood. As such, deleting unanimous cases will not effect our inferences about the underlying
+structure of decision-making on the Court. We use the majority or minority vote variables to
+33
+
+construct the dataset, and then use the disposition variable (DIS) to code votes as affirmance or
+reversals. All data to replicate the study are available in the web supplement.
+
+13 These
+
+are taken from the VALUE variable in the United States Supreme Court Judicial Database,
+
+which is coarse coding of substantive issues. There are simply not enough cases to perform the
+analysis on the finer ISSUE codes.
+
+14 What
+
+is the appropriate baseline to judge whether or not the model is classifying well? In this
+
+case, one should compare these values to 50%. As mentioned above, the model does not require
+that the votes coming into the model are coded in any particular fashion. Indeed, we obtain the
+same estimates if the votes are coded liberal/conservative, affirm/reverse, minority/majority, etc.
+To wit, without adding additional information, the best one could do ex ante would be to predict
+a 50% success rate. In this application, the modal category is arbitrarily defined, and is thus not
+a reasonable baseline.
+
+15 For
+
+example, including the Segal and Cover (1989) scores as a covariate in a probit model of
+
+vote choice would implicitly assume that the case stimuli are constant across every case. Clearly
+this assumption is inappropriate.
+
+16 Due
+
+to computational and methodological barriers, it is extremely difficult to fit a two-dimensional
+
+(or higher) dynamic model. And the evidence strongly suggests that a one-dimensional model suffices.
+
+34
+
+Term
+1937
+1938
+1939
+1940
+1941
+1942
+1943
+1944
+1945
+1946
+1947
+1948
+1949
+1950
+1951
+1952
+1953
+1954
+1955
+1956
+1957
+1958
+1959
+1960
+1961
+1962
+1963
+1964
+1965
+1966
+1967
+1968
+
+1st Eigenvalue
+2.37
+2.16
+2.06
+1.90
+1.62
+1.57
+1.23
+1.44
+0.88
+1.41
+1.64
+1.73
+1.42
+1.18
+1.22
+1.30
+1.36
+1.26
+1.61
+1.60
+1.87
+2.08
+1.90
+1.71
+1.62
+1.39
+1.40
+0.93
+1.30
+1.53
+1.01
+1.00
+
+2nd Eigenvalue
+0.58
+0.52
+0.42
+0.65
+0.51
+0.43
+0.57
+0.45
+0.61
+0.49
+0.62
+0.67
+0.95
+0.62
+0.62
+0.63
+0.57
+0.80
+0.92
+0.68
+0.54
+0.41
+0.42
+0.49
+0.48
+0.52
+0.45
+0.62
+0.72
+0.56
+0.67
+0.71
+
+Term
+1969
+1970
+1971
+1972
+1973
+1974
+1975
+1976
+1977
+1978
+1979
+1980
+1981
+1982
+1983
+1984
+1985
+1986
+1987
+1988
+1989
+1990
+1991
+1992
+1993
+1994
+1995
+1996
+1997
+1998
+1999
+2000
+
+1st Eigenvalue
+1.05
+1.53
+2.04
+1.82
+2.00
+1.56
+1.70
+1.62
+1.25
+1.62
+1.51
+1.42
+1.64
+1.71
+1.78
+1.74
+1.80
+2.11
+1.75
+2.23
+2.14
+1.90
+1.47
+1.38
+1.61
+1.65
+1.60
+2.01
+1.72
+1.68
+2.16
+2.52
+
+2nd Eigenvalue
+0.77
+0.63
+0.55
+0.49
+0.43
+0.50
+0.57
+0.50
+0.64
+0.60
+0.60
+0.56
+0.48
+0.56
+0.57
+0.56
+0.55
+0.46
+0.45
+0.47
+0.45
+0.47
+0.51
+0.55
+0.45
+0.55
+0.44
+0.42
+0.57
+0.47
+0.54
+0.49
+
+Table 1: First two eigenvalues extracted from the double-centered agreement score matrix for each
+term, 1937-2000.
+
+35
+
+Issue Area
+Attorneys
+Privacy
+First Amendment
+Federal Taxation
+Judicial Power
+Criminal Procedure
+Economic Activity
+Civil Rights
+Due Process
+Unions
+Federalism
+
+Percent
+79.87
+77.58
+76.62
+75.96
+75.71
+75.63
+75.58
+75.46
+74.94
+74.57
+74.41
+
+Total Votes
+369
+393
+3518
+2191
+3952
+9089
+8911
+5972
+1603
+2220
+1552
+
+Table 2: Mean posterior percent votes classified, by issue area, 1937-2000.
+
+36
+
+1938
+
+1940
+
+1942
+
+1944
+
+85
+
+●
+
+●
+●
+
+●
+
+●
+
+75
+
+●
+
+●
+
+4
+
+65
+
+% Classified
+
+●
+●
+
+●
+
+●
+
+●
+
+0
+
+●
+●
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+●
+
+●
+
+●
+●
+●
+
+●
+
+−2
+
+●
+
+●
+
+●
+
+●
+
+●
+
+−6
+
+−4
+
+Estimated Ideal Point
+
+2
+
+●
+
+1938
+
+1940
+
+1942
+
+1944
+
+Term
+●
+
+●
+
+Black (1937−1970)
+Brandeis (1937−1938)
+Butler (1937−1938)
+Cardozo (1937−1937)
+Hughes (1937−1940)
+McReynolds (1937−1940)
+
+●
+
+Reed (1937−1956)
+Roberts (1937−1944)
+Stone (1937−1945)
+Sutherland (1937−1937)
+Douglas (1938−1974)
+Frankfurter (1938−1961)
+
+●
+
+●
+
+Murphy (1939−1948)
+Byrnes (1941−1941)
+Jackson (1941−1953)
+Rutledge (1942−1948)
+Burton (1945−1957)
+
+Figure 1: Estimated ideal points and percent cases correctly classified for the dynamic ideal point
+model for the late-Hughes and Stone Courts, 1937-1945.
+37
+
+1948
+
+1949
+
+1950
+
+1951
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+1950
+
+1951
+
+1952
+
+85
+
+1947
+
+75
+
+●
+●
+
+●
+
+0
+
+●
+
+−2
+
+●
+●
+
+●
+
+●
+●
+
+1947
+
+1948
+
+−6
+
+−4
+
+Estimated Ideal Point
+
+2
+
+4
+
+65
+
+% Classified
+
+1946
+
+1946
+
+1949
+
+1952
+
+Term
+Black (1937−1970)
+Reed (1937−1956)
+Douglas (1938−1974)
+Frankfurter (1938−1961)
+
+●
+
+●
+
+Murphy (1939−1948)
+Jackson (1941−1953)
+Rutledge (1942−1948)
+Burton (1945−1957)
+
+●
+
+Vinson (1946−1952)
+Clark (1949−1966)
+Minton (1949−1955)
+
+Figure 2: Estimated ideal points and percent cases correctly classified for the dynamic ideal point
+model for the Vinson Court, 1946-1952.
+38
+
+1960
+
+1965
+
+85
+
+●
+●
+
+●
+
+●
+
+75
+
+●
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+0
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+−2
+
+●
+
+−6
+
+−4
+
+Estimated Ideal Point
+
+2
+
+4
+
+65
+
+% Classified
+
+1955
+
+1955
+
+1960
+
+1965
+
+Term
+Black (1937−1970)
+Reed (1937−1956)
+Douglas (1938−1974)
+Frankfurter (1938−1961)
+Jackson (1941−1953)
+Burton (1945−1957)
+
+●
+
+●
+
+Clark (1949−1966)
+Minton (1949−1955)
+Warren (1953−1968)
+Harlan (1954−1970)
+Brennan (1956−1989)
+Whittaker (1956−1961)
+
+●
+
+Stewart (1958−1980)
+White (1961−1992)
+Goldberg (1962−1964)
+Fortas (1965−1968)
+Marshall (1967−1990)
+
+Figure 3: Estimated ideal points and percent cases correctly classified for the dynamic ideal point
+model for the Warren Court, 1953-1968.
+39
+
+1975
+
+85
+
+●
+
+●
+
+●
+
+●
+
+1980
+
+1985
+
+●
+●
+
+●
+●
+
+75
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+2
+
+4
+
+65
+
+% Classified
+
+1970
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+0
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+−2
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+−6
+
+−4
+
+Estimated Ideal Point
+
+●
+
+1970
+
+1975
+
+1980
+
+1985
+
+Term
+
+●
+
+Black (1937−1970)
+Douglas (1938−1974)
+Harlan (1954−1970)
+Brennan (1956−1989)
+Stewart (1958−1980)
+
+●
+
+White (1961−1992)
+Marshall (1967−1990)
+Burger (1969−1985)
+Blackmun (1970−1993)
+Powell (1971−1986)
+
+●
+
+Rehnquist (1971−2000)
+Stevens (1975−2000)
+O’Connor (1981−2000)
+
+Figure 4: Estimated ideal points and percent cases correctly classified for the dynamic ideal point
+model for the Burger Court, 1969-1985.
+40
+
+1986
+
+1988
+
+1990
+
+1992
+
+1994
+
+1996
+
+1998
+
+2000
+
+85
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+75
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+0
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+−2
+
+Estimated Ideal Point
+
+2
+
+4
+
+65
+
+% Classified
+
+●
+●
+
+●
+
+●
+
+●
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+−6
+
+−4
+
+●
+
+1986
+
+1988
+
+1990
+
+1992
+
+1994
+
+1996
+
+1998
+
+2000
+
+Term
+●
+
+Brennan (1956−1989)
+White (1961−1992)
+Marshall (1967−1990)
+Blackmun (1970−1993)
+Powell (1971−1986)
+
+●
+
+●
+
+Rehnquist (1971−2000)
+Stevens (1975−2000)
+O’Connor (1981−2000)
+Scalia (1986−2000)
+Kennedy (1987−2000)
+
+●
+
+Souter (1990−2000)
+Thomas (1991−2000)
+Ginsburg (1993−2000)
+Breyer (1994−2000)
+
+Figure 5: Estimated ideal points and percent cases correctly classified for the dynamic ideal point
+model for the Rehnquist Court, 1986-2000.
+41
+
+1950
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+7
+6
+5
+
+●●●
+
+0
+
+●●
+●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+●
+
+●●
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+●●
+
+●●●
+
+●
+●●●
+
+●
+
+●●●●
+
+●●●●
+
+●●●
+
+●●●●●
+
+●
+
+●
+
+●●
+
+●
+●●
+
+−2
+
+●
+
+●●
+
+●
+
+−6
+
+−4
+
+Estimated Ideal Point
+
+2
+
+4
+
+3
+
+4
+
+Estimated Range
+
+8
+
+1940
+
+1940
+
+1950
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+Term
+
+Figure 6: Estimated posterior distribution of the location of the median justice for the dynamic
+ideal point model, 1937-2000. The y-axis of the bottom cell summarizes the estimated location
+of the median justice, and the x-axis denotes the term. The vertical lines for each term represent
+the estimated location of the most liberal and conservative justice. The top cell summarizes the
+estimated range of each term.
+42
+
+0.8
+0.6
+0.4
+0.2
+0.0
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+Schubert E
+
+1.0
+
+Schubert C
+
+1950
+
+1955
+
+1960
+
+1965
+
+1950
+
+1960
+
+1965
+
+0.8
+0.6
+0.4
+0.2
+0.0
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+Spaeth Equality
+
+1.0
+
+Spaeth Freedom
+
+1955
+
+1955
+
+1960
+
+1965
+
+1970
+
+1975
+
+1955
+
+1965
+
+1970
+
+1975
+
+0.8
+0.6
+0.4
+0.2
+0.0
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+Segal and Cover
+
+1.0
+
+Spaeth New Deal
+
+1960
+
+1955
+
+1960
+
+1965
+
+1970
+
+1975
+
+1960
+
+1970
+
+1980
+
+1990
+
+Figure 7: Term-by-term correlations of dynamic ideal point estimates with Schubert (Schubert,
+1974), Spaeth (Rohde and Spaeth, 1976), and Segal and Cover (Segal and Cover, 1989) measures.
+
+43
+
+

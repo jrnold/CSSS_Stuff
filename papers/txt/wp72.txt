@@ -1,0 +1,1894 @@
+The Yield Curve Through Time and Across Maturities *
+Richard Startz and Kwok Ping Tsang
+University of Washington
+Working Paper No. 72
+Center for Statistics and the Social Sciences
+University of Washington
+February 14, 2007
+
+*
+
+Startz: Department of Economics, University of Washington, Box 353330, Seattle, WA 98195
+(startz@u.washington.edu); Tsang: Department of Economics, University of Washington, Box 353330, Seattle, WA
+98195 (byront@u.washington.edu). Financial support from the Castor Professorship at the University of
+Washington is gratefully acknowledged. The authors thank Charles R. Nelson for helpful comments, and Robert
+Bliss for making his interest rate data available. Copyright © 2007 by Richard Startz, Kwok Ping Tsang. All Rights
+Reserved
+
+1
+
+Abstract: We develop an unobserved component model in which the short-term interest rate is
+composed of a stochastic trend and a stationary cycle. Using the Nelson-Siegel model of the
+yield curve as inspiration, we estimate an extremely parsimonious state-space model of interest
+rates across time and maturity. Our stochastic process generates a three-factor model for the term
+structure. At the estimated parameters, trend and slope factors matter while the third factor is
+empirically unimportant. Our baseline model fits the yield curve well. Model generated estimates
+of uncertainty are positively correlated with estimated term premia. An extension of the model
+with regime switching identifies a high-variance regime and a low-variance regime, where the
+high-variance regime occurs rarely after the mid-1980s. The term premium is higher, and more
+so for yields of short maturities, in the high-variance regime than that in the low-variance
+regime. The estimation results support our model as a simple and yet reliable framework for
+modeling the term structure.
+JEL Classifications: C22, E32, E43
+Keywords: term structure of interest rates, Nelson-Siegel yield curve, trend-cycle
+decomposition.
+
+2
+
+I. Introduction
+Some two decades ago, Charles Nelson and Andrew Siegel (1987) proposed a model of
+the term structure of interest in which yields across a cross section of maturities are modeled as
+the integral from time zero to maturity of the solution to a second-order differential equation.
+This Nelson-Siegel model has found wide practical application for modeling the yield curve at a
+point in time. Recent work by Diebold and Li (2006) shows that the Nelson-Siegel curve can be
+interpreted as maturity-varying factor loadings on three factors: level, slope, and curvature. This
+has opened the way for studying the time series behavior of these factors as well as their relation
+to macroeconomic driving variables, which adds more economic content to the Nelson-Siegel
+curve.
+Our approach might be summarized succinctly as: We take Nelson-Siegel seriously.
+Nelson-Siegel posit that the short rate follows a second-order differential equation. The
+solution to that equation gives future short rates, and integrating the solution gives current long
+rates under a no-premium expectations hypothesis. Because the functional form for the long rates
+is flexible (while using very few parameters), it can fit yields across maturities quite well.
+However, nothing in these cross-section fits ties them to the original short-rate, time-series
+process. Here, in contrast, we create a tight empirical link between the short-rate process and
+yields across maturities, and in this way rejoin the underlying theory and the estimated results.
+We start with a time series model for the short rate, where the short rate is the sum of two
+unobserved components: a stochastic trend with unit root and a stationary cycle. This model has
+a univariate ARIMA representation that is a close stochastic analog to the Nelson-Siegel
+deterministic, second-order differential equation. We then integrate the future short-rate
+forecasts. Here we make one significant departure from Nelson-Siegel. The Nelson-Siegel
+solution is based on an expectations-hypothesis model of the term structure with zero term
+premia. Zero term premia is empirically untenable (Startz (1982)). Nonetheless Nelson-Siegel
+cross-section fits are invariably made to observed yields, rather than observed yields adjusted for
+term premia. Our empirical model allows for nonzero premia.
+We then combine the time-series model for the short rate with the equations giving the
+cross section of yields at different maturities in a state-space model and estimate the underlying
+process. Because modeling the cross sections adds very few parameters to the time-series model,
+a great deal of data is available to identify the parameters. This framework provides a good
+
+3
+
+description of the dynamics of the short rate and also a satisfactory cross-sectional fit. While the
+resulting estimates allow for a level/slope/curvature factor interpretation, the decomposition into
+trend and cycle may be easier to relate to other macro decompositions, notably GDP. We
+compare our estimates of trend and cycle to appropriate level and slope estimates from
+unconstrained cross-section fits and find a close correspondence. Thus, once the time-constant
+parameters are estimated, our model can be used to draw current or future yield curves based
+only on knowledge of the short-rate.
+We also find an explanation for the fact that the “curvature factor” has been notoriously
+difficult to identify. In our three factor model; the factors are trend, cycle, and lagged cycle. The
+third factor is identified only if the lagged cycle factor matters and the lagged cycle matters only
+if the cycle follows an AR(2). The time series on observed yield data isn’t powerful enough to
+clearly identify an AR(2) component. In contrast, our combined time-series/cross-section
+approach does give good identification.
+Since our model takes uncertainty seriously and allows for term premia, we can offer
+some insight on the relation between risk and premia. While we make no attempt to build an
+optimizing model relating risk and return, the empirical relation we find between estimated
+premia and modeled uncertainty is interesting, as uncertainty is highly correlated with the level
+of the premium. We then take this further by allowing for Markov-switching in variances, while
+retaining the linear unobserved component model for levels. We find evidence that there is
+Markov-switching and that accounting for it improves the performance of the model. In
+particular, we find higher premia in higher variance states.
+II. A Serious, Stochastic Nelson-Siegel Model
+A. The Original Nelson-Siegel Model
+The original setup Nelson and Siegel article,. the process for the short rate r (with
+maturity of one period) is assumed to be a non-homogeneous second-order differential equation,
+ar + br + cr = d
+
+(1)
+
+Following the development in Nelson and Siegel and Diebold and Li, and assuming that
+the roots of (1) are real and equal, the forward rate path, r f ( m ) , as a function of maturity m , is
+
+r f (m) =
+
+d ⎛
+d⎞
+b ⎞ ⎛ 2af
+d ⎞ bm
+b ⎞
+⎛
+⎛
++ ⎜ e − ⎟ exp ⎜ − m ⎟ + ⎜
++e− ⎟
+exp ⎜ − m ⎟
+c ⎝
+c⎠
+2a ⎠ ⎝ b
+c ⎠ 2a
+2a ⎠
+⎝
+⎝
+
+4
+
+(2)
+
+where initial conditions are r ( 0 ) = e and r ( 0 ) = f .
+Integrating the forward curve from 0 to m and divide it by m , we obtain the NelsonSiegel yield curve r ( ) .
+m
+
+⎛ 1 − exp ( − m / κ ) ⎞
+⎛ 1 − exp ( − m / κ )
+⎞
+r ( m) = L + S ⎜
+− exp ( m / κ ) ⎟
+⎟+C⎜
+m /κ
+m /κ
+⎝
+⎠
+⎝
+⎠
+
+L=
+
+⎛
+c
+d ⎞ a
+d
+d
+d
+, S = e − and C = 2 ⎜⎜ f + e
+−
+−e+
+⎟⎟
+a
+c
+c
+c
+ac ⎠ c
+⎝
+
+(3)
+
+(4)
+
+The three coefficients in (4) are usually interpreted as the level, slope, and curvature
+factors.
+In practice, equation (3) is estimated by OLS period by period, fixing the value of 1/ κ at
+0.0609. Any restrictions which might follow from equation (4) are ignored. The period t
+regression gives estimates of Lt , St , and Ct without imposing any time-series restriction, so in
+total T × 3 structural parameters are estimated. These estimates are then collected as time series
+which summarize the dynamics of the term structure over time. The flexible functional form of
+(3) allows excellent fit of the term structure in cross-sections—the R 2 is usually over 0.99.
+Recent cross-section estimates of Nelson-Siegel curves are given in Gürkaynak, Sack and Wright
+(2006) Cross-section fits of no-arbitrage models, as surveyed in Duffee (2002) also produce
+excellent fits.
+B. A Stochastic Model
+
+Introducing an explicit stochastic specification in the form of a discrete time, unobserved
+components model, we write the short rate rt as,
+rt = τ t + ct
+
+(5)
+
+τ t = τ t −1 + ut , ut ~ N ( 0, σ u2 )
+
+(6)
+
+φ ( L ) ct = vt , vt ~ N ( 0, σ v2 ) , φ ( L ) = 1 − φ1L − φ2 L2
+
+(7)
+
+cov ( ut , vt + k ) = σ uv for k = 0 , σ uv = 0 otherwise.
+
+(8)
+
+In words, the short rate rt is decomposed into a stochastic trend (i.e. a random walk) τ t
+and an AR(2) cycle ct , and the shocks to these two unobserved components are
+
+5
+
+contemporaneously correlated. Note that (5)-(8) imply an ARIMA(2,1,2) univariate
+representation for the short rate in which the AR terms are φ1 and φ2 and the MA terms depend
+on both φ1 and φ2 and the covariance matrix of the shocks to trend and cycle. Forward rates
+equal the current trend plus the forward forecast of the cycle.
+Under the premium-augmented expectation hypothesis with m-term premium ω ( m ) , we
+can write out the first few yields as
+
+rt = rt(1) = τ t + ct ,
+rt(2) = ω ( 2 ) +
+rt
+
+(3)
+
+=ω
+
+( 3)
+
+1
+1+φ
+φ
+( rt + Et rt +1 ) = ω (2) + τ t + 1 ct + 2 ct −1 ,
+2
+2
+2
+
+(9)
+
+1
+1 + φ1 + φ12 + φ2
+φ +φφ
+( 3)
+ct + 2 1 2 ct −1 ,
++ ( rt + Et rt +1 + Et rt + 2 ) = ω + τ t +
+3
+3
+3
+
+and so on. Note In general we can write:
+rt( m ) = ω ( m ) + τ t + f (φ1 , φ2 , m ) ct + g (φ1 , φ2 , m ) ct −1
+
+(10)
+
+where the functions f ( i ) and g ( i ) are the factor loadings. As we show in Appendix A, the factor
+loadings can be written as functions of the inverse roots of the AR polynomial (when the roots
+are real), as shown in equation (11). As a convenience, we provide the limiting case of equal
+roots in (12).
+rt
+
+(m)
+
+=ω
+
+(m)
+
+⎛ 1 − η2m ⎞ ⎞
+⎛ 1 ⎞ ⎛ ⎛ 1 − η1m ⎞
++τt + ⎜
+⎟⎟ − η2 ⎜⎜
+⎟⎟ ⎟⎟ ct
+⎟ ⎜η1 ⎜⎜
+⎝ η1 − η 2 ⎠ ⎜⎝ ⎝ m (1 − η1 ) ⎠
+⎝ m (1 − η2 ) ⎠ ⎠
+
+⎛ 1 − η1m ⎞ ⎞ ⎞
+⎛ η1η 2 ⎞ ⎛ ⎛ 1 − η2 m
++⎜
+− ⎜⎜
+⎟⎟ ⎟ ⎟ ct −1
+⎟⎜⎜
+⎝ η1 − η2 ⎠ ⎜⎝ ⎜⎝ m (1 − η2 ) ⎝ m (1 − η1 ) ⎠ ⎟⎠ ⎟⎠
+
+rt
+
+(m)
+
+=ω
+
+( m)
+
+(11)
+
+m
+m +1
+m
+m +1
+1 ⎡1 − η m η − mη + ( m − 1)η ⎤
+η ⎡η − mη + ( m − 1)η ⎤
++τt + ⎢
++
+⎥ ct − ⎢
+⎥ ct −1 (12)
+2
+2
+m ⎢⎣ 1 − η
+m ⎢⎣
+(1 − η )
+(1 − η )
+⎥⎦
+⎥⎦
+
+Equation (10) offers a three factor model. The first factor is the trend, which is the same
+as the level factor identified in the literature. The second factor is the cycle, which is the slope
+using the definition rt( ∞ ) − rt(1) − ω ( ∞ ) . Note that, unlike in the usual empirical implementation, we
+separate term premia out from the slope definition. The third factor is the lagged cycle. The
+lagged cycle does not correspond to a curvature factor.
+
+6
+
+We are going to argue that, for recent American data, only level and slope factors are
+well-identified. The form of the time series process together with equations (11) and (12)
+determines the factor loadings. If the short rate process were a pure random walk, then only the
+level factor would exist and the yield curve (aside from premia) would be a horizontal line.
+Slightly more generally, suppose that the short rate process consisted of a random walk plus
+white noise; in our formulation suppose that φ1 = φ2 = 0 . By inspection of equation (12) with
+
+η = 0 , we see that the factor loading on the lagged cycle equals zero and the factor loading on
+the slope equals 1 m . The yield curve would at all times be a hyperbola with a half-life of two
+months. Neither horizontal line nor short-lived hyperbola seems sufficiently flexible to describe
+historically observed yield curves.
+If the cyclical component of the short rate follows an AR(1) then the lagged cycle drops
+out of equation (11) as one of the roots equals zero. We have a two factor model with slope
+loading
+
+1 − φ1m
+. This model permits quite flexible yield curves, but not ones with hump
+m (1 − φ1 )
+
+shapes. (Negative φ1 permits an oscillating slope load, which is not likely to be of much
+relevance for observed yield curves.) In our data, a hump of more than five basis points occurs
+less than five percent of the time. Finally, a short rate process where φ2 ≠ 0 allows for hump
+shapes as well.
+Our empirical estimates combine time-series and cross-section information in a way that
+provides good identification of both φ1 and φ2 , including estimates that φ2 is small—so that if
+there is a third factor its loading has been quite small in recent U.S. history. Additionally, our
+evidence suggests that the equal root model of equation (12), which is similar to the models
+commonly found in the literature, would be better eschewed as empirically one (inverse) root is
+large while the other is close to zero. As a benchmark, ARIMA representations time series
+results for the short rate are given in Table 1 (asymptotic standard errors in parentheses).
+As is evident from Table 1, the short rate looks a great deal like a random walk. While
+the t-statistic on φ1 in the ARIMA(2,1,2) model is significant at the five percent level, the
+confidence interval tells us little other than that φ1 is probably positive. The confidence interval
+for φ2 includes pretty much all interesting values. The p-value for the likelihood-ratio test of
+
+7
+
+ARIMA(2,1,2) versus a random walk is 0.11. In summary, the time series evidence suggests
+some role for the slope factor, although one that is difficult to pin down, and tells us essentially
+nothing about loadings on a third factor.
+We turn now to a state space representation which incorporates both times series and
+cross section information. Let the M-vector of interest rates at time t be rt = ⎡⎣ rt(1) rt( 3) ... rt(120) ⎤⎦ .
+'
+
+We augment the time series model for the short rate given in equations (5)-(8) with the yield
+curves in equation (13).
+rt = Ω + Iτ t + F (φ1 , φ2 ) ct + G (φ1 , φ2 ) ct −1 + ε t , ε t ~ N ( 0, Σ )
+
+(13)
+
+where the vector Ω contains the constant term premia for yields with maturity of more than 1
+month, and the vector εt contains the errors for all yields except the 1-month yield (i.e. the 1month yield is restricted as being estimated perfectly). We follow the universal convention in the
+term structure literature of treating these as measurement errors, although the reader skeptical of
+there being significant difficulty in measuring returns to U.S. Treasury securities might think ε
+more a measure of how well our model fits the data. We assume the covariance-variance matrix
+for the measurement errors, Σ , to be diagonal, except for the 1-month yield whose measurement
+error is always zero. The measurement errors εt are assumed to be uncorrelated with the two state
+variable shocks ut and vt . The loadings f ( i ) and g ( i ) are functions of the two AR(2) coefficients.
+Our state space model imposes stringent constraint on the structural parameters. There
+are M × T observations on yields. The usual repeated cross section approach explains the
+observations with T × 3 + 1 parameters, three factors each period and κ . Our model requires 4
+ARMA parameters plus M term premia. (A second model, below, adds another M + 2
+parameters.) Note that the 3-latent factor model of Diebold, Rudebusch and Aruoba (2006)
+effectively uses only 3 means and 32 VAR(1) parameters.
+
+8
+
+III. Empirical Estimates
+A. Data
+
+Our observations come from the same data set used in Diebold and Li1 of monthly zerocoupon CRSP Treasury data from January 1970 to December 2000 for maturities 1, 3, 6, 9, 12,
+15, 18, 21, 24, 30, 36, 48, 60, 72, 84, 96, 108, and 120 months. We use unsmoothed Fama-Bliss2
+yields, and bonds with option features and special liquidity problem are eliminated. Figure 1 is a
+picture of the short (1-month) rate. Table 2 provides the summary statistics. The average
+premium of the ten-year rate over the 1-month is 160 or 190 basis points, depending on whether
+one uses mean or median. Standard deviations of yields decline modestly with maturity.
+According to our model, long maturity yields load almost entirely on a random walk
+trend while short maturity yields include a stationary component as well. Cochrane’s (1988)
+variance ratio can tell us whether this is a reasonable characterization of the data. The variance
+ratio for horizon k , Rk =
+
+Vk
+
+V1
+
+(
+
+, where Vk = var rt(+mk ) − rt( m )
+
+)
+
+k , tells us the fraction of the monthly
+
+variation in the yield that is due to permanent shocks. As k increases, the ratio Rk should stay at
+one if the yield follows a pure random walk, and the ratio Rk should decline toward zero if the
+yield rt is trend stationary. In Table 3 we see the variance ratio Rk decreases with horizon for
+shorter yields, but that for the longer yields stays around one. This is consistent with our model.
+B. Estimation of the baseline model
+
+We estimate the model (5)-(8) and (13) by Gibbs sampling organized in two steps. Given the
+parameters {Σ, Ω, σ u2 , σ v2 , σ uv , φ1 , φ2 } and the data we run a Kalman filter to generate cycle and
+trend. Given trend and cycle, we use Gibbs sampling to draw new values of the parameters.
+Details appear in Appendix B.
+For the sampler, we choose diffuse (improper) priors all the variance elements and
+normal, but effectively diffuse, priors for the premia with means set at the sample average
+difference r ( m ) − r (1) and standard deviations set at 10. Because in UC models there is always an
+identification issue in ensuring that the estimated cycle is stationary, we use persistent but
+1
+
+The dataset is an extract of data supplied by Robert Bliss (see Bliss (1997).
+
+2
+
+See Fama and Bliss (1987) and Bliss (1997) for a discussion of the method.
+
+9
+
+⎛ ⎡ 1.1 ⎤ ⎡1 0 ⎤ ⎞
+stationary priors for the AR coefficients, N ⎜ ⎢ ⎥ , ⎢
+⎥ ⎟ . Because draws of the AR
+⎝ ⎣ −.2 ⎦ ⎣0 1 ⎦ ⎠
+
+coefficients with near unit roots tend either be followed by nonstationary draws or long
+sequences with near unit roots, we use rejection sampling and discard draws where φ1 + φ2 ≥ 0.95
+. We run the Gibbs sampler 10,000 times, discarding the first 2,000 draws.
+Posterior means, standard deviations, and 95 percent confidence bands appear in Tables
+4a-c. The cycle variance is estimated to be something over twice the size of the trend variance,
+and the two shocks are mildly negatively correlated with an estimated correlation coefficient of 0.31. The mean estimate of φ1 happens to be the same as the time-series-only estimate, 0.86, but
+it is now precisely identified with 95 percent band ( 0.768, 0.952 ) as compared ( 0.13,1.59 ) .
+Where φ2 was essentially unidentified in the time series estimate, the Gibbs estimate is probably
+positive but certainly small with 95 percent band ( −0.050, 0.134 ) . Estimates of term premia rise
+with maturity, are essentially identical—within three basis points of—mean differences in yields,
+and are tightly estimated with standard deviations between two and eight basis points.
+The model fits well, although as would be expected not so well as unconstrained crosssection fits. The variances of the “measurement” errors show that the model has some difficulty
+fitting yields of shorter maturities in particular. For example, the standard deviation of the
+measurement error for the 9-month yield, the largest reported, is 44 basis points, corresponding
+to an R 2 of only 0.973.
+Figures 2a and 2b show mean estimates of trend and cycle from the Gibbs-sampler
+together with trend and slope factors estimated from unconstrained cross-section regressions.
+The estimates are similar to one another except in the early 1990s, when we find lower trend and
+higher cycle than appears in cross-section estimates. To compare with cross-section estimates,
+we add in the estimated 120-month term premium.
+Our model performs well, although not perfectly, in fitting the yields across time and
+maturity. Figure 3 shows slope(solid line) and lagged cycle (dotted line) loadings at mean Gibbs
+estimates. The slope loading is relatively large at least at maturities of a few years. The lagged
+cycle loading is small. Since we estimate the cycle variance to be considerably higher than the
+slope variance, the estimated slope loading is large enough that the slope factor plays an
+important role in setting the yield curve.
+10
+
+The relation between the premia and risk calculations from our model is intriguing. The
+surprise in the yield rt( k ) is
+
+( ) ) = ω( ) − E
+
+rt( ) − E t −1 rt(
+m
+
+m
+
+m
+
+t −1
+
+ω ( m ) + τ t − E t −1 τ t + f ( m )( ct − E t −1 ct ) + g ( m )( ct −1 − E t −1 ct −1 )
+
+(14)
+
+= ut + f ( m )ν t
+
+The conditional variance is a function of the model parameters,
+
+( )
+
+(
+
+var r ( m ) = σ u2 + f 2 ( m )σ ν2 + 2 f ( m )σ uν . Since the price of a bond is p ( m ) = 1 1 + r ( m )
+
+(
+
+)
+
+)
+
+m
+
+, the
+
+( )
+
+usual Taylor series approximation gives var p ( m ) ≈ m 2 p 2 var r ( m ) . We compute this variance
+using the estimated parameters and mean prices3. Figure 4 shows the relation between estimated
+term premia and uncertainty. Visually quite strong, the correlation across maturities between the
+premium and standard deviation is 0.97. Regressing premia on the standard deviation, despite the
+fact the relation is not quite linear, shows that a 100 basis point increase in standard deviation
+gives a 5 basis point increase in the premium.
+C. Estimation of a regime-switching model
+
+Inspection of Figure 1 suggests that volatility of the short rate changes over time.
+Evidence in the last section suggests a link between uncertainty and premia, and the literature
+certainly suggests that premia are time-varying. We build changing volatility into the model
+without interfering with the link between the time-series process and cross sections in the model
+by allowing for regime-switching in the variance of trend and cycle shocks and in the term
+premia, while holding the AR parameters in common. This means that factors shift between
+regimes but factor loadings do not. Letting S = 1 denote the high-variance regime, the model
+becomes
+rt = ω0 (1 − St ) + ω1St + Iτ t + F (φ1 , φ2 ) ct + G (φ1 , φ2 ) ct −1 + ε t , ε t ~ N ( 0, Σ )
+
+(15)
+
+τ t = τ t −1 + ut , ut ~ N ( 0, σ u20 (1 − St ) + σ u21St )
+
+(16)
+
+ct = φ1ct −1 + φ2 ct − 2 + vt , vt ~ N ( 0, σ v20 (1 − St ) + σ v21St )
+
+(17)
+
+cov ( ut , vt ) = σ uv 0 (1 − St ) + σ uv1St
+
+(18)
+
+3
+
+Using mean prices in the approximation adds an element of endogeneity, but note that a high premium in the yield
+gives a lower mean price and that we find a positive relationship between computed uncertainty and premium.
+
+11
+
+where St evolves as a two-state, first-order Markov-switching process with transitional
+probabilities
+Pr [ St = 0 | St −1 = 0] = q and Pr [ St = 1| St −1 = 1] = p
+
+(19)
+
+We use the same priors as above, with the addition of normal mean 0.9 and standard
+deviation 1.0 priors for p and q . Table 4 shows the posterior distributions. Both states are fairly
+persistent, with the expected duration of the low variance state (7.6 months) being greater than
+that of the high variance state (4.6 months). Figure 4 plots the posterior probability of being in
+the high-variance regime. Before the 1980s the yield curves switches frequently between the two
+regimes, and during the Volcker disinflation the yield curve is mainly in the high-variance state.
+From the mid-1980s onward the yield curve is mainly in the low-variance regime, with some
+short and infrequent spells of high variance.
+In contrast to the earlier results, φ2 , and a third factor, are now well identified. The
+loading on the third factor remains small. Both slope(dashed line) and lagged cycle (dash-dotted
+line) loadings are modestly higher than in the non-switching model. The cycle variance is half
+again as large as the trend variance in the low variance state but triple the trend variance in the
+high variance state.
+Estimated term premia show large differences between high and low variance regimes at
+the short end of the yield curve. In contrast, premium for longer maturities are neither
+economically nor statistically important much different across regimes. (See Figure 6.) Note that
+the high-state trend variance is double that in the low state, while for the cycle the high-state
+variance is quadruple that in the low state. The estimated premia are consistent with our model
+specification. Since the shorter yields load more on the cycle, the shorter yields have a larger
+difference in variance across regimes.
+Trend and cycle estimates allowing for switching are shown in Figures 2a and 2b, using
+the regime-probability weighted estimates of the 120-month premium to make them comparable
+to cross-section estimates. The new estimates of trend and cycle differ little from the nonswitching estimates, which is the expected outcome given that the short-rate parameters do not
+switch and that we find little difference in the long-term premium.
+Allowing for regime switching improves the fit of the model: the measurement errors
+variances are significantly smaller than those in the baseline model. The shorter yields, which are
+
+12
+
+fitted rather badly in the baseline model, now have measurement errors with standard deviations
+of less than 30 basis points. Among the seventeen yields, the 10-year one has the worst fit, and
+the standard deviation for its measurement error is 29 basis points. Figure 5 compares the trend
+and cycle of model (adjusted by the term premium) with the level and slope factors estimated in
+cross-sections.
+IV. Concluding Remarks
+
+Taking a trend/cycle unobserved components time series model of the short rate and
+projecting the short rate into the future to give an expectations hypothesis with constant term
+premium model of the yield curve works extremely well in the sense of giving consistent time
+series/cross section fits of yields that fit the data well. We identify two clear factors, trend and
+cycle, and show that the third factor allowed by the model doesn’t seem to be very important.
+Model-based measures of uncertainty do an intriguingly good job of predicting estimated term
+premia. Allowing for regime-switching in shock variances improves model performance yet
+more, giving more definite identification of an unimportant third factor. Regime-switching also
+introduces time varying term premia into the model in a very natural way. Finally, while we have
+not pursued it in this paper, our model may prove useful in integrating the term structure into
+models of broader macroeconomic behavior.
+
+13
+
+References
+
+1) Bliss, Robert R. (1997), “Testing Term Structure Estimation Methods,” Advances in Futures
+and Options Research, Vol. 9.
+
+2) Cochrane, J. H. (1988), “How Big is the Random Walk in GNP?” Journal of Political
+Economy, 96, 5, 893-920.
+
+3) Diebold, F.X. and Li., C. (2006), “Forecasting the Term Structure of Government Bond
+Yields,” Journal of Econometrics, 130, 337-364.
+4) Diebold, F.X., Rudebusch, G.D. and Aruoba, S.B. (2006), “The Macroeconomy and the
+Yield Curve: A Dynamic Latent Factor Approach,” Journal of Econometrics, 131, 309-338.
+5) Diebold, F.X., Piazzesi, M., and Rudebusch, G.D. (2005), “Modeling Bond Yields in
+Finance and Macroeconomics, The Macroeconomy and the Yield Curve: A Dynamic Latent
+Factor Approach,” American Economic Review, 95, 415-420
+6) Duffee, G. (2002) “Term premia and interest rate forecasts in affine models,” Journal of
+Finance, 57, 405–443.
+
+7) Fama, E. and Bliss, R. (1987), “The Information in Long-Maturity Forward Rates,”
+American Economic Review, 77, 680-692.
+
+8) Granger, C.W.J. and Newbold, P. (1986), Forecasting Economic Time Series. Academic
+Press, New York.
+9) Gürkaynak, R.S., Sack, B. and Wright, J.H. (2006), “The U.S. Treasury yield curve: 1961
+to the present,”, Finance and Economics Discussion Series 2006-28, Divisions of Research
+& Statistics and Monetary Affairs, Federal Reserve Board, Washington, D.C.
+10) Kim, C.-J. and Nelson, C.R. (1998), State-Space Models with Regime-Switching: Classical
+and Gibbs-Sampling Approaches with Applications. Cambridge: MIT Press.
+
+11) Nelson, C.R. and Siegel, A.F. (1987), “Parsimonious Modeling of Yield Curves,” Journal of
+Business, 60, 473-489.
+
+12) Startz, R. (1982), “Do Forecast Errors or Term Premia Really Make the Difference Between
+Long and Short Rates?” Journal of Financial Economics, l0 (3), pp. 323-329.
+
+14
+
+Table 1 - ARIMA Representations of Unobserved Component Models of the 1-Month Rate
+
+random walk
+
+φ1
+
+trend plus white
+noise cycle
+
+trend plus AR(1)
+cycle
+-0.441
+(0.486)
+
+0.072
+(0.052)
+
+0.515
+(0.464)
+
+-377.58
+0.004
+
+-377.14
+0.007
+
+φ2
+θ1
+θ2
+log-likelihood
+R2
+
+-378.41
+0
+
+Table 2 – Descriptive Statistics for the Yield Data
+
+Maturity
+1
+3
+6
+9
+12
+15
+18
+21
+24
+30
+36
+48
+60
+72
+84
+96
+108
+120
+
+Mean
+6.44
+6.75
+6.98
+7.1
+7.2
+7.31
+7.38
+7.44
+7.46
+7.55
+7.63
+7.77
+7.84
+7.96
+7.99
+8.05
+8.08
+8.05
+
+Median
+5.69
+5.93
+6.24
+6.4
+6.61
+6.75
+6.78
+6.81
+6.81
+6.93
+7.06
+7.22
+7.37
+7.42
+7.45
+7.51
+7.54
+7.59
+
+Maximum Minimum
+16.16
+2.69
+16.02
+2.73
+16.48
+2.89
+16.39
+2.98
+15.82
+3.11
+16.04
+3.29
+16.23
+3.48
+16.18
+3.64
+15.65
+3.78
+15.4
+4.04
+15.77
+4.2
+15.82
+4.31
+15.01
+4.35
+14.98
+4.38
+14.98
+4.35
+14.94
+4.43
+15.02
+4.43
+14.93
+4.44
+
+15
+
+S.D.
+2.58
+2.66
+2.66
+2.64
+2.57
+2.52
+2.5
+2.49
+2.44
+2.36
+2.34
+2.28
+2.25
+2.22
+2.18
+2.17
+2.18
+2.14
+
+trend plus AR(2)
+cycle
+0.860
+(0.373)
+-0.217
+(0.314)
+-0.807
+(0.380)
+0.087
+(0.329)
+-374.63
+0.020
+
+Table 3 – Cochrane Variance Ratio for Six Yields
+Horizon in months 1-month
+2
+1.058
+3
+1.028
+4
+0.981
+5
+0.929
+6
+0.890
+7
+0.833
+8
+0.768
+9
+0.751
+10
+0.746
+11
+0.752
+12
+0.768
+24
+0.753
+28
+0.712
+120
+0.359
+
+3-month
+1.120
+1.110
+1.082
+1.037
+1.009
+0.951
+0.877
+0.848
+0.846
+0.863
+0.888
+0.915
+0.864
+0.453
+
+Maturity
+12-month 24-month 48-month 120-month
+1.148
+1.173
+1.079
+1.100
+1.129
+1.161
+1.045
+1.110
+1.076
+1.105
+1.015
+1.093
+0.999
+1.040
+0.966
+1.087
+0.971
+1.009
+0.952
+1.092
+0.933
+0.982
+0.949
+1.104
+0.864
+0.929
+0.918
+1.104
+0.830
+0.902
+0.906
+1.100
+0.811
+0.887
+0.900
+1.104
+0.803
+0.875
+0.897
+1.123
+0.821
+0.893
+0.918
+1.150
+0.822
+0.853
+0.856
+1.007
+0.786
+0.807
+0.816
+0.948
+0.486
+0.601
+0.714
+0.965
+
+?
+
+16
+
+Table 4a – Gibbs Sampling Results: Covariance Matrix for the State Variables, the AR(2) Parameters and the Transitional
+Probabilities
+
+Trend Variance
+Cycle Variance
+Covariance
+Low Trend Variance
+Low Cycle Variance
+Low Covariance
+High Trend Variance
+High Cycle Variance
+High Covariance
+phi 1
+phi 2
+q (Low Var Prob)
+p (High Var Prob)
+
+Prior
+Mean
+SD
+1.1
+1
+-0.2
+1
+0.9
+1
+0.9
+1
+
+Posterior for Baseline Model
+95% bands
+Mean
+SD
+0.196 0.019 0.168 0.232
+0.466 0.061 0.384 0.584
+-0.104 0.037 -0.175 -0.055
+
+0.861
+0.038
+
+0.054
+0.054
+
+0.771
+-0.052
+
+0.950
+0.129
+
+17
+
+Posterior for Model with Switching
+
+0.156
+0.240
+-0.098
+0.281
+1.034
+-0.198
+0.823
+0.109
+0.869
+0.796
+
+0.019
+0.033
+0.024
+0.068
+0.253
+0.122
+0.039
+0.035
+0.023
+0.033
+
+0.127
+0.191
+-0.140
+0.186
+0.679
+-0.420
+0.753
+0.062
+0.829
+0.740
+
+0.191
+0.299
+-0.061
+0.403
+1.499
+-0.023
+0.879
+0.177
+0.905
+0.848
+
+Table 4b – Gibbs Sampling Results: Variances of the Measurement Errors
+
+Maturity
+3
+6
+9
+12
+15
+18
+21
+24
+30
+36
+48
+60
+72
+84
+96
+108
+120
+
+Prior
+Mean
+SD
+-
+
+Posterior for Baseline Model
+95% bands
+Mean
+SD
+0.076 0.007 0.065 0.089
+0.154 0.017 0.128 0.185
+0.191 0.024 0.157 0.235
+0.180 0.024 0.148 0.224
+0.149 0.017 0.126 0.182
+0.137 0.016 0.115 0.166
+0.120 0.015 0.100 0.148
+0.100 0.013 0.082 0.125
+0.060 0.007 0.051 0.072
+0.037 0.004 0.032 0.045
+0.013 0.001 0.011 0.015
+0.003 0.001 0.002 0.004
+0.020 0.002 0.016 0.024
+0.035 0.004 0.030 0.041
+0.056 0.006 0.046 0.067
+0.071 0.008 0.058 0.085
+0.096 0.009 0.082 0.111
+
+18
+
+R-sq
+0.989
+0.978
+0.973
+0.973
+0.976
+0.978
+0.981
+0.983
+0.989
+0.993
+0.998
+0.999
+0.996
+0.993
+0.988
+0.985
+0.979
+
+Posterior for Model
+Mean
+SD
+0.053 0.004
+0.074 0.007
+0.081 0.008
+0.073 0.007
+0.064 0.005
+0.061 0.005
+0.049 0.004
+0.040 0.004
+0.029 0.003
+0.018 0.002
+0.009 0.001
+0.005 0.001
+0.015 0.002
+0.029 0.003
+0.038 0.004
+0.050 0.005
+0.079 0.007
+
+with Switching
+95% bands
+0.046 0.060
+0.063 0.086
+0.069 0.095
+0.063 0.085
+0.056 0.073
+0.053 0.070
+0.043 0.057
+0.034 0.046
+0.025 0.035
+0.015 0.021
+0.008 0.011
+0.004 0.006
+0.013 0.018
+0.025 0.034
+0.032 0.045
+0.042 0.058
+0.068 0.092
+
+R-sq
+0.993
+0.990
+0.988
+0.989
+0.990
+0.990
+0.992
+0.993
+0.995
+0.997
+0.998
+0.999
+0.997
+0.994
+0.992
+0.990
+0.983
+
+Table 4c – Gibbs Sampling Results: Term Premia
+Term Premium
+Prior
+Maturity
+3
+6
+9
+12
+15
+18
+21
+24
+30
+36
+48
+60
+72
+84
+96
+108
+120
+
+Mean
+0.31
+0.54
+0.66
+0.76
+0.86
+0.93
+1.00
+1.01
+1.11
+1.19
+1.32
+1.40
+1.51
+1.54
+1.60
+1.63
+1.60
+
+Posterior for Baseline Model
+SD
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+10
+
+Mean
+0.196
+0.317
+0.396
+0.485
+0.600
+0.679
+0.745
+0.775
+0.905
+1.001
+1.189
+1.288
+1.446
+1.484
+1.578
+1.606
+1.582
+
+SD
+0.020
+0.034
+0.048
+0.060
+0.072
+0.082
+0.091
+0.099
+0.113
+0.125
+0.143
+0.155
+0.165
+0.172
+0.176
+0.182
+0.186
+
+95% bands
+0.164 0.230
+0.265 0.377
+0.329 0.484
+0.402 0.596
+0.503 0.734
+0.570 0.831
+0.626 0.913
+0.648 0.960
+0.761 1.117
+0.841 1.233
+1.006 1.456
+1.089 1.577
+1.233 1.752
+1.262 1.801
+1.351 1.909
+1.368 1.943
+1.339 1.928
+
+Low
+Mean
+0.490
+0.889
+1.079
+1.189
+1.281
+1.345
+1.403
+1.401
+1.438
+1.492
+1.553
+1.582
+1.635
+1.657
+1.661
+1.701
+1.659
+
+19
+
+Posterior for Model with Switching
+Variance Regime
+High Variance Regime
+95% bands
+95% bands
+SD
+Mean
+SD
+0.024 0.453 0.531 0.307 0.016 0.281 0.333
+0.038 0.830 0.955 0.532 0.026 0.489 0.575
+0.052 1.005 1.172 0.652 0.033 0.597 0.706
+0.064 1.100 1.301 0.745 0.038 0.682 0.807
+0.073 1.182 1.411 0.849 0.042 0.779 0.916
+0.084 1.234 1.489 0.920 0.045 0.846 0.992
+0.092 1.284 1.561 0.982 0.048 0.903 1.060
+0.101 1.272 1.573 0.997 0.051 0.913 1.078
+0.116 1.293 1.633 1.089 0.054 0.999 1.173
+0.126 1.335 1.703 1.166 0.058 1.071 1.258
+0.145 1.376 1.793 1.302 0.062 1.200 1.399
+0.159 1.391 1.843 1.373 0.066 1.265 1.473
+0.168 1.431 1.916 1.489 0.069 1.377 1.595
+0.175 1.445 1.951 1.520 0.071 1.405 1.628
+0.183 1.439 1.968 1.578 0.072 1.460 1.692
+0.185 1.474 2.014 1.611 0.074 1.489 1.726
+0.189 1.426 1.983 1.579 0.075 1.456 1.698
+
+Figure 1 – One Month Treasury Bill Yields
+
+20
+
+Figure 2a – Estimated Trend Versus Estimated Cross-Section Level Factors
+
+21
+
+Figure 2b – Estimated Cycle Versus Estimated Cross-Section Slope Factors
+
+22
+
+Figure 3 – Slope and Lagged Cycle Loadings
+
+23
+
+Figure 4- Term Premia versus Conditional Standard Deviation of Prices.
+
+24
+
+Figure 5 – Probability of High-Variance Regime
+
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+1970
+
+1975
+
+1980
+
+1985
+
+25
+
+1990
+
+1995
+
+2000
+
+Figure 6 – Term Structure of Term Premium – We need to label panels
+2.0
+
+1.6
+
+1.2
+
+0.8
+
+0.4
+
+0.0
+10
+
+20
+
+30
+
+40
+
+50
+
+60
+
+70
+
+80
+
+90 100 110 120
+
+10
+
+20
+
+30
+
+40
+
+50
+
+60
+
+70
+
+80
+
+90 100 110 120
+
+2.4
+2.0
+1.6
+1.2
+0.8
+0.4
+0.0
+
+Premium under Low Variance Regime
+Premium under High Variance Regime
+
+Note – The upper graphshows the average of the 8,000 Gibbs sampling draws of the
+premium estimate, plotted against the time to maturity, with the 95% bands. The lower
+graph shows the same estimates for the regime-switching model, separately for the two
+regimes.
+
+26
+
+Appendix A – Solving the Discrete-Time Yield Curve Not for Publication
+
+Consider the cycle part ct as a second-order difference equation ct = φ1ct −1 + φ2 ct − 2
+(the stochastic part is left out since we are taking expectation). We aim at solving for
+ct + k as a function of only ct and ct −1 (our factors). To make the timing convention less
+
+confusing, we rename time t as 0, and define c0 and c−1 to be the initial conditions. Our
+AR(2) setup does not exclude unequal roots in the characteristic equation, but to be
+consistent with the NS setup, we assume equal real roots η = φ1 / 2 for now (which is
+equal to the restriction φ2 = −φ1 / 4 ). The general solution is ck = P1η k + P2 kη k .
+To determine the constants, use the initial conditions c0 = P1 and
+c−1 = c0η −1 − P2η −1 , then we have ck = c0η k + ( c0 − η c−1 ) kη k . “Shifting” the time by t
+
+(which does not affect the result) we have ct + k = ctη k + ( ct − ηt −1 ) kη k . Summing up it
+becomes to
+k −1
+
+∑η i =
+i =0
+
+k −1
+
+∑ iη
+
+i
+
+k −1
+1 k −1
+1 ⎡ k −1 i
+i⎤
+c
+c
+η
+c
+η
+c
+=
++
+−
+(t
+∑
+t +i
+t∑
+t −1 ) ∑ iη ⎥ . By geometric sum we have
+⎢
+k i =0
+k ⎣ i =0
+i =0
+⎦
+
+k −1
+1 −η k
+. The other sum ∑ iη i is solved as follows:
+1 −η
+i =0
+
+= η + 2η 2 + 3η 3 + ... + ( k − 1)η k −1
+
+i =0
+
+k −1
+
+(1 − η ) ∑ iη i = η + 2η 2 + 3η 3 + ... + ( k − 1)η k −1 − η 2 − 2η 3 − 3η 4 ... − ( k − 2 )η k −1 − ( k − 1)η k
+i =0
+
+k −1
+
+(1 − η ) ∑ iη i = η + η 2 + η 3 + ... + η k −1 − ( k − 1)η k
+i =0
+
+(1 − η )
+
+2
+
+k −1
+
+∑ iη
+
+i
+
+= η + η 2 + η 3 + ... + η k −1 − ( k − 1)η k − η 2 − η 3 − ... − η k + ( k − 1)η k +1
+
+i =0
+
+k −1
+
+∑ iη
+i =0
+
+i
+
+=
+
+η − kη k + ( k − 1)η k +1
+
+(1 − η )
+
+2
+
+So finally we have result [9]:
+rt
+
+(m)
+
+m
+m +1
+m
+m +1
+1 ⎡1 − η m η − mη + ( m − 1)η ⎤
+1 ⎡η − mη + ( m − 1)η ⎤
+= τ t + ct ⎢
++
+⎥ − η ct −1 ⎢
+⎥
+2
+2
+m ⎢⎣ 1 − η
+m ⎢⎣
+(1 − η )
+(1 − η )
+⎥⎦
+⎥⎦
+
+We derive the case of unequal real roots [9’] in the same manner, using the
+general solution ck = P1η1k + P2η2 k with the roots η1 andη 2 .
+27
+
+Appendix B - Details of the Gibbs Sampling Procedure – Not for Publication
+
+This appendix describes the Gibbs sampling procedure. For further discussion
+please consult Kim and Nelson (1999), from which this appendix borrows.
+First write our model in state-space form:
+rt = ω0 (1 − St ) + ω1St + Iτ t + F (φ1 ,φ2 ) ct + G (φ1 ,φ2 ) ct −1 + ε t , ε t ~ N ( 0, Σ )
+
+τ t = τ t −1 + ut , ut ~ N ( 0, σ u20 (1 − St ) + σ u21St )
+ct = φ1ct −1 + φ2 ct − 2 + vt , vt ~ N ( 0, σ v20 (1 − St ) + σ v21St )
+cov ( ut , vt ) = σ uv 0 (1 − St ) + σ uv1St
+
+Rewrite the model in matrix notation by defining βt = [τ t , ct , ct −1 ] ' :
+
+rt = ωSt + Tβt + ε t
+0] ' n t ~ N ( 0, Q 0 (1 − St ) + Q1St ) ,
+
+βt = Hβt −1 + nt , nt = [ut
+
+vt
+
+⎡ σ u20 σ uv 0
+⎢
+where Q 0 = ⎢σ uv 0 σ v20
+⎢ 0
+0
+⎣
+
+⎡ σ u21 σ uv1 0 ⎤
+0⎤
+⎢
+⎥
+⎥
+0 ⎥ and Q1 = ⎢σ uv1 σ v21 0 ⎥
+⎢ 0
+0 ⎥⎦
+0 0 ⎥⎦
+⎣
+
+Step 1: Given the data rT = [r1 r2 ... rT ] ' and the starting values for the hyper-parameters
+
+{Σ,ω ,ω ,σ
+0
+
+1
+
+2
+u0
+
+,σ u21 ,σ v20 ,σ v21 ,σ uv 0 ,σ uv1 ,φ1 ,φ2 , p, q} and the state ST = [ S1 S2 ... ST ] ' (which is
+
+generated from the starting values for the transitional probabilities { p, q} ), we first run
+the Kalman filter:
+Prediction
+1. βt|t −1 = Hβt −1|t −1
+2. Pt|t −1 = HPt −1|t −1H '+ Q St
+Updating
+3. βt|t = βt|t −1 + Pt|t −1T ' ( TPt|t −1T '+ Σ )
+
+−1
+
+( r − Tβ
+t
+
+t |t −1
+
+4. Pt|t = Pt|t −1 − Pt|t −1T ' ( TPt|t −1T '+ Σ ) TPt|t −1
+−1
+
+28
+
+− θ St
+
+)
+
+At the end we obtain βt|t = E ( βt | rt ) and Pt|t = Cov ( β t | rt ) for t = 1, 2,..., T . Using
+βT |T and PT |T , which contain information from the whole sample rT , we generate the last
+set of state variables based on the conditional distribution:
+βT | rT ~ N ( βT |T , PT |T ) ,
+
+and for the rest of the state variables, we use the conditional distribution:
+
+(
+
+βt | rt , β*t +1 ~ N βt|t ,β* , Pt|t ,β*
+t +1
+
+t +1
+
+) for t = T − 1, T − 2,...,1
+
+To obtain the two arguments in the conditional distribution, we first define
+β*t +1 = H*βt + n*t +1 , where β*t +1 is the first two elements of βt +1 T* is the first two rows of T
+
+and n*t is the first two elements of nt . Likewise we have Q*St as the first 2 by 2 block of
+Q St . The two arguments in the conditional distribution are given as:
+
+(
+
+βt|t ,β* = E ( β t | rt , β*t +1 ) = βt|t + Pt|t H* ' H*Pt|t H* '+ Q*St +1
+t +1
+
+) (β
+−1
+
+(
+
+Pt|t ,β* = Cov ( βt | rt , β*t +1 ) = Pt|t − Pt|t H* ' H*Pt|t H* '+ Q*St +1
+t +1
+
+)
+
+−1
+
+*
+t +1
+
+− H*βt|t )
+
+H*Pt|t
+
+The above procedures generate the state variables βT = [β1 , β 2 ,..., βT ] ' , though we
+only keep the first two elements of each for future inference, i.e. τ T = [τ 1 τ 2 ... τ T ] ' and
+cT = [ c1 c2 ... cT ] ' .
+
+Step 2: Given the hyper-parameters {Σ,ω0 ,ω1 ,σ u20 ,σ u21 ,σ v20 ,σ v21 ,σ uv 0 ,σ uv1 ,φ1 ,φ2 , p, q} , the
+
+state variables βT = [β1 , β 2 ,..., βT ] ' from Step 1, and the data rT , we first run the Hamilton
+filter:
+1. Pr ( St , St −1 | ψ t −1 ) = Pr ( St | St −1 ) Pr ( St −1 | ψ t −1 )
+2. f ( rt | ψ t −1 ) = ∑∑ f ( rt | St , St −1 ,ψ t −1 ) Pr ( St , St −1 | ψ t −1 )
+St
+
+3. Pr ( St | ψ t ) = ∑
+St −1
+
+St −1
+
+f ( rt | St , St −1 ,ψ t −1 ) Pr ( St , St −1 | ψ t −1 )
+f ( rt | ψ t −1 )
+
+29
+
+where f ( i ) is the normal density function, and ψ t −1 is the information available at t − 1 .
+The initial probability Pr ( S0 | ψ 0 ) is steady state probability determined by { p, q} . After
+the Hamilton filter, we obtain Pr ( ST | ψ T ) from which we generate ST . For the state at
+time t = T − 1, T − 2,...,1 , we use the iteration:
+Pr ( St = 1| St +1 , rt ) =
+
+Pr ( St +1 | St = 1) Pr ( St = 1| rt )
+1
+
+∑ Pr ( S
+j =0
+
+t +1
+
+| St = j ) Pr ( St = j | rt )
+
+With each iteration we obtain Pr ( St = 1| St +1 , rt ) , and draw St .
+Step 3: Now based on the state variables βT = [β1 , β 2 ,..., βT ] ' from Step 1, the state
+ST = [ S1 S2 ... ST ] ' from Step 2, and the data rT = [r1 r2 ... rT ] ' , we generate the rest of the
+parameters {Σ,ω0 ,ω1 ,σ u20 ,σ u21 ,σ v20 ,σ v21 ,σ uv 0 ,σ uv1 ,φ1 ,φ2 , p, q} in this final step.
+3.1: Based on the state ST = [ S1 S2 ... ST ] ' , we generate the transition probabilities
+by
+p | ST ~ beta ( u11 + n11 , u10 + n10 )
+q | ST ~ beta ( u00 + n00 , u01 + n01 )
+where u11 / ( u11 + u10 ) is our prior for p and u00 / ( u00 + u01 ) is our prior for q , and nij in the
+number of transitions from state i to j calculated from ST = [ S1 S2 ... ST ] ' .
+Next we generate the premia {ω0 ,ω1} . Rewriting the measurement equation as:
+rt = ω0 + (ω1 − ω0 ) St + Tβ t + ε t , and for each yield divide both sides with the standard
+
+deviation of the measurement error to obtain
+
+⎡ ω0 ⎤
+Σ1/ 2rt − Σ1/ 2 Tβt = Σ1/ 2ω0 + Σ1/ 2 (ω1 − ω0 ) St + Σ1/ 2 ε t = Xω + Σ1/ 2ε t with ω = ⎢
+⎥ .
+⎣ω1 − ω0 ⎦
+Given the prior for the premia ω | Σ ~ N ( b0 , B0 ) , we obtain the posterior distribution:
+
+30
+
+ω | Σ, ST , βT ,... ~ N ( b1 , B1 ) with b1 = ( B 0 −1 + X ' X )
+
+−1
+
+(B
+
+b 0 + X ' ( Σ1/ 2rt − Σ1/ 2 Tβt )
+
+−1
+
+0
+
+)
+
+and
+
+B1 = ( B 0 −1 + X ' X ) .
+−1
+
+3.2: Now we generate the two AR(2) coefficients by rewriting the cycle as:
+ct
+
+σ vS
+
+=
+t
+
+φ1ct −1 φ2ct − 2 vt
++
++
+, or to put it in matrix form Y = Xφ + v , where φ = [φ1 φ2 ] ' .
+σ vS
+σ vS
+σ vS
+t
+
+t
+
+t
+
+Given a prior distribution for φ = [φ1 φ2 ] ' as φ | σ vS2 t ~ N ( b 0 , B 0 ) , the posterior
+distribution is obtained as: φ | σ vS2 t , ST , cT ~ N ( b1 , B1 ) where
+b1 = ( B 0 −1 + X ' X )
+
+−1
+
+(B
+
+b 0 + X ' Y ) and B1 = ( B 0 −1 + X ' X ) . We reject draws with non−1
+
+−1
+
+0
+
+stationary and unstable roots, and also when the two coefficients sum up to be more than
+0.95.
+
+3.3: For the errors in the measurement equation, we begin with the prior
+distribution for the variance for each of the yield i : σ ε2i ~ IG ( vi / 2, f i / 2 ) , which is the
+inverse-Gamma distribution. The posterior distribution is defined as follows:
+
+(
+
+(
+
+) )
+
+σ ε2i | φ1 , φ2 , rT , βT , θ S ~ IG ( vi + T − 2 ) / 2, fi + ( rT − θ S − Tβt ) ' ( rT − θ S − Tβt ) / 2 .
+t
+
+t
+
+t
+
+Finally we generate the errors for the state equations. Rewriting the first two of
+the state variables in matrix form as β*t = H*βt −1* + n*t , nt * ~ N ( 0, Q0*1/ 2 ( I + St Γ ) Q 0*1/ 2 ') ,
+
+( I + St Γ )
+
+1/ 2
+
+β t * = ( I + St Γ )
+
+1/ 2
+
+H*βt −1* + ( I + St Γ )
+
+1/ 2
+
+nt *
+
+Given the prior distribution Q 0* | φ1 , φ2 , Γ ~ W ( v0 / 2, f 0 / 2 ) , which is the Wishart
+distribution to allow for a covariance term. The posterior distribution is
+
+(
+
+⎛
+⎛ f + ( I + S Γ )1/ 2 β * − ( I + S Γ )1/ 2 H*β *
+0
+t
+t
+t
+t −1
+⎜
+Q 0* | φ1 , φ2 , Γ, ST , βt * ~ W ⎜ ( v0 + T ) / 2, ⎜⎜
+1/ 2
+1/ 2
+⎜ ( I + St Γ ) βt * − ( I + St Γ ) H*βt −1*
+⎜
+⎝
+⎝
+
+(
+
+Next we have
+
+31
+
+)
+
+) ' ⎞⎟ / 2 ⎞⎟
+⎟
+⎟
+⎠
+
+⎟
+⎟
+⎠
+
+Q0*1/ 2βt * = Q 0*1/ 2 H*βt −1* + Q 0*1/ 2nt * , given a prior distribution
+I + Γ | Q 0* , φ1 , φ2 ~ W ( v1 / 2, f1 / 2 ) , we have the posterior:
+⎛
+⎛ f1 + ( Q 0*1/ 2βt * − Q 0*1/ 2 H*βt −1* ) ' ⎞ ⎞
+⎟ / 2⎟
+I + Γ | Q 0 , φ1 , φ2 , ST , βt ~ W ⎜ ( v1 + T1 ) / 2, ⎜
+⎜
+⎜ Q 0*1/ 2βt * − Q 0*1/ 2 H*βt −1*
+⎟ ⎟
+⎝
+⎠ ⎠
+⎝
+*
+
+*
+
+(
+
+)
+
+Notice that T1 is the number of times St = 1 and the product
+
+(Q
+
+*1/ 2
+0
+
+(
+
+)
+
+βt * − Q0*1/ 2 H*βt −1* ) ' Q 0*1/ 2βt * − Q0*1/ 2 H*βt −1* is only counted for observations at
+
+which St = 1 .
+Steps 1 to 3 complete one iteration of the Gibbs sampling procedure. We perform
+10000 iterations, and keep the last 8000 for inference. In the Gibbs sampling procedure
+for the baseline model, we only omit Step 2 and simplify other relevant sections (e.g.
+only one set of term premia is drawn).
+
+32
+
+

@@ -1,0 +1,4018 @@
+A Statistical View of Learning in the Centipede Game∗
+Anton Westveld and Peter Hoff
+Working Paper no. 37
+Center for Statistics and the Social Sciences
+University of Washington
+December 11, 2003
+
+∗
+
+Anton Westveld is a PhD student, Department of Statistics, University of Washington, Box 354322, Seattle WA
+98195-4322; email: westveld@stat.washington.edu; web: www.students.washington.edu/westveld. Peter Hoff is an
+Assistant Professor of Statistics, Department of Statistics, University of Washington, Seattle WA 98195-4322; email:
+hoff@stat.washington.edu; web: www.stat.washington.edu/hoff. This research is supported by the Office of Naval
+Research grant N00014-12-1-1011. Special thanks from Anton Westveld to Kevin Quinn and Julian Besag in their
+advice concerning this project.
+
+1
+
+Abstract
+In this article we evaluate the statistical evidence that a population of students learn about
+the subgame perfect Nash equilibrium of the centipede game via repeated play of the game.
+This is done by formulating a model in which a player’s error in assessing the utility of game
+decisions changes as they gain experience with the game. We first estimate parameters in a
+statistical model where the probabilities of choices of the players are given by a Quantal Response
+Equilibrium (QRE) (McKelvey and Palfrey (1995, 1996, 1998)), but are allowed to change
+with repeated play. This model gives a better fit to the data than similar models previously
+considered. However, substantial correlation of outcomes of games having a common player
+suggests that a statistical model that captures within-subject correlation is more appropriate.
+Thue we then estimate parameters in a model which allows for within-player correlation of
+decisions and rates of learning.
+
+Keywords:
+Bayesian Inference, Centipede Game, Dyadic data, Game Theory, Hierarchical Modeling, Learning,
+Monte Carlo p-values, Quantal Response Equilibrium, Random Effects Modeling
+
+2
+
+1
+
+Introduction
+
+Decision making under uncertainty has long been of interest to a wide variety of academic disciplines: statistics, computer science, philosophy, political science, economics, and biology, to name
+a few. The main mathematical method for examining multi-agent decision theory has been game
+theory. However, the game theoretic solutions of some simple games have been called into question, with a classic example being the Sub-Game Perfect Nash Equilibrium (SPNE) of the centipede
+game. In experimental settings, individuals rarely choose the SPNE solution (McKelvey and Palfrey
+(1993)). To explain this, McKelvey and Palfrey (1995, 1996, 1998) suggest that players’ strategies
+can be represented by a Quantal Response Equilibrium (QRE), in which players choices deviate
+from the SPNE because of “mistakes” in decision making. The mistakes or errors may be due to lack
+of information, information overload, even the fact that human beings are not perfect optimizers,
+or as is often the case not optimizing according to our criterion.
+Our examination of data collected by McKelvey and Palfrey (1993) on the centipede game shows
+that on average players move toward the SPNE with repeated play. This idea of moving toward a
+game theoretic equilibrium through repeated play has been called learning (Fudenberg and Tirole
+(1991)). An extensive amount of theoretical work has been written on the subject, as well as a
+limited amount of empirical work based on the centipede game (Mahmoud A. El-Gamal (1993)).
+We expand the QRE framework, which allows for a statistical interpretation of game theoretic
+models, by allowing the error distribution to change as players gain experience. We also build
+upon the notion of heterogeneity of players, discussed by McKelvey and Palfrey (1996) through the
+introduction of different parameters for each type of player in the game and finally expanding that
+notion to a statistical random effects model that allows for heterogeneity over all the players in the
+data set. The models we employed represent the data better than previous models using Bayes
+Information Criteria, or BIC, as a measure of adequacy (Kass and Raftery (1995)). The outline
+of the paper is as follows: In section 2, the game and the experimental design are discussed. In
+section 3, an exploratory data analysis is presented. In section 4, several models are examined that
+allow the distribution of player’s error to change as they gain experience. In section 5, the model
+with the best BIC is developed further to allow for heterogeneity of players in the data through a
+random effects model to account for the correlation of outcomes involving a common player. The
+paper then ends with a discussion of model limitations and the potential for future investigation.
+
+2
+
+The Game and Experimental Design
+
+The data were gathered by McKelvey and Palfrey (1993), based upon the four-stage centipede
+game shown in Figure 1. A single run of the centipede game involves two players, player 1 and
+player 2. Player 1 moves first and in the first stage has an opportunity to either Take or Pass. If
+player 1 chooses Take, the game ends and players 1 and 2 receive 40 and 10 cents, respectively.
+If player 1 passes, then player 2 has an opportunity to either choose Take or Pass. Again, if
+player 2 chooses Take the game ends and players 1 and 2 receive 20 and 80 cents, respectively. At
+each subsequent stage the dollar amounts are doubled and switched between player 1 and player
+2. The fourth stage is the last regardless of whether player 2 chooses Take or Pass. Based upon
+this pattern, there are five possible outcomes of the game (Y = {1, . . . , 5}). The traditional game
+theoretic solution (SPNE) can be determined via backwards induction; at the fourth stage, based
+upon utility maximization, it seems natural for player 2 to choose Take. If the game were to reach
+stage 3 player 1 should realize this and following a similar argument would choose Take in the third
+stage. This continues backwards through the game tree, yielding the unique solution that player 1
+
+3
+
+should choose Take at the first stage. However, this solution is Pareto inferior (Andreu Mas-Colell
+(1995)), since both players would strictly benefit by moving further out in the game (stage 3 and
+beyond).
+The data were collected in three different sessions, two of which consisted of 20 and 19 students
+from Pasadena Community College students, and a third session of 20 students from the California
+Institute of Technology. Each participant took part in only one of the three sessions. In each
+session, participants were randomly assigned to be either a player 1 or player 2. This assignment
+was kept throughout their allotted session. In the first and third sessions, participants played
+10 games, while in the second session they played only 9 games. After each game, the player 2s
+were rotated so that two participants never played each other more than once. The games were
+conducted on computers so that the participants did not know whom they were playing against. At
+the end of each session, the participants were privately paid the amount of money they had earned
+from the 9 or 10 games.
+In an attempt to conform to the notions of rationality required by game theoretic solutions, the
+structure of the game, number of times the game would be played, and payment structure were
+made common knowledge to all the participants. This was done by reading a set of instructions, a
+practice session, as well as the administration and correction of a quiz. It is important to note that
+the participants were not “taught” what an optimal strategy was in any sense. Further discussion
+of the experimental design and data collection can be found in McKelvey and Palfrey (1993).
+
+1b
+
+2r
+
+P
+
+T
+
+1r
+
+P
+
+T
+r
+
+0.40
+0.10
+
+T
+r
+
+
+
+Y =1
+
+0.20
+0.80
+
+r
+
+Y =2
+
+P
+
+r
+
+6.40
+1.60
+
+
+
+Y =5
+
+T
+
+1.60
+0.40
+
+
+
+2r
+
+P
+
+r
+
+
+
+Y =3
+
+0.80
+3.20
+
+
+
+Y =4
+
+Figure 1: M-P four-stage centipede game with low payoffs; T = Take, P = Pass; Y denotes the
+outcome of the game
+
+3
+
+Exploratory Data Analysis
+
+Figure 2 gives the relative frequencies of the response outcomes for all the games played for the
+three different sessions. The traditional game theoretic solution is for player 1 to choose take at
+the first stage. If individuals actually played in this manner all the mass in the histogram would
+be contained on outcome 1. In fact most of the mass occurs on outcomes 2 and 3. Surprisingly, we
+see some mass on outcome 5 even though we would expect a player reaching this stage to look at
+the payoffs and choose Take.
+4
+
+0.00
+
+0.05
+
+0.10
+
+0.15
+
+0.20
+
+0.25
+
+0.30
+
+0.35
+
+Outcomes
+
+1
+
+2
+
+3
+
+4
+
+5
+
+Figure 2: Histogram of the 5 response categories for all games and all 3 sessions.
+
+Since it is clear that individuals are not playing the SPNE, a primary scientific question of
+interest is whether individuals, through repeated gaming, will move toward the SPNE. In Figure
+3, a scatter plot of the game number against the five possible outcomes of the game is presented
+with a locally smooth regression (the default setting of the “lowess” function in the R statistical
+package was used). The decreasing trend of the smoother suggests that, on average, the students
+move toward the first outcome with repeated play, which is the SPNE.
+
+3.1
+
+Simple Monte Carlo Test of the Trend
+
+The smoother suggests that the relationship between game number and mean outcome is approximately linear. The linear component of the trend was estimated as βˆobs = −0.67. Due to the
+potential for non-independent outcomes, standard regression confidence intervals are inappropriate. Therefore, we used a Monte Carlo test to examine whether the observed slope was statistically
+different from zero (Besag and Diggle (1977)). This was done by sampling values of βˆ from its distribution under the null hypothesis (H0 : β = 0) and comparing this distribution to βˆobs , where the
+randomization was done according to a Latin Square design (see appendix for more details). Nine
+hundred and ninety-nine values of βˆ were sampled from the null distribution, giving 1000 slopes
+including βˆobs . The results of the Monte Carlo test are displayed in Figure 4. The approximate
+Monte Carlo p-value, P (βˆ ≤ βˆobs ), was 0.001 (i.e., none of the statistics from the randomization
+met or exceeded the observed value) suggesting that we reject the null hypothesis.
+
+4
+
+Multinomial Models
+
+Since the outcomes of the centipede game take on 5 values, the data could be modeled using the
+multinomial distribution; Thus the key question pertains to the parameterization of the probabilities
+of each outcome occurring (P (Y = 1), . . . , P (Y = 5)). The SPNE is perhaps the simplest model
+and states that probability of the first outcome is always one (P (Y = 1) = 1), which is clearly
+not a good model for this data. Acknowledging this McKelvey and Palfrey (1995, 1996, 1998)
+relax the assumptions of the SPNE and develop the QRE model. Their model uses the decision
+5
+
+Trend of Outcomes vs Game Number
+●
+●
+
+●
+●
+
+5
+
+●
+●
+
+●
+
+●
+●
+
+4
+
+●
+●
+
+●
+
+3
+
+Outcomes (jittered)
+
+●●●
+●●
+●
+●
+●●
+
+● ●
+● ●●
+
+2
+
+●●
+● ●●
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+●
+●
+
+●
+● ●
+● ●
+●
+●
+●●
+
+●
+
+●
+●
+●●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●● ●
+●●
+
+●●●
+●● ●
+
+● ●
+●
+●
+● ●●
+●
+
+●● ●
+●
+●
+●
+●
+● ●●
+●
+
+●●
+
+●
+●
+
+●
+●
+
+●●
+●●
+
+●
+
+●
+
+●
+
+●
+● ●
+●●
+●
+●
+● ●
+●
+
+●
+●
+
+● ●
+●
+●
+●
+● ●
+●
+
+●
+
+●
+●
+●
+
+●
+
+●
+●
+
+●●
+
+●
+
+●●
+●
+●
+●●
+
+●
+●
+●
+
+●
+
+●
+●
+●● ●●
+●●
+
+●
+●●
+●
+
+●
+
+1
+
+●
+
+●
+
+●●
+●
+
+●
+● ●
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+● ●
+●
+●
+●
+● ●
+●●
+
+●
+●
+●
+●
+●
+
+●●
+●
+●
+●
+●
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+●
+●●
+●
+
+●
+
+● ●
+
+●
+
+●
+
+●●
+●
+●
+●
+
+● ●
+● ●
+
+●
+●
+●
+●●
+● ●
+● ●
+
+●
+
+●
+●
+●
+●● ●
+
+● ●●
+
+●●
+● ●● ●
+●●● ●
+●
+●●
+●
+
+●●
+●
+
+●
+
+●●
+●●
+●
+
+●
+●
+●
+
+●
+●
+
+●
+●
+
+●
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+2
+
+●
+
+● ●
+
+4
+
+6
+
+8
+
+10
+
+Game Number (jittered)
+
+Figure 3: Loess smoother of the 5 response categories vs game number for all games and all 3
+sessions
+
+making process to inform the specification of the probabilities of the 5 outcomes, but differs from
+the SPNE by allowing players to make mistakes through a stochastic component added to players
+decisions. We expand upon this model to capture the observed mean trend over time which could
+be interpreted as learning. We also expand the model to allow for heterogeneity in the type of
+players (i.e. whether the students are a player 1 or 2). The section ends with Bayesian analysis
+of the model with the best BIC and confirmatory data analysis that will be used to motivate the
+random effects model of the following section.
+
+4.1
+
+McKelvey and Palfrey’s Original Models
+
+McKelvey and Palfrey (1998) fit two different QRE models to the four-stage centipede data as
+examples of the QRE methodology which they developed (McKelvey and Palfrey (1995, 1996,
+1998)). We will present their one parameter QRE model since it will serve as the basis for most of
+the models presented in this paper. McKelvey and Palfrey also fit a two parameter model which
+assumes “that there is some small probability that players are ‘altruistic’ (and hence choose [Pass]
+at every opportunity”. For a more detailed description of either model we refer the reader to
+McKelvey and Palfrey (1993, 1998).
+The QRE model parameterizes the probabilities of players’ decisions as functions of payoffs and
+the variance of their errors. Based upon the extensive form of the game depicted in Figure 1, the
+decision probabilities that need to be specified are:
+
+q2 = P (player 2 chooses Take at stage 4|player 2 reaches stage 4)
+p2 = P (player 1 chooses Take at stage 3|player 1 reaches stage 3)
+q1 = P (player 2 chooses Take at stage 2|player 2 reaches stage 2)
+p1 = P (player 1 chooses Take at stage 1)
+
+6
+
+0
+
+5
+
+10
+
+Density
+
+15
+
+20
+
+Monte Carlo Test for Linear Trend (outcomes vs game number)
+
+−0.06
+
+−0.04
+
+−0.02
+
+0.00
+
+0.02
+
+0.04
+
+0.06
+
+Test Statistic
+
+Figure 4: Null distribution and observed statistic
+
+For example, for a player 2 to choose Take at the fourth stage, the perceived utility gained
+from that choice should be greater than the perceived utility gained by choosing Pass. We model
+f2 (Y = 4) = U2 (Y = 4) + αT versus
+the perceived utilities that drive the persons decision as U
+e (Y = 5) = U2 (Y = 5) + αP , where U2 (Y = 4) and U2 (Y = 5) are the monetary payoffs for the
+U
+outcomes four and five. The α’s are deviations that can vary across players, games, and stages
+within a single game. Therefore the probability that the player chooses Take is:
+q2 = P (U2 (Y = 4) + αT > U2 (Y = 5) + αP )
+= P (3.20 + αT > 1.60 + αP )
+= P (αP − αT < 3.20 − 1.60) = P ( < 3.20 − 1.60)
+McKelvey and Palfrey assume that the errors have a largest extreme value (lev) distribution.
+The subtraction of two independent lev distributions results in a logistic distribution, thus the QRE
+Multinomial Logit model (McFadden (1973); McKelvey and Palfrey (1995, 1996, 1998)). We will
+follow this convention throughout the rest of the paper for computational convenience. Based upon
+this distributional choice for the deviations, q2 can be determined explicitly. Finnaly, assuming the
+’s at each decision node are independent and identically distributed from the logistic distribution
+with precision λ we have:
+ ∼ logistic(shape = 0, precision = λ)
+1
+q2 =
+−λ(3.20−1.60)
+1+e
+McKelvey and Palfrey analyze the centipede game depicted in Figure 1 as a game of perfect
+information, thus the decision probabilities for the QRE are determined via backwards induction.
+Using an expected utility argument, p2 can be determined from q2 and the errors in a player
+1’s decision. It is important to note that αT , αP , and  are different than those used in the
+determination of q2.
+7
+
+p2 = P (U1 (Y = 3) + αT > U1 (Pass) + αP )
+= P (U1 (Y = 3) + αT > q2 ∗ U1 (Y = 4) + (1 − q2) ∗ U1 (Y = 5) + αP )
+= P (1.60 + αT > q2 ∗ 0.80 + (1 − q2) ∗ 6.40 + αP )
+= P ( < 1.60 − q2 ∗ 0.80 − (1 − q2) ∗ 6.40)
+1
+=
+−λ(1.60−q2∗0.80−(1−q2)∗6.40)
+1+e
+By continuing to work backwards, the other two probabilities (q1, p1) can be determined. Based
+upon the four decision probabilities the probabilities of the five outcomes of the game can easily
+determined, for example the probability of outcome three is P (Y = 3) = θ3 = (1 − p1)(1 − q1)p2.
+Figure 5 shows the four different decision probabilities (q2, p2, q1, p1) plotted as a function
+of λ and in each of the four cases, as λ increases, the probability of Take at each stage goes to 1.
+When λ = 0, the probability between Take and Pass is 50/50. It should be noticed that the SPNE
+is embedded in this parameterization of the QRE, as the limit as λ → ∞.
+
+0.6
+0.4
+
+Probabilities of Actions
+
+0.8
+
+1.0
+
+Probabilities of Actions vs Lambda
+
+q2
+p2
+0.2
+
+q1
+
+0.0
+
+p1
+
+0
+
+5
+
+10
+
+15
+
+20
+
+lambda
+
+Figure 5:
+
+4.2
+
+A QRE Model of Learning
+
+In order to examine the possibility of learning within the QRE framework, we added a covariate
+representing the game number to McKelvey and Palfrey’s base QRE model presented in Section 4.1.
+Figures 3 and 4 suggested a decrease in the outcome of the game as the game number increased.
+Thus we consider modeling this by allowing the magnitude of the errors in the decision making
+process to change over repeated play. This leads to the following QRE parameterization:
+ ∼ logistic(shape = 0, precision = λeβx )
+
+(1)
+
+In McKelvey and Palfrey (1998), the authors had hoped that modeling heterogeneity, in terms
+of player type (1 or 2), would lead to a significant improvement in the fit of their models but they
+8
+
+did not explore this possibility. With this consideration, we expand our model by allowing for such
+differences.
+ ∼ logistic(shape = 0, precision = λpl eβx )
+pl = player type ∈ {1, 2}
+
+(2)
+
+The complete statistical specification of Model 2 is as follows:
+Y ∼ multinomial(θ1 , . . . , θ5 )
+θ1 , . . . , θ5 are determined by the game tree in Figure 1 and
+the following QRE specification:
+ ∼ logistic(shape = 0, precision = λpl eβx )
+pl = player type ∈ {1, 2}
+• Based upon the QRE probabilistic model the likelihood of the observed data was written as:
+L(λ1 , λ2 , β|Y) =
+
+YY
+x
+
+P (Y = 1|λ1 , λ2 , β, x)ni=1,x × ... × P (Y = 5|λ1 , λ2 , β, x)ni=5,x
+
+i
+
+i ∈ {1 : 29} and x ∈ {1 : 10 or 1 : 9 depending on session}
+Table 1 presents the results from fitting the two learning models, represented by Equations 1
+and 2, via maximum likelihood. We also present the two models discussed by McKelvey and Palfrey
+(1998) for comparison. Using the BIC as a measure of fit, as well as examination of the maximized
+log-likelihood itself Model 2 appears to represent the data better than the other models. For this
+reason it was investigated further using a Bayesian approach in order to obtain credible intervals
+and examine goodness-of-fit statistics through the use of the posterior predictive distribution. It
+should also be noted that throughout the course of the investigation several other models were fit
+to the data and the results from those models can be seen in Table 2 in the appendix.
+Number
+1
+2
+3
+4
+
+Model
+Slope in the variance
+Slope in the variance with heterogeneity
+M & P’s original model
+M & P’s altruistic model
+
+Parameters
+λ, β
+λ1 , λ2 , β
+λ
+λ, q
+
+LL∗
+-417.81
+-380.195
+-424.91
+-402.5
+
+Table 1:
+
+• The Bayesian analysis was conducted with the following diffuse priors:
+λ1 , λ2 ∼ exponential(scale = 10)
+β ∼ normal(mean = 0, variance = 100)
+• The resulting posterior distribution is:
+π(λ1 , λ2 , β|Y) ∝ L(λ1 , λ2 , β|Y) × P (λ1 ) × P (λ2 ) × P (β)
+9
+
+BIC
+-846.898
+-777.31*
+-855.47
+-782.55
+
+The Bayesian model was fit using the Metropolis-Hastings algorithm. Each of the three parameters were updated separately. A total of 1,200,000 iterations of the Metropolis-Hastings algorithm
+were conducted and the first 200,000 were removed for burn-in. The remaining iterations were
+thinned by sampling every 20th iteration resulting in 50,000 sampled values of λ1 , λ2 , and β from
+the posterior distribution. Diagnostics suggested convergence to the posterior distribution and low
+correltion of sampled values.
+The main scientific question of interest depends upon the marginal posterior distribution for β.
+Since the 95% credible interval for β does not contain zero, as the game number increases, so does
+the precision around the utilities. We are interpreting the increase in the precision as statistical
+learning, which can also be considered as learning in the game theoretic sense since increasing the
+precision leads to the SPNE for QRE model specified by Equation 2. It is important to note that λ1
+and λ2 not only represent each player’s base precision about their utilities, but also represent each
+players’ estimates about the precision of the other type of player. This is quite different compared
+to a probabilistic model where the value of the parameters are set exogenously. λ1 < λ2 suggests
+that both the population of player 1s and the population of player 2s “estimate” that player 1s are
+more “certain” (i.e. have a higher base level of precision) in their choices through out the game.
+This matter will be discussed further in Section 5.
+
+0.000
+
+0.002
+
+0.004
+
+0.006
+
+Marginal Posterior Distribution of Lambda Player 1
+
+2.0
+
+2.5
+
+3.0
+
+3.5
+
+4.0
+
+4.5
+
+5.0
+
+0.000
+
+0.002
+
+0.004
+
+0.006
+
+Marginal Posterior Distribution of Lambda Player 2
+
+0.8
+
+0.9
+
+1.0
+
+1.1
+
+1.2
+
+1.3
+
+1.4
+
+0.000
+
+0.002
+
+0.004
+
+0.006
+
+Marginal Posterior Distribution of Beta
+
+0.00
+
+0.02
+
+0.04
+
+0.06
+
+0.08
+
+Figure 6: Marginal posterior distributions; Posterior means = {3.323, 1.089, 0.033}
+
+The notion of learning can be seen more explicitly in Figure 7, which plots the probability of
+the 5 different outcomes in relation to the game number (based upon the means of the posterior
+distributions). As the number of games is extrapolated to 100, the probability of the first outcome
+P (Y = 1) goes to 1. Since the set of multinomial probabilities P (Y = 1), . . . , P (Y = 5) are based
+upon the QRE framework, for any specific value of the game number, they define a game theoretic
+equilibrium nested in a statistical model.
+In order to check the model fit, 1000 new data sets were created from the posterior predictive
+distribution in order to evaluate test statistics of interest. The algorithm used can be seen in the
+appendix. In order to make a comparison to the Monte Carlo test conducted in section 3.1, the
+test statistic evaluated was the slope of the linear trend of the outcomes versus the game number.
+Figure 8 shows the distribution of the slope generated from the posterior predictive distribution.
+
+10
+
+0.6
+
+P(Y=1)
+P(Y=2)
+P(Y=3)
+P(Y=4)
+0.4
+
+P(Y=5)
+
+0.0
+
+0.2
+
+Probabilities of Outcomes
+
+0.8
+
+1.0
+
+Probabilities of Outocmes vs Game Number (Extrapolation)
+
+0
+
+20
+
+40
+
+60
+
+80
+
+100
+
+Game Number
+
+Figure 7: Probability of the 5 outcomes vs the game number based upon the mean of the posterior
+distribution of the parameters from the QRE model. The vertical line represents the end of the
+data.
+
+The dark green line is the observed test statistic from the original data set. The fact that the
+observed test statistic is contained within the distribution suggests that there is no substantial
+evidence of a lack of fit for the parameter β.
+
+5
+
+A QRE Random Effects Model of Learning
+
+All of the previous models have assumed no player specific effect for the player 1s or the player 2s;
+Player variation could result in statistical dependence of the outcomes assumed to be independent
+in the previous QRE models. It is well documented in the statistical literature that failure to
+account for player specific correlation over time can lead to invalid statistical inference (Diggle et al.
+(1994)). Thus an important consideration is the investigation of potential differences among player
+1s and differences among player 2s. To investigate this possibility we used the posterior predictive
+distribution of test statistics to compare among player variability to within player variablitlity
+(F-statistic). As shown in Figures 9 and 10, the observed F-statistics are large compared to the
+posterior predictive distribution, suggesting that there are substantial differences among the player
+1s and among the player 2s. For modeling purposes this suggests that the correlation among
+responses for a common player over time will have to be considered. In order to account for this
+correlation, a random effects model will be employed.
+Another important consideration is that the experimental design is such that players do not
+know whom they are playing against. The QRE however assumes that every player knows every
+other player’s error distribution. In the simple case where we modeled two player types (player 1s
+and player 2s) the probabilistic model induces a relationship between λ1 , λ2 and the probability of
+choosing Take (q2, p2, q1, p1) that is not as simple as in the one paramter model shown in Figure
+5. In contrast, Figure 11 demonstrates the relationship between λ1 ⊂ {0.01, 10}, λ2 ⊂ {0.01, 10},
+and P (Y = 1) ⊂ {0, 1} based upon the probabilistic model in Equation 2. The figure shows simple
+statements can not be made about P (Y = 1) as λ1 increases. The probability for the first person
+
+11
+
+0
+
+2
+
+4
+
+6
+
+Density
+
+8
+
+10
+
+12
+
+14
+
+Posterior Predictive Distribution for Linear Trend (outcomes vs game number)
+
+−0.15
+
+−0.10
+
+−0.05
+
+0.00
+
+Test Statistic
+
+Figure 8: Posterior predictive distribution and observed statistic
+
+to choose Take at stage 1 depends upon the specification of λ2 , and could go to 1 or to 0 (away
+from the SPNE) as λ1 increases. The reason for lies in the assumptions about the QRE model,
+in that the players’ are assumed to know everyone else’s error distribution. Thus, if λ2 is small,
+suggesting that player 2 is equally indifferent between choosing Take or Pass, player 1 will maximize
+her expected utility by choosing Pass as λ1 increases. This is exactly the point that McKelvey and
+Palfrey (1996) make in their example about chess players. “[Consider] a chess game between an
+expert and a beginner. If this were common knowledge, then the expert might adopt a different
+strategy than she would against another expert.”
+When we only model player types this may not seem unreasonable, but when we move to a
+random effects model where each player has there own distribution this assumption of knowledge
+about the other players is too strong. This is especially important considering that the individuals
+did not who they were playing against. To return to the slightly less restrictive assumption, we
+could assume that players may not know the distribution of the individuals they play against but
+the empirical mean of the precision term of the opposing player type. Thus the outcome of each
+game depends upon who is making a choice and is a probabilistic function (F1 (·), F2 (·)) of player
+specific λ and β parameters, empirical mean of the λ and β parameters of the opposing player type,
+and the game number.
+Player 1s’ decisions:
+P (Action = {T, P }) = F1 (λ1 [j], β1 [j], Empirical mean of λ2 , Empirical mean of β2 , x)
+Player 2s’ decisions:
+P (Action = {T, P }) = F2 (λ2 [k], β2 [k], Empirical mean of λ1 , Empirical mean of β1 , x)
+j ∈ {1, . . . , 29}
+k ∈ {1, . . . , 29}
+
+(3)
+
+Based upon the QRE model defined by Equation 3 and Equation 4, a QRE random effects
+model is easily developed through a Bayesian hierarchical approach. Now, each player (1 through
+12
+
+0.0
+
+0.5
+
+Density
+
+1.0
+
+1.5
+
+Posterior Predictive Distribution Player 1s (F−statistic)
+
+0.0
+
+0.5
+
+1.0
+
+1.5
+
+2.0
+
+2.5
+
+Test Statistic
+
+Figure 9: Posterior predictive distribution and observed statistic
+
+29 of player 1s and 1 through 29 of player 2s) comes from a population of player types (1 or 2).
+Since a player does not know the individual they are playing against, they use the empirical means
+of the player type as their best guess for the precision parameters of their opponent. Finally,
+the reparameterazion of the precision (Equation 4) leads to a natural random intercept and slope
+model.
+Y ∼ multinomial(py1, . . . , py5)
+py1, . . . , py5 are determined by the game tree in Figure 1 and
+the following QRE specification:
+pl ∼ logistic(shape = 0, precision = λpl eβpl x = elog(λpl )+βpl x = eδpl +βpl x )
+pl = player ∈ {1 ∈ {1, . . . , 29}, 2 ∈ {1, . . . , 29}
+2
+δ1 [j] ∼ normal(mean = µδ1 , variance = σδ1
+)
+
+j ∈ {1, . . . , 29}
+2
+)
+δ2 [k] ∼ normal(mean = µδ2 , variance = σδ2
+
+k ∈ {1, . . . , 29}
+2
+β1 [j] ∼ normal(mean = µβ1 , variance = σβ1
+)
+
+j ∈ {1, . . . , 29}
+2
+β2 [k] ∼ normal(mean = µβ2 , variance = σβ2
+)
+
+k ∈ {1, . . . , 29}
+µδ1 , µδ2 , µβ1 , µβ2 ∼ normal(mean = 0, variance = 100)
+2
+2
+2
+2
+, σβ1
+, σβ2
+∼ inverse-χ2 (dof = 9, σ 2 = 25)
+, σδ2
+σδ1
+
+β ∼ normal(mean = 0, variance = 100)
+13
+
+(4)
+
+0.0
+
+0.5
+
+Density
+
+1.0
+
+1.5
+
+Posterior Predictive Distribution Player 2s (F−statistic)
+
+0
+
+1
+
+2
+
+3
+
+4
+
+Test Statistic
+
+Figure 10: Posterior predictive distribution and observed statistic
+
+The model was once again fit using the Metropolis-Hastings algorithm. We condcuted a total
+527,500 scans of which the first 27,500 were dopped for burn-in. We thinned the remaining scans
+by taking every 25th, which left us with 20,000 samples from the posterior distribution.
+The main parameters of interest are the distributions of the population means and standard
+deviations of δ1 , δ2 , β1 , and β2 . Figure 12 shows the marginal posterior distributions of the mean
+and standard deviations of δ1 and δ2 . These paramters represent a base level of precision within
+the population of player 1s and player 2s. Again we see that, on average, the player 1s have a
+higher base precision, but but their base precision is far more variable compared to the player 2s.
+Figure 13 presents the posterior distributions of the mean and standard deviation of β1 and
+β2 . It can be seen that the mode of the posterior distribution of the mean for each population
+is greater than zero. While a 95% credible interval contains zero in both cases, 72% and 51% of
+the population of player 1s and player 2s, respectively will have a mean for β that is greater than
+zero. Thus for that proportion population, as the game number increases so will the precision,
+which might be interpreted as a certain proportion of the population does learn through repeated
+gaming. Again there does appear to be greater variation among the player 1s compared to the
+player 2s in reguard to β1 and β2 , but this is not nearly as great as was seen for the δ’s. Do to the
+Bayesian approach we adopted we can also compare the distribution of β for each individual player
+by examining the boxplots in Figures 14 and 15. We can see that 19 out 29 player 1s had medians
+for β1 that were above zero while only 12 out 29 player 2s had medians above zero.
+As before, it is important to check the fit of the model compared to the data using the posterior
+predictive distribution, as was done for the linear trend. The F-statistic was once again used in
+order to compare with the previous model fit. The results can be seen in Figures 16 and 17. The
+plots show that we are capturing variability among the player 1s and variability among the player
+2s far more than the three-parameter non random effects model, although the fit is not perfect.
+
+14
+
+Perspective Plot of Lambda1, Lambda2, P(Y=1)
+
+P(Y=1)
+a2
+
+bd
+
+m
+la
+
+lambd
+
+a1
+
+Figure 11: λ1 ⊂ {0.01, 10}, λ2 ⊂ {0.01, 10}, and P (Y = 1) ⊂ {0, 1}
+
+Std Dev of delta1
+
+0.015
+density
+
+0.000
+
+0.000
+
+0.005
+
+0.010
+
+0.004
+0.002
+
+density
+
+0.006
+
+0.020
+
+0.008
+
+Mean of delta1
+
+0
+
+2
+
+4
+
+6
+
+0
+
+10
+
+40
+
+0.010
+density
+
+0.000
+
+0.002
+
+0.004
+
+0.006
+
+0.008
+
+0.008
+0.006
+0.004
+0.002
+0.000
+
+density
+
+30
+
+Std Dev of delta2
+
+0.010
+
+Mean of delta2
+
+20
+
+−1.0
+
+−0.5
+
+0.0
+
+0.5
+
+1.0
+
+0.0
+
+0.5
+
+1.0
+
+1.5
+
+2.0
+
+Figure 12: Posterior distributions of µδ1 , σδ1 , µδ2 , σδ2
+
+15
+
+2.5
+
+3.0
+
+3.5
+
+Std Dev of beta1
+
+density
+
+0.010
+0.005
+
+0.004
+
+0.000
+
+0.000
+
+0.002
+
+density
+
+0.006
+
+0.015
+
+0.008
+
+0.020
+
+Mean of beta1
+
+−0.5
+
+0.0
+
+0.5
+
+1.0
+
+0.0
+
+0.5
+
+1.0
+
+2.5
+
+Std Dev of beta2
+
+density
+
+0.005
+
+0.010
+
+0.008
+0.006
+0.004
+
+0.000
+
+0.000
+
+0.002
+
+density
+
+2.0
+
+0.015
+
+Mean of beta2
+
+1.5
+
+−0.3
+
+−0.2
+
+−0.1
+
+0.0
+
+0.1
+
+0.2
+
+0.3
+
+0.0
+
+0.1
+
+0.2
+
+0.3
+
+0.4
+
+0.5
+
+0.6
+
+Figure 13: Posterior distributions of µβ1 , σβ1 , µβ2 , σβ2 ; posterior means of µβ1 and µβ2 are 0.083
+and 0.033 respectively.
+
+Posterior Mean of Beta for Player 1s
+
+●
+
+2
+
+4
+
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+
+0
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+−2
+
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+12
+
+13
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+
+27
+
+28
+
+29
+
+●
+
+●
+●
+●
+
+●
+
+●
+●
+●
+
+−4
+
+●
+
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+7
+
+8
+
+9
+
+10
+
+11
+
+14
+
+15
+
+16
+
+17
+
+18
+
+19
+
+20
+
+21
+
+22
+
+23
+
+24
+
+25
+
+26
+
+Figure 14: Player 1s’ β’s
+
+6
+
+Conclusion
+
+In this article we have examined expansions of the QRE model to allow for game-theoretic learning
+via repeated play of a game. This was done by allowing the variance of players’ error distributions
+
+16
+
+Posteror Mean of Beta for Player 2s
+
+1.5
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+0.5
+
+1.0
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+−0.5
+
+0.0
+
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+
+−1.0
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+7
+
+8
+
+9
+
+10
+
+11
+
+12
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+13
+
+14
+
+15
+
+16
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+
+●
+●
+●
+●
+●
+
+17
+
+18
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+19
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+20
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+21
+
+22
+
+23
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+24
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+25
+
+26
+
+27
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+28
+
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+●
+
+29
+
+Figure 15: Player 2s’ β’s
+
+0.4
+0.0
+
+0.2
+
+Density
+
+0.6
+
+0.8
+
+Posterior Predictive Distribution Player 1s (F−statistic)
+
+0
+
+1
+
+2
+
+3
+
+4
+
+Test Statistic
+
+Figure 16: p-value=0.061
+
+to change as players gain experience with the game. In analyzing a dataset on repeated plays of
+the two-player centipede game, it was found that such a model fits better than the standard QRE
+model. The model was also expanded to allow for heterogenaiety across game players by introducing
+random-effects terms to capture variability in how players learn. This requires a modification of
+the QRE formulation, as it is unlikely that players know how fast their fellow game-players are
+learning (at least in the dataset considered in this paper). Instead, we assume each player makes
+a “best guess” at their fellow players behavior, based on population averages of the parameters
+describing behavior.
+More generally, such a modeling approach can be seen as an attempt to inform a statistical
+analysis of a complicated dataset with an underlying behavioral model, or conversely, expand upon
+
+17
+
+0.0
+
+0.1
+
+0.2
+
+0.3
+
+Density
+
+0.4
+
+0.5
+
+0.6
+
+0.7
+
+Posterior Predictive Distribution Player 2s (F−statistic)
+
+1
+
+2
+
+3
+
+4
+
+5
+
+Test Statistic
+
+Figure 17: p-value=0.015
+
+a behavioral model to allow for a more accurate description of observed data. Such an approach
+could help bridge the gap between the purely statistical analysis of social relations data (Wasserman
+and Faust (1994); Hoff (2003, 2002)) and game-theoretic models based on rational choice theory.
+In terms of fitting such models to datasets, an another issue that needs to be addressed is the
+one of the distribution of player errors. QRE models, as well as, statistical choice models in general
+are constrained by the type of player error distributions that are employed (lev, normal). Quinn
+and Westveld (2003) have utilized a semi-parametric approach to solve this problem within the
+QRE framework. This method could also be applied with the QRE random effects model to allow
+for greater flexibility in the modeling and testing of learning.
+
+18
+
+Appendix
+
+A
+
+Simple Monte Carlo Test of Trend
+
+Due to the experimental design under which the data were collected, the permutation of the data
+was done via randomization of Latin squares. For each of the three sessions, the data can be
+represented by a matrix with the player 1s represented on the rows and player 2s on the columns.
+For each pair of players 1 and 2, information exists on the outcome of the game the pair played,
+as well as the game number. The rows and columns of this matrix were permuted while keeping
+fixed the row and columns labels, and the outcome of the game for that pair. Each permutation
+shuffled the “times” at which the games were played but maintained who played each game and the
+outcome. This was done for each session. The data from the three sessions were placed together
+and a linear trend was estimated. Repeating this process generates the null distribution of the test
+statistic, which then can be compared to the observed test statistic. The process was repeated 999
+times, giving 1000 slopes including the observed slope from the data. It is important to note that
+the method used to permute the Latin squares will not cover the range of all possible Latin squares
+(Cox (1958)), but is sufficient for most applied purposes.
+
+B
+
+4-Stage Centipede Game with Learning Parameters in the Utility Functions
+
+Figure 18 demonstrates how the covariate information could be added to the utility function. The
+reason for the criss-cross pattern of α + βxi , is that the relative differences between the two choices
+are being compared. If α + βxi were added to be both choices, the values would cancel out.
+Currently, α + βxi is added to choice Take, but could just as easily been placed within the choice
+Pass.
+
+1b
+
+2r
+
+P
+
+T
+
+1r
+
+P
+
+T
+r
+
+0.40+α+βxi
+0.10
+
+Y =1
+
+T
+r
+
+
+
+0.20
+0.80+α+βxi
+
+Y =2
+
+P
+
+r
+
+6.40
+1.60
+
+
+
+Y =5
+
+T
+r
+
+
+
+2r
+
+P
+
+1.60+α+βxi
+0.40
+
+Y =3
+
+r
+
+
+
+0.80
+3.20+α+βxi
+
+
+
+yi = 4
+
+Figure 18: M-P 4 stage centipede game with low payoffs with a covariate in the utility functions.
+
+19
+
+C
+
+Posterior Predictive Distribution Algorithm
+1. Randomly sample a MCMC scan, which gives a value for λ1 , λ2 , β (or δ1 , δ2 , β1 , and β2 ).
+2. From these values of the parameters and the statistical model determine the probabilities for
+the five outcomes (P (Y = 1), . . . , P (Y = 5)).
+3. Using a random multinomial generator with the probabilities of the five outcomes, sample a
+new set of outcomes.
+4. Generate test statistic.
+5. Repeat 1-4 to create as many samples from the posterior predictive distribution and the test
+statistic of interest as are necessary.
+
+D
+
+Table of Other Model Fits (non-random effects models)
+
+Model 5 expanded Model 2 by allowing for a different precision parameter for each player at each
+stage of the game. Models 6 & 7 placed the learning parameters within the utility functions. This
+leads to a modified structure of the game in figure 18. Finally, an ordered multinomial logit, which
+does not model the decision making process but allows for change over the number of games, was
+fit to the data.
+Number
+5
+6
+7
+8
+
+Model
+Slope in the variance & λ at each stage
+Intercept & slope (utility)
+Intercept & slope (utility) & λ at each stage
+Ordered Multinomial Logit
+
+Parameters
+λ1 , λ2 , λ3 , λ4 , β
+λ1 , λ2 , α, β
+λ1 , λ2 , λ3 , λ4 , α, β
+α1 , α2 , α3 , α4 , β
+
+LL∗
+-378.589
+-379.998
+-375.978
+-376.928
+
+BIC
+-785.37
+-782.55
+-785.7863
+-782.048
+
+Table 2:
+
+References
+Andreu Mas-Colell, Jerry R. Green, Michael D. Whinston. 1995. Microeconomic Theory. New
+York: Oxford University Press.
+Besag, Julian, and P.J. Diggle. 1977. “Simple Monte Carlo Tests for spatial pattern.” Applied
+Statistics 26:327–333.
+Cox, D.R. 1958. Planning of Experiments. New York: Wiley.
+Diggle, Peter, Kung-Yee Liang, and Scott Zeger. 1994. Analysis of Longitudinal Data. Oxford:
+Oxford Univeristy Press.
+Fudenberg, Drew, and Jean Tirole. 1991. Game Theory. Cambridge, Massachusetts: The MIT
+Press.
+Hoff, Peter D. 2002. “Latent Space Approaches to Social Network Analysis.” Journal of the
+American Statistical Association 97:1090–1098.
+
+20
+
+Hoff, Peter D. 2003. “Random Effects Models for Network Data.” Dynamic Social Network Modeling
+and Analysis: Workshop Summary and Papers pp. 303–312.
+Kass, Robert E., and Adrian E. Raftery. 1995. “Bayes Factors.” Journal of the American Statistical
+Association 90:773–795.
+Mahmoud A. El-Gamal, Thomas R. Palfrey, Richard D. McKelvey. 1993. “A Bayesian Sequential
+Experimental Study of Learning in Games.” Journal of the American Statistical Association
+88(June):428–435.
+McFadden, David. 1973. “Conditional Logit Analysis of Qualitative Choice Behaviour.” In Frontiers
+of Economics ( P. Zarembka, editor), New York: Academic Press.
+McKelvey, Richard D., and Thomas R. Palfrey. 1993. “An Experimental Study of the Centipede
+Game.” Econometrica 60(July):803–836.
+McKelvey, Richard D., and Thomas R. Palfrey. 1995. “Quantal Response Equilibria for Normal
+Form Games.” Games and Economic Behavior 10(July):6–38.
+McKelvey, Richard D., and Thomas R. Palfrey. 1996. “A Statistical Theory of Equilibrium in
+Games.” The Japanese Economic Review 47(2):186–209.
+McKelvey, Richard D., and Thomas R. Palfrey. 1998. “Quantal Response Equilibria for Extensive
+Form Games.” Experimental Economics 1(1):9–41.
+Quinn, Kevin, and Anton Westveld. 2003. “Bayesian Inference for Semiparametric Quantal Response Equilibrium Models.” Working Paper Presented at American Political Science Association
+2003 Meeting .
+Wasserman, Stanley, and Katherine Faust. 1994. Social Network Analysis. Cambridge: Cambridge
+University Press.
+
+21
+
+

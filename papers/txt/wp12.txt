@@ -1,0 +1,5145 @@
+Ecological Inference for 2
+
+ 2 Tables
+
+Jonathan Wakeeld
+Departments of Statistics and Biostatistics
+University of Washington
+Working Paper no. 12
+Center for Statistics and the Social Sciences
+University of Washington
+Seattle, USA
+January 2001
+
+Ecological Inference for 2
+
+ 2 Tables
+
+Jonathan Wakeeld,
+Departments of Statistics and Biostatistics, University of Washington, Seattle, USA.
+
+Abstract
+A fundamental problem in many disciplines, including political science, sociology and epidemiology, is to examine the association between two binary variables within a series of
+2  2 tables, when only the margins are observed, and one of the margins is xed. Various
+approaches to such ecological inference problems have been proposed, generating a great
+deal of controversy. Much of this controversy stems from the assumptions, often not explicitly stated, that underlie proposed approaches. A number of these approaches impose
+a hierarchy in which the pair of probabilities that characterize the table are assumed to
+arise from a distribution. Under a number of assumptions, the likelihood is a convolution
+of binomial distributions and is awkward to work with, and so a variety of approximations
+have been utilised. We work directly with the convolution likelihood and provide computational schemes for sampling from the posterior corresponding to this likelihood. A number
+of approximations that are useful for tables with large margins are also described, and the
+convolution likelihood is related to previous approximations. We suggest a non-hierarchical
+baseline model that may be applied to each table separately in order to quantify the amount
+of information on the pair of probabilities that is provided by the data in each table alone.
+This model provides a starting point for analysis, and also allows other proposed models,
+such as common probabilities across areas, or the imposition of a hierarchy, to be critically
+assessed. In particular the information that is purely a function of the hierarchical prior
+may be examined. We also clarify the importance of the design, that is, the distribution
+over areas of the numbers in the xed margin of the table. Registration/race data from 275
+US counties are used to illustrate the methods. A number of extensions are outlined including the consideration of multi-way tables, spatial dependence and area-specic (contextual)
+variables.
+
+Keywords: Auxiliary Variables; Ecological Fallacy; Ecological Regression; Hierarchical
+Models; Identiability; Markov Chain Monte Carlo; Method of Bounds; Missing Data; Neighbourhood Model; Non-Central Hypergeometric Distribution; Spatial Epidemiology.
+
+1 Introduction
+In this paper the problem of making individual-level inference from ecological data is considered. In particular suppose we have a set of n 2  2 tables in which the margins only
+are observed, for concreteness we suppose each table corresponds to a dierent geographical
+area. This problem arises in many dierent disciplines including, political science (Achen
+and Shively, 1995; King, 1997), sociology (Goodman 1953, 1959; Duncan and Davis, 1953),
+spatial epidemiology (Richardson and Montfort, 2000); see King (1997) and Cleave, Brown
+and Payne (1995) for further application areas. Although the shortcomings of ecological
+1
+
+inference have been documented (e.g., Achen and Shively, 1995; Greenland, 2000, 2001;
+Gelman et al., 2001), the continued use of ecological data can be attributed to the routine
+availability of such data, and the fact that in some situations, for example when a sensitive
+question is asked, it is the only reliable data source. The constituent tables may contain
+data on two binary variables within n areas, or the same binary variable measured at two
+time points within n areas. We concentrate on the former case and label the binary variables
+X and Y . Robinson (1950) pointed out that the correlation between two binary variables
+observed at the ecological level could be hugely dierent to that at the individual level and
+Selvin (1958) termed this phenomenon the ecological fallacy. King (1997) refers to the type
+of ecological fallacy just described as aggregation bias.
+To motivate our discussion we introduce a specic example. The data concern voter registration and racial background information for individuals from 275 counties in four Southern US
+states: Florida, Louisiana, North and South Carolina. Amongst other variables the available
+data consist of the total voting age population, the total black population, and the number
+who were registered to vote, in 1968. These data have been analysed by King (1997) and
+King, Rosen and Tanner (1999). Figure 1(a) plots the proportion of registered voters against
+the proportion black, in each of the 275 counties. There is a suggestion that the proportion
+registered decreases as the proportion in the county who are black increases, with the obvious
+explanation being that blacks are less likely to register. We note that counties 59, 86 and 130
+appear inuential. Alternative explanations exist, however, in particular the same pattern
+could be observed if whites are less likely to register if in a predominantly black county, or
+blacks are more likely to register in a predominantly white county. In each of these scenarios
+the proportion black/white is an example of a contextual variable. In these cases the average
+registration rate for blacks could actually be greater than that for whites and the original
+explanation could merely be an example of the ecological fallacy. For clarity, from this point
+on, Y = 1=0 will denote the event that an individual is registered/unregistered, and X = 0=1
+the event that an individual is of black/white race.
+Two problems are frequently encountered in ecological studies. The rst, as pointed out
+by Robinson (1950) is the inconsistency of association measures across dierent levels of
+aggregation. The second problem is that of the presence of contextual variables. Even in the
+absence of a contextual variable the inconsistency of association measures across dierent
+levels of aggregation will remain, and even if we have individual-level data we will still obtain
+inappropriate inference if a contextual variable is important but is omitted. Hence the
+inconsistency and the presence of contextual variables may be viewed as distinct problems,
+though they both arise from the lack of individual-level data. Even if individual-level data
+are available, the contextual variable problem will remain if no adjustment is made for the
+variable. In the spatial epidemiology context the inconsistency of associations is referred
+to as pure specication bias (Greenland, 1992), and the contextual variables problem is an
+example of between-area confounding. In this paper we concentrate on the former problem.
+We let
+p0i = Pr(Y = 1jX = 0; i) and p1i = Pr(Y = 1jX = 1; i)
+(1)
+so that pji denotes the probability of registering in area i, given race j , j = 0; 1, i = 1; :::; n.
+We are in a nite population sampling situation here, but we assume that associated with
+each area/race classication there is a probability of registering. The (marginal) probability
+2
+
+of registering in area i is then given by
+
+pi = p0i  xi + p1i  (1 ; xi );
+
+(2)
+
+where xi and 1 ; xi are, respectively, the (observed) proportions of blacks and whites in area
+i. There is a fundamental identiability problem in ecological inference, we wish to estimate
+2n parameters from n data points, the latter corresponding to the number of individuals
+who register in area i. Duncan and Davis (1953) suggested a `method of bounds' in which
+ranges on quantities of interested may be obtained by considering all entries in the 2  2
+table that are consistent with the margin. For example, bounds may be placed on the
+maximum likelihood estimators (MLEs) of p0i and p1i . These bounds are informative but do
+not produce condence intervals (for example) on the MLEs. The `baseline model' approach
+recommended in this paper essentially formalizes the method of bounds.
+A number of `solutions' to the ecological problem have been proposed, and all involve making
+simplifying assumptions compared to the saturated model in which there are 2n distinct
+probabilities. In the `neighbourhood' model (e.g., Freedman et al., 1998) it is assumed
+that p0i = p1i = pi , which corresponds to registration being independent of race. In a
+pair of inuential papers Goodman (1953, 1959) enforced identiability by assuming that
+p0i = p0 and p1i = p1, thus allowing estimation. This latter method is sometimes referred
+to as `ecological regression' approaches (e.g., Cleave, Brown and Payne, 1995, Freedman et
+al., 1998).
+In a signicant advance, King (1997) extended the method of Goodman by keeping distinct
+pairs of probabilities and incorporating into the estimation procedure the n lines given by
+p1i = 1 ;p^i x ; p0i 1 ;xi x ;
+(3)
+i
+i
+which corresponds to a rearrangement of (2) with the MLE substituted for pi. He termed
+(3) a `tomography line'. To overcome the intrinsic lack of information, and hence near lack
+of identiability of the probabilities, King (1997) assumed that these probabilities arose
+from a truncated bivariate normal distribution. In this way, constant probabilities across
+tables was avoided, but the hierarchical model allowed dierent areas to borrow strength
+from each other. This model is controversial (e.g., Freedman et al, 1998, 1999; King, 1999;
+Cho, 1998) due to the assumption of a truncated normal distribution (and the potential
+diculty in determining whether this assumption is reasonable) and it assumes that p0i and
+p1i are independent of xi , i.e. there are no contextual eects. Area-level characteristics can
+be incorporated but the form of the relationship is dicult to determine and the amount of
+information that can be extracted on this relationship is typically small. More recently, King,
+Rosen and Tanner (1999), have proposed a Bayesian hierarchical approach that approximates
+the likelihood at the rst stage of the model by a binomial distribution of the total number
+registered. At the second level the pair of probabilities are assumed to arise from independent
+beta distributions. Inference is carried out using Markov chain Monte Carlo (MCMC). We
+concentrate on these methods in this paper, and provide more discussion in Section 2. We
+now briey describe a number of other methods that have been suggested.
+Brown and Payne (1986) proposed a hierarchical model for general I  J tables. For their
+model, in the 2  2 situation considered here, the number who register in each row is assumed to follow a beta-binomial (or compound) distribution. The total number registered
+3
+
+(summing across rows) then follows a convolution of beta-binomial distributions or, in their
+terminology an aggregated compound multinomial (ACM) distribution. This distribution
+is very complex but closed forms exist for the means and covariance. Brown and Payne
+(1986) use a multivariate normal approximation, though Cleave, Brown and Payne, 1995)
+note that this approximation may be dubious in practice. Area-level covariates are naturally
+incorporated via a loglinear model. We note that an MCMC algorithm would appear feasible
+though computationally expensive for this model.
+A number of authors have tried to relax the constancy assumption of the basic ecological
+regression model. For example, contextual eects may be important, particularly in sociological applications, which suggests the model
+
+E [pji] = aj + bj xi
+(4)
+j = 0; 1, where the expectation acknowledges that the probabilities may be allowed to vary
+about their mean values (via the introduction of random eects for example). This leads to
+E [pi] = a1 + (a0 ; a1 + b1 )xi + (b0 ; b1 )x2i ;
+though now four unknown parameters must be estimated from the three quadratic coecients. Chambers and Steel (2001) suggest two possibilities to generalize this model. The
+rst replaces (4) by a model in which the linear model is replaced by a local smoother, with
+estimation following from an estimating function. Covariates may be incorporated and the
+bounds are also enforced. In the second method a simple semi-parametric approach is taken
+in which it is assumed that p1i = pi, where pi is the marginal probability of a positive
+response in area i. The unknown  is constrained in order to keep p0i and p1i in their correct
+ranges.
+In contrast to other approaches suggested we explicitly consider the likelihood of the observed margin. This likelihood corresponds to a convolution of binomial distributions and
+is analytically and numerically awkward to work with, particularly for tables in which the
+margins are large. In such cases we suggest a number of approximations. We describe a
+number of hierarchical models that may be used to address the sensitivity of the inference to
+prior assumptions. With the King, Rosen and Tanner (1999) approximate likelihood, these
+models are easily implemented within the freely-available WinBUGS software, Spiegelhalter et
+al. (1998). In the usual scenario, as more data are collected on each unit, the hierarchical
+linking across units becomes less important as the rst stage data dominate. In the limit
+the second stage distributional assumption is essentially unimportant and inference will be
+identical to the use of a xed eects model in which the parameters of each unit are not
+linked. Hence, in this situation, hierarchical models provide, in a frequentist sense, consistent inference. Unfortunately in the ecological scenario this is not the case, as the data on
+each unit at the rst stage (that is the margins for each table) increase, the fundamental
+diculty of ecological inference remains { there is an intrinsic lack of information and any
+approach that only has data on the margins is, in a frequentist sense, inconsistent.
+The baseline model that we propose in this paper is essentially a xed eects model in which
+the amount of information concerning p0i; p1i is quantied by separately considering the
+data of each table alone. This is achieved by assigning proper prior distributions to the two
+unknown probabilities p0i and p1i. With no additional information available, we concentrate
+on a prior that consists of independent distributions for each probability. In addition to
+4
+
+providing a baseline analysis for comparison with later hierarchical approaches, another
+benet of the model is that it also provides a diagnostic tool by which other more complex
+models may be judged. For example Q-Q plots may be constructed using posterior medians
+or samples from the posterior (say), see Wakeeld (1998). We show that interpretation of
+the estimates from this model requires great care, particularly when the xi's are not spread
+evenly in the interval (0; 1).
+Some insight into the diculties of ecological inference may be gained by considering the
+use of conditional likelihood in the analysis of n 2  2 tables. In this case the margins are
+conditioned upon to yield a conditional likelihood that depends on a single parameter. At
+rst sight, the conditional approach would appear to suggest that nothing can be gained from
+ecological data, since the margins are conditioned upon since they contain `little information'.
+The margins are not ancillary, however, and there is some information contained within
+them. The precise amount of information provided by the margins depends on the observed
+totals, as we discuss in Section 3. It is well-known (e.g. Breslow and Day, 1980), that MLE
+is inconsistent in the case of matched pairs data since the number of unknown parameters
+increases with the number of tables. When the margins are conditioned upon in this case, all
+information concerning the table-specic parameters is lost, and the conditional likelihood
+depends on just a single parameter, the common odds ratio. Altham (1969) provides a
+Bayesian justication for Fisher's exact test, and in particular shows that this test does not
+correspond to a uniform prior on the cell probabilities.
+The outline of this paper is as follows. In Section 2 a number of previous approaches
+to the ecological inference problem will be critically reviewed, and a range of hierarchical
+models described. Section 3 introduces the non-hierarchical baseline model, describes how
+computation for this model may be carried out, with approximations being provided for
+tables with large margins. A number of examples are also considered. Section 4 provides
+a reanalysis of the race/registration data, Section 5 describes a number of extensions. and
+Section 6 contains a concluding discussion.
+
+2 Previous approaches
+We consider n tables, each with the structure of Table 1. We rst consider the case in which
+the internal cells are observed and assume that in row j of table i we have rji independent
+Bernoulli random variables each with probability pji, j = 0; 1, with these probabilities given
+by (1). We then have Yjijpji  Binomial(rji; pji) so that pji = E [Yji=rji], j = 0; 1.
+At rst sight it would appear that there is no information concerning p0i ; p1i in a table in
+which the margins only are observed. The extreme cases in which one of the margins is zero
+reveals that this is not the case, however. In the following we assume that Ni is large. If
+r0i is zero then we obtain `full' information on p1i only, and similarly if r1i = 0 we obtain
+full information on p0i. If c0i is zero then the MLE p^i = 1 which implies that p0i and p1i
+are both close to one. The strength of belief in the closeness to one of each probability is
+not in general symmetric, however. If, for example r0i is large in relation to r1i then the
+information that p0i is close to one is stronger that the information that p1i is close to one.
+We also note that if r0i = r1i , then we have no information in the data alone to discriminate
+between p0i and p1i .
+5
+
+If all tables had either xi = 1 or xi = 0 then an obvious approach would be to compare the
+estimates p^0i from the xi = 1 tables with p^1i from the xi = 0 tables. Obviously in this case,
+without further information there is no way of knowing whether unmeasured table-specic
+covariates related to xi (i.e., area-level confounders) are responsible for observed dierences.
+
+Y =0 Y =1
+X =0
+Y0i r0i
+X =1
+Y1i r1i
+c0i
+c1i Ni
+Table 1: Table summarising data in area i { in an ecological study the margins only are
+observed.
+The true likelihood in the case in which (Y0i; Yi1) are unobserved is the convolution of binomial distributions given by
+
+L(p0i ; p1i) =
+
+u1i
+X
+
+=
+
+y0i u0i
+
+r0i
+y0i
+
+!
+
+r1i
+
+!
+
+y0i
+r0i ;y0i c1i ;y0i
+p1 (1 ; p1i)r1i ;c1i+y0i
+c1i ; y0i p0 (1 ; p0)
+
+(5)
+
+where u0i = max(0; c1i ; r1i ) and u1i = min(r0i; c1i). This likelihood has not been explicitly
+considered in the ecological inference literature though McCullagh and Nelder (1989) consider
+this likelihood in the context of common registration probabilities (see below).
+
+2.1 Goodman regression
+If p0i = p0 ; p1i = p1; for all i we have:
+
+pi =  + xi;
+where  = p1,  = p0 ; p1. Goodman's regression is given by p^i = cN1ii on xi :
+
+p^i =  + xi + i ;
+thus giving estimates p^0; p^1. There are a number of diculties with Goodman's method. The
+most serious drawback is that it is unrealistic as it allows no heterogeneity in registration
+rates across counties { we would expect demographic and county characteristics to modify
+probabilities. A less serious problem is that in its original form least squares is used for
+estimation. This may produce inadmissible estimates and the non-constant variance must
+be acknowledged. McCullagh and Nelder (1989, p. 353) consider two approaches to estimation under the assumption of common probabilities. In the rst quasi-likelihood approach
+estimation is carried out using the rst two moments of C1i , in the second approach the full
+likelihood
+!
+!
+u1 i
+n
+Y
+X
+r
+r
+0
+i
+1
+i
+p(c11 ; :::; c1njp0; p1; r0; r1) =
+py00i (1;p0)r0i ;y0i pc11i;y0i (1;p1)r1i ;c1i+y0i
+y
+c
+;
+y
+0
+i
+1
+i
+0
+i
+i=1 y0i =u0i
+(6)
+where u0i = max(0; c1i ; r1i ) and u1i = min(r0i ; c1i), is utilised (McCullagh and Nelder (1989,
+p. 338).
+6
+
+As an approximation we may use the binomial model
+C1i  BinomialfNi; p0xi + p1(1 ; xi )g
+(7)
+which was suggested by King, Rosen and Tanner (1999) in the context of a hierarchical
+model. In this case parameter estimation is straightforward.
+Goodman (1959) knew that the constancy assumption would not be valid in general but
+suggested that the method may be appropriate when the expected values of p0i and p1i follow
+an approximately linear relationship. The paper also discussed, amongst other things, the
+non-constancy of variance in the observed marginal outcome probability, the introduction of
+area-level covariates, interactions with area-level characteristics, and the search for clusters
+of areas with probabilities displaying similar behaviour.
+For the registration/race data Figure 1(a) shows the ordinary least squares (OLS) and
+weighted least squares (WLS) lines. We obtain estimates of p^0 = :52; p^1 = :89 using OLS,
+p^0 = :34; p^1 = :89 using WLS (with weights Ni) and p^0 = :34; p^1 = :89 with the binomial
+likelihood (7). Hence we see a large dierence when the correct variance is assumed due to
+the variability in Ni. As expected with the large numbers, WLS and the binomial model give
+virtually identical inference. When the three outlying counties (59, 86 and 130) are removed
+we obtain estimates for (^p0; p^1) of (0.57,0.86) with OLS and (0.41,0.87) with WLS. Hence
+we see some sensitivity, particularly for p0.
+
+2.2 Method of Bounds
+Duncan and Davis (1953) noted that bounds could be placed on quantities of interest by
+examining the admissible values of Y0i; Y1i. Following this procedure produces the following
+bounds on the MLEs:
+(
+)
+(
+)!
+C
+C
+1
+i + rji ; Ni
+1
+i
+p^ji 2 max 0;
+; :::; min 1; r
+;
+rji
+ji
+j = 0; 1, i = 1; :::; :n. Unfortunately the bounds are on the MLEs (or equivalently the true
+fractions of individuals Yji=rji), and not on pji. For any set of table margins, any values
+of p0i; p1i are theoretically possible. As we discuss below, the information that is available
+depends crucially on the range of xi 's available, that is, the `design'. King (1997, p. 77) also
+notes that the bounds are often too large to be useful.
+Table 2 lists the nine dierent types of bounds that are possible, depending on the values of
+r0i; r1i and c1i . For any table we only obtain at most two informative restrictions on p0i ; p1i.
+We see that it is not possible for the lower bound of one estimate to be above zero, and the
+upper bound for another estimate to be below one simultaneously. This is another indicator
+of the lack of information in the table. Table 2 also give the bounds on the MLE of the
+dierence p^0 ; p^1 ; the `best' potential scenario, in terms of the narrowness of the bounds
+corresponds to cases 1 and 9. In these cases if r0  r1 then the interval will be centred
+on zero in which case we cannot discriminate between p0 and p1 . As we discuss later, it is
+therefore important to have areas with r0 close to 0 or N . The limiting situations of c1 = 0
+(case 1) or c1 = N (case 9) produce zero-width bounds but are not so useful. If xi = 0 then
+the bounds on p^0i are (0,1) and the lower and upper bounds equal p^i for p^1i ; the case xi = 1
+follows in a symmetric fashion. In these cases the width of the bound on p^0 ; p^1 is 1.
+7
+
+Case
+1
+2
+3
+4
+5
+6
+7
+8
+9
+
+Relationships
+c1 < r0 ; c1 < r1
+c1 < r0 ; c1 = r1
+c1 < r0 ; c1 > r1
+c1 = r0 ; c1 < r1
+c1 = r0 ; c1 = r1
+c1 = r0 ; c1 > r1
+c1 > r0 ; c1 < r1
+c1 > r0 ; c1 = r1
+c1 > r0 ; c1 > r1
+
+Bound on p^0
+(0; u0)
+(0; u0)
+(l0; u0)
+(0; 1)
+(0; 1)
+(l0; 1)
+(0; 1)
+(0; 1)
+(l0; 1)
+
+Bound on p^1
+(0; u1)
+(0; 1)
+(0; 1)
+(0; u1)
+(0; 1)
+(0; 1)
+(l1 ; u1)
+(l1 ; 1)
+(l1 ; 1)
+
+Bound on p^0 ; p^1
+Width of bound
+(;u1; u0)
+c1(1=r0 + 1=r1)
+(;1; u0)
+1 + c1 =r0
+(l0 ; 1; u0)
+1 + r1 =r0
+(;u1; 1)
+1 + c1 =r0
+(;1; 1)
+2
+(l0 ; 1; 1)
+1 + r1 =r0
+(;u1; 1 ; l1 )
+1 + r0 =r1
+(;1; 1 ; l1 )
+1 + r0 =r1
+(l0 ; 1; 1 ; l1 )
+(N ; c1)(1=r0 + 1=r1)
+
+Table 2: Possible bound types, l0 = (c1 ; r1)=r0 > 0, l1 = (c1 ; r0 )=r1 > 0, u0 = c1 =r0 < 1,
+u1 = c1 =r1 < 1.
+Figure 2 shows the bounds on the MLEs for the registration/race data. The plots in panels
+(a) and (b) are routinely used in the examples of King (1997). As expected the bounds for
+p1i are more informative than the bounds for p0i , the average width of the bounds is 0.67 for
+p0 and 0.26 for p1 showing that there is greater information for the latter since c1 > r0 in
+most counties (cases 7{9 in Table 2) and so the lower bound on p^1 > 0 in almost all cases.
+The bounds on p^1i become wider with increasing xi , as expected.
+
+2.3 Neighbourhood Model
+A very simple model, termed the `neighbourhood model' (e.g., Freedman et al., 1998), is
+to assume that p0i = p1i = pi, i.e. to assume that the X and Y variables are independent,
+thus allowing the table to be safely collapsed. Freedman (1999) states that in this model,
+`...behaviour is determined by geography not demography'. This model acknowledges that
+the probabilities are heterogeneous across areas, but does not appear reasonable in many
+instances since it does not allow an eect due to X . In this case estimation is straightforward,
+Figure 1(c) shows the distribution of MLEs of pi for this model. Gelman et al. (2001) also
+note that the neighbourhood model is valid for at most one level of aggregation.
+
+2.4 Hierarchical Models
+Brown and Payne (1986) suggested a beta-binomial model for ecological inference for 2  2
+tables that aggregated over the missing cells. Inference was carried out by obtaining the
+marginal moments for all n tables and then assuming a multivariate normal distribution for
+(C1i; :::Cni), thus avoiding the calculation of the convolution likelihood. Maximum likelihood
+was used for estimation, though the numerical maximization is not trivial. Transforms
+of the raw counts via the Box-Cox family may be used to improve the accuracy of the
+multivariate normality assumption. Whereas we have considered the modelling of table/racespecic probabilities of registration pji, King models the fractions that register p^ji (see also
+the footnote of Cho, 1998, p. 155), if we observed the internal cells then we would have
+p^ji = yji=rji. The internal cells are unobserved and King (1997) implicitly assumes a (rst8
+
+stage) likelihood of
+
+(
+
+xi + p^i1  (1 ; xi)
+L(p0i ; p1i) = 10 if p^i = p^i0 
+otherwise:
+where p^i = c1i =Ni; see King (1997), equation (7.1). In other words, the only way the data
+enter into the likelihood is via the accounting equation (3), and the likelihood is at along
+this line. As we discuss in Section 3.1, this approximation may be reasonable in large tables
+since examination of the convolution likelihood along the tomography line reveals that the
+likelihood does not vary greatly since there is so little information in the data to discriminate
+between p0 and p1, beyond the bounds. The rationale for King's approach is that the bounds
+can be tightened once the bound for one fraction is known since the fractions are constrained
+to line on the tomography line. At the second stage of the model the pair p^0i ; p^1i are assumed
+to arise from a truncated bivariate normal distribution, hence imposing identiability.
+King (1997) provides a number of diagnostic procedures for assessing the assumptions of
+the model including examination of the tomography plot (an example of which was given in
+Figure 1(b)) to see if there are multiple points of intersection; and plots of the bounds versus
+xi (e.g., Figure 2(a), (b)). The merit of these diagnostics has been questioned, however
+(Freedman, 1998, 1999; Cho, 1998). Gelman et al. (2001) consider a number of diagnostics
+including the examination of binned residuals plotted versus xi, and interpreting the situation
+in which the estimates from the ecological regression are inadmissible.
+An alternative that was considered by King, Rosen and Tanner (1999) is to assume the
+binomial likelihood (7) at the rst stage. The following intuition shows how this likelihood
+diers from the convolution. Under both likelihoods we have E[C1i jp0i; p1i; r0i; r1i] = Nipi
+with pi given by (2) but the variances dier. For the binomial likelihood
+varb (C1ijp0i; p1i; r0i; r1i) = Ni pi(1 ; pi )
+(8)
+while for the convolution likelihood we have
+varc(C1ijp0i; p1i ; r0i; r1i) = r0ip0i (1 ; p0i ) + r1ip1i (1 ; p1i) = Nipi(1 ; pi)[1 ; i2 ]; (9)
+where 0  i2 = var(Pi)=pi(1 ; pi)  1, and so
+varc(C1ijp0i; p1i; r0i; r1i)  varb(C1ijp0i; p1i ; r0i; r1i);
+and the convolution likelihood is underdispersed relative to the binomial. We have i2 = 0
+when r0i = 0 or r1i = 0 or p0i = p1i. Hence if the probabilities in each table are similar
+the variance will be close to the binomial case. We obtain i2 = 1 when p0i = 0; p1i = 1 or
+p0i = 1; p1i = 0. The variance is smaller in the convolution case because we are not sampling
+Ni independent Bernoulli random variables each with probability pi, but r0i Bernoulli random
+variables with probability p0i and r1i with probability p1i. In Section 4.3 we examine the
+eect of the use of the binomial likelihood.
+At the second stage, King, Rosen and Tanner (1999) assume that pi0 and pi1 are independent
+with
+pij  Beta(aj ; bj );
+(10)
+and with exponential priors on aj ; bj , j = 0; 1, at the third stage. The model given by
+(10) does not allow correlation between the random eects though it is conjugate (giving a
+9
+
+marginal distribution for the data that is beta-binomial) which may oer some advantage in
+terms of computation. It is also straightforward to add area-level covariates at the second
+stage.
+The model suggested by Skene and Wakeeld (1990) for multi-centre clinical trials with
+binary treatment and responses may also be used in this context. At the second stage we
+have
+i =  + i with i  N2 (0; );
+(11)
+where
+"
+#
+" #
+"
+#
+
+
+
+
+0
+i
+0
+00
+01
+i =  ;  = 
+and  =   ;
+(12)
+1i
+
+1
+
+10
+
+11
+
+so that ji denotes the logit of probability pji in table i. A third stage adds normal and
+inverse Wishart priors for  and . See Leonard (1975) for an early Bayesian approach to
+contingency tables incorporating random eects. Covariates and eect modication via arealevel variables may be incorporated into this model. In (11) we may write 0 = 0 + 1 Zi;
+and 1 = 2 + 3 Zi; where Zi is an area-level covariate. The normal distribution in (11)
+may be replaced with the more robust t-distribution. Computation via MCMC is just as
+straightforward as the normal case, and produces an outlier-detection parameter for each
+random eect (see, for example, Wakeeld et al. 1994) for details.
+The random eects i may be assigned a spatial structure in (11), or a combination of
+spatial and non-spatial may be taken, as suggested by Besag, York and Mollie (1991). An
+obvious choice for the spatial structure is the intrinsic conditional autoregressive model (also
+described in Besag, York and Mollie, 1991) in which the mean and variance of the conditional
+prior depends on the values of the `neghbouring' random eects.
+All of the above hierarchical models result in posterior distributions that are analytically
+intractable, but MCMC is straightforward with the rst stage the binomial model of King,
+Rosen and Tanner (1999). In this case all of the models may be easily implemented in the
+WinBUGS software, Spiegelhalter et al. (1998). In Section 3.1 we also suggest an approximate
+normal likelihood that may replace the convolution in tables with large margins.
+
+3 Baseline Model
+3.1 Formulation
+We now introduce a baseline model in which we analyse each table separately and assume
+that in each table the probabilities pij have independent Beta(aj ; bj ) prior distributions,
+with an obvious choice being aj = bj = 1, i = 1; :::; n, j = 0; 1. This prior is combined
+with the likelihood which as noted in Section 2.1, is the convolution of binomials given by
+(5). We stress that the parameters aj ; bj are xed and so, in particular, we are not assuming
+a hierarchical framework. The `baseline' description is used to emphasize that this model
+may be applied separately to each table in order to provide an additional analysis that
+makes minimal assumptions about the probabilities in each table. In this way the structure
+imposed by subsequent hierarchical models may be determined. The appropriateness of
+particular hierarchical modelling assumptions may also be considered, this is dicult after
+10
+
+the imposition of a hierarchy since shrinkage has already occurred (and is particularly strong
+here since there is so little information in each table alone).
+The method of bounds is often referred to as `deterministic' (King, 1997; Cho, 1997) and
+the baseline model with a uniform prior on each of pji is essentially a stochastic version that
+formalizes the method. From Table 2 we see that the information in the table alone gives
+only limited information and inference on dierences between the probabilities is highly
+dependent on the prior. Neath and Samaniego (1997) consider Bayesian identiability in
+an example closely related to that considered here though their prior choice does not seem
+natural.
+As Ni ! 1 with r0=N and r1=N constant, the likelihood function concentrates on the
+tomography line. To see this we rst approximate (5) (for a generic table) by
+!
+!
+Z
+y
+;
+r
+p
+c
+;
+y
+;
+r
+p
+0
+0
+0
+1
+0
+1
+1
+p(c1jp0; p1)  c   fr p (1 ; p )g1=2  fr p (1 ; p )g1=2 dy0;
+0 0
+0
+1 1
+1
+where () denotes the density of a standard normal density, and c is a constant that ensures
+that c1jp0; p1 is a probability distribution in c1 . This approximation may be justied using
+a local limit theorem (e.g., Grimmett and Stirzaker, 1992, p.177), and leads to
+p(c1 jp0; p1) / N fr0p0 + r1p1 ; r0p0(1 ; p0) + r1 p1(1 ; p1 )g:
+(13)
+Brown and Payne (1986) use a normal approximation for (C11; :::; C1n) in the context of
+their ACM model. In this case C1i and C1i are not independent due to the hierarchical
+assumption. Figure 3 displays the nesting of the models described in this section and the
+baseline model. The latter is essentially a saturated model for each table.
+0
+
+3.2 Predictive For Unknown Counts
+In many political science applications (in particular) the counts Y0i; Y1i, or equivalently the
+fractions Yrjiji , are of specic interest. From a Bayesian perspective we may treat these counts
+as random variables. We then have, for a generic table,
+Z
+p(Y0; Y1jr0; r1; c0; c1) = p(Y0; Y1jr0; r1 ; c0; c1; p0; p1)  (p0; p1jr0; r1; c0; c1)dp0dp1 : (14)
+If we can simulate from p(Y0; Y1jr0; r1; c0 ; c1; p0; p1) then it is straightforward to simulate from
+(14), once samples for p0 ; p1 are available from (p0; p1jr0; r1 ; c0; c1). This is equivalent to
+the distribution of y0 given the row and column margins, and the table probabilities, which
+is a non-central (or extended) hypergeometric (e.g., McCullagh and Nelder, 1989). Suppose
+the odds ratio in the table is given by  = p0(1 ; p1)=p1(1 ; p0) where pj is the probability of
+success given we are in row j , j = 0; 1. Then Y0 has a non-central hypergeometric distribution
+if its distribution is of the form
+!
+!
+8
+r
+r
+>
+0
+1
+>
+y0
+>
+>
+>
+y0 !c1 ; y0  ! y = u ; :::; u ;
+<
+1
+Pr(Y0 = y0j; r0; r1 ; c0; c1) = > Pu1 r0
+(15)
+r1 u 0 0
+>
+u=u0
+>
+u
+c1 ; u
+>
+>
+:
+0
+otherwise
+where u0 = max(0; c1 ; r1 ) and u1 = min(r0; c1). Hence (14) is an overdispersed non-central
+hypergeometric distribution.
+11
+
+3.3 Model Selection
+Examining the evidence in favour of a particular model is obviously very important in this
+context. In particular, the comparison of the neighbourhood and baseline models is of
+interest, i.e.
+M0 : p0i = p1i = pi; M1 : p0i 6= p1i :
+This comparison may be examined via the Bayes factor
+Pr(c1ijM0 )
+BF01i = Pr(
+c1ijM
+)
+R1
+Pr(c1i j; pi)(pijM0 )dpi
+= R
+Pr(c1ij; p0i; p1i)(p0i; p1i jM1)dp0i dp1i
+The prior for (pijM0) may be taken as uniform, or as that implied by (p0i; p1ijM1 ). For
+example the choice of independent uniform priors on p0i ; p1i does not imply a uniform prior
+on pi = p0i  xi + p1i  (1 ; xi ) but the `roof' distribution given by
+8
+>
+0  pi  min(xi ; 1 ; xi )
+< Ki pi
+(pi) = > Ki min(xi; 1 ; xi ) min(xi; 1 ; xi )  pi  max(xi ; 1 ; xi )
+: Ki (1 ; pi )
+max(xi; 1 ; xi )  pi  1
+where Ki;1 = xi (1;xi); xi 6= 0; 1. The distribution of BF01 across counties may be examined,
+or,
+Qn
+Pr(c1ijM0 ) ;
+BF01 = Qni=1 Pr(
+c1ijM1 )
+i=1
+may be calculated to give the overall evidence. Bayes factors are notoriously sensitive to
+the choice of prior distribution, however, and at the moment we feel uncomfortable using
+this approach, though it may be useful to nd the evidence under a range of priors, and in
+particular nd those extreme priors that shift the balance of evidence.
+
+3.4 Computation
+In this section we will rst discuss implementation for the baseline model, initially via an
+auxiliary variable scheme, and then via a rejection algorithm that provides independent
+samples.
+
+Auxiliary Variable Scheme
+With the introduction of the auxiliary variables Y0i we have the posterior
+(y0i; p0i; p1ijr0i; r1i; c0i; c1i) = p(y0ijr0i; r1i; c0i; c1i; p0i; p1i)
+ (p0i; p1ijr0i; r1i; c0i ; c1i)
+
+(16)
+
+The second term of (16) is not of straightforward form (and is the distribution of interest)
+and so sampling cannot be carried out directly. This formulation does suggest an MCMC
+scheme, however, alternating between the conditional distributions given by
+p(y0ijr0i; r1i; c0i; c1i; p0i; p1i) and (p0i; p1ijr0i; r1i; c0i; c1i ; y0i):
+12
+
+Byers and Besag (2000) suggested this approach for extracting information from partially
+observed spatial epidemiological data with a rare outcome. Their method has general applicability, but in the example presented in their paper, disease mapping of male prostate
+cancer mortality in 3053 counties of the USA was carried out with adjustment for age, and
+the race eect being examined even though the mortality by race data were unavailable,
+though the numbers in each racial group by area were available. The race eect is assumed
+constant across areas. The elegance of the above formulation is that the awkward bounds
+on Y0i; Y1i are automatically accounted for, and we avoid having to deal directly with the
+convolution distribution. We now describe the steps in the MCMC scheme.
+Auxiliary Variable Sampling:
+For the missing data y0i we have to sample from a non-central hypergeometric distribution
+with margins r0i; r1i ; c0i; c1i, i = 1; :::; n. This discrete distribution may be sampled from
+in an obvious fashion, but in typical political science/sociology applications the margins
+are large and so generation is highly inecient due to the summation over a large number
+of terms, each of which contains factorials. This problem has been considered (for more
+general conditional inference problems) by, amongst others, Forster, McDonald and Smith,
+1996; Strawderman and Wells, 1998; Booth and Butler, 1999; Mehta, Patel and Senchaudhuri, 2000). Byers and Besag (2000) considered a rare outcome, in which case the non-central
+hypergeometric random variables may be approximated by Poisson random variables. The
+moments of the non-central hypergeometric distribution are numerically dicult to calculate for tables with large margins and a number of approaches to their calculation have been
+suggested (McCullagh and Nelder, 1989, p. 259; Satten and Kupper, 1990; Liao, 1992). The
+mode is available in closed form, however, and the distribution is log-concave. Using this
+information the following approach may be taken. Starting from the mode we move outwards
+until a `small' value on each side is found, at these points the distribution is truncated and
+the whole distribution is normalized. For a normal distribution we can evaluate the ratio of
+the densities at the mode to any quantile and so obtain a `small' value. This approach has
+the advantage of sorting the probabilities so the inversion method is more ecient. Care
+must be taken to evaluate the unnormalized distribution on the log scale, and scale via the
+largest unnormalised value so that underow/overow does not occur.
+Posterior Probability Sampling:
+Here we are required to sample from the conditional distribution
+
+(p0i; p1ijy0i; y1i; r0i; r1i; c0i; c1i);
+(17)
+for i = 1; :::; n. If we assume pji  Beta(aj ; bj ), then this conditional distribution corresponds
+to the product
+Beta(y0i + a0 ; r0i ; y0i + b0 )  Beta(y1i + a1; r1i ; y1i + b1 );
+(18)
+for i = 1; :::; n, and so is straightforward to sample from.
+For a frequentist approach an EM algorithm would be simple to construct when one considers
+the auxiliary variables as missing data, see Little and Rubin (1987) for a general description
+and McCullagh and Nelder (1989, p. 338) for a discussion in the context considered here.
+Maximization of the non-central hypergeometric full likelihood is feasible with the algorithms
+13
+
+for obtaining the mean cited above, though convergence may be prohibitively slow. Brown
+and Payne (1986) suggest such an approach for their ACM model but report prohibitively
+slow convergence.
+
+Direct Sampling Scheme
+As an alternative to the auxiliary variable approach we may sample directly from the posterior for p0; p1 for a generic table, using a rejection algorithm that samples from the prior. To
+implement this algorithm we need to nd the supremum for the likelihood. A simple search
+may be used to obtain the supremum but we note that the MLEs lie close to one of the ends
+of the tomography line. To see this we consider the approximate likelihood (13) with log
+likelihood
+2
+L(p0 ; p1) = ; logfV (p0; p1)g ; (c1 ;Vr(0pp0;;p r)1 p1) ;
+(19)
+0 1
+
+where
+
+V (p0 ; p1) = r0p0 (1 ; p0 ) + r1p1(1 ; p1):
+(20)
+and for the moment ignore the constraints on p0; p1. The second term of (19) is maximized
+for all p^0; p^1 that satisfy c1 = r0p^0 + r1p^1 and hence we need to minimize (20). This variance is
+a quadratic surface in p0 ; p1 with minimum at (c1=N; c1=N ). Consideration of the constraints
+on p0; p1 reveals that the variance is minimized at one of the endpoints of the tomography
+line. For each of the cases in Table 2 we may evaluate which of the endpoints provides the
+smallest variance, these values are given in Table 3.
+The above MLEs are only approximate since it may be that a value very close to the end of
+the tomography line provides a greater likelihood since it results from a normal distribution
+that is centred on the tomography line but in an inadmissible region of the parameter space.
+Such cases may be easily dealt with since in the rejection algorithm it is straightforward to
+check if a sampled point provides a higher likelihood, if one is discovered the algorithm may
+simply be restarted. In the limit the likelihood is constant along the tomography line (2)
+which is exactly the likelihood that is utilized by King (1997). The binomial likelihood is
+also constant along the tomography line.
+Due to the non-identiability, the MLEs tend, as Ni ! 1, to a line of solutions, and not to
+a point as in the regular case. For large Ni, with uniform priors, the posterior distribution
+may therefore be approximated by a uniform distribution on the tomography line. In this
+situation the posterior medians p~0i, p~1i are therefore closely approximated by the midpoint
+of the method of bounds, that is
+  c 
+ c ; r 
+  c 
+ c ; r 
+1
+i
+1
+i
+1
+i
+1
+i
+p~0i = 0:5 min 1; r + max 0; r
+; p~1i = 0:5 min 1; r + max 0; 1i r 0i ;
+0i
+0i
+1i
+1i
+since these bounds dene the tomography line.
+As the table margins increase in size the rejection algorithm may be very inecient since
+the likelihood concentrates upon the tomography line and so hardly any points are accepted.
+This is particularly true for the convolution likelihood due to the need to evaluate a large
+number of terms in the summation over the missing data y0i. The normal likelihood is
+computationally inexpensive, and in our experience provides a very good approximation.
+14
+
+Case Relationships
+MLEs (^p0; p^1)
+1 c1 < r0 ; c1 < r1 ; r0 < r1
+(u0; 0)
+c1 < r0 ; c1 < r1 ; r0 > r1
+(0; u1)
+(0,1)
+2 c1 < r0 ; c1 = r1
+3 c1 < r0 ; c1 > r1 ; N < 2c1
+(u0; 0)
+c1 < r0 ; c1 > r1 ; N > 2c1
+(l0 ; 1)
+4 c1 = r0 ; c1 < r1
+(1,0)
+5 c1 = r0 ; c1 = r1
+(1,0),(1,0)
+6 c1 = r0 ; c1 > r1
+(1,0)
+7 c1 > r0 ; c1 < r1 ; N < 2c1
+(0; u1)
+c1 > r0 ; c1 < r1 ; N > 2c1
+(1; l1)
+8 c1 > r0 ; c1 = r1
+(0,1)
+9 c1 > r0 ; c1 > r1 ; r0 < r1
+(1; l1)
+c1 > r0 ; c1 > r1 ; r0 > r1
+(l0 ; 1)
+Table 3: Approximate MLEs for the convolution model, l0; u0; l1; u1 as in Table 2.
+Eciency may be improved by sampling from a rectangular region based on the points at
+which a line parallel to the tomography line cuts the unit square. The parallel line was
+determined by taking p^i ; 4  s.e.(^pi).
+Let Mi = L(^p0i ; p^1i) denote the supremum of the likelihood for p0i ; p1i for either the convolution of binomials or approximating normal likelihood. The rejection algorithm is given
+by
+1. Sample pji  Beta(aj ; bj ), j = 0; 1, U  U (0; 1), with all generations being independent.
+2. Accept p0i; p1i if
+0i ; p1i ) ;
+U < L(pM
+i
+with L(p0i ; p1i) given by (5), otherwise return to 1.
+To address the sensitivity to the prior, the accepted points may be re-weighted via the ratio
+of the new to the original prior, or by `thinning' the accepted points via another rejection
+algorithm based on the supremum of the ratio of the priors.
+Another possibility that we investigate is to restrict the prior to sampling along the tomography line and then test using the true likelihood. For large margins the likelihood will fall
+away very quickly to either side of the tomography line.
+
+Summary of Computation
+For the baseline model, a full analysis may be carried out using either the auxiliary variable
+MCMC scheme, or the rejection algorithm using the convolution of binomials likelihood.
+The former approach will be slow-mixing for anything but small tables (unless the outcome
+is rare), see Section 4.1 for an example. The latter will have a very small acceptance rate
+15
+
+X=0
+X=1
+
+Y =0 Y =1
+4
+
+3
+
+5
+2
+7
+
+Table 4: Simple table to illustrate baseline model.
+for medium/large tables due to the likelihood concentrating on the tomography line. The
+convolution of binomials likelihood is also computationally expensive in these cases and so
+the normal approximation may be utilized, perhaps sampling from a restricted space. For
+very large tables, a quick analysis is provided by assuming that the likelihood is at along the
+tomography line. With uniform priors an immediate analysis is provided by consideration of
+intervals along the bounds of Duncan and Davis (1953). For example, the midpoint of the
+bounds may be taken as an approximation to the posterior median, taking the midpoint was
+suggested by Flanigan and Zingale (1985). Analyses from non-uniform priors follow from a
+simple rejection algorithm that samples from the prior for p0 (say), truncated to the bounds,
+and then accepts/rejects on the basis of the prior for p1 .
+For hierarchical models the rejection algorithm can still be implemented within an MCMC
+scheme though the prior is changing every iteration. A more ecient method for large tables
+would be use the normal approximation to the convolution likelihood. At a greater level
+of approximation, the space of (p0i; p1i) may be restricted to the tomography line, and the
+likelihood taken to be the variance function (20). An extreme approximation is to take the
+likelihood to be constant along the tomography line, as in King (1997).
+
+3.5 Simple Examples
+In this section we consider the data in Table 4 in order to illustrate the baseline model. For
+these data the bounds on the MLEs are given by p^0 2 (0:2; 0:6); p^1 2 (0; 1):
+We implemented the rejection algorithm described in Section 3.4 with the convolution likelihood and independent uniform priors on p0 and p1. The MLEs are given by p^0 = 0:2, p^1 = 1,
+and 2000 samples were generated with acceptance rate 0.41. The posterior means are given
+by E[p0 jc1] = 0:43 and E[p1 jc1] = 0:50. Figure 4 displays a number of summaries of both the
+posterior distribution of p0; p1 and of the predictive distribution of the number of counts.
+We see that we learn little about p1 but the posterior distribution for p0 is quite dierent
+to the prior. Intuitively, the fact that Y0 cannot take the values 4 or 5 reduces our beliefs
+slightly in p0 being close to one. Note that Pr(fp0 < 0:2g\fp0 > 0:6gjc1) = 0:37 6= 0 so that
+values outside of the bounds are quite likely in this situation in which the margins are small.
+We obtain Pr(p0 > p1 jc1) = 0:48 so there is a small amount of information to distinguish
+between p0 and p1 but it depends crucially on the prior.
+We now describe a simple simulation study that will indicate the limitations of ecological
+data. Eight simulations were carried out with ve areas in each case and p0i = p0, p1i = p1
+and n = 1000 for all tables. In four of the simulations xi = i=6, i = 1; :::; 5, and in the
+remaining four xi = i=12, i = 1; :::; 5, hence in the former case the proportions xi cover (0,1)
+while in the latter they cover (0,0.5). Four (p0; p1)-pairs were chosen: (0.5,0.5), (0.2,0.2),
+16
+
+(0.8,0.2), (0.8,0.6). In each table the baseline model was assumed with independent uniform
+priors on p0; p1. For each area we sampled 1000 points from a posterior that assumed that
+the likelihood was constant along the tomography line.
+We only report the results in those cases with poorest performance. Figure 5 show the
+results for the case xi = i=12, i = 1; :::; 5, (p0; p1) = (0:2; 0:2). The posterior probability
+Pr(p0 > p1jc1) was estimated as greater than 0.5 in each case since there is virtually no
+information about p0 in the margins, the prior dominates and the prior mean is 0.5>0.2.
+Figure 6 show the results for the case xi = i=12, i = 1; :::; 5, (p0; p1) = (0:8; 0:6). In this case,
+the posterior probability Pr(p0 > p1jc1) was estimated as less than 0.5 in each case again
+because of the lack of information about p0 in the margins, leading to the prior dominating.
+We note that even in the cases in which the xi values were uniform in (0,1) misleading
+inference was possible. For the case in which p0 = p1 = 0:2, Pr(p0 > p1jc1) was equal to 0.82,
+0.69, 0.49, 0.29, 0.18 in the ve tables, providing misleading inference. It is preferable to
+have a uniform spread of xi across areas but this does not guarantee accurate inference. The
+problems here result from the use of an inappropriate prior { the benet of the hierarchical
+model is that the prior is estimated from the observed data though in both of the examples
+reported above the prior for p0i would be poorly estimated due to the design (spread of xi's).
+In these cases an appropriate third stage prior is required.
+These examples show that inference in the ecological situation depends crucially on the
+appropriateness of the prior assumptions. In particular the assumption of similarity of
+probabilities across areas that is made in hierarchical models is vital if inference is to be
+made on the dierences between probabilities.
+Individual table comparisons such as Pr(p0i > p1ijc1i) are seen to be extremely hazardous
+since only one (and perhaps neither) of the probabilities are well estimated and so the
+comparisons are wholly determined by the prior. Examination of those p0i in tables with
+xi close to 1, and p1i in tables with xi close to 0, are quite informative, if it is reasonable
+to assume some commonality across tables. This is the basic assumption of a hierarchical
+model. If it is possible to obtain an informative prior then table-specic comparisons are
+more reasonable.
+
+4 Registration/Race Example
+In this section we return to the registration/race data. We rst analyse in detail two counties
+that were considered by King, Rosen and Tanner (1999), the data from these counties are
+given in Tables 5 and 6.
+
+4.1 County 150
+King, Rosen and Tanner (1999) considered this county to demonstrate that their approach
+can detect multimodality in the posterior. The bounds on the MLEs for blacks and whites are
+(0,1) and (0.39,0.75), respectively, with p^1 ; p^0 2 (;0:61; 0:75). The MLEs for the likelihood
+(5) are p^0 = 0, p^1 = 0:75. Figure 7 shows posterior summaries for the baseline model
+based on the auxiliary scheme of Section 3.4 and clearly shows the slow mixing. This is due
+17
+
+to the non-identiability and the fact that the non-central hypergeometric distribution has
+non-negligible probability on a relatively small number of values, hence slowing movement
+around the space. Recently there has been an interest in identiability in Bayesian models,
+particularly from an MCMC perspective, see for example, Gelfand and Sahu (1999). On the
+basis of this example and other analyses we have carried out, from this point onwards we
+use the rejection algorithm.
+Unregistered Registered
+Y =0
+Y =1
+Black Y = 0
+4,001
+White Y = 1
+11,199
+6,800
+8,400
+15,200
+Table 5: Voter registration/race data for county 150 of King (1997).
+We obtained 1000 independent samples from the posterior (p0; p1jc1) using the rejection
+algorithm and sampling along the tomography line with the convolution likelihood (5), the
+acceptance rate was 0.80. Using the rejection algorithm and sampling from U (0; 1)  U (0; 1)
+with the convolution likelihood was very inecient and the accepted points fell almost exactly
+on the tomography line, as can be seen by comparing Figures 7(p) and 8(e).
+Figure 8 contains a number of graphical summaries; these may be compared with Figure
+4 of King, Rosen and Tanner (1999). Panels (a), (c) and (e) give representations of the
+univariate posteriors and bivariate posteriors of (p0; p1jc1), while panels (b) and (d) give
+the predictive distributions for Y0 and Y1. The univariate posterior distributions are close
+to uniform on the bounds, with the slight U-shape reecting the shape of the variance
+(20) along the tomography line. Panel (f) shows the scaled convolution and approximating
+normal likelihoods along the tomography line, and shows that they are virtually identical,
+the binomial likelihood is constant along this line and is also included. We note that the
+bimodality reported for p0 by King, Rosen and Tanner (1999) has the same shape as that
+of the convolution likelihood in Figure 8(f) and is surprising since the binomial likelihood
+utilised by these authors is constant along the tomography line. Possible explanations are
+that the bimodality arises from marginalising, or it is due to MCMC sampling variability.
+As we discuss in Section 4.3, with an MCMC approach, very large samples are required for
+reliable reporting of individual county probabilities.
+
+4.2 County 50
+The rejection algorithm was implemented using the normal approximation along the tomography line and a uniform prior, the acceptance rate was 0.87. The bounds here are (0.63,1)
+for p^0 and (0.75,1) for p1 and the MLEs are p^0 = 0:63 and p^1 = 1. The posterior means were
+estimated as 0.81, 0.96. The bound on p^1 ; p^0 is (;0:09; 0:7) while the posterior probability
+Pr(p1 ; p0 > 0jc1)= 0.18. Figure 9 contain a number of graphical summaries for county
+50; these summaries may be compared with Figure 3 of King, Rosen and Tanner (1999).
+The latter plot shows a large mode around 0.65 which, when compared with Figure 9 would
+appear to be due to the hierarchical prior. The normal approximation to the convolution
+likelihood is again accurate along the tomography line (Figure 9 (d)).
+18
+
+Black X = 0
+White X = 1
+
+Unregistered Registered
+Y =0
+Y =1
+10,800
+
+145,500
+
+29,494
+126,806
+156,300
+
+Table 6: Voter registration/race data for county 50 of King (1997).
+Prior
+p0 s.d.fp0 g
+Beta(1,1) 0.66 0.16
+Beta(3,2) 0.71 0.13
+Beta(4,1) 0.81 0.10
+
+2.5%
+0.46
+0.47
+0.57
+
+50% 97.5% p1 s.d.fp1 g
+0.63 0.98 0.80 0.16
+0.70 0.98 0.79 0.17
+0.83 0.99 0.77 0.17
+
+2.5%
+0.39
+0.41
+0.37
+
+50% 97.5%
+0.84 1.0
+0.82 1.0
+0.78 0.99
+
+Table 7: Summaries of distribution of posterior medians of (p0i ; p1i) over i = 1; :::; 275
+counties of registration/race data of King (1997) under the baseline model and dierent
+prior specications.
+
+4.3 All Counties
+Baseline Model
+Figure 10 contains a number of posterior summaries that were obtained after tting the
+baseline model individually to each area with uniform priors. Samples were drawn assuming
+that the likelihood was uniform on the bounds. The rst row of Figure 11 contains histograms
+of the posterior medians of p0i and p1i under the uniform distribution. Figures 10 (a){(d)
+give some indication of whether particular hierarchical forms are possible though there is
+virtually no information for p0i is a large number of tables. Figures 10 (a), (b) and 11 (a),(b)
+may be examined to examine whether independent beta priors are feasible, and 10 (b){(d),
+independent or bivariate normal priors for the logits of (p0i; p1i). In this case, the use of
+a normal distribution for logit p1i would appear reasonable though there are a number of
+outlying areas in terms of p0. Consequently in the next section we t independent normal
+and Student t second stage distributions.
+Figures 10(e) and (f) plot the posterior medians of, respectively, p0i and p1i against xi ,
+i = 1; :::; 275. We see that there is a suggestion that the medians fall with increasing x.
+However, this could simply be shrinkage to the prior mean since there is little information
+on p0 with increasing x. This explanation is consistent with panel (f) in which the medians
+drop towards 0.5 as x moves closer to zero. The trend is less clear cut here since there is not
+much information about p0 in any of the tables. In 89% of areas Pr(p0i < p1ijc1 ) > 0:5.
+We investigated the sensitivity to the prior by also assuming Beta(3,2) and Beta(4,1) priors.
+A Beta(3,2) random variable has 2.5, 50 and 97.5% points of 0.20, 0.61, 0.93, the equivaent
+quantities for a Beta(4,1) random variable are 0.40, 0.84, 0.99. The analyses under these
+priors were implemented using a rejection algorithm from the likelihood which was assumed
+to be constant along the tomography line. The rejection step then consists of accepting
+a point based on the ratio of the density of the prior at the point, to the density at the
+supremum of the prior (which is available in closed form). Figure 11 shows the histograms
+19
+
+of the empirical distribution of the posterior medians of p0i ; p1i under these priors and the
+uniform priors, and Table 7 provides numerical summaries. The sensitivity in the distribution
+of the medians of p0i is evident. In 81% and 49% of areas Pr(p0i < p1ijc1) > 0:5, respectively
+showing that under the Beta(4,1) prior the registration rates for blacks and whites are
+virtually identical. The drop in p1 in Table 7 may be attributed to the negative dependence
+between p0i and p1i in the likelihood.
+For some areas, the rejection rate r was very low under the non-uniform priors. In particular
+for the outlying areas 59, 86 and 130. This is not surprising when one recognises that the
+prior predictive Pr(c1i ) = r  M , where M is the maximized prior in this implementation
+and is constant for all i.
+
+Hierarchical Models
+We t the models ji  p(jj ; j ), j = 0; 1, with p(j) corresponding to either a normal or
+a Student t distribution with four degrees of freedom with ji begin the logit of pji, as in
+equations (11) and (12). For the normal likelihood we used both the normal and binomial
+approximations to the convolution likelihood. For the t4 analysis we used the binomial
+likelihood only since numerical problems were encountered using the normal likelihood. All
+hierarchical analyses were tted using WinBUGS, Spiegelhalter et al. (1998), the code for the
+normal/normal model is given in the appendix.
+The individual probabilities display very poor mixing in an MCMC approach and it would
+seem that inference for (p0i; p1i ) or (Y0i; Y1i) would be more accurate using an empirical
+Bayes approach in which the table of interest were treated as a new table and the prior was
+taken as the posterior over the population parameters. Given the large margins and large
+number of tables this will not be too poor an approximation unless the table has very large
+margins and/or is outlying. The population summary parameters in Table 8 also displayed
+slow convergence, for all analyses we ran the chains for 300,000 iterations burn-in, and then
+samples from a further 300,000 iterations were used for inference.
+From Table 8 we see that the results for p1 are relatively robust to the choice of second stage
+distribution, as we would expect from Figure 11 and the analyses of the previous sections,
+though under the t4 prior p1 is lower. The results under the normal and binomial approximations are similar though interval estimates are in general narrower under the normal model
+(which has smaller variance, Section 2.4).
+We attempted to include a correlation parameter in the second-stage distributions but the
+resultant Markov chain displayed extremely slow mixing, and the correlation was almost at
+1, indicating that there was close to zero information in the data to estimate this parameter.
+Including xi as a covariate also produced a poorly mixing chain, corresponding to near
+non-identiability. This phenomenon is noted by Rosen et al. (2000, Section 4.2).
+In this example we have seen that the white registration probabilities are well-estimated in
+many areas while there is far more uncertainty associated with the registration probabilities
+for blacks. We conclude that there is evidence to suggest that over all areas the black probabilities are smaller than the white probabilities on average, but the extent of the dierence
+cannot be precisely estimated without an informative prior distribution, or surveys from
+within a sample of areas. We nally note that this analysis has not addressed the contextual
+20
+
+Normal/Normal
+Parameter 2.5% 50% 97.5%
+p0
+0.52 0.57 0.61
+p1
+0.85 0.86 0.88
+s.d.fp0i g 0.30 0.32 0.35
+s.d.fp1i g 0.16 0.17 0.19
+0
+0.055 0.50 0.99
+1
+2.59 2.97 3.43
+s.d.f0i g 1.99 2.42 2.94
+s.d.f1i g 1.90 2.20 2.54
+
+Binomial/Normal
+2.5% 50% 97.5%
+0.52 0.57 0.64
+0.83 0.86 0.88
+0.30 0.32 0.34
+0.15 0.18 0.20
+0.052 0.53 1.10
+2.51 2.95 3.43
+2.06 2.42 2.92
+1.94 2.23 2.63
+
+Binomial/t4
+2.5% 50% 97.5%
+0.57 0.63 0.66
+0.82 0.84 0.86
+0.26 0.28 0.32
+0.16 0.18 0.20
+0.35 0.76 1.21
+2.00 2.33 2.74
+2.53 3.22 4.45
+2.68 3.26 3.99
+
+Table 8: Posterior quantiles from hierarchical analyses of the race/registration data of King
+(1997).
+aspect of the ecological fallacy.
+
+5 Extensions
+A number of extensions to the framework of Section 3 are possible. The R  C contingency
+table case follows immediately though the Monte Carlo computations may be far more
+computationally intensive due to the increased dimension of the table. Rosen et al. (2000)
+extend the method of King, Rosen and Tanner (1999) to this situation.
+If survey data are available on a subset of individuals within particular areas then this
+may be simply combined with the aggregate data. Table 9 illustrates the data in this case.
+Inference is straightforward since the likelihood for each table now consists of a product of
+two binomial distributions for the survey data, and a convolution of binomial distributions
+for the marginal data, with each term being independent.
+
+Y =0 Y =1
+Y =0 Y =1
+s
+X=0
+z0i r0i X = 0
+r0i ; r0si
+s
+z1i r1i X = 1
+r1i ; r1si
+X=1
+cs0i
+cs1i mi
+c0i ; cs0i c1i ; cs1i Ni ; mi
+Table 9: Tables summarising survey data (left-hand table), and marginal data (right-hand
+table) in area i.
+The case of a continuous X variable is more dicult to consider. It is usual in spatial
+epidemiology to suppose that the eect of such a continuous exposure is constant across
+areas which is equivalent to the Goodman regression model (though the baseline risk may
+vary with the introduction of random eects). In the discrete case we know the set of
+individual X values is implied by the margin, even though the cross-classication is missing.
+This is not the case in the continuous case. One approach, suggested by Richardson, Stucker
+and Hemon (1987), is to make a parametric assumption for the within-area distribution of
+21
+
+X , and then evaluate the expected value of Y . An alternative due to Prentice and Sheppard
+(1995), is to collect samples of X within areas and then evaluate the expected value of
+Y empirically over the sampled values. Wakeeld and Salway (2001) provide a review of
+these and other proposals. In contrast to examples in the political science and sociology
+literature it is common to include spatial dependence amongst the residuals, usually with
+the convolution model of Besag, York and Mollie (1991).
+The ecological fallacy in a wider context is much broader than that considered here, see
+Greenland and Morgenstern (1989), Greenland (1992), Greenland and Robins (1994) and
+Richardson and Montfort (2000) for a more general discussion in the context of epidemiology.
+Lasserre, Guihenneuc-Jouyaux and Richardson (2000) consider the problem of accounting
+for multiple binary predictors (exposures/confounders) in spatial epidemiology in which Y
+represents disease status, and the marginal proportions only of individuals within each table
+are observed. They show that more accurate estimation results if the two predictor variables
+are assumed to be independent (as in the neighbourhood model) and the cross-product term
+is included in the exposure/risk model.
+In contrast to sociological and political science applications, the health outcomes considered
+in spatial epidemiology are usually rare, and the eects to be detected are small, hence it is
+usually assumed that the exposure eect is constant across areas, there are insucient cases
+to allow estimation of an association measure for each area. Gelman et al. (2001) discuss
+model assumptions and checking in ecological inference for an example in which the outcome
+is lung cancer, the exposure is radon, and the confounder is smoking.
+
+6 Discussion
+In this paper we have considered ecological inference in a series of 2  2 tables. In Section 2
+we pointed out a number of implicit approximations/assumptions that have been utilised in
+addressing this problem. In Section 3 we advocated the use of a baseline model to provide an
+initial analysis that claries the amount of information in the data alone. Section 3.4 gave
+a number of computational schemes for analysing tables of dierent sizes under this model.
+Examining p0i in tables with xi close to 1, and p1i in tables with xi close to 0 is important {
+if there are dierences in the distribution of these quantities then this provides evidence that
+the probabilities are dierent (though a constancy across tables assumption is required). In
+this situation the contextual variable aspect of the ecological fallacy could still be operating,
+however. Examining the disparity between prior and posterior in the extreme xi cases is also
+important { if there is a large discrepancy (as there was in the registration/race data) then
+there is cause to question the overall inference since it is being driven by the prior. In all
+cases having an informed prior is obviously the ideal.
+The baseline model suggested here consists of both the convolution likelihood and a prior for
+p0i; p1i , with the model being applied to each table separately. Due to the non-identiability,
+a prior is essential when a single table alone is examined. For the analyses of this paper we
+have utilised a product of independent beta priors, with uniform distributions being exploited
+to concentrate on the likelihood. Other more realistic, and by necessity subjective, forms are
+possible, however. In particular a prior choice that incoporates dependence between p0i and
+p1i would be desirable. A number of possibilities are available and we briey discuss the use
+22
+
+of that given by (11) and (12), that is a bivariate normal on 0i = logit p0i, 1i = logit p1i ,
+with the means 0; 1 and the variance-covariance terms 00 ; 01 ; 11 being specied. We
+rst note that this prior is consistent with the model
+
+ji = j + j Xi + j Zji;
+with Xi i:i:d: N (0; x2 ) and Zji i:i:d: N (0; z2), giving jj = j2x2 + j2 z2, j = 0; 1, and
+01 = 0 1x2 . Here Xi is an area-level covariate that is common to both blacks and whites
+in area i, and Z0i and Z1i are area-level covariates that are specic to blacks and whites,
+respectively. For example, Xi could represent a measure of the socio-economic status of area
+i, and Z0i and Z1i could summarise the demographic proles of the blacks and whites in
+area i. We discuss the situation in which we have no a priori
+belief in dierences between
+p0i and p1i . We may then take 0 = 1 = ? where e? (1 + e? );1 is an estimate of the
+registration of an individual, and 00 = 11 = ?. The value of ? may be taken to give
+a 90% (say) interval for each of p0i and p1i . The covariance parameter 01 is the most
+dicult specication to assign. We note, however, that with the above equality of means
+and variances, the correlation between 0i and 1i is given by  2x2 ( 2x2 +  2z2 );1. Hence,
+for example, choosing the correlation equal to 0.5 would be equivalent to believing that the
+covariates common to blacks and whites had an equal impact on the logits of the registration
+probabilities as the race-specic covariates. Once the mean and covariance matrix have been
+chosen, simulation from the prior may be carried out to see if the required behaviour is
+obtained. It is clear that prior sensitivity should be examined.
+In many contexts, contingency tables arise with missing cells, much of the literature then
+concentrates on the mechanism for missingness, and in particular whether it can be ignored,
+see for example Forster and Smith (1998), and the references contained in this paper. There
+are links with the ecological inference problem described here since in some cases the data
+provide no information on the mechanism which may be characterised with an unknown
+parameter. In such cases the latter approach may be seen as a sensitivity analysis.
+In Durkheim's suicide example the suicide rates in 19th century Europe were higher in
+countries with larger proportions of Protestants. The obvious explanation is that Protestants
+were more likely to commit suicide, but an alternative explanation is that Catholics were
+committing suicide due to discrimination. In this latter case the proportion of Protestants
+in an area is a contextual variable. We make the obvious point that these cases could be
+distinguished in an area with all Protestants, since under the former explanation the suicide
+rates would be high, while under the latter it would be zero.
+Although we suggest an initial analysis with the baseline model, we are not suggesting that
+an analysis should go no further. In particular area-level covariates that explain betweenarea dierences should be investigated, and a hierarchical structure considered allowing
+explicit modelling of the probabilities, possibly with spatial dependence. As in all statistical
+analyses the context is important, and a Bayesian approach allows a exible and coherent
+framework within which realistic background information may be incorporated. We end with
+the obvious statement that the solution to the ecological inference problem is to collect data
+on individuals within the areas of interest. More investigation is required but the related
+work of Prentice and Sheppard (1995) would suggest that the samples would not need to be
+large. An interesting unsolved problem is the choice of areas in which to sample.
+23
+
+Appendix
+Below we give the WinBUGS code to implement the hierarchical logistic model with the approximate normal likelihood (13).
+model
+{
+for (i in 1:ntab) {
+#
+Likelihood
+z[i]<-c1/n[i]
+z[i] ~ dnorm(p[i],taun[i])
+x[i]<-r0[i]/(r0[i]+r1[i])
+p[i]<-p0[i]*x[i]+p1[i]*(1-x[i])
+n[i]<-r0[i]+r1[i]
+taun[i]<-n[i]/(x[i]*p0[i]*(1-p0[i])+(1-x[i])*p1[i]*(1-p1[i]))
+p0[i]<-exp(theta[i,1])/(1+exp(theta[i,1]))
+p1[i]<-exp(theta[i,2])/(1+exp(theta[i,2]))
+#
+Second stage prior
+theta[i,1] ~ dnorm(mu[1],tau[1])
+theta[i,2] ~ dnorm(mu[2],tau[2])
+}
+#
+Third stage priors.
+mu[1] ~ dnorm(0,0.0001)
+mu[2] ~ dnorm(0,0.0001)
+tau[1] ~ dgamma(1,1)
+tau[2] ~ dgamma(1,1)
+#
+Quantities of interest
+m0<-mean(p0[])
+m1<-mean(p1[])
+s0<-sd(p0[])
+s1<-sd(p1[])
+}
+
+Acknowledgments
+I would like to thank Thomas Lumley, Jon Forster, Patrick Heagerty, Dave Stephens and
+Jon Wellner for useful discussions. I would also like to thank Julian Besag for pointing me
+in the direction of Byers and Besag (2000), and Gary King for supplying data from King
+(1997) in a convenient form.
+
+24
+
+References
+Achen, C.H. and Shively, W.P. (1995). Cross-Level Inference, Chicago, University of Chicago
+Press.
+Altham, P.M.E. (1969). Exact Bayesian analysis of a 2  2 contingency table, and Fisher's
+\exact" signicance test. Journal of the Royal Statistical Society, Series B, 31, 261{269.
+Besag, J., York, J., and Mollie, A. (1991). Bayesian image restoration with two applications
+in spatial statistics. Annals of the Institute of Statistics and Mathematics, 43, 1{59.
+Booth, J.G. and Butler, R.W. (1999). An importance sampling algorithm for exact conditional tests in log-linear models. Biometrika, 86, 321{332.
+Brown, P.J. and Payne, C.D. (1986). Aggregate data, ecological regression, and voting
+transitions. Journal of the American Statistical Association, 81, 452{460.
+Breslow, N.E. and Day, N.E. (1980). Statistical Methods in Cancer Research, Volume I: The
+Design and Analysis of Case-Control Studies. IARC Scientic publications, Number 32.
+Byers, S. and Besag, J. (2000). Inference on a collapsed margin in disease mapping. Statistics
+in Medicine, 19, 2243{2249.
+Chambers, R.L. and Steel, D.G. (2001). Simple methods for ecological inference in 2  2
+tables. To appear in Journal of the Royal Statistical Society, Series A.
+Cho, W.K.T. (1998). I the assumption ts ...: a comment on the King ecological inference
+solution. Political Analysis, 7, 143{163.
+Cleave, N., Brown, P.J. and Payne, C.D. (1995). Methods for ecological inference: an
+evaluation. Journal of the Royal Statistical Society, Series A, 158, 55{75.
+Duncan, O.D. and Davis, B. (1953). An alternative to ecological correlation. American
+Sociological Reviews, 18, 665{666.
+Flanigan, W.H. and Zingale, N. (1985). Alchemist's gold: inferring individual relationships
+from aggregate data, Social Science History, 9, 71{92.
+Forster, J.J., McDonald, J.W. and Smith, P.W.F. (1996). Monte Carlo exact conditional
+tests for loglinear and logistic models. Journal of the Royal Statistical Society, Series B, 58,
+445{453.
+Forster, J.J. and Smith, P.W.F. (1998). Model-based inference for categorical survey data
+subject to non-ignorable non-response (with discussion). Journal of the Royal Statistical
+Society, Series B, 60, 57{70.
+Freedman, D.A. (1999). Ecological inference and the ecological fallacy. To appear in International Encyclopaedia of the Social and Behavioural Sciences.
+Freedman, D.A., Klein, S.P., Ostland, M. and Roberts, M.R. (1998). Review of, `A Solution to the Ecological Inference Problem', by G. King. Journal of the American Statistical
+Association, 93, 1518{1522.
+Freedman, D.A., Ostland, M. Roberts, M.R. and Klein, S.P. (1999). Reply to G. King
+(letter). Journal of the American Statistical Association, 94, 355{357.
+25
+
+Gelfand, A.E. and Sahu, S.K. (1999). Identiability, improper priors and Gibbs sampling
+for generalized linear models. Journal of the American Statistical Association, 94, 247{253.
+Gelman, A., Ansolabehere, S., Price, P.N.. Park, D.K. and Minnite, L.C. (2001). Models,
+assumptions, and model checking in ecological regressions. To appear in Journal of the Royal
+Statistical Society, Series A.
+Goodman, L. (1953). Ecological regressions and the behavior of individuals. American
+Sociological Review, 18, 663{666.
+Goodman, L. (1959). Some alternatives to ecological regression. American Journal of Sociology, 64, 610{624.
+Greenland, S. (1992). Divergent biases in ecologic and individual-level studies. Statistics in
+Medicine, 11, 1209{23.
+Greenland, S. (2000). Ecological versus individual-level sources of bias in ecological estimates
+of contextual health eects. Submitted for publication.
+Greenland, S. (2001). Multilevel model theory for ecological analysis. To appear in Statistics
+in Medicine.
+Greenland, S. and Morgenstern, H. (1989). Ecological bias, confounding and eect modication. International Journal of Epidemiology, 18, 269{74.
+Greenland, S. and Robins, J. (1994). Ecological studies-biases, misconceptions and counterexamples. American Journal of Epidemiology, 139, 747{760.
+Grimmett, G.R. and Stirzaker, D.R. (1992). Probability and Random Processes, Second
+Edition, Clarendon Press, Oxford.
+King, G. (1997). A Solution to the Ecological Inference Problem, Princeton, New Jersey:
+Princeton University Press.
+King, G. (1999). The future of ecological inference (letter). Journal of the American Statistical Association, 94, 352{354.
+King, G., Rosen, O. and Tanner, M.A. (1999). Binomial-beta hierarchical models for ecological inference. Sociological Methods and Research, 28, 61{90.
+Lasserre, V., Guihenneuc-Jouyaux, C. and Richardson, S. (1999). Biases in ecological studies: utility of including within-area distribution of confounders. Statistics in Medicine, 19,
+45{59.
+Leonard, T. (1975). Bayesian estimation for two-way contingency tables. Journal of the
+Royal Statistical Society, Series B, 37, 22{37.
+Liao, J.G. (1992) An algorithm for the mean and variance of the Noncentral Hypergeometric
+distribution. Biometrics, 48, 889{892.
+Little, R.J.A. and Rubin, D.B. (1987). Statistical Analysis with Missing Data, New York,
+Wiley.
+McCullagh, P. and Nelder, J.A. (1989). Generalised Linear Models, Second Edition, Chapman and Hall, London.
+26
+
+Mehta, C.R., Patel, N.R., and Senchaudhuri, P. (2000). Ecient Monte Carlo methods for
+conditional logistic regression. Journal of the American Statistical Association, 95, 99{108.
+Neath, A.A. and Samaniego, F.J. (1997). On the ecacy of Bayesian inference for nonidentiable models. American Statistician, 51, 225{232.
+Prentice, R.L. and Sheppard, L. (1995). Aggregate data studies of disease risk factors.
+Biometrika, 82, 113{25.
+Richardson, S. and Montfort, C. (2000). Ecological correlation studies. In Spatial Epidemiology: Methods and Application, P. Elliott, J.C. Wakeeld, N.G. Best, D.J. Briggs (editors),
+pp. 205{220. Oxford University Press, Oxford.
+Richardson, S., Stucker, I., and Hemon, D. (1987). Comparison of relative risks obtained in
+ecological and individual studies: some methodological considerations. International Journal
+of Epidemiology, 16, 111{20.
+Robinson, W.D. (1950). Ecological correlations and the behavior of individuals. American
+Sociological Reviews, 15, 351{357.
+Rosen, O., Jiang, W., King, G. and Tanner, M.A. (2000). Bayesian and frequentist inference
+for ecological inference: the R  C case. Preprint.
+Satten, G.A. and Kupper, L.L. (1990). Continued fraction representation for expected cell
+counts of a 2  2 table: a rapid and exact method for conditional maximum likelihood
+estimation. Biometrics, 46, 217{223.
+Selvin, H.C. (1958). Durkheim's `suicide' and problems of empirical research. American
+Journal of Sociology, 63, 607{619.
+Skene, A. M., and Wakeeld, J. C. (1990). Hierarchical models for multi-centre binary
+response studies. Statistics in Medicine, 9, 919{929.
+Spiegelhalter, D., Thomas, A., and Best, N. (1998), WinBUGS: Bayesian inference Using
+Gibbs Sampling, Manual v1.2., Imperial College, London and Medical Research Council
+Biostatistics Unit, Cambridge, available from www.mrc-bsu.cam.ac.uk\bugs.
+Strawderman, R.L. and Wells, M.T. (1998). Approximately exact inference for the common
+odds ratio in several 2  2 tables (with discussion). Journal of the American Statistical
+Association, 93, 1294{1320.
+Wakeeld, J.C. (1998). Discussion of, `Some algebra and geometry for hierarchical models,
+applied to diagnostics,' by Hodges, J.S. Journal of the Royal Statistical Society, Series B,
+60, 497{535.
+Wakeeld, J.C. and Salway, R. (2001). A Statistical framework for ecological and aggregate
+studies. To appear in Journal of the Royal Statistical Society, Series A.
+Wakeeld, J.C., Smith, A.F.M., Racine-Poon, A. and Gelfand, A.E. (1994). Bayesian analysis of linear and non-linear population models using the Gibbs sampler. Applied Statistics,
+43, 201{221.
+
+27
+
+Figure Legends
+
+Figure 1: Registration/race data: (a) Proportion registered versus proportion black, the
+
+solid line denotes the OLS t, the dashed line the WLS t, plotting symbol is county number,
+(b) `tomography' lines p1i = 1;p^ixi ; 1;xixi p0i , (c) histogram of MLEs p^i from neighbourhood
+model, i = 1; :::; 275.
+
+Figure 2: Deterministic bounds on the MLEs of: (a) p^0i , (b) p^1i, (c) p^0i ; p^1i, i = 1; :::; 275,
+for the registration/race data.
+
+Figure 3: Hierarchy of models.
+Figure 4: Posterior summaries for the data of Table 4: (a) (p0 jc1), (b) (y0jc1 ), (c) (p1jc1),
+(d) (y1jc1 ), (e) (p0; p1jc1), (f) (p1 ; p0jc1).
+Figure 5: Posterior summaries for simulated data in which p0 = p1 = 0:2 and xi = i=12,
+i = 1; :::; 5. First ve rows contain (p0ijc1i), (p1ijc1i), (p0i; p1ijc1i ), i = 1; :::; 5. The
+nal row contains pi versus xi, Pr(p0i > p1ijc1i) and the posterior medians p~0i versus p~1i ,
+
+i = 1; :::; 5.
+Figure 6: Posterior summaries for simulated data in which p0 = 0:8; p1 = 0:6 and xi = i=12,
+i = 1; :::; 5. See Figure 5 legend for details.
+Figure 7: Posterior plots from two chains of an MCMC analysis for county 150 of the
+registration/race data. Panels (a) and (b) give the time series plots for p0 for chains 1 and 2,
+respectively, with panels (c) and (d) giving the resultant histograms. The second and third
+rows show the equivalent plots for p1 and y0, respectively. Panels (m) and (n) give the time
+series plots for p = p0  x + p1  (1 ; x) for the two chains, and panels (o) and (p) the
+(p0; p1)-pairs under the two chains.
+Figure 8: Posterior plots for county 150 of the registration/race data: (a) (p0jc1 ), (b)
+(y0jc1), (c) (p1jc1), (d) (y1jc1), (e) (p0 ; p1jc1), (f) normalised likelihoods along tomography line under convolution and approximate normal likelihood (indistinguishable, solid line),
+and approximate binomial (dashed line).
+Figure 9: Posterior plots for county 50 of the registration/race data: (a) (p0 jc1), (b)
+(p1jc1), (c) (p0 ; p1jc1), (d) normalised likelihoods along tomography line under convolution
+and approximate normal likelihood (indistinguishable, solid line), and approximate binomial
+(dashed line).
+Figure 10: Posterior medians for all areas for the registration/race data using the baseline
+model with independent uniform priors on p0i ; p1i: (a) scatter plot of posterior medians of
+(p0i; p1i), (b) scatter plot of medians of (logit p0i; logit p1i ), (c) normal scores plot for logit p0i ,
+(d) normal scores plot for logit p1i , (e) posterior medians of p0i versus xi, (f) posterior medians
+of p1i versus xi, i = 1; :::; 275.
+Figure 11: Posterior medians for all areas for the registration/race data using the baseline
+model and independent Beta(a,b)Beta(a,b) priors: (a) p0i ; a = 1; b = 1, (b) p1i ; a = 1; b = 1,
+(c) p0i ; a = 3; b = 2, (d) p1i ; a = 3; b = 2, (e) p0i; a = 4; b = 1, (f) p1i ; a = 4; b = 1,
+i = 1; :::; 275.
+28
+
+p1
+
+40
+
+0.6
+
+0.8
+
+60
+
+30
+8 39
+15 112
+87
+124
+136
+13399
+111
+117
+57997
+113
+217
+10
+549
+16879
+115
+43 65
+96
+647
+66
+125
+51
+36
+58
+27
+93
+2 6912
+119
+11767
+21
+159
+34
+60 118
+31191
+70 247
+6428
+110
+19
+50
+95
+89
+73
+52
+90
+114
+237
+26
+68 62
+205
+228
+180
+78
+91
+106
+185
+6156 116 139
+149
+45
+197
+1
+24
+195
+175
+123
+92
+42 108
+120
+128
+26118323131
+37
+82
+141
+40
+220
+202
+235
+181
+80
+46160
+41 4 206
+18 71102
+126
+17
+164
+223
+29
+179 7238
+162
+161
+84
+226
+242
+213 3 94 157
+267
+122
+145 53190
+32
+189 33
+258
+221
+16
+25 153 270
+143
+188
+176100
+55 127
+186 48129273
+243
+16974
+77
+254
+215 13
+121
+98 251
+132
+219 194138250
+232
+172 249
+264
+166216
+105
+244
+170
+231
+257
+173
+54193203
+14
+274
+22
+224
+35
+171 107
+240
+81
+182
+142
+265
+88212 234
+209
+198
+208
+109
+140
+260
+262
+165
+44
+245
+144
+135 177 256
+178246
+152
+163 83
+200
+271 253
+101
+214
+255
+184 167
+192 241
+227
+218
+268
+199
+239
+75 269
+238
+266252 230
+263
+248
+174
+259
+104
+76
+103
+222
+63
+275
+204
+134
+150
+187
+158
+207
+155 225272
+210
+236
+233
+137
+151
+
+(c)
+
+1.0
+
+(b)
+
+20
+85
+
+148
+
+0.4
+
+0.4
+
+156
+154
+211
+146
+
+229
+
+201
+
+147
+196
+
+130
+
+59
+
+0.2
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+Proportion black
+
+0.8
+
+1.0
+
+0
+
+0.0
+
+0.2
+
+20
+
+86
+
+0.0
+
+Figure 1:
+
+29
+
+Proportion registered
+
+0.6
+
+0.8
+
+1.0
+
+(a)
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+p0
+
+0.8
+
+1.0
+
+0.2
+
+0.4
+
+0.6
+Distn of MLEs of p
+
+0.8
+
+1.0
+
+Bounds on MLE, p0
+0.2
+
+0.4
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.6
+
+0.8
+
+1.0
+
+0.0
+
+0.0
+
+0.2
+0.4
+
+(a)
+
+X
+0.6
+0.8
+1.0
+Bounds on MLE, p1
+0.0
+0.2
+0.4
+
+(b)
+
+X
+0.6
+
+Figure 2:
+
+30
+
+0.8
+1.0
+-1.0
+
+-0.5
+
+Bounds on MLE, p0-p1
+0.0
+
+0.5
+
+1.0
+
+0.0
+0.2
+0.4
+
+(c)
+
+X
+0.6
+0.8
+1.0
+
+Figure 3:
+
+31
+
+400
+200
+0
+
+0
+
+100
+
+200
+
+600
+
+(b)
+
+300
+
+(a)
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+1.0
+
+1.5
+
+2.0
+
+p0
+
+y0
+
+(c)
+
+(d)
+
+3.0
+
+1.5
+
+2.0
+
+0.5
+
+1.0
+
+150
+
+0
+
+0
+
+50
+
+200
+
+100
+
+400
+
+Figure 4:
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.2
+
+0.5
+
+1.0
+y1
+
+(e)
+
+(f)
+
+0.4
+
+0.6
+p0
+
+0.8
+
+50
+
+100
+
+150
+
+200
+
+250
+
+• •
+• •••••• • ••• •••••••• • ••••• ••••••••••••••••••••••••••••••••••••• •• • ••• •••••••••• •• • ••••••• • •• •• ••
+•
+•••
+• • ••• •••• •••• ••• •• • • • • • ••• •
+• •• •
+•
+•• • •••••••••••• ••• •• ••••• ••••••••••• •••••••••• •• •••••• ••••• ••••• •• •••••••• ••••• ••• • •• •••• •• •
+• • •
+• •
+•• •• •• • • •• • ••••••••••• •••••••• •• ••••••••••••• ••••• •••••••••••••••• ••••••••• ••• • •• ••
+•• •
+• ••••••• •• ••• ••• •• ••••• ••• •••• ••••••••••••• •••••••••• ••••••••• ••••• • ••••• •• • • •• • • •• • •••• • •• • •• •
+• • •••• • ••• •••• •• •• ••• ••••••• ••• • •• • •••••••• ••• ••••• •••• • • •• •••• • • • • • •• •
+•
+•
+•
+••
+•• •
+• • ••
+•• •••• • ••• •• • • ••• ••• • •• ••• •• ••• • • • • • ••••
+• • • •••• • ••• ••• • • •••• ••• ••••••••••• • • •• • •••• •• •••• •• ••• •• •• •• • • • • • • • •
+•• • •
+•• • •• • • ••• ••••••••••••• ••• •• • • ••• •••• ••• •• •••••• ••• •••• ••••••••• ••••••• • •••• • • •• • ••
+•••••••• • • •• • •• •• • ••• ••••• • •• • • •••••• ••••••• •• •••• •••• • • • •• ••• • • •• • • • •• ••• • •
+•• •
+••
+• •
+•
+• • • • •• •• •• •••• • ••••• • ••••••• ••• • • •• • •••••••• ••• • • •• ••• • • ••• • •
+• • •••• • •••• • •••• • •••••• •••• ••• •••••• • •••••••• ••• •• •• • • • • • • • •••••• • • ••• • • •
+• • •• • •••••• •• •• ••••••• • •••••••••• •• •••••••••••• ••••••••• •••••• ••••••••••••• •••••••••••• •••••••••• • • •••••••• ••• •• • • ••••• •• • • •• •
+•
+•
+• •
+•
+•
+• • • • • •••• ••••• •• • •• • ••• •• •• ••••• • •• ••• ••••••••• •••• •• •••• ••• • •• •
+•
+•
+•
+••
+•• • • ••• • •• ••• • •• •• •• • •• • •
+•
+••• • • • •• •• •
+•
+• • • • •••••• •• •••• • ••• •••••••••••••• ••••••••••••• ••••••••• •• • •• •• ••• ••• •••• • •• •••• •• •• • •••• • •••••• • •• •••
+•
+•
+••
+•
+•
+• • ••• • • •• ••• • • •• • •••••• ••••••••• • •••• •• • •••••• ••• ••••••••••••••••• ••• ••••••• •• •• •• •• •• • •••••• ••• ••
+•
+•
+•
+• • • •• •••• ••••• •• •• ••• • •••••••• ••••• •• • •• •• ••••• • ••• ••• ••• •••• • •
+•
+•
+•
+•
+•
+•
+•
+•
+• •••
+•• •
+•• •• •
+• • • • • •• ••
+••
+• •• • • ••• •• ••• • •• ••• •• • ••••••••• • •••••• ••• ••••• • ••••••••••••• • •••••••• • ••••• •••••••••••• •• • • ••• ••
+•
+• • • •• •
+•• •• • • • ••
+• •• • • •••• • •• •• •
+•
+• •••• •••••• •• • • ••••••••
+•
+••••••••••••• • •••• ••••• •••• • •• •• ••• ••••• •••• ••• •• •• •• • •••••••••••••• ••• ••••• • •• • • • • •• •
+• •• • ••
+•
+•
+• • • • • • • ••• • • •••• • •••• ••• • • • • ••• •••• •••• • ••••••• •• •• • •
+•• •
+• •• •• •• • • • • •• • ••• ••• •••• • • ••• •• •
+• •
+•
+• •• ••
+0.0
+
+0.0
+
+p1
+
+300
+
+0.2
+
+0
+
+0.2
+
+0.4
+
+p1
+
+0.6
+
+0.8
+
+1.0
+
+0.0
+
+0.0
+
+32
+
+2.5
+
+600
+
+200
+
+0.0
+
+1.0
+
+-1.0
+
+-0.5
+
+0.0
+p1-p0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+p1
+0.0 0.6
+
+0 40 100
+
+0 40 80
+0.0
+
+0.0
+
+0.2
+
+0.4
+
+0.8
+
+1.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+p1
+0.0 0.6
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+p1
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+p1
+0.0 0.6
+
+0 40 80
+
+0.2
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0
+
+40
+
+p1
+0.0 0.6
+
+p1
+
+0 40 80
+
+p0
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.0
+
+0.2
+
+2
+0.2
+
+3
+
+4
+
+0.6
+X
+
+0.2
+
+0.4
+
+0.8
+
+1.0
+
+0.0
+
+0.2
+
+0.6
+
+0.4
+0.6
+Pr(p0>p1|data)
+
+Figure 5:
+
+33
+
+0.6
+
+0.8
+
+1.0
+
+•••••••
+••••••••
+••••••••••••••••••
+••••••••
+•••••••••••
+•••••••
+•••••••••••
+•••••••••••••
+•••••••••••
+•••••
+•••••••
+•••••••
+••
+••••••
+•••••••••••••••••••••••
+••••••
+•••
+••
+••••••••
+••••••
+0.0
+0.2
+0.4
+0.6
+p0
+
+1.0
+
+0.8
+
+1.0
+
+1.0
+
+0.8
+
+1.0
+
+0.6
+
+0.8
+
+1.0
+
+0.4
+0.6
+p0 median
+
+0.8
+
+1.0
+
+••••••••••••
+••••••
+•••
+••••••
+••••
+••••••••
+••••••
+•••••
+•••••
+••••••••
+•••
+••
+•••••••••••••••
+••••••
+•••
+•••••••••••••••••
+•••••••••
+•••••••••
+••••
+•••••
+••••••
+•••
+0.0
+0.2
+0.4
+
+p1
+
+5
+0.4
+
+0.8
+
+•••
+••••••••
+•••••••
+•••
+••
+•••••••••••••••••••••••••
+••••••
+•••••••••••••••••
+••••••••••••••••••••••••
+•••••••••••••••••••••••
+••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+0.0
+0.2
+0.4
+0.6
+0.8
+p0
+
+p0
+
+p1 median
+0.0 0.6
+
+1
+0.0
+
+0.4
+
+0.0 1.0 2.0
+
+p0
+
+0.6
+
+p0
+
+0 40 80
+
+p0
+
+0.0
+
+0.4
+
+••••••••••••••••••
+•••••••••••••••••
+•••••
+••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+•••••••••••••
+••••••••••••••••••••••••••••••••••••••••••••••••
+•••••••••••
+•••••••••••••
+0.0
+
+p1
+0.0 0.6
+
+0 40 80
+
+0.2
+
+0.2
+
+p1
+
+0 20 60
+
+p0
+
+0.0
+
+0.0
+
+p0
+
+0 40 80
+0.0
+
+Prob of response
+0.0 0.6
+
+0.6
+p1
+
+0 40 80
+
+p0
+
+••••••••••••••••••••••••
+•••••••••••••••••••
+••••••••
+••••••••
+••••••••••••••••••••••••
+•••••••••••••••••
+••••••••••
+••••••
+••••
+••••••••••••••••••••••
+•••••••••
+•••••••••••••••••••••••••••••••••••••••••
+••••••••
+•••••••••••••••••••••
+
+0.8
+
+1.0
+
+5
+0.0
+
+0.2
+
+4
+
+2
+3 1
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+p1
+0.0 0.6
+
+0 40 80
+
+0 40 80
+0.0
+
+0.0
+
+0.2
+
+0.4
+
+0.8
+
+1.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+p1
+0.0 0.6
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.6
+
+0.8
+
+1.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.2
+
+0.0
+
+0.2
+
+3
+
+4
+
+0.4
+
+0.6
+X
+
+0.0
+
+0.2
+
+0.8
+
+1.0
+
+0.0
+
+0.2
+
+0.6
+
+0.4
+0.6
+Pr(p0>p1|data)
+
+Figure 6:
+
+34
+
+1.0
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+•••••••••••••••••••
+••••••••••••••••••••••••
+•••••
+••••••••••••••••••••••••••••••••
+••••••
+••••
+••••••
+•••
+••••••••••••
+•••••••••••••
+••••••••
+••••••••
+••••
+••••••••
+•••••••••••••••••••••••••••
+•••••••
+
+0.8
+
+1.0
+
+0.0
+
+0.2
+
+p1
+
+5
+
+0.8
+
+••••••••••••
+•••••
+••••••
+••••••••••
+•••••••••••••
+••••••••••••••••••••
+•••••••••••••••
+••••
+••••••
+•••••••
+•••••••••
+•••••••••••
+•••
+••••••••••••••
+•••••••••••••
+•••••••
+•••••••••••••••••••••••
+••••
+••••••••••••••••••••••••••••••••••••••
+•••••••
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.8
+
+1.0
+
+p0
+
+p1 median
+0.0 0.6
+
+2
+
+0.4
+
+0.0 1.5 3.0
+
+1
+
+0.2
+
+p1
+0.0 0.6
+0.0
+
+p0
+
+0.6
+
+p0
+
+0 40 80
+
+150
+
+0.2
+
+0.4
+
+p1
+
+0 50
+0.0
+
+1.0
+
+••••••••••••
+••••••••••••••••••••••••••
+••••••••••••••••••••••••••••
+•••
+•••••••••••
+••••••••••••••••••••
+•••••••••••••••
+••••••
+•••••••••
+•••••••••••••••
+••
+•••••••••••••••••••••••••••••••••••••
+••••••
+•••
+•••••••
+•••••••••••••••••••••
+0.0
+
+p1
+0.0 0.6
+0.0
+
+p0
+
+0.8
+
+p0
+
+0 40 80
+0.4
+
+0.2
+
+p1
+
+0 40 80
+
+0.2
+
+0.6
+
+••••••••••••••••••••••••••••
+••••••••
+•••
+•••••••••••••••••••
+••••••••
+•••••••••••••••••••••••
+•••••••••
+••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+•••••••••••••••••••••••••
+••••
+••••••••••••
+••••••••••••
+
+0.0
+
+p1
+0.0 0.6
+0.0
+
+p0
+
+0.0
+
+0.4
+
+p0
+
+0 50
+
+0 40 80
+
+0.2
+
+0.2
+
+p1
+
+150
+
+p0
+
+0.0
+
+0.0
+
+p0
+
+0 40 80
+0.0
+
+Prob of response
+0.0 0.6
+
+0.6
+p1
+
+0 40 80
+
+p0
+
+•••••••
+••••••••••••••••
+••••••
+•••••••••
+•••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+•••••••••••••••••••••••••••••••••••••••••••••••••••••••
+••••••
+••••••••••••••••••••••••••
+••••••••••
+••••
+••••
+••••••
+
+0.8
+
+1.0
+
+34
+2
+1
+
+0.0
+
+0.2
+
+5
+
+0.4
+0.6
+p0 median
+
+2500
+0 500
+1.0
+
+0.0
+
+0.6
+
+0.8
+
+1.0
+
+2000 4000 6000
+
+2500
+
+0
+
+0 500
+
+0.4
+
+0.6
+
+0.2
+
+0.4
+
+0.6
+
+p1 chain 1
+
+p1 chain 2
+
+(k)
+
+(l)
+2500
+1500
+0 500
+
+1000
+
+2000
+
+3000
+
+4000
+
+0
+
+1000
+
+2000
+
+3000
+
+4000
+
+y0 chain 2
+
+(o)
+
+p
+
+••••••••••••••••••••••••••
+••••••
+•••••••••••••
+•••••••••••••••
+•••••••••••••
+••••
+••••
+•••••••••
+••
+••••••
+••
+•••
+••••
+••••
+•••
+••••
+•••••••••••
+•••
+••
+•••••
+•••••••
+••
+••••••
+••••••••
+••••••
+••••••
+•••••
+•••••
+•••
+•••••
+••••
+••••
+••••••
+••
+••••
+••
+•••
+•••••
+•••••
+•••••
+••••
+••
+••
+••••
+••
+•••
+••••••••
+•••••
+••
+••
+•••
+•••••••
+••••••
+•••••••
+••••
+•••••••
+•••
+•••••
+••
+••
+•••
+•••
+•••••
+••••••
+•••••
+••
+••
+•••••
+•••
+•••••
+•••••••
+••
+•••
+••••
+••
+•••••
+••••
+•••
+•••
+••
+••
+••
+••
+••
+•••
+••••
+••
+•••••
+••••
+•••••••
+••••••••
+•••••••
+••
+••••
+•••
+••••
+••••
+••••
+•••
+••
+•••
+••
+•••
+••
+••
+•••
+•••
+•••
+•••••
+•••
+••
+•••••
+•••••
+•••
+••
+••
+••••
+••
+••
+••
+••••••••
+•••
+••••
+•••
+••••••
+•••••
+•••••
+••
+••••
+••
+•••
+•••••
+••••••
+•••
+••••
+•••••••
+••••
+••
+•••••
+••••
+••
+••
+•••••••
+••
+•••
+••••
+••
+••••••••
+••
+•••••
+•••
+•••
+••••••
+•••••
+••••
+•••
+••
+•••
+••••
+•••
+•••••
+•••••
+•••
+••
+••••
+••
+•••
+••••
+•••
+•••
+••
+•••
+•••
+••
+•••••
+••••••
+•••
+••••
+••
+••••
+••
+•••
+••••
+••••
+••••
+•••••
+••
+•••••
+•••••••
+•••
+••
+••
+•••
+••••
+•••••
+•••
+•••••
+••
+••••••
+••
+•••••
+•••
+••••
+••••
+••
+•••
+••
+••
+•••••••
+••••••
+•••
+•••••
+•••••
+••
+••
+•••
+••
+••
+••••••
+••••
+••••
+••
+•••••
+•••••
+•••
+••••
+••
+•••
+••••
+••••••
+••
+•••
+•••
+••••••
+••••
+••••
+•••
+••
+•••
+••
+•••
+•••
+•••
+••••
+••
+•••
+••••
+•••••
+•••
+••
+••••••
+••
+••••
+••
+••••••
+••
+••••
+••••••
+•••••
+••••
+•••
+•••
+••
+••
+•••••
+••
+•••
+•••••
+••
+•••
+•••••
+••
+••••••
+•••
+•••••
+•••
+••••
+••••
+••••
+•••
+••
+••
+•••
+••
+•••
+•••
+••••••••
+•••••••
+••••••••••
+••
+•••
+•••••
+••
+••
+••••••••••
+••••
+••••
+••••
+•••
+•••••
+••
+•••••
+••••
+••
+••
+••••
+••
+•••••
+•••
+••
+•••
+••
+•••
+•••
+••
+•••
+•••
+••
+••••
+••••
+•••
+•••
+••••••
+••
+•••
+••••
+•••••
+••
+••
+••
+•••
+••
+•••
+••
+•••
+•••
+•••••
+•••
+••
+•••
+•••••••
+••
+••••
+•••
+•••••
+••••••
+••
+•••
+••••
+••
+•••••
+••
+•••
+••••••
+••
+•••
+••••
+••••••••
+••••
+••
+•••
+••
+••••••
+••••••••
+••••
+••••
+••••
+••••••
+••
+••
+•••
+••••
+••••••
+••••••••
+•••
+••••••
+••
+•••••
+••
+••••
+•••••
+••••••••••
+••••
+•••
+••••
+••
+•••
+•••••••
+••
+••••••
+••••••
+•••••••••
+••
+•••••••••••
+•••••
+••••
+•••••••••••••••••••••
+
+•••••••••
+••••••••••••••••••
+••••••••••••••
+•••••
+•••••••••••
+••••
+•••••
+••••••••••••
+•••••••
+•••••••
+•••••
+••••
+•••
+••
+•••••
+••
+••••••
+•••••••
+•••
+••••
+••••••
+••••
+••
+•••••
+•••
+••
+••••••••••••
+••
+•••••
+•••••••
+••
+•••••
+•••••
+•••
+•••••
+•••••
+••
+••••••
+•••
+••••••••••
+••••••
+••••
+•••••
+•••••
+••••••••
+••••••••
+••••
+••••••••
+••••
+•••••
+••••••
+•••••
+••••
+••••••
+•••
+••••••
+•••••••
+•••
+••
+•••
+•••••
+••••
+••••••
+•••
+••••••••••••
+•••••
+•••••••••
+••
+•••
+•••••••
+•••
+••
+•••
+•••••••
+••••
+•••
+••
+••
+••••••
+••
+•••
+••••
+••
+•••
+•••••
+••
+••
+•••
+••
+••
+•••
+••
+•••
+••••
+•••
+•••
+••
+••
+•••
+•••••••
+••••
+•••
+•••
+••••••
+•••••••••
+•••
+••
+•••
+••
+••
+••••
+••
+••••
+••
+••••
+••••
+••
+•••
+•••
+••••
+•••
+•••
+••••••
+••••••
+•••
+••
+•••••••
+••••
+••
+••
+•••
+•••
+••
+•••
+•••
+•••
+••••
+••••••
+••••
+••••
+••••
+••••••
+••
+••••••
+••••
+••••••
+•••••••••••••
+••
+••••••••
+•••••
+•••••
+•••
+•••••
+•••
+••••
+••••
+••
+••••
+••••
+••
+••••
+•••••••
+••••
+••••
+••
+••
+••••••
+•••••
+•••••••
+•••
+•••••
+••••
+••
+••••••
+••
+•••••••
+••••
+••
+••
+•••
+••
+•••
+••••
+••••
+••
+•••
+••
+••••
+••
+•••••••••
+••
+••••••
+••••
+••••••
+•••••••
+•••
+••
+•••
+•••
+••
+••••••
+••
+•••
+••••••
+•••
+•••••
+•••
+•••••
+••••
+••
+••
+••
+••
+•••
+•••
+•••
+••••
+•••••
+•••
+•••••••••
+••••
+•••••
+••••
+•••
+•••
+•••••
+•••
+••••••••
+••
+•••••
+••
+•••••
+•••
+•••
+•••
+••
+••••••
+••
+••
+••••
+••
+••••
+••••••••
+•••••
+•••
+••
+•••••••
+••••••••••••••
+•••••••
+••••••••••
+••••
+•••
+•••
+••••
+••••••
+••••
+•••
+•••••
+••
+•••
+•••••••••
+••••••
+•••
+•••••
+••••••••••
+••
+•••••••••
+••••
+••••
+••••••••••
+•••••
+••••
+•••••
+••••
+••
+••••
+•••
+••••
+••••
+•••••
+•••••••••••••••••••••••••••••••••••
+••••
+••••
+••••••
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+p0 chain 1
+
+0.8
+
+1.0
+
+06
+
+p1 ha n 2
+
+07
+
+y0 chain 1
+
+05
+
+0.7
+0.6
+
+p1 chain 1
+
+0.4
+5000 10000 15000 20000 25000 30000
+
+0.4
+
+(h)
+
+2000
+0
+
+0.55
+0.45
+0
+
+0.2
+
+(g)
+
+500 1000
+
+y0 chain 2
+
+0.8
+
+p0 chain 2
+
+(n)
+
+p chain 2
+
+0.6
+
+p0 chain 1
+
+0
+5000 10000 15000 20000 25000 30000
+
+0.35
+5000 10000 15000 20000 25000 30000
+
+0.4
+
+1500
+
+0.6
+0.2
+
+0.2
+
+1000 2000 3000 4000
+
+1000 2000 3000 4000
+
+5000 10000 15000 20000 25000 30000
+
+0
+0
+
+0.55
+0.45
+0
+
+0.2
+
+(j)
+
+0
+
+y0 chain 1
+
+0.0
+
+0.4
+
+p1 chain 2
+
+0.6
+0.4
+
+p1 chain 1
+
+0.2
+
+0
+
+5000 10000 15000 20000 25000 30000
+
+0.35
+
+35
+
+Figure 7:
+
+5000 10000 15000 20000 25000 30000
+
+(m)
+
+p chain 1
+
+5000 10000 15000 20000 25000 30000
+
+(f)
+
+(i)
+
+0
+
+1500
+
+2000
+500 1000
+0
+
+(e)
+
+0
+
+(d)
+
+04
+
+5000 10000 15000 20000 25000 30000
+
+0.5
+
+0
+
+(c)
+
+0
+
+p0 chain 2
+
+(b)
+0.0 0.2 0.4 0.6 0.8 1.0
+
+p0 chain 1
+
+0.0 0.2 0.4 0.6 0.8 1.0
+
+(a)
+
+00
+
+02
+
+04
+
+06
+
+p0 ha n 2
+
+08
+
+10
+
+(b)
+
+0
+
+0
+
+20
+
+40
+
+50
+
+60
+
+100
+
+80 100 120
+
+150
+
+(a)
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0
+
+(c)
+
+(d)
+
+150
+100
+
+3000
+
+4000
+
+7000
+
+8000
+
+0
+
+50
+0
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+4000
+
+5000
+
+6000
+
+p1
+
+y1
+
+(e)
+
+(f)
+1.0
+
+0.2
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+•
+
+0.0
+
+0.0
+
+0.2
+
+•••••••••••••••••••••••••••••
+•••••••••••••••••
+••••••••••••••••••••••••••••
+•••••••••••••••••••
+••••••
+••••••••••••••••••••••••••••••
+••
+••••••••••••••••••••••••••••
+•••••••••••••••••••••••••••••
+••••••••••••••••••••••••••••
+•••••••••••••••••••••••••••
+•••••••••••••••••••••••••••••
+•••••••••
+
+•
+
+Scaled likelihood
+0.2 0.4 0.6 0.8
+
+0.8
+0.6
+p1
+
+2000
+y0
+
+1.0
+
+0.0
+
+0.4
+
+1000
+
+p0
+
+20 40 60 80 100 120 140
+
+0.0
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.0
+
+p0
+
+0.2
+
+0.4
+
+0.6
+p0
+
+Figure 8:
+
+36
+
+0.8
+
+1.0
+
+(b)
+
+0
+
+50
+
+100
+
+150
+
+0 50 100 150 200 250
+
+(a)
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.2
+
+0.2
+
+0.4
+
+0.6
+
+p0
+
+p1
+
+(c)
+
+(d)
+••••
+•••••••
+••••••••••
+••••
+•••••••
+••••
+•••••
+••••
+•••••
+•••••
+••••
+•••
+••••
+•••
+•••••••
+•••••
+•••••
+•••
+
+0.0
+
+0.0
+
+Scaled likelihood
+0.0 0.2 0.4 0.6 0.8 1.0
+
+0.2
+
+p1
+0.0 0.2 0.4 0.6 0.8 1.0
+
+0.0
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+Figure 9:
+
+37
+
+1.0
+
+• •
+• • •
+• • • • • • • • • •
+
+0.7
+
+p0
+
+0.8
+
+0.8
+p0
+
+0.9
+
+1.0
+
+130
+
+136
+
+4
+59
+130
+86
+
+86
+0.2
+
+111 133 97 99
+57 9
+217
+79
+1047
+549
+65
+6669643
+51 36 125
+58
+93
+27
+21
+11
+7
+67
+119
+159
+34
+2
+31
+6912
+64 50
+28
+60
+191
+110
+118
+19
+70
+52
+7395
+68 7889
+247
+2690 237
+205
+180
+185
+114
+197
+5662
+228
+1120
+149261 4181
+45
+61
+123
+42
+183206
+92
+23
+24
+37
+116 139
+106
+91
+160
+175
+141
+41179 17164
+18131
+108
+126
+202
+80
+72157
+29
+82
+220
+71
+235
+128
+38
+46
+40
+195
+102
+94
+122
+161
+84 223
+190
+242
+258
+221
+16
+53
+3 270127
+32 162
+213
+226
+55
+153
+129
+273
+145
+105
+54
+189 267
+48
+77
+194
+250
+257
+138
+143
+13
+25
+193
+98
+173
+231
+107
+219
+169
+132
+88
+265
+203
+198
+74
+186
+22
+14
+188
+264
+216
+33
+212
+254
+166
+172
+251
+176
+215
+244
+35
+170
+182
+81
+240
+178
+171
+245
+109
+165
+140
+209
+100
+246
+249
+184
+234
+142
+208
+200
+227
+224
+241
+101
+253
+163
+135
+152
+44
+271
+121
+243
+144
+218
+177256
+192
+239
+199
+255
+214
+269
+230
+262
+260 232
+75
+268
+274
+104
+103
+76
+252
+248167 83
+266
+63
+259
+174
+275
+150263
+134
+187
+158
+225
+222238
+236
+155
+272
+85 204
+210
+233
+8207
+15
+30
+39
+112
+87
+124
+20
+137
+151
+229
+156
+148
+154
+211
+147
+146
+196
+201
+168
+
+logit p1
+2
+
+p1
+0.6
+
+0.8
+
+8
+15
+30
+87
+39
+112
+124
+136
+97
+99117
+111
+133
+57
+217
+92
+79
+549
+10
+168
+47
+66
+43
+65
+125
+696
+5164
+113
+36
+93
+58
+27
+767
+21
+15911
+119
+34
+31
+69
+12
+28
+60
+191
+110
+118
+19
+70
+50
+89
+95
+52
+73
+68
+247 115
+2690
+180
+205261
+62
+78
+185
+237
+114
+197
+56
+228
+1120
+149
+45
+61
+123
+92
+42
+183 206
+23
+181
+24
+37
+106
+116139
+174 164
+91
+160
+175
+141
+18131
+41
+108
+126
+80
+202
+29
+72
+82
+179
+71
+235
+220
+128
+38
+46
+40
+195
+102
+157 162
+94
+122
+161 223
+84
+190
+242
+258
+221
+16
+53
+3273
+270 32
+213
+226
+55
+153
+129
+127
+145
+105
+54
+77
+48
+267
+194
+250
+257
+138203
+143
+13
+25
+193
+9816974 189 33
+173
+107
+231
+132
+219
+88
+265
+186
+22
+198
+188
+264
+14
+216
+212
+254
+166
+251
+172
+176
+35
+215
+244
+240171
+81170
+178
+109 182
+165
+140
+209
+184
+246
+100
+142
+241
+208245
+227
+224
+200
+253
+101
+135177 234 249232
+163
+152
+44
+271
+121
+144
+243
+218
+192
+239
+199
+255 167
+269
+214
+230
+262
+83
+260
+256
+75
+268
+274
+104
+103
+76
+252
+266
+259
+63
+174248263
+204275
+150 222 238
+134
+207
+187
+158
+225
+272
+236
+155
+85
+210
+233
+20137
+151
+229
+156
+148
+154
+211
+147
+146
+196
+201
+
+59
+0.4
+
+(b)
+
+0
+
+1.0
+
+(a)
+
+0.4
+
+0.6
+p0
+
+0.8
+
+1.0
+
+-1
+
+0
+
+(c)
+•
+••
+
+•
+
+Quantiles of logit p1
+2
+4
+
+•
+• ••••••
+•••••••••
+••••••••••••
+•
+•
+•
+•
+•
+•
+•
+•
+•
+••••••••••••
+•••••••
+••••••••
+•
+•
+•
+•
+•
+•••••••
+•••••••
+••••••••••••
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+••
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+• •••••••••••••••••••••••••••••••••
+
+•
+
+•
+-3
+
+•
+-2
+
+-1
+0
+1
+Quantiles of Standard Normal
+
+2
+
+3
+
+-3
+
+• • • ••
+
+•
+••••
+••••••
+••••••••••
+•
+•
+•
+•
+•
+•
+•
+•
+••••••
+••••••
+••••
+•
+•
+•
+•
+•
+••
+••••••••••••
+••••••••
+•••••••
+•
+•
+•
+•
+•
+•
+•
+••••••••••••
+••••••••••••••
+•••••••••
+•••••••••
+•
+•
+•
+•
+•••••••••••
+••••••••••••••
+•••••
+
+-2
+
+-1
+0
+1
+Quantiles of Standard Normal
+
+0.8
+
+0.8
+p0
+0.6
+
+•
+••
+•••
+• ••
+• •
+••
+•
+•
+•
+•
+•
+•
+•
+•
+•
+
+•
+
+0.2
+
+•
+0.4
+
+•
+
+2
+
+• •• •• • •••• ••••••••••••• • •• •• •••
+•
+• • •• •• •• • •• •
+• • ••
+• • •••• • • • • ••• • • •••••• • ••• ••
+•
+• • •• •• ••••• • •••••• ••• • • • •
+•
+•
+•
+•
+•
+• • •• •• •• • • •
+••
+•
+•
+• • • • • • •• •• ••• • • •• • ••• • •••
+• •• • •
+••
+•
+•
+•• • •• ••• • • • •• ••••
+•
+•
+• • •••
+•
+•
+•
+•• • • • •
+• ••
+•
+• •
+• • • • • ••
+••
+•
+• •• •
+•
+•
+•
+•
+•
+•
+•
+•
+•• •
+•
+•
+• •
+•
+• • •
+•• •
+••
+•
+•
+•
+••
+•
+•
+•
+• •
+• •
+•
+•
+•
+•
+
+•
+
+p1
+0.6
+
+• ••
+••
+•
+••
+• •
+••
+• • •• •
+•
+•
+•
+•
+•
+• • • •••• • • •• •• • •• • • • •
+•
+••• • •
+•• ••• •
+••• ••
+• • • ••• •••
+•• • •
+•
+• • •
+• •• •• • • • • •• ••••• •
+• • •• ••
+• •
+•
+• ••
+•
+••• • •• • •
+•
+••
+• • • •• • • •• • • •
+•• ••• • •••• •••• ••••••• ••••••••• •••••••••••••• ••• • •• • • •
+•
+•
+•• •••• • ••••••••• • • •
+••• • •••••• •• •••••• •• •••••
+•
+
+0.4
+
+1.0
+
+•
+
+0.2
+
+•• • •
+
+3
+
+(f)
+
+0.4
+
+1.0
+
+(e)
+
+0.0
+
+3
+
+•
+
+0
+
+Quantiles of logit p0
+0
+1
+2
+3
+-1
+
+•
+
+2
+
+(d)
+•
+
+•
+
+1
+logit p0
+
+115
+
+117
+113
+
+•
+
+0.6
+
+0.0
+
+X
+
+0.2
+
+0.4
+X
+
+Figure 10:
+
+38
+
+0.6
+
+•
+
+(b)
+
+0
+
+0
+
+20
+
+20
+
+40
+
+40
+
+60
+
+80
+
+60
+
+100
+
+(a)
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.0
+
+0.2
+
+0.4
+
+p0
+
+p1
+
+(c)
+
+(d)
+
+0.6
+
+0.8
+
+1.0
+
+0.6
+
+0.8
+
+1.0
+
+0.6
+
+0.8
+
+1.0
+
+0
+
+0
+
+20
+
+20
+
+40
+
+40
+
+60
+
+60
+
+80
+
+80
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.0
+
+0.2
+
+0.4
+
+p0
+
+p1
+
+(e)
+
+(f)
+
+0
+
+0
+
+20
+
+20
+
+40
+
+40
+
+60
+
+60
+
+80
+
+0.0
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0.0
+
+p0
+
+0.2
+
+0.4
+p1
+
+Figure 11:
+
+39
+
+

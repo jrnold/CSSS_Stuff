@@ -1,0 +1,2723 @@
+Testing for nodal dependence in relational data
+matrices
+Alexander Volfovsky1 and Peter Hoff1,2
+Working Paper no. 132
+Center for Statistics in the Social Sciences
+University of Washington
+Seattle, WA 98195-4322
+June 24, 2013
+
+of Statistics1 and Biostatistics2 , University of Washington. This work was partially
+supported by NICHD grant 1R01HD067509-01A1. The authors would like to thank Bailey Fosdick
+for helpful discussions.
+0 Department
+
+Abstract
+Relational data are often represented as a square matrix, the entries of which record the
+relationships between pairs of objects. Many statistical methods for the analysis of such data
+assume some degree of similarity or dependence between objects in terms of the way they
+relate to each other. However, formal tests for such dependence have not been developed.
+We provide a test for such dependence using the framework of the matrix normal model, a
+type of multivariate normal distribution parameterized in terms of row- and column-specific
+covariance matrices. We develop a likelihood ratio test (LRT) for row and column dependence
+based on the observation of a single relational data matrix. We obtain a reference distribution
+for the LRT statistic, thereby providing an exact test for the presence of row or column
+correlations in a square relational data matrix. Additionally, we provide extensions of the
+test to accommodate common features of such data, such as undefined diagonal entries, a
+non-zero mean, multiple observations, and deviations from normality.
+KEY WORDS: Networks; Matrix normal; hypothesis testing; Maximum likelihood
+
+1
+
+Introduction
+
+Networks or relational data among m actors, nodes or objects are frequently presented in
+the form of an m × m matrix Y = {yij : 1 ≤ i, j ≤ m}, where the entry yij corresponds to a
+measure of the directed relationship from object i to object j. Such data are of interest in
+a variety of scientific disciplines: Sociologists and epidemiologists gather friendship network
+data to study social development and health outcomes among children (Fletcher et al., 2011;
+Pollard et al., 2010; Potter et al., 2012; Van De Bunt et al., 1999), economists study markets
+by analyzing networks of business interactions among companies or countries (Westveld and
+Hoff, 2011a; Lazzarini et al., 2001), and biologists study gene-gene interaction networks to
+better understand biological pathways (Bergmann et al., 2003; Stuart et al., 2003).
+Often of interest in the study of such data is a description of the variation and similarity
+among the objects in terms of their relations. Similarities among rows and among columns in
+empirical networks have long been observed (Sampson, 1968; Leskovec et al., 2008), leading
+to the development of statistical tools to summarize such patterns. CONCOR (CONvergence
+of iterated CORrelations) is an early example of a procedure that partitions the rows (or
+columns) of Y into groups based on a summary of the correlations among the rows (or
+columns) of Y (White et al., 1976; McQuitty and Clark, 1968). The procedure yields a
+“blockmodel” of the objects, a representation of the original data matrix Y by a smaller
+matrix that identifies relationships among groups of objects. While this algorithm is still
+commonly used (Lincoln and Gerlach, 2004; Lafosse and Ten Berge, 2006), it suffers from a
+lack of statistical interpretability (Panning, 1982), as it is not tied to any particular statistical
+model or inferential goal.
+Several model-based approaches presume the existence of a grouping of the objects such
+that objects within a group share a common distribution for their outgoing relationships.
+This is the notion of stochastic equivalence, and is the primary assumption of stochastic
+blockmodels, a class of models for which the probability of a relationship between two objects
+depends only on their individual group memberships (Holland et al., 1983; Wang and Wong,
+1
+
+1987; Nowicki and Snijders, 2001; Rohe et al., 2011). Airoldi et al. (2008) extend the basic
+blockmodel by allowing each object to belong to several groups. In this model the probability
+of a relationship between two nodes depends on all the group memberships of each object.
+This and other variants of stochastic blockmodels belong to the larger class of latent variable
+models, in which the probability distribution of the relationship between any two objects
+i and j depends on unobserved object-specific latent characteristics zi and zj (Hoff et al.,
+2002). Statistical models of this type all presume some form of similarity among the objects
+in the network. However, while such models are widely used and studied, no formal test for
+similarities among the objects in terms of their relations has been proposed.
+Many statistical methods for valued or continuous relational data are developed in the
+context of normal statistical models. These include, for example, the widely-used social
+relations model (Kenny and La Voie, 1984; Li and Loken, 2002) and covariance models for
+multivariate relational data (Li, 2006; Westveld and Hoff, 2011b; Hoff, 2011). Additionally,
+statistical models for binary and ordinal relational data can be based on latent normal random variables via probit or other link functions (Hoff, 2005, 2008). In this article we propose
+a novel approach to testing for similarities between objects in terms of the row and column
+correlation parameters of the matrix normal model. The matrix normal model consists of
+the multivariate normal distributions that have a Kronecker-structured covariance matrix
+(Dawid, 1981). Specifically, we say that an m × m random matrix Y has the mean-zero
+matrix normal distribution Nm×m (0, Σr , Σc ) if vec (Y ) ∼ Nm2 (0, Σc ⊗ Σr ) where “vec” is the
+vectorization operator and “⊗” denotes the Kronecker product. Under this distribution, the
+covariance between two relations yij and ykl is given by cov (yij , ykl ) = Σr,ik Σc,jl . Furthermore, it is straightforward to show that
+
+
+
+
+
+E Y Y t = Σr tr (Σc ) and E Y t Y = Σc tr (Σr ) .
+
+These identities suggest the interpretation of Σr and Σc as the covariance of the objects as
+senders of ties and as receivers of ties, respectively. In this article, we evaluate evidence for
+2
+
+similarities between objects by testing for non-zero correlations in this matrix normal model.
+Specifically, we develop a test of
+
+m
+m
+m
+m
+H0 : (Σr , Σc ) ∈ D+
+× D+
+versus H1 : (Σr , Σc ) ∈ (S+m × S+m )\(D+
+× D+
+)
+
+m
+is the set of m × m diagonal matrices with positive entries and S+m is the set of
+where D+
+
+m×m positive definite symmetric matrices. Model H0 , which we call the Kronecker variance
+model, represents heteroscedasticity among the rows and the columns while still maintaining
+their independence. Model H1 , which we call the full Kronecker covariance model, allows
+for correlations between all of the rows and all the of columns. Rejection of the null of zero
+correlation would support further inference via a model that allowed for similarities among
+the objects, such as a stochastic blockmodel, some other latent variable model or the matrix
+normal model. Acceptance of the null would caution against fitting such a model in order
+to avoid spurious inferences.
+This goal of evaluating the evidence for row or column correlation is in contrast to that
+of the existing testing literature for matrix normal distributions. This literature has focused
+on an evaluation of the null hypothesis that cov(vec(Y )) = Σc ⊗ Σr (our H1 ) against an
+unstructured alternative (Roy and Khattree, 2005; Mitchell et al., 2006; Lu and Zimmerman,
+2005; Srivastava et al., 2008). The tests proposed in this literature are likelihood ratio tests
+that, in the case of an m×m square matrix Y , require at least n > m2 replications to estimate
+the covariance under the fully unstructured model. Such tests are not applicable to most
+relational datasets, which typically consist of at most a few observed relational matrices.
+In the next section we derive a hypothesis test of H0 versus H1 in the context of the matrix normal model. We show that given a single observed relational matrix Y , the likelihood
+is bounded under both H0 and H1 and so a likelihood ratio test of H0 against H1 can be
+constructed. We further show how the null distribution of the test statistic can be approximated with an arbitrarily high precision via a Monte Carlo procedure. In Section 2.3 we
+extend these results to the general class of matrix variate elliptically contoured distributions.
+3
+
+The power of the test in several different situations is evaluated in Section 3.
+Although the development of our testing procedure is based on the mean-zero matrix normal distribution, it is straightforward to extend the test to several other scenarios commonly
+encountered in the study of relational data, including missing diagonal entries, non-zero mean
+structure, multiple heteroscedastic observations and binary networks. These extensions and
+two data examples are discussed in Section 4. A discussion follows in Section 5.
+
+2
+
+Likelihood ratio test
+
+In this section we propose a likelihood ratio test (LRT) for evaluating the presence of correlations among the rows and correlations among the columns of a square matrix. The data
+matrix Y is modeled as a draw from a mean zero matrix normal distribution Nm×m (0, Σr , Σc ).
+m
+m
+The parameter space under the null hypothesis H0 is Θ0 = D+
+× D+
+, the space of all pairs
+
+of diagonal m × m matrices with positive entries. Under the alternative H1 , the parameter
+m
+m
+), the collection of all pairs of positive definite matrices
+× D+
+space is Θ1 = (S+m × S+m )\(D+
+
+of dimension m for which at least one is not diagonal. To derive the LRT statistic, we first
+obtain the maximum likelihood estimates (MLEs) under the unrestricted parameter space
+Θ = Θ0 ∪Θ1 and under the null parameter space Θ0 . From these MLEs, we construct several
+equivalent forms of the LRT statistic. While the null distribution of the test statistic is not
+available in closed form, the statistic is invariant under diagonal rescalings of the data matrix
+Y , implying that the distribution of the statistic is constant as a function of (Σr , Σc ) ∈ Θ0 .
+This fact allows us to obtain null distributions and p-values via Monte Carlo simulation.
+
+2.1
+
+Maximum likelihood estimates
+
+The density of a mean zero matrix normal distribution Nm×m (0, Σr , Σc ) is given by
+2 /2
+
+p (Y |Σr , Σc ) = (2π)−m
+
+
+−1 t
+|Σc ⊗ Σr |−1/2 exp(− 12 tr Σ−1
+r Y Σc Y ),
+
+4
+
+where “tr” is the matrix trace and “⊗” is the Kronecker product. Throughout the article
+we will write l (Σr , Σc ; Y ) as minus two times the log likelihood minus m2 log 2π, hereafter
+referred to as the scaled log likelihood:
+
+
+
+
+
+−1 
+−1 t
+− log Σ−1
+.(1)
+l (Σr , Σc ; Y ) = −2 log p (Y |Σr , Σc ) − m2 log 2π = tr Σ−1
+c ⊗ Σr
+r Y Σc Y
+
+We will state all the results in this paper in terms of l (Σr , Σc ; Y ). For example, an MLE will
+be a minimizer of l (Σr , Σc ; Y ) in (Σr , Σc ). The following result implies that if Y is a draw
+from an absolutely continuous distribution on Rm×m , then the scaled likelihood is bounded
+from below, and achieves this bound on a set of nonunique MLEs:
+Theorem 1. If Y is full rank then l(Σr , Σc ; Y ) ≥ m2 + m log |Y Y t /m| for all (Σr , Σc ) ∈ Θ,
+t
+t −1
+with equality if Σr = Y Σ−1
+c Y /m, or equivalently, Σc = Y Σr Y /m.
+
+Proof. We first look for MLEs at the critical points of l (Σr , Σc ; Y ). Setting derivatives of l
+to zero indicates that critical points satisfy
+
+ˆr = Y Σ
+ˆ −1 Y t /m
+Σ
+c
+
+(2)
+
+ˆ c = Y tΣ
+ˆ −1
+Σ
+r Y /m.
+
+(3)
+
+ˆ r, Σ
+ˆ c ) satisfy Equation 2, then these values
+Note that these equations are redundant: If (Σ
+satisfy Equation 3 as well. The value of the scaled log likelihood at such a critical point is
+
+
+l Y
+
+ˆ −1 Y t /m, Σ
+ˆ c; Y
+Σ
+c
+
+
+
+
+
+−1
+
+
+
+
+
+ˆ
+
+−1 t
+ˆ
+= tr Y
+Y
++ log Σc ⊗ Y Σc Y /m
+ 
+ 
+h
+i
+
+
+ˆ 
+ˆ 
+−t ˆ
+−1 ˆ −1 t
+t
+
+
+= mtr Y Σc Y Y Σc Y + m log Σc  − m log Σ
+c  + m log Y Y /m
+
+
+= mtr [I] + m log Y Y t /m .
+(4)
+ˆ −1 Y t /m
+Σ
+c
+
+ˆ −1 Y t
+Σ
+c
+
+In the second and third lines, Y −1 exists and |Y Y t /m| > 0 since Y is square and full rank.
+
+5
+
+Now we compare the scaled log likelihood at a critical point to its value at any other point.
+
+
+
+
+
+ˆ −1 Y t /m, Σ
+ˆ c ; Y ) = tr Σ−1 Y Σ−1 Y t + m log (|Σr | |Σc |) − m2 − m log Y Y t /m
+l (Σr , Σc ; Y ) − l(Y Σ
+c
+r
+c
+(5)
+=m
+
+2
+
+
+
+
+ −1
+
+
+1  −1
+1
+−1 t
+−1 t
+
+
+tr Σr Y Σc Y /m − log Σr Y Σc Y /m − 1
+m
+m
+
+The first equality is a simple combination of equations 1 and 4. The second equality is a
+rearrangement of terms that combines all the determinant in the log terms. This difference
+can be written as m2 (a − log g − 1), where a is the arithmetic mean and g is the geometric
+−1/2
+
+mean of the eigenvalues of (Σr
+
+−1/2
+
+t
+Y Σ−1
+c Y Σr
+
+)/m. To complete the proof we show that
+
+a − log g − 1 ≥ 0. Consider f (x) = x − 1 − log x and its first and second derivatives with
+respect to x: f 0 (x) = 1 − x1 , and f 00 (x) =
+
+1
+.
+x2
+
+The second derivative is positive at the critical
+
+point x = 1, so f (1) = 0 is a global minimum of the function. Thus x − log x − 1 ≥ 0.
+P
+−1/2
+t −1/2
+λi and
+Now let λ1 , . . . , λm be the eigenvalues of (Σr Y Σ−1
+)/m and so a = m1
+c Y Σr
+Q 1/m
+g = ( λi ) . We then have
+
+a ≥ log a + 1 = log
+
+1 X
+xi
+m
+
+
++ 1 ≥ log
+
+Y
+
+xi
+
+1/m 
+
++ 1 = log g + 1
+
+as a ≥ g since λi ≥ 0 ∀i. Since a − 1 − log g ≥ 0 we have the desired result.
+Note that the MLE is not unique, nor is the MLE of Σc ⊗ Σr . For example. I ⊗ Y Y t /m is
+an MLE of Σc ⊗ Σr , as is Y t Y ⊗ I/m. Moreover, there is an MLE for each Σr ∈ S+m given by
+m
+−1 t
+(Σr , Y t Σ−1
+r Y /m), and similarly there is an MLE for each Σc ∈ S+ given by (Y Σc Y /m, Σc ).
+
+Theorem 1 also implies that the likelihood is bounded under the null. Unlike the unrestricted case, the MLE under the null is unique up to scalar multiplication:
+ˆc ⊗ D
+ˆ r under H0 is unique, while D
+ˆ r and D
+ˆc
+Theorem 2. If Y is full rank then the MLE D
+are unique up to a multiplication and division by the same positive scalar.
+A proof is given in the Appendix. To find the MLE under the null model, we obtain
+6
+
+the derivatives of the scaled log likelihood l with respect to (Σr , Σc ) ∈ Θ0 . For notational
+convenience, we will refer to diagonal versions of Σr and Σc as Dr and Dc respectively. Setting
+these derivatives equal to zero, we establish that the critical points of l must satisfy
+
+Dr = Y Dc−1 Y t ◦ I/m
+
+(6)
+
+Dc = Y t Dr−1 Y ◦ I/m
+
+(7)
+
+where “◦” is the Hadamard product. The MLE can be found by iteratively solving equations
+(6) and (7). This procedure can be seen as a type of block coordinate descent algorithm,
+decreasing l at each iteration (Tseng, 2001).
+
+2.2
+
+Likelihood ratio test statistic and null distribution
+
+Since the scaled log likelihood is bounded below, we are able to obtain a likelihood ratio
+statistic that is finite with probability 1 when Y is sampled from an absolutely continuous
+distribution on Rm×m . As usual, a likelihood ratio test statistic can be obtained from the
+ratio of the unrestricted maximized likelihood to the likelihood maximized under the null.
+We take our test statistic to be
+
+ˆ r, D
+ˆ c ; Y ) − l(Σ
+ˆ r, Σ
+ˆ c ; Y ),
+T (Y ) = l(D
+ˆ r, Σ
+ˆ c ) is any unrestricted MLE and (D
+ˆ r, D
+ˆ c ) is the MLE under Θ0 . Since the scaled
+where (Σ
+log likelihood l is minus two times the likelihood, our statistic is a monotonically increasing
+function of the likelihood ratio.
+ˆ r, Σ
+ˆ c ; Y ) = m2 + m log |Y Y t /m| for any unrestricted
+In Theorem 1 we showed that l(Σ
+
+7
+
+ˆ r, Σ
+ˆ c ). Similarly, letting (D
+ˆ r, D
+ˆ c ) be an MLE under H0 , we have
+MLE (Σ
+
+
+i
+h
+ˆc ⊗ D
+ˆ r 
+ˆ c−1 + log D
+ˆ r, D
+ˆ c ; Y ) = tr Y t D
+ˆ r−1 Y D
+l(D
+
+
+h
+i
+ˆ −1 Y )(Y t D
+ˆ −1 Y /m ◦ I)−1 + log D
+ˆc ⊗ D
+ˆ r 
+= tr (Y t D
+r
+r
+
+
+X
+ˆ
+
+−1
+t ˆ −1
+t ˆ −1
+ˆ
+=
+(Y Dr Y )ii (Y Dr Y /m ◦ I)ii + log Dc ⊗ Dr 
+i
+
+=m
+
+X
+
+
+
+
+
+ˆ −1 Y )ii /(Y t D
+ˆ −1 Y )ii + log D
+ˆc ⊗ D
+ˆ r  = m2 + log D
+ˆc ⊗ D
+ˆ r  ,
+(Y t D
+r
+r
+
+i
+
+ˆ c = Y tD
+ˆ −1 Y /m ◦ I (Equation (7)).
+where the second equality stems from MLE satisfying D
+r
+The third equality relies on the following identity for traces: for a diagonal matrix A and
+P
+unstructured matrix B of the same dimension, tr [AB] = i Aii Bii . The final line is due
+to the following identity for Hadamard products: if I is the identity matrix and B is an
+unstructured matrix, then (B ◦ I)−1
+ii = 1/Bii .
+The maximized likelihoods under the null and alternative give
+
+
+
+
+ˆ
+t
+ˆ 
+
+
+T (Y ) = log D
+c ⊗ Dr  − m log Y Y /m
+ 
+  
+
+
+ˆ 
+ˆ 
+t
+
+ .
+= m log D
++
+log
+D
+−
+log
+Y
+Y
+/m
+
+
+
+c
+r
+
+(8)
+
+ˆ r it is not clear how to obtain the null distriSince no closed form solution exists for D
+butions of T in closed form. However, it is possible to simulate from the null distribution
+of T (Y ), as the distribution of the test statistic is the same for all elements of the null hypothesis. To see this, we show that the test statistic itself is invariant under left and right
+transformations of the data by positive diagonal matrices. Let Y˜ = D1 Y D2 for positive
+ˆc ⊗ D
+ˆ r is unique it is an equivariant function
+diagonal matrices D1 and D2 . Since the MLE D
+of any matrix Y with respect to left and right multiplication by diagonal matrices (see Eaton
+ˆc ⊗ D
+ˆ r based on a data
+(1983) Prop 7.11). In particular, writing θˆ (Y ) for the estimate of D
+
+8
+
+matrix Y , we have
+ 
+
+
+
+
+1/2
+1/2 ˆ
+1/2
+1/2
+θˆ Y˜
+= D2 ⊗ D1
+θ (Y ) D2 ⊗ D1
+.
+
+Since the determinant is a multiplicative map, we can write the determinant of the above as
+  
+
+
+ˆ ˜ 
+
+
+θ Y  = |(D2 ⊗ D1 )| θˆ (Y ) .
+ 
+Using the above, the T Y˜ can be written as in Equation (8):
+
+
+  
+ 
+
+
+
+
+T Y˜
+= m log θˆ Y˜  − m log Y˜ Y˜ t /m
+
+
+
+
+ˆ
+
+= m log θ (Y ) + m log |D2 ⊗ D1 | − m log Y Y t /m − m log |D2 ⊗ D1 | = T (Y ) .
+d
+
+1/2
+
+1/2
+
+Since for a matrix normal random variable Y ∼ Nm×m (0, Σ1 , Σ2 ) we have Y = Σ1 Y0 Σ2
+d
+
+for Y0 ∼ Nm×m (0, I, I), the above argument implies that T (Y ) = T (Y0 ) under the null.
+Therefore, the null distribution of T can be approximated via Monte Carlo simulation of Y
+from any distribution in H0 . For example, a Monte Carlo approximation to the q th quantile,
+Tq can be obtained from the following algorithm:
+1. Simulate Y01 , . . . , Y0S ∼ i.i.d Nm×m (0, I, I);
+P
+2. Let Tˆq = min{T (Y0q ) : Ss=1 1[T (Y0q ) ≥ T (Y0s )]/S ≥ q}.
+
+2.3
+
+Matrix variate elliptically contoured distributions
+
+The results of the previous subsection are immediately extendable to the general class of
+matrix variate elliptically contoured distributions. In this section we show that under minor
+regularity conditions on the distributions, the likelihood for a matrix variate elliptically contoured distribution is bounded when the matrix normal distribution is bounded. We provide
+the form of an MLE for the general class of mean zero square matrix variate elliptically
+
+9
+
+contoured distributions and demonstrate that the likelihood ratio test between H0 and H1
+has the same form as in Equation (8).
+We use the notation of Gupta and Varga (1994) for the matrix variate elliptically contoured distribution. We say that Y has a mean zero square matrix variate elliptically countoured distribution and write Y ∼ Em×m (0, Σr , Σc , h) if its density has the form
+
+fY (Y ) =
+
+1
+m
+2
+
+|Σr | |Σc |
+
+m
+2
+
+
+
+−1
+=
+h tr Y t Σ−1
+r Y Σc
+
+1
+m
+2
+
+|Σr | |Σc |
+
+m
+2
+
+
+
+−1
+vec (Y ) .
+h vec (Y )t Σ−1
+c ⊗ Σr
+(9)
+
+For h (w) = (2π)m
+
+2 /2
+
+
+exp − 12 w , Y is a mean zero matrix variate normal variable. Gupta
+
+and Varga (1994) show that if Y ∼ E (0, Σr , Σc , h) then AY B ∼ E (0, AΣr At , BΣc B t , h) and
+if second moments exist, then cov (vec (Y )) = ch (Σc ⊗ Σr ). In Gupta and Varga (1995), the
+authors showed that when Σr and h are known, the MLE of Σc is proportional to the MLE
+of Σc under normality, but they do not provide results for the boundedness of the likelihood
+or existence of MLEs for the case where only h is known. To find the form of the MLE in
+this case we state a simplified version of Theorem 1 of Anderson et al. (1986):
+2
+
+Theorem. Let Ω be a set in the space of S+m , such that if V ∈ Ω then cV ∈ Ω ∀c > 0 (that
+2
+
+2 /2
+
+is Ω is a cone). Suppose h is such that h (y t y) is a density in Rm and xm
+
+h (x) has a finite
+
+positive maximum xh . Suppose that on the basis of an observation y from |V |−1/2 h (y t V −1 y)
+an MLE under normality V˜ ∈ Ω exists and V˜ > 0 with probability 1. Then an MLE for h is
+ −1/2
+ 
+Vˆ = (m2 /xh ) V˜ and the maximum of the likelihood is Vˆ 
+h (xh ).
+In the previous subsection we proved that for the mean zero square matrix normal distribution, the likelihood is bounded for a single observation. A direct application of the
+2
+
+above theorem with Ω = S+m × S+m ⊂ S+m and y = vec (Y ) proves that for the likelihood of
+a generic matrix variate elliptically contoured distribution with h defined as in 9, the likelihood is bounded and the MLE of cov(vec(Y )) is proportional to the MLE under normality.
+2
+
+m
+m
+Clearly the theorem hold for a smaller space ω = D+
+× D+
+⊂ S+m as well, and thus the
+
+10
+
+Dimension m
+5
+95% quantile 43.3
+
+10
+15
+20
+144.3 297.4 502.8
+
+25
+30
+760.0 1064.6
+
+50
+100
+2802.1 10668.4
+
+Table 1: 95% quantile of the null distribution of the test statistic for testing H0 versus H1 .
+Approximation from 100,000 simulated values.
+likelihood ratio statistic can be constructed as follows
+ 
+
+ 
+
+ ˆ −1/2
+ ˆ −1/2
+T (Y ) = 2 log VΩ 
+h (xh ) − 2 log Vω 
+h (xh )
+ 
+ 
+ˆ 
+ 
+= log Vω  − log VˆΩ  = log |V˜ω | − log |V˜Ω |
+
+(10)
+
+where V˜ω and V˜Ω are the MLEs under normality that were previously derived. Equation (10)
+is identical to the original form of the test (e.g. Equation (8)). As such, to conduct the test
+for any elliptically contoured distribtuion, we can construct a reference distribution for the
+null based on a mean zero matrix variate distribution.
+
+3
+
+Power calculations
+
+In this section we present power calculations for three different types of covariance models.
+The three covariance models we consider are: (1) Exchangeable row covariance and exchangeable column covariance; (2) Maximally sparse Kronecker structured covariance; and
+(3) the covariance induced by a nonseparable stochastic blockmodel with two row groups
+and two column groups. For each covariance model, we consider the power as a function of
+parameters that control the total correlation within a covariance matrix as well as in terms
+of m, the dimension of the matrix. In Table 1 we present the 95% quantiles based on the
+null distributions required for performing level α = 0.05 tests.
+
+11
+
+3.1
+
+Exchangeable row and column covariance structure
+
+We first consider a submodel of the matrix normal model in which Σr and Σc have exchangeable covariance structure. In this structure, the correlation between any two rows is
+a constant ρr and the correlation between any two columns is a constant ρc . Specifically,
+cov(vec(Y )) = Σc ⊗ Σr where
+Σr = (1 − ρr ) I + ρr 11t and Σc = (1 − ρc ) I + ρc 11t ,
+
+and 1 is a vector of ones of length m. We first consider a network with m = 10 nodes and
+present the power as a function of ρr and ρc ranging from −1/9 to 1, where the lower bound
+guarantees that the covariance matrices are positive definite. We calculate the power on a
+25 × 25 grid in [−1/9, 1]2 and use a bivariate interpolation to construct the heatmap in the
+top left panel of Figure 1. From the plot it is evident that the power is an increasing function
+in |ρr | and |ρc |. In particular, keeping ρr constant, the power is an increasing function of |ρc |
+and vice versa.
+In the top left panel of Figure 1 we observed that while keeping ρc constant, the power
+is an increasing function of |ρr |. To study the power for higher dimensional matrices, we
+set ρc = 0 and vary m and ρr . The dashed line in the top left panel of Figure 1 traces
+the power function for m = 10 and ρc = 0. This corresponds to the same style dashed
+line in the top right hand panel of Figure 1. The other four lines in the right hand panel
+represent the calculated power as a function of ρr for different dimensions m, holding ρc = 0.
+As is expected, for each m, the power is an increasing function of |ρr |. Similarly, for each
+fixed ρr value, the power is an increasing function of m. This latter phenomenon is due to
+the increase in the amount of data information with the increase in the dimension of the
+sociomatrix.
+
+12
+
+1.0
+
+1.0
+
+0.8
+
+0.6
+
+0.4
+
+0.2
+
+m=5
+m = 10
+m = 25
+m = 50
+m = 100
+
+1
+−
+
+m−1
+
+<ρ<1
+
+0.0
+
+0.2
+
+0.4
+
+0.2
+
+ρc
+0.4
+
+0.6
+
+0.8
+
+power
+0.6
+
+0.8
+
+1.0
+
+0.2
+
+0.4
+ρr
+
+0.6
+
+0.8
+
+1.0
+
+−0.5
+
+0.0
+
+ρ
+
+0.5
+
+1.0
+
+0.25
+
+1.0
+
+0.30
+
+0.0
+
+m=5
+m=10
+m = 25
+m = 50
+m = 100
+
+0.0
+
+0.05
+
+0.2
+
+0.10
+
+power
+0.4
+0.6
+
+power
+0.15 0.20
+
+0.8
+
+m=5
+m = 100
+
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+0
+
+|ρ|
+
+1
+
+2
+|µ|
+
+3
+
+4
+
+Figure 1: The top row of panels displays the power of the test under the exchangeable
+covariance model of Section 3.1. The bottom left panel displays the power of the test for the
+maximally sparse covariance model of Section 3.2 and the bottom right panel displays the
+power of the test for the nonseparable stochastic blockmodel of Section 3.3.
+
+3.2
+
+Maximally sparse Kronecker covariance structured correlation
+
+While the previous example demonstrates the power of the test in the presence of many
+nonzero off-diagonal entries in the correlation matrices, it is of interest to see if the test has
+any power against alternatives that do not exhibit a large amount of correlation. For this
+purpose we consider a maximally sparse Kronecker covariance structure. We set the columns
+to be independent and only the first two rows to be correlated. This can be written compactly
+as Σc = I and Σr = I + ρE12 + ρE21 , where Eij is the 0 matrix with a 1 in the (i, j)th entry.
+For each of the matrix sizes m ∈ {5, 10, 25, 50, 100} we computed power functions for values
+of ρ ranging between -1 and 1. Monte Carlo approximations to the corresponding power
+functions are presented in the bottom left panel of Figure 1. We plot the results for m = 5
+and m = 100 and see that the power increases monotonically as a function of |ρ| for both
+
+13
+
+dimensions. While the power of the test for a fixed ρ appears to decrease as the size of the
+network m increases, the two curves are nearly identical. We explain this as follows: while
+one expects that as the dimension m increases there is an increase in data information for
+identifying the correlation ρ, the power curve is influenced more heavily by the fact that the
+difference between Σr and the identity matrix becomes less pronounced. Additional power
+curves for a range of m values between 5 and 100 were approximated. All the curves were
+between the m = 5 and m = 100 curves that are presented in the plot. For all the power
+calculations, the lowest calculated power for values of ρ close to 0 was always within two
+Monte Carlo standard errors of 0.05.
+
+3.3
+
+Misspecified covariance structure
+
+In the Introduction we discussed a popular model for relational data with an underlying
+assumption of stochastically equivalent nodes called the stochastic blockmodel. Straightforward calculations show that in general the covariance induced by a stochastic blockmodel is
+nonseparable, but still induces correlations among the rows and among the columns. As such,
+we are interested in evaluating the power of our test against such nonseparable alternatives.
+A stochastic blockmodel can be represented in terms of multiplicative latent variables.
+Specifically, we can write the relationship yij = uti W vj + ij where ui and vj are latent
+vectors representing the row group membership of node i and the column group membership
+of node j. W is a matrix of means for the different group memberships and ij is iid random
+noise. For the purposes of this power calculation we consider a simple setup where each
+node belongs to one of two row groups and one of two column groups with equal probability.
+
+We let W = µ0 −µ
+depend on a single parameter µ > 0. Under this choice of W , we have
+0
+E[Y ] = 0 and E[1t Y 1] = 0. Since there are only two groups, the latent group membership
+vectors can be written as ui = (ui1 , 1 − ui1 ) and vj = (vj1 , 1 − vj1 ) where ui1 and vj1 are
+independent Bernoulli(1/2) random variables.
+The bottom right panel of Figure 1 presents the power calculations for dimensions m ∈
+
+14
+
+{5, 10, 25, 50, 100} and |µ| ∈ [0, 4]. The power of the level α = 0.05 test is increasing in
+|µ| which is a desirable property for this blockmodel since as |µ| grows the difference in
+the means for the groups becomes greater. The power of the test also increases with the
+dimension m.
+
+4
+
+Extensions and Applications
+
+In this section we develop several extensions of the proposed test, and illustrate their use
+in the context of two data analysis examples. In the first example, we show how the test
+can be extended to accommodate a missing diagonal, an unknown non-zero mean, and
+heteroscedastic replications. The second example illustrates the use of the test for binary
+network data, a common type of relational data.
+
+4.1
+
+Extensions and continuous data example
+
+International trade data on the value of exports from country to country is collected by
+the UN on a yearly basis and disseminated through the UN Comtrade website: http://
+comtrade.un.org. In this section we consider measures of total exports between twenty-six
+mostly large, well developed countries with high gross domestic product collected from 1996
+to 2009 (measured in 2009 dollars). Specifically, we are interested in evaluating evidence for
+correlations among exporters and among importers. As trade between countries is relatively
+stable across years, we analyze the yearly change in log trade values, resulting in thirteen
+measurements (for the fourteen years of data) for every country-country pair. The data takes
+the form of a three way array Y = {Yijk : i, j ∈ {1, . . . , 26}, k ∈ {1, . . . , 13}} where i and j
+index the exporting and importing countries respectively and k indexes the year. Exports
+from a country to itself are not defined, and so entries Yiik are “missing”.
+
+15
+
+We consider a model for trade of the form,
+
+Yijk = β1 xik + β2 xjk + ijk ,
+
+(11)
+
+where xik is the difference in log gross domestic product of country i between years k and
+k − 1 (theoretical development of this model is available in the economics literature, see
+Tinbergen et al. (1962), and Bergstrand (1985, 1989)). We use GDP data collected by the
+World Bank through http://data.worldbank.org/ to obtain OLS estimates of β1 and β2 .
+To investigate the correlations among importers and among exporters we collect the residuals
+eijk = Yijk − Yˆijk into thirteen matrices, E··k for k = 1, . . . , 13. Figure 2 plots the first two
+eigenvectors of moment estimates of pairwise row and column correlation matrices based
+on E··1 , . . . , E··(13) . We observe systematic geographic patterns in both panels of the figure
+suggesting evidence that the ijk are not independent. To evaluate this evidence formally by
+testing for dependence of the ijk we extend the conditions under which the test developed
+in this article is applicable. Specifically, we must accommodate the following features of this
+data: a missing diagonal (Yiik is not defined for all i and k), multiple observations (13 data
+points), and a nonzero mean structure (of the form (11)).
+
+Missing diagonal: In relational datasets, the relationship of an actor to himself is typically undefined, meaning that the relational matrix Y has an undefined diagonal. It is
+common to treat the entries of an undefined diagonal as missing at random and to use a
+data augmentation procedure to recover a complete data matrix, applying the analysis to
+the complete data. In the context of this article, this approach would allow us to treat the
+whole data matrix as a draw from a matrix normal distribution and perform our test exactly
+as outlined in Section 2. In this section we describe an augmentation procedure that does
+not require distributional assumptions for the diagonal elements. The procedure produces a
+data matrix Y˜ that we use to calculate the test statistic T (Y˜ ). Specifically, Y˜ replaces the
+undefined diagonal of Y with zeros, keeping the rest of the data matrix the same. We show
+16
+
+0.0
+Japan
+
+−0.2
+
+Australia
+China
+Rep. of Korea
+Indonesia
+MalaysiaGreece
+Thailand
+China, Hong Kong SAR
+
+0.1 0.2 0.3
+
+Indonesia
+China
+Malaysia
+Turkey
+Japan
+Norway
+New Zealand
+Australia
+Finland
+Greece
+Rep. of Korea
+Thailand
+Austria
+
+−0.1
+
+France Ireland
+Norway
+
+New Zealand
+USA Canada
+Mexico
+TurkeyNetherlands
+Austria
+Brazil
+
+−0.4
+
+^
+second eigenvector of R
+col
+
+0.2
+
+^
+second eigenvector of R
+row
+
+Germany
+Italy Spain
+Switzerland
+
+−0.3
+
+0.4
+
+Finland
+United Kingdom
+
+Brazil
+
+Mexico
+Spain
+Italy
+Netherlands
+Ireland
+China, Hong Kong SAR
+Canada
+France
+United
+Kingdom
+USA Germany
+Switzerland
+
+−0.30
+−0.20
+−0.10
+^
+first eigenvector of R
+row
+
+−0.25
+
+−0.15
+−0.05
+^
+first eigenvector of R
+col
+
+0.05
+
+ˆ row and R
+ˆ col of the row and
+Figure 2: Plots of the first two eigenvectors of the estimates R
+column correlation matrices. Proximity of countries in the eigenspace indicates a positive
+correlation.
+that T (Y˜ ) is invariant under diagonal transformations and thus we can approximate the null
+distribution of the test statistic based on for data drawn from a matrix normal distribution
+where the diagonal entries are replaced with zeros.
+Consider square matrices Y and Y˜ where Y ∼ Nm×m (0, Dr , Dc ) while Y˜ is distributed
+identically to Y except the diagonal entries are replaced with zeros. Similarly define square
+matrices Y0 ∼ Nm×m (0, I, I) and Y˜0 . We showed in Section 2 that the distribution of the
+likelihood ratio test statistic is invariant under transformations by diagonal matrices on the
+d
+
+d
+
+left and right, that is T (Y ) = T (Y0 ). We now show that T (Y˜ ) = T (Y˜0 ). It is immediate
+d
+
+1/2
+
+1/2
+
+that since Y = Dr Y0 Dc
+
+d
+1/2
+1/2
+we have Y˜ = Dr Y˜0 Dc , as zeros on the diagonal are preserved
+
+by left and right diagonal transformations and the off diagonal entries (i, j) are normally
+distributed with variance Dr,i Dc,j . As in Section 2.2, we appeal to the equivariance of a
+unique MLE to show that T (Y˜ ) = T (Y˜0 ). The argument is identical to the one appearing in
+the paragraph following Equation (8) on page 8 and so we do not reproduce it here. Since
+d
+
+T (Y˜ ) = T (Y˜0 ), we can approximate the null distribution and calculate the relevant quantiles
+for the test statistic with a simple update to the algorithm at the end of Section 2.2:
+ 
+1
+S iid
+˜
+˜
+1. Simulate Y0 , . . . , Y0 ∼ L Y˜0 , where L(Y˜0 ) denotes the distribution of Y˜0 ;
+17
+
+P
+2. Let Tˆq = min{T (Y˜0q ) : Ss=1 1[T (Y˜0q ) ≥ T (Y˜0s )]/S ≥ q}.
+Repeated observations: The test we discussed in this article is designed for a single
+observation. However, the test conveniently generalizes to the situation in which multiple
+observations are available. We will consider two types of additional observations: independent homoscedastic observations and independent heteroscedastic observations. First, if
+there are p independent identically distributed observations, we note that likelihood equations of Section 2 can be rewritten as
+
+ˆr =
+mpD
+
+X
+
+ˆ −1 Y t ◦ I
+Yi D
+c
+i
+X
+ˆr =
+ˆ −1 Y t
+mpΣ
+Yi Σ
+c
+i
+
+ˆc =
+mpD
+
+X
+
+ˆ −1 Yi ◦ I
+Yit D
+r
+
+ˆc =
+mpΣ
+
+X
+
+ˆ −1 Yi .
+Yit Σ
+c
+
+The likelihood remains bounded and the form of the test statistic is identical to Equation
+(8). When the observations are heteroscedastic the likelihood equations (included in the
+proof of Theorem 3 in the Appendix) are more complicated because of the need to estimate
+the variability along the replications (we refer the reader to Hoff (2011) for an exposition on
+the general class of array normal distributions and estimation procedures).
+Theorem 3. Let Y1 , . . . , Yp be independent random matrices distributed as Yi ∼ Nm×m (0, di Σr , Σc ).
+Then ∀p ≥ 1 the likelihood is bounded as a function of the covariance matrices Σr and Σc
+and the variance parameters d1 , . . . , dp .
+A proof is in the Appendix. Theorem 3 extends the literature on maximum likelihood
+estimation for proportional covariance models from natural exponential families to the matrix
+normal family which is a curved exponential family (Eriksen, 1987; Flury, 1986; Jensen and
+Johansen, 1987; Jensen and Madsen, 2004). Due to Theorem 3, we can modify the test
+
+18
+
+p
+p
+m
+statistic to test H00 : Dobs ∈ D+
+, Dc , Dr ∈ D+
+vs H10 : Dobs ∈ D+
+, Σc , Σr ∈ S+m :
+
+alt ˆ ˆ
+null ˆ
+ˆ c ; Y ) − l(D
+ˆ obs
+ˆ obs
+, Σr , Σc ; Y )
+, Dr , D
+T (Y1 , . . . , Yp ) = l(D
+
+
+
+
+ ˆ null ˆ
+
+ ˆ alt
+
+ˆ
+ˆ
+ˆ
+= log D
+⊗
+D
+⊗
+D
+−
+log
+D
+⊗
+Σ
+⊗
+Σ
+ obs
+c
+r
+c
+r .
+obs
+
+We can again approximate the null distribution of the test statistic due to the invariance of
+the test statistic T (Y1 , . . . , Yp ) under diagonal transformations of the data along all three
+modes. The results on missing diagonal elements (above) and a non-zero mean (below) are
+also immediately applicable to T (Y1 , . . . , Yp ) above.
+Relaxing the mean zero assumption:
+
+The reference distributions for the test statistics
+
+developed in Section 2 are based on the assumption that E[Y ] = 0, a strong assumption that
+is unlikely to be true for any observed dataset. While treating the mean as a nuisance
+parameter is tempting, the likelihood function under the alternative model is unbounded
+when estimating a mean matrix and two covariance matrices simultaneously. We propose
+to first fit a regression based mean to the data assuming the entries in the data matrix
+are independently distributed with the same variance parameter and to then perform the
+test based on the demeaned data. We consider the following regression framework for the
+mean: yij = β t xij + ij . The regressor xij is a p-dimensional vector that can include features
+of node i, features of node j and dyadic features for nodes i and j. The ij are assumed
+to be independent and identically distributed errors. Writing this in vector notation as
+
+t
+vec (Y ) = Xβ + vec () where X = xt12 · · · xt(m−1)m and  is an m × m matrix, the OLS
+−1
+estimate of β is βˆ = (X t X) X t vec (Y ). Under mild regularity conditions on the distribution
+
+of the explanatory variables X and the row and column variances for new nodes, the OLS
+estimate βˆ is a consistent estimate of β. This motivates us to base the test statistic on
+ˆ the residuals of the regression, as we expect the distribution of
+vec (ˆ) = vec (Y ) − X β,
+vec (ˆ) to be close to the distribution of vec () for large m. The null distribution of the
+test statistic T based on the residuals from the regression is not identical to the one derived
+19
+
+in Section 2 and no explicit computation of the new null distribution is readily available.
+However, we have observed via simulation that the level of the test based on the estimated
+residuals ˆ appears to be asymptotically correct and that the test statistic based on  and ˆ
+appear to have the same limiting distributions.
+
+Application to international trade data: Figure 2 suggested that there is evidence of
+residual dependence among exporters and among importers based on additional information
+about the data (the relative geographic positions of the countries). Above we developed
+the tools to test for independence of ijk in (11) using the likelihood ratio test proposed in
+26
+13
+, Dimp , Dexp ∈ D+
+Section 2. Formally, we are testing the null hypothesis H00 : Dtime ∈ D+
+13
+, Σimp , Σexp ∈ S+26 . The approximate 95%
+versus the alternative hypothesis H10 : Dtime ∈ D+
+
+quantile of the distribution of the test statistic when the data are missing diagonal entries
+under the null is 729.8. Setting Eiik = 0 for all i and k, the test statistic for the data is
+T (E··1 , . . . , E··13 ) = 3354. This value is much greater than the 95% quantile confirming that
+we should reject the independence of the ijk . It is thus inappropriate to assume that the
+exporters and importers are independent.
+
+4.2
+
+Application to binary protein-protein interaction network
+
+So far we have developed a testing procedure for the presence of row and column correlations
+in relational matrices within the framework of matrix normal and general matrix variate
+elliptically contoured distributions. In this section we propose a methodology that allows
+us to evaluate the presence of row and column correlations for binary relational data, where
+the observed network is represented by a sociomatrix matrix A where aij describes the
+relationship from node i to node j. When the entries of aij are binary indicators of a
+relationship from i to j, the matrix A can be viewed as the adjacency matrix of a directed
+graph. In this example we use the protein-protein interaction data of Butland et al. (2005),
+which consists of a record of interactions between m = 270 essential proteins of E. coli . The
+
+20
+
+data are organized into a 270 × 270 binary matrix A, where aij = 1 if protein j binds to
+protein i and aij = 0 otherwise. The network has one large connected component with 234
+nodes as shown in the left hand side of Figure 3. In this case diagonal elements of the matrix
+A are meaningful since proteins may bind to themselves.
+A popular class of models for the analysis of such data is based on representing the
+relations aij as functions of latent normal random variables (Hoff, 2005, 2008). For the
+protein-protein interaction data we propose to use an asymmetric version of the eigenmodel
+of Hoff (2008), a type of reduced rank latent variable model where the relationship between
+nodes i and j is characterized by multiplicative latent sender and receiver effects. The model
+can be written as:
+
+aij = 1[yij > γ],
+
+yij = uti vj + ij ,
+
+Y = U V t + E,
+
+iid
+
+where ij ∼ N (0, 1) and ui , vj ∈ RR for R < 270. Considering Y as a matrix variate normal
+variable it is immediate that E[Y Y t ] = U (V t V )U t + I and E[Y t Y ] = V (U t U )V t + I and so
+the heterogeneity in U describes the row covariance Σr while the heterogeneity in V describes
+the column covariance Σc .
+We propose using the test developed in this article to evaluate how well models of rank R
+capture the dependence in the data. Specifically, we fit the above model for multiple values
+of R, and for each value we approximate the posterior distribution of the test statistic. If the
+rank-R model is sufficient for capturing the row and column correlations found in the data,
+we do not expect to have evidence to reject the null of independence. Hoff (2008) outlines a
+Markov chain Monte Carlo algorithm for fitting the above model. Following the procedure
+described in Thompson and Geyer (2007) we apply the testing procedure to draws from
+the posterior distribution of Y − U V t constructed via MCMC and for each test statistic we
+calculate a p-value. These p-values are termed “fuzzy p-values” as their distribution provides
+a description of the uncertainty about the p-value that results from not observing Y , U and
+V.
+21
+
+8
+
+52
+●
+
+●
+146
+
+149
+
+51
+●
+
+●
+154
+
+56
+●
+
+●
+268
+
+1.0
+
+●
+
+13
+●
+
+58
+●
+
+270
+
+67
+●
+
+225
+
+Density
+4
+6
+
+38
+●
+
+68
+●
+
+10
+●
+
+●
+148
+
+●
+139
+
+●
+
+15
+●
+
+215
+
+Density
+0.6
+0.8
+
+●
+55
+●
+
+1.2
+
+●
+
+54
+●
+
+12
+●
+
+●
+64
+●
+
+R=1
+
+1.4
+
+R=0
+
+150
+
+●
+230
+
+●
+
+●
+
+147
+
+265
+
+0.4
+
+●
+239
+
+2
+
+99
+●
+
+60
+●
+
+0.2
+
+●
+124
+
+●
+
+●
+
+100
+
+185
+
+●
+65
+●
+
+17
+●
+
+●
+109
+
+131
+
+●
+
+0.0
+
+258
+
+0
+
+●
+
+19
+●
+
+●
+243
+
+●
+
+●
+
+245
+
+247
+
+260
+
+●
+253
+
+27
+●
+
+132
+
+96
+●
+
+●
+
+11
+●
+
+213
+
+186
+
+180
+
+221
+
+181
+
+118
+
+137
+
+126
+
+226
+
+217
+
+190
+
+248
+
+202
+
+127
+
+232
+
+107
+
+144
+
+136
+
+173
+
+203
+
+0.4
+0.6
+fuzzy p−value
+
+0.8
+
+0.0
+
+R=2
+
+200
+
+125
+
+●
+
+184
+
+134
+
+214
+
+256
+
+86
+●
+
+●
+
+0.2
+
+●
+
+83
+21
+● ●
+●
+● ●
+77
+●● ●
+● 31 ●
+91
+●
+● ● ●●
+● ●●
+●
+●
+90
+45 ●
+●● ● ●●● ●●● ● ●
+●
+8975
+36 ●
+●
+●
+95
+●
+●
+28
+●● ●●
+1
+93
+● ●●
+73
+●
+●
+● ●●
+●●●●●
+98● ●
+●
+29
+●●●
+●● ●
+● ●●
+35
+●● ●
+●
+● 33●●
+40
+30● ● ●●
+● ●
+●
+94
+46
+● ●●
+●
+●
+●● ●●
+●
+●●●●●● ●
+● ●● ● ●●
+●●
+25 ● 8
+42
+● ● ●●
+●
+●
+●●● ●●●● ●
+18
+●
+24
+●
+●
+23
+●
+●
+92
+97
+●
+●
+16
+●
+57 39
+●
+●● ●
+●
+41 ●
+●
+80
+82 32 ●
+●
+69
+63
+●
+●
+87
+●
+●
+●
+●
+●
+37
+43
+●●
+2 ●
+22
+●
+●
+●
+6
+● ●
+●
+●●
+44
+88 ●●
+26
+●
+78
+●
+●
+●
+14
+●
+5
+81
+●
+●
+●
+48
+●
+● ●
+59
+79
+●
+●
+71
+●
+●
+70●
+●
+●
+●
+●
+4
+●
+53
+●
+62
+●
+3
+50
+●
+●
+66
+●
+61
+●
+49
+●●
+●
+●
+7
+●
+●
+142
+
+0.0
+
+47
+●
+
+74
+●
+
+76
+● ●
+254
+
+84
+●
+● ●
+106
+
+●
+
+257
+
+1.4
+
+246
+
+0.2
+
+0.4
+0.6
+fuzzy p−value
+
+0.8
+
+1.0
+
+0.8
+
+1.0
+
+R=3
+
+1.4
+
+72
+●
+
+●
+250
+
+●
+85
+●
+
+●
+
+261
+
+170
+
+198
+
+179
+
+155
+
+224
+
+235
+
+163
+
+218
+
+156
+
+167
+
+242
+
+●
+240
+
+9
+●
+
+210
+236 169 262
+
+178
+
+135
+
+138
+
+269
+
+244
+
+216
+
+165
+
+208
+
+172
+168
+
+175
+
+223
+
+251
+
+164
+
+197
+
+252
+
+159
+
+101
+
+166
+
+174
+
+153
+
+113
+
+108
+
+195
+
+161
+
+199
+
+177
+
+191
+
+1.2
+
+162
+
+193
+
+160
+
+105176
+
+259
+
+158
+
+209
+
+201
+
+194
+
+171
+
+220
+
+211
+
+130
+
+141
+
+1.0
+
+196
+
+188
+
+229
+
+238 234
+
+192 189
+
+128
+
+114
+
+206
+
+1.0
+
+266
+
+157 140
+
+111
+
+228
+
+249
+
+187
+
+112
+
+133
+
+1.2
+
+219
+
+182
+
+222
+
+●
+
+255
+
+121
+
+●
+
+212
+
+122
+
+207
+
+●
+119
+
+110
+
+151
+
+104
+
+152
+
+115
+
+103
+
+143
+
+183
+
+237
+
+263
+
+204
+
+264
+
+241
+
+227
+
+145
+
+Density
+0.6
+0.8
+
+120
+
+123
+
+Density
+0.6
+0.8
+
+267
+
+●
+●
+
+233
+
+●
+102
+
+117
+
+0.4
+
+●
+
+0.2
+
+20
+●
+
+0.0
+
+205
+
+0.2
+
+34
+●
+●
+231
+
+●
+
+0.0
+
+129
+
+0.4
+
+116
+
+●
+
+0.0
+
+0.2
+
+0.4
+0.6
+fuzzy p−value
+
+0.8
+
+1.0
+
+0.0
+
+0.2
+
+0.4
+0.6
+fuzzy p−value
+
+Figure 3: Protein-protein interaction data and histograms of fuzzy p-values for models of
+ranks R ∈ {0, 1, 2, 3}. The bins have a width of 0.05.
+As this is a very sparse network (the interaction rate is A¯ = 0.03), we expect a low rank
+approximation to be appropriate. In fact, analysis using cross validation of a symmetrized
+version of this data identified R = 3 to be an appropriate rank in Hoff (2008). In the right
+hand side of Figure 3 we present the distributions of the fuzzy p-values for R ∈ {0, 1, 2, 3}. A
+visual inspection of the the fuzzy p-values in the four panels of the figure provides evidence
+about the rank of the latent factors. For example, under the R = 0 model, the yij s are
+independent and identically distributed, and so the graph represented by the adjacency
+matrix A is a simple random graph. The fuzzy p-values are concentrated at a value lower
+than 0.05 suggesting a high probability of rejecting the null if Y were observed. For R ∈ {1, 2}
+the fuzzy p-values are no longer concentrated lower than 0.05, but the distribution is skewed
+to the right, which we take as evidence that there is correlation in Y that is not captured
+by the rank 1 and rank 2 models. The fuzzy p-values provide little evidence of residual
+dependence in Y for models of rank R ≥ 3.
+
+22
+
+5
+
+Discussion
+
+In this article we presented a likelihood ratio test for relational datasets. Unlike the previous testing literature for matrix normal models that required multiple observations, and
+concentrated on testing a null of separable covariances versus an unstructured alternative,
+we proposed testing a null of no row or column correlations versus an alternative of full row
+and column correlations using a single observation of a network. While the form of the null
+distribution of the test statistic is intractable, we are able to simulate a reference distribution
+for the test statistic under the null due to its invariance to left and right diagonal transformations of the data. In the power simulations of Section 3 we demonstrated the power of
+the test against maximally sparse and nonseparable alternatives.
+This test can be applied to a wide variety of relational data. While the test was developed
+using the matrix-normal model, we have shown that this distributional assumptions can be
+greatly relaxed. Specifically, if we consider a data matrix Y with an arbitrary matrix variate
+elliptically contoured distribution that is centered at the zero matrix, the test statistic for
+testing for correlation among the rows and among the columns of Y is identical to that of the
+matrix normal case. We have also demonstrated that the test can accommodate frequently
+observed features of relational data such as non-zero mean, missing diagonal and multiple
+observations. In Section 4.2 we demonstrated an application of the theory developed in this
+paper to binary network data where the matrix Y is an adjacency matrix. The method we
+describe for binary data can be extended to ordinal and discrete data that can be modeled
+via a latent matrix variate elliptically contoured distribution.
+Once we reject the null hypothesis of independence among the rows and among the
+columns of a relational matrix, we are faced with the challenge of modeling the dependence
+in the data. As shown in Section 2.1, for a mean zero matrix normal distribution, the MLE
+is not unique. Specifically, there is an MLE for each Σr ∈ S+m given by (Σr , Y t Σ−1
+r Y /m). We
+have observed in separate work that it is possible to distinguish between MLEs by considering
+their risk. However, other than in very specialized cases (such as equal eigenvalues of Σr and
+23
+
+Σc ), obtaining analytic results for identifying risk optimal MLEs is difficult. The presence
+of a non-zero mean leads to an unbounded likelihood and further complicates the problem
+of estimation. Several authors have recently considered Bayesian and penalized likelihood
+approaches this estimation problem. Bonilla et al. (2008) and Yu et al. (2007) studied
+hierarchical Gaussian Process priors in the context of a classification problem. In our context,
+this approach results in a matrix normal prior for the mean parameters and inverse Wishart
+priors for the row and column covariance matrices. A second approach based on a mixture
+of independent L1 and L2 penalties on the row and column precision matrices was proposed
+by Allen and Tibshirani (2010).
+Computer code and data for the results in Sections 3 and 4 are available at the authors’
+websites.
+
+A
+
+Proofs
+
+Proof of Theorem 2. To show that the solutions to the likelihood equations provide a unique
+minimizer to the scaled log likelihood function (Equation 1) we will show that the Hessian
+of l evaluated at the solutions is strictly positive definite and then demonstrate that only
+a single solution is possible. We rewrite Equation 1 here, explicitly stating that we will be
+considering diagonal matrices
+
+
+
+
+
+l (Dr , Dc ; Y ) = −2 log L (Dr , Dcol ; Y ) = tr Dr−1 Y Dc−1 Y t − log Dc−1 ⊗ Dr−1  + c,
+writing for simplicity Ψ = Dr−1 and Γ = Dc−1 we take first derivatives with respect to the
+diagonal matrices of Γ and Ψ:
+∂l (Dr , Dc ; Y )
+= Y ΓY t ◦ I − mΨ−1
+∂Ψ
+∂l (Dr , Dc ; Y )
+= Y t ΨY ◦ I − mΓ−1 ,
+∂Γ
+
+24
+
+(12)
+(13)
+
+yielding the familiar equations used to find the maximizers of the likelihood. Considering
+the singular value decomposition of Y = ALB t , the above can also be written as partial
+derivatives with respect to the entries of Ψ and Γ (since these are diagonal matrices, the
+index k refers to the k th row, k th column entry in the matrix):
+X
+∂l (Dr , Dc ; Y )
+m
+=
+Li Lm Γk (Ajm Aji Bkm Bki ) −
+∂Ψj
+Ψj
+ikm
+X
+∂l (Dr , Dc ; Y )
+m
+=
+Li Lm Ψj (Ajm Aji Bkm Bki ) −
+∂Γk
+Γk
+ijm
+
+(14)
+(15)
+
+To compute the Hessian, we take derivatives of equations 14 and 15, yielding the second
+partial derivatives of lD :
+X
+∂l (Dr , Dc ; Y )
+= f (j, k) =
+Li Lm (Ajm Aji Bkm Bki ) = Yjk2
+∂Ψj Γk
+im
+∂l (Dr , Dc ; Y )
+∂l (Dr , Dc ; Y )
+=
+= 0
+∂Ψj Ψl
+∂Γk Γm
+m
+∂l (Dr , Dc ; Y )
+=
+∂Ψj Ψj
+Ψ2j
+m
+∂l (Dr , Dc ; Y )
+.
+=
+∂Γk Γk
+Γ2k
+As such, we can write the Hessian matrix H as
+
+
+−2
+F 
+mΨ
+H = 
+
+Ft
+mΓ−2
+where F = [f (j, k)]j,k . Our first observation is that F is an everywhere positive matrix since
+f (j, k) = Yjk2 > 0∀j, k (since P (Y 6= 0) = 1).
+To show that lF is minimized at the solutions to the likelihood equations 12 and 13 we
+will show that the Hessian H is strictly positive definite at the solutions. For that, we will
+verify Sylvester’s criterion: a matrix H is positive definite if and only if all of its leading
+minors are positive (or equivalently its trailing minors). First we note that the Kronecker
+25
+
+product of the covariances leads to a nonidentifiability in the scale of the individual matrices,
+and so WLOG we let Ψ1 = 1. We consider the reparametrized problem and its’ Hessian
+˜ = H−1,−1 , the Hessian of the original problem with the first row and column removed.
+H
+Now, the boundedness of the likelihood function implies that the m − 1 leading minors are
+ˆ is a positive diagonal matrix) and so we are left with verifying that the
+positive (since Ψ
+remaining m minors are positive. Abusing notation a bit and writing Ψ to correspond to the
+reparametrized version of row precisions, we get the first minor that includes entries other
+than those in Ψ is
+
+
+
+
+
+
+
+
+mΨ
+m
+ˆ −2 F·,1 
+2
+ˆ
+Ψ
+  ˆ −2 
+
+
+
+
+ =  2 − F·,1 F1,·  mΨ 
+ˆ1
+ F
+
+Γ
+
+m
+ˆ −2
+ 1,· mΓ
+1 
+:= |a| |b|
+
+Clearly, |b| > 0 as it is simply the previous minor. Now, a does not satisfy the first derivative
+of l (Dr , Dc ; Y ) with respect to Γ1 (Equation 15) and more so we note that
+1
+m
+=
+2
+ˆ1
+m
+Γ
+
+!2
+X
+
+ˆ j Fj,1
+Ψ
+
+=
+
+j
+
+
+1 
+ˆ 2 F1,· + c
+F·,1 Ψ
+m
+
+where c is always positive since it is a sum of positive values. Thus, |a| = c/m > 0. We
+can apply this approach to the remaining m − 1 minors, where the kth minor is given
+by Mk = |a|Mk−1 where |a| > 0. Thus we have verified Sylvester’s criterion and have
+demonstrated that the Hessian of l (Dr , Dc ; Y ) is strictly positive definite at the solution to
+the likelihood equations which means we have a local minimum of the scaled log likelihood
+function (or a local maximum of the likelihood function).
+To show uniqueness we apply the Mountain Pass Theorem (page 223 of Courant, 1950):
+Since l (Dr , Dc ; Y ) is smooth, differentiable and coercive (that is l (Dr , Dc ; Y ) → ∞ as
+|Dc ⊗ Dr | → ∞), we have that if there are two critical points x1 and x2 that are strict
+minima (strictly positive definite Hessian), then there must be another critical point, dis-
+
+26
+
+tinct from x1 and x2 , that is not a relative minimizer of l. This contradicts the above notion
+that the Hessian is strictly positive definite for every critical point.
+Proof of Theorem 3. For p random variables Y1 , . . . , Yp where Yi ∼ Nm×m (0, di Σr , Σc ), we
+write D = (d1 , . . . , dp ) and the scaled log likelihood function as
+p
+X
+
+
+
+
+
+
+
+1
+t −1
+ − mp log Σ−1
+ − m2 log D−1  .
+− mp log Σ−1
+tr Yi Σ−1
+l (D, Σr , Σc |Y1 , . . . , Yp ) ∝
+c
+c
+c Yi Σr
+d
+i=1 i
+−1
+and d−1
+and setting them equal to zero
+Taking first derivatives with respect to Σ−1
+r , Σc
+i
+
+yields the likelihood equations:
+X 1
+t
+Yi Σ−1
+c Yi
+di
+X 1
+Yit Σ−1
+=
+r Yi
+di
+
+mpΣr =
+mpΣc
+
+
+t −1
+m2 di = tr Yi Σ−1
+.
+c Yi Σr
+
+We note that when holding Σr and Σc constant, l (D, Σr , Σc ) is a strictly convex function of
+D−1 and so with probability 1 it attains a global minimum at points that satisfy the first
+t −1
+derivative condition m2 di = tr (Yi Σ−1
+c Yi Σr ). We define the profile likelihood
+
+−1
+g Σ−1
+r , Σc
+
+
+
+=
+
+inf
+
+D−1 ∈Rp+
+
+l (D, Σr , Σc )
+
+X
+
+
+
+
+
+
+t −1 
+ − mp log Σ−1
+ + m2
+= m2 p − mp log Σ−1
+log tr Yi Σ−1
++ c.
+r
+c
+c Yi Σr
+1
+There are two nonidentifiabilities in the scaled log likelihood given by l (D, Σr , Σc ) = l aD, bΣr , ab
+Σc
+
+for a, b > 0 and so we restrict our domain to consider minimization the of l (D, Σr , Σc ) over
+Rp+ ×S2 ×S2 where S2 is the bounded subset of S+m of positive definite matrices whose largest
+eigenvalue is 1. This makes the model identifiable. Since minimization of l (D, Σr , Σc ) is
+−1
+−1
+−1
+equivalent to minimization of g (Σ−1
+r , Σc ), we restrict minimizing g (Σr , Σc ) to S2 × S2 .
+
+The continuity of g on S+m × S+m ⊃ S2 × S2 guarantees that it will attain a minimum on
+
+27
+
+
+
+−1
+S2 × S2 as long as for Σ−1
+r , Σc ∈ S2
+
+lim
+−1
+Σ−1
+r →Σr
+
+lim
+−1
+Σ−1
+c →Σc
+
+lim
+
+lim
+
+−1 −1
+−1
+Σ−1
+c →Σc Σr →Σr
+
+−1
+g Σ−1
+r , Σc
+
+
+
+
+
+−1
+= g Σ−1
+,
+Σ
+r
+c
+
+−1
+g Σ−1
+r , Σc
+
+
+
+
+
+−1
+= g Σ−1
+,
+Σ
+r
+c
+
+−1
+g Σ−1
+r , Σc
+
+
+
+
+
+−1 .
+= g Σ−1
+,
+Σ
+r
+c
+
+All three conditions are met for positive definite boundary points, so all that remains to
+−1
+−1
+show is that g (Σ−1
+or Σ−1
+approach
+r , Σc ) → ∞ when a subset of the eigenvalues of Σr
+c
+
+0 (behavior near positive semidefinite boundary points). It is immediate that when the
+eigenvectors of Σ−1
+do not match the left eigenvectors of Yi and the eigenvectors of Σ−1
+r
+c
+t −1
+do not match the right eigenvectors of Yi , tr (Yi Σ−1
+c Yi Σr ) → ci > 0, thus the log tr (·)
+−1
+term converges to a finite constant. As such, the behavior of g (Σ−1
+r , Σc ) when subsets
+
+of eigenvalues approach zero is completely governed by the log determinant terms, both of
+which will converge to +∞.
+
+References
+Airoldi, E., Blei, D., Fienberg, S., and Xing, E. (2008). Mixed membership stochastic
+blockmodels. The Journal of Machine Learning Research, 9:1981–2014.
+Allen, G. I. and Tibshirani, R. (2010). Transposable regularized covariance models with an
+application to missing data imputation. The Annals of Applied Statistics, 4(2):764–790.
+Anderson, T., Hsu, H., and Fang, K.-T. (1986).
+
+Maximum-likelihood estimates and
+
+likelihood-ratio criteria for multivariate elliptically contoured distributions. Canadian
+Journal of Statistics, 14(1):55–59.
+Bergmann, S., Ihmels, J., and Barkai, N. (2003). Similarities and differences in genome-wide
+expression data of six organisms. PLoS Biology, 2(1):e9.
+28
+
+Bergstrand, J. (1985). The gravity equation in international trade: some microeconomic
+foundations and empirical evidence. The review of economics and statistics, pages 474–
+481.
+Bergstrand, J. (1989). The generalized gravity equation, monopolistic competition, and the
+factor-proportions theory in international trade. The review of economics and statistics,
+pages 143–153.
+Bonilla, E., Chai, K. M., and Williams, C. (2008). Multi-task gaussian process prediction.
+Butland, G., Peregrín-Alvarez, J. M., Li, J., Yang, W., Yang, X., Canadien, V., Starostine,
+A., Richards, D., Beattie, B., Krogan, N., et al. (2005). Interaction network containing
+conserved and essential protein complexes in escherichia coli. Nature, 433(7025):531–537.
+Courant, R. (1950). Dirichlet’s principle, conformal mapping, and minimal surfaces. Interscience Publishers, Inc, New York.
+Dawid, A. (1981). Some matrix-variate distribution theory: notational considerations and a
+bayesian application. Biometrika, 68(1):265–274.
+Eaton, M. (1983). Multivariate statistics: a vector space approach. Wiley New York.
+Eriksen, P. S. (1987). Proportionality of covariance matrices. Ann. Statist., 15(2):732–748.
+Fletcher, A., Bonell, C., and Sorhaindo, A. (2011). You are what your friends eat: systematic
+review of social network analyses of young people’s eating behaviours and bodyweight.
+Journal of epidemiology and community health, 65(6):548–555.
+Flury, B. K. (1986). Proportionality of k covariance matrices. Statistics & probability letters,
+4(1):29–33.
+Gupta, A. and Varga, T. (1994). A new class of matrix variate elliptically contoured distributions. Statistical Methods & Applications, 3(2):255–270.
+
+29
+
+Gupta, A. and Varga, T. (1995). Some inference problems for matrix variate elliptically
+contoured distributions.
+
+Statistics: A Journal of Theoretical and Applied Statistics,,
+
+26(3):219–229.
+Hoff, P. (2005). Bilinear mixed-effects models for dyadic data. J. Amer. Statist. Assoc.,
+100(469):286–295.
+Hoff, P. (2008). Modeling homophily and stochastic equivalence in symmetric relational
+data. In Platt, J., Koller, D., Singer, Y., and Roweis, S., editors, Advances in Neural
+Information Processing Systems 20, pages 657–664. MIT Press, Cambridge, MA.
+Hoff, P. (2011). Separable covariance arrays via the tucker product, with applications to
+multivariate relational data. Bayesian Analysis, 6(2):179–196.
+Hoff, P., Raftery, A., and Handcock, M. (2002). Latent space approaches to social network
+analysis. Journal of the american Statistical association, 97(460):1090–1098.
+Holland, P., Laskey, K., and Leinhardt, S. (1983). Stochastic blockmodels: first steps. Social
+networks, 5(2):109–137.
+Jensen, S. T. and Johansen, S. (1987). Estimation of proportional covariances. Statistics &
+probability letters, 6(2):83–85.
+Jensen, S. T. and Madsen, J. (2004). Estimation of proportional covariances in the presene
+of certain linear restrictions. The Annals of Statistics, 32(1):219–232.
+Kenny, D. and La Voie, L. (1984). The social relations model. Advances in experimental
+social psychology, 18:142–182.
+Lafosse, R. and Ten Berge, J. (2006). A simultaneous concor algorithm for the analysis of
+two partitioned matrices. Computational statistics & data analysis, 50(10):2529–2535.
+Lazzarini, S., Chaddad, F., and Cook, M. (2001). Integrating supply chain and network
+analyses: the study of netchains. Journal on chain and network science, 1(1):7–22.
+30
+
+Leskovec, J., Lang, K., Dasgupta, A., and Mahoney, M. (2008). Statistical properties of
+community structure in large social and information networks. In Proceeding of the 17th
+international conference on World Wide Web, pages 695–704. ACM.
+Li, H. (2006). The covariance structure and likelihood function for multivariate dyadic data.
+J. Multivariate Anal., 97(6):1263–1271.
+Li, H. and Loken, E. (2002). A unified theory of statistical analysis and inference for variance
+component models for dyadic data. Statist. Sinica, 12(2):519–535.
+Lincoln, J. and Gerlach, M. (2004). Japan’s network economy: structure, persistence, and
+change. Cambridge University Press.
+Lu, N. and Zimmerman, D. (2005). The likelihood ratio test for a separable covariance
+matrix. Statistics & probability letters, 73(4):449–457.
+McQuitty, L. and Clark, J. (1968). Clusters from iterative, intercolumnar correlational
+analysis. Educational and psychological measurement.
+Mitchell, M., Genton, M., and Gumpertz, M. (2006). A likelihood ratio test for separability
+of covariances. Journal of Multivariate Analysis, 97(5):1025–1043.
+Nowicki, K. and Snijders, T. (2001). Estimation and prediction for stochastic blockstructures.
+Journal of the American Statistical Association, 96(455):1077–1087.
+Panning, W. (1982). Fitting blockmodels to data. Social Networks, 4(1):81–101.
+Pollard, M., Tucker, J., Green, H., Kennedy, D., and Go, M. (2010). Friendship networks
+and trajectories of adolescent tobacco use. Addictive behaviors, 35(7):678–685.
+Potter, G., Handcock, M., Longini, I., and Halloran, M. (2012). Estimating within-school
+contact networks to understand influenza transmission. Ann. Appl. Stat., 6(1):1–26.
+
+31
+
+Rohe, K., Chatterjee, S., and Yu, B. (2011). Spectral clustering and the high-dimensional
+stochastic blockmodel. The Annals of Statistics, 39(4):1878–1915.
+Roy, A. and Khattree, R. (2005). On implementation of a test for kronecker product covariance structure for multivariate repeated measures data. Statistical Methodology, 2(4):297–
+306.
+Sampson, S. (1968). A novitiate in a period of change: An experimental and case study of
+social relationships. PhD thesis, Cornell University, September.
+Srivastava, M., von Rosen, T., and Von Rosen, D. (2008). Models with a kronecker product covariance structure: estimation and testing. Mathematical Methods of Statistics,
+17(4):357–370.
+Stuart, J., Segal, E., Koller, D., and Kim, S. (2003). A gene-coexpression network for global
+discovery of conserved genetic modules. Science, 302(5643):249–255.
+Thompson, E. and Geyer, C. (2007). Fuzzy p-values in latent variable problems. Biometrika,
+94(1):49–60.
+Tinbergen, J. et al. (1962). Shaping the world economy: Suggestions for an international
+economic policy. Twentieth Century Fund New York.
+Tseng, P. (2001). Convergence of a block coordinate descent method for nondifferentiable
+minimization. Journal of optimization theory and applications, 109(3):475–494.
+Van De Bunt, G., Van Duijn, M., and Snijders, T. (1999). Friendship networks through time:
+An actor-oriented dynamic statistical network model. Computational & Mathematical
+Organization Theory, 5(2):167–192.
+Wang, Y. and Wong, G. (1987). Stochastic blockmodels for directed graphs. Journal of the
+American Statistical Association, 82(397):8–19.
+
+32
+
+Westveld, A. and Hoff, P. (2011a). A mixed effects model for longitudinal relational and
+network data, with applications to international trade and conflict. Ann. Appl. Stat.,
+5(2A):843–872.
+Westveld, A. H. and Hoff, P. D. (2011b). A mixed effects model for longitudinal relational
+and network data, with applications to international trade and conflict. Ann. Appl. Stat.,
+5(2A):843–872.
+White, H., Boorman, S., and Breiger, R. (1976). Social structure from multiple networks. i.
+blockmodels of roles and positions. American journal of sociology, pages 730–780.
+Yu, K., Chu, W., Yu, S., Tresp, V., and Xu, Z. (2007). Stochastic relational models for
+discriminative link prediction. Advances in neural information processing systems, 19:1553.
+
+33
+
+

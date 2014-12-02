@@ -1,0 +1,1954 @@
+Hierarchical multilinear models for multiway data
+Peter D. Hoﬀ
+
+1
+
+Working Paper no. 95
+Center for Statistics and the Social Sciences
+University of Washington
+Seattle, WA 98195-4322.
+December 28, 2009
+
+1
+
+Departments of Statistics and Biostatistics , University of Washington, Seattle, Washington 98195-4322.
+
+Web: http://www.stat.washington.edu/hoff/. This work was partially supported by NSF grant SES0631531.
+
+Abstract
+Reduced-rank decompositions provide descriptions of the variation among the elements of a matrix
+or array. In such decompositions, the elements of an array are expressed as products of lowdimensional latent factors. This article presents a model-based version of such a decomposition,
+extending the scope of reduced rank methods to accommodate a variety of data types such as
+longitudinal social networks and continuous multivariate data that is cross-classified by categorical
+variables. The proposed model-based approach is hierarchical, in that the latent factors corresponding to a given dimension of the array are not a priori independent, but exchangeable. Such
+a hierarchical approach allows more flexibility in the types of patterns that can be represented.
+Some key words: Bayesian, multiplicative model, PARAFAC, regularization, shrinkage.
+
+1
+
+Introduction
+
+Matrix-valued data are prevalent in many scientific disciplines. Studies in social and health sciences
+often gather social network data that can be represented by square, binary matrices with undefined
+diagonals. Numerical results from gene expression studies are recorded in matrices with rows
+representing tissue samples and columns representing genes. Analysis of stock market returns
+involves data matrices with rows representing stocks and columns representing time. With such
+data there are often dependencies among both the rows and the columns of the data matrices, and
+so the standard tools of multivariate analysis, in which patterns along one dimension of the data
+matrix are thought of as i.i.d., may be inadequate for data analysis purposes. As an alternative to
+the i.i.d. paradigm, patterns of row and column variation in matrix-valued data are often described
+with reduced-rank matrix decompositions and models. For example, the i, jth entry of an m1 × m2
+
+matrix might be expressed as yi,j = �ui , vj � + �i,j , where the heterogeneity among a set of low-
+
+dimensional vectors {u1 , . . . , um1 } and {v1 , . . . , vm2 } is used to represent heterogeneity attributable
+
+to the row and column objects respectively. Such models can be described as being bilinear, as
+the expectation of yi,j is a bilinear function of the parameters. These models are related to biplots
+[Gabriel, 1971], bilinear regression [Gabriel, 1998] and the singular value decomposition (SVD).
+In more complex situations the data take the form of a multidimensional array instead of a
+matrix. For example, temporal variation in a social network over a discrete set of time points may
+be represented by a three-way array Y = {yi,j,t }, where yi,j,t describes the relationship between
+
+nodes i and j at time t. Similarly, gene expression data gathered under a variety of experimental
+conditions, or multiple variables measured on a set of companies over time are also examples of
+array-valued or multiway data. Surveys of multiway data analysis include Coppi and Bolasco [1989]
+and Kroonenberg [2008]. The July-August 2009 issue of the Journal of Chemometrics was dedicated
+to Richard Harshman, one of the founders of three-way data analysis. Harshman [Harshman, 1970,
+Harshman and Lundy, 1984] developed a three-way generalization of the SVD known as “parallel
+factor analysis”, or PARAFAC, that has become one of the primary methods of multiway data
+analysis. The generalization is as follows: The SVD represents the i, jth element of a rank-R
+�
+matrix A as ai,j = �ui , vj � ≡ R
+r=1 ui,r vj,r . For a three-way array, a PARAFAC decomposition
+�
+represents the i, j, kth element as ai,j,k = �ui , vj , wk � = R
+r=1 ui,r vj,r wk,r . Kruskal [1976, 1977]
+related such decompositions to a precise definition of rank for three-way arrays, in which the rank
+1
+
+is the smallest integer R for which the above representation holds. The generalization to arbitrary
+dimensions is straightforward: A K-dimensional array of rank R is one in which the elements can
+be expressed as a multilinear function of R-dimensional factors. A compact review of these results
+and others appears in Kruskal [1989].
+While the area of multiway data analysis has been active, most of the focus has been on algorithms for finding least-squares solutions, pre- and post-processing of results, and interpretation
+of the least-squares parameters. Little has been done in terms of incorporating multilinear representations into statistical models. One exception is the work of Vega-Montoto and Wentzell [2003]
+and Vega-Montoto et al. [2005], who develop algorithms for finding maximum likelihood solutions
+for situations with heteroscedastic or correlated error terms. However, these algorithms assume the
+error variance is known.
+This article develops a hierarchical multilinear model for incorporation into a variety of nonstandard multiway data analysis situations, and presents a Bayesian approach for parameter estimation. The motivation is twofold: First, multilinear array representations can involve a large
+number of parameters. Overfitting of the model can be ameliorated by using shrinkage estimators
+provided by a Bayesian approach. In particular, a hierarchical Bayesian approach can be used to
+provide shrinkage patterns that are based primarily on the observed data, rather than relying heavily on a fixed prior distribution. The second motivation is that Bayesian approaches and MCMC
+estimation methods allow one to incorporate the basic multilinear representation into models for
+complex data that might involve additional dependence structures or discrete data.
+After presenting the hierarchical multilinear model and Bayesian methods for estimation in
+Sections 2 and 3, a small simulation study is presented in Section 4 to compare mean squared errors
+of three diﬀerent parameter estimation methods: least-squares, a simple non-hierarchical Bayesian
+approach and a Bayesian hierarchical approach. The Bayes estimators are found to outperform the
+least-squares estimator, with the hierarchical Bayes procedure having the best performance. Also
+considered is the performance of the estimators when the rank of the model is misspecified. In this
+situation, the least-squares and non-hierarchical Bayes procedures increasingly overfit the data as
+the rank is increased, while the hierarchical Bayes procedure is robust to rank misspecification.
+Sections 5 and 6 give examples in which it is useful to embed a multilinear model within a
+larger model for observed data. Section 5 considers estimation of a multivariate mean E[yx ] = µx
+
+2
+
+for each possible value of a vector of categorical variables x. Often the number of observations
+per level of x is small and varies from level to level. A hierarchical model for the mean, µx ∼
+multivariate normal(β x , Σ), allows for consistent estimation of each µx but shrinkage towards β x
+
+when the sample size is small. The values B = {β x : x ∈ X } can be represented as a multiway
+array, and a reduced rank multilinear model for B allows for the modeling of non-additive eﬀects
+of x with a relatively small number of parameters.
+Section 6 presents an analysis of international cooperation and conflict during the cold war.
+The data consist of a three-way array with element yi,j,t representing the relationship between
+countries i and j in year t. Several features of these data make existing tools from multiway data
+analysis inappropriate, one being that the data are ordinal. The range of the data includes the
+integers from -5 to 2, indicating diﬀerent levels of military cooperation or conflict. Assuming that
+the yi,j,k ’s are normally distributed or even continuous would be inappropriate. However, using the
+tools developed in this article it is reasonably straightforward to embed a multilinear representation
+within an ordered probit model for these data. A discussion of the results and directions for future
+research follows in Section 7.
+
+2
+
+Reduced rank models for array data
+
+In this section we review the reduced rank model and an alternating least-squares(ALS) procedure
+for parameter estimation. For a review of the properties, limitations and alternatives to ALS, see
+Chapter 5 of Kroonenberg [2008] or Tomasi and Bro [2006].
+
+2.1
+
+Rank and factor representations for arrays
+
+Given an m1 × m2 data matrix Y it is often desirable to separate out the “main features” of Y
+
+from the “patternless noise.” This motivates a model of the form Y = Θ + E, where Θ is to be
+estimated from the data. Interpreting “main features” as those that can be well-approximated by
+a low-rank matrix, the rank of Θ is usually taken to be some value R < m1 ∧ m2 . The rank of a
+
+matrix Θ can be defined as the smallest integer R such that there exists matrices U ∈ Rm1 ×R and
+V ∈ Rm2 ×R such that
+Θ =
+
+R
+�
+r=1
+
+ur ⊗ vr = UV , or equivalently, θi,j =
+T
+
+3
+
+R
+�
+r=1
+
+ui,r vj,r = �ui , vj �,
+
+where ur is the rth column of U in the first equation and ui is the ith row of U in the second.
+Variation among the rows of U represents the heterogeneity in Θ attributable to variation in the
+row objects, and similarly variation among the rows of V represents heterogeneity attributable to
+the column objects.
+A K-order multiway array Y with dimension m1 × · · · × mK has elements {yi1 ,...,iK : ik ∈
+
+{1, . . . , mk }}. As with a matrix, we may define a model for a K-order array as Y = Θ + E, where
+
+E is an array of uncorrelated, mean-zero noise and Θ is a reduced rank array to be estimated.
+Following Kruskal [1976] and Kruskal [1977], the rank of a K-order array Θ is simply the smallest
+integer R such that there exist matrices {U(k) ∈ Rmk ×R , k = 1, . . . , K}, such that
+Θ =
+
+θi1 ,...,iK
+
+=
+
+R
+�
+r=1
+R
+�
+r=1
+
+(K)
+u(1)
+≡ �U(1) , . . . , U(K) � , or equivalently
+r ⊗ · · · ⊗ ur
+(1)
+
+(K)
+
+(1)
+
+(K)
+
+ui1 ,r × · · · × uiK ,r ≡ �ui1 , · · · , uiK �,
+
+(k)
+
+(k)
+
+where ur is the rth column of U(k) in the first equation and ui
+
+is the ith row of U(k) in the second.
+
+As in the matrix case, variation among the rows of U(k) represents heterogeneity attributable to
+the kth set of objects, that is, the kth mode of the array.
+
+2.2
+
+Least squares estimation
+
+In the matrix case the least squares estimate of Θ = UVT (also the MLE assuming normal, i.i.d.
+errors) can be obtained from the first R components of the singular value decomposition of Y. For
+arrays of higher order, only iterative methods of estimation are available. Perhaps the simplest
+method of parameter estimation is the alternating least squares algorithm (ALS), in which factors
+corresponding to a given mode are updated to minimize the residual sums of squares given the
+current values for the other modes. In this subsection we review the relevant calculations for ALS,
+which will also be useful for Bayesian estimation in the next section.
+Estimation for a three-way model:
+
+We begin with an three-way array so that the main ideas
+
+can be understood with a minimal amount of notational complexity. Let Y be a three-way array
+
+4
+
+modeled as yi,j,k = �ui , vj , wk � + �i,j,k , with {�i,j,k } ∼ i.i.d. normal(0, σ 2 ). We can write
+yi,j,· = W(ui ◦ vj ) + �i,j,·
+yi,·,k = V(ui ◦ wk ) + �i,·,k
+y·,j,k = U(vj ◦ wk ) + �·,j,k ,
+where U, V, W are m1 × R, m2 × R and m3 × R matrices respectively, ui , vj , wk are rows of these
+
+matrices, yi,j,· , yi,·,k , y·,j,k are vectors of length m1 , m2 and m3 , and “◦” denotes the Hadamard
+product (elementwise multiplication). Some matrix algebra and careful summation shows that, as
+a function of U, p(Y|U, V, W) can be written
+p(Y|U, V, W) ∝ etr(UT L/σ 2 − UT UQ/[2σ 2 ]) , where
+
+(1)
+
+Q = (VT V) ◦ (WT W) and
+�
+L =
+y·,j,k ⊗ (vj ◦ wk ) .
+j,k
+
+ˆ = LQ−1 .
+With V and W fixed, the conditional MLE and least-squares estimate of U is given by U
+The ALS procedure is to iteratively replace a current value of U with its conditional least-squares
+estimate, then replace V and W similarly. This procedure is then iterated until a convergence
+criterion has been met.
+Estimation for a K-way model: Now suppose Y is an m1 ×· · ·×mK array. Let U(1) , . . . , U(K)
+
+be the matrices of factors for the K modes, so that U(k) is an mk × R matrix. The basic results
+
+from the three-way model carry over as follows: Let yi1 = (y1,i2 ,...,iK , . . . , yn1 ,i2 ,...,im ) be a “fiber”
+(2)
+
+(3)
+
+(K)
+
+along the first dimension of the array. Then we can write yi1 = U(1) (ui2 ◦ ui3 ◦ · · · ◦ uiK ) + �i1 .
+Similar to the three-mode case, as a function of U(1) , p(Y|U(1) , . . . , U(K) ) can be written
+T
+
+T
+
+p(Y|U(1) , . . . , U(K) ) ∝ etr(U(1) L/σ 2 − U(1) U(1) Q/[2σ 2 ]) , where
+T
+
+(2)
+
+T
+
+Q = (U(2) U(2) ) ◦ · · · ◦ (U(K) U(K) ) and
+�
+L =
+yi1 ⊗ (u(2) ◦ · · · ◦ u(k) ) .
+i2 ,...,im
+
+The conditional MLE and least squares estimator of U(1) given the factor values for the other
+ˆ (1) = LQ−1 . As with three-way data, the ALS procedure is to iteratively replace
+modes is thus U
+the factors matrices with their conditional least-squares estimates until convergence.
+5
+
+3
+
+Bayes and hierarchical Bayes estimation
+
+Compared to least-squares or maximum likelihood methods, Bayesian procedures often provide stable estimation in high-dimensional problems due to regularization via the prior distribution. Using
+conjugate prior distributions, this section provides a Gibbs sampling scheme that approximates the
+posterior distribution p(U(1) , . . . , U(K) , σ 2 |Y), and by extension, an approximation to the posterior
+
+distribution of Θ = �U(1) , . . . , U(K) �. The posterior expectation of Θ can be used as a Bayesian
+estimate of the main features of the data array.
+
+3.1
+
+A basic Gibbs sampler
+
+Let the prior distribution for U(k) be such that that the rows of U(k) are i.i.d. multivariate
+normal(µk , Ψk ) or equivalently, U(k) ∼ matrix normal(Mk = 1µTk , Ψk , I) with density
+p(U(k) ) ∝ etr(−(U(k) − Mk )T (U(k) − Mk )Ψ−1
+k /2)
+(k)T (k) −1
+∝ etr(U(k)T Mk Ψ−1
+U Ψk /2).
+k −U
+
+Combining this with the likelihood from Equation 2, it follows that if U(1) ∼ matrix normal(M1 , Ψ1 , I)
+a priori, then the full conditional distribution is also matrix normal with density
+
+˜ 1 )T (U(1) − M
+˜ 1 )/2)Ψ
+˜ )
+p(U(1) |Y, U(2) , . . . , U(K) ) ∝ etr(−(U(1) − M
+1
+−1
+
+˜ 1 = (Q/σ 2 + Ψ−1 )−1
+Ψ
+1
+
+˜ 1 = (L/σ 2 + M1 Ψ−1 )Ψ
+˜ 1.
+M
+1
+Full conditional distributions for U(2) , . . . , U(m) are derived analogously. Using a conjugate inversegamma(ν0 /2, ν0 σ02 /2) prior distribution for σ 2 results in an inverse-gamma(a, b) full conditional
+�
+distribution where a = (ν0 + k mk )/2 and b = (ν0 σ02 + ||Y − �U(1) , . . . , U(K) �||2 )/2.
+
+A Markov chain Monte Carlo approximation to p(U(1) , . . . , U(K) , σ 2 |Y) can be made by iter-
+
+atively sampling each unknown quantity from its full conditional distribution. This generates a
+Markov chain, samples from which converge in distribution to p(U(1) , . . . , U(K) , σ 2 |Y). However,
+ˆ (k) , or Θ with �U
+ˆ (1) , . . . , U
+ˆ (K) �,
+it would be inappropriate to estimate U(k) by its posterior mean U
+as the values of the latent factors are not separately identifiable. For example, the likelihood is
+
+invariant to joint permutations and complementary rescalings of the columns of the U(k) ’s (see
+Kruskal [1989] for a discussion of the uniqueness of reduced-rank array decompositions). Instead,
+6
+
+ˆ of Θ, obtained from the average of �U(1) , . . . , U(K) � over iterations
+the posterior mean estimate Θ
+
+of the Markov chain, can be used as a point estimate of Θ. If desired, point estimates of the U(k) ’s
+ˆ
+can then be obtained from a rank-R least-squares approximation of Θ.
+
+3.2
+
+Hierarchical modeling of factors
+
+Rarely will we have detailed prior knowledge of an appropriate mean µk and variance Ψk for
+each factor matrix U(k) . Absent these, we may consider a simple “weak” prior distribution such
+(k)
+
+(k)
+
+as u1 , . . . , umk ∼ i.i.d. multivariate normal(0, τ 2 I), where τ 2 is large. However, doing so would
+ignore patterns of heterogeneity in the data that could improve parameter estimation.
+
+Recall that the factors represent variance among the elements of the data array Y that can
+be attributed to heterogeneity within the various modes. To illustrate, consider three mode data
+in which the first mode represents a large number of experimental units and the other two modes
+represent two sets of experimental conditions. In this case, yi,j,k is the measurement for unit i when
+condition one is at level j and condition two is at level k. Letting the factors corresponding to the
+three modes be U, V and W, modeling the rows u1 , . . . , um1 of the m1 × R factor matrix U as i.i.d.
+multivariate normal(µ, Ψ) induces a covariance among the elements of each unit-specific m2 × m3
+matrix Yi = {yi,j,k , 1 ≤ j ≤ m2 , 1 ≤ k ≤ m3 }, given by the following calculation:
+ui = µ + γ i , γ i ∼ multivariate normal(0, Ψ)
+yi,j,k = �ui , vj , wk � + �i,j,k
+= uTi (vj ◦ wk ) + �i,j,k = µT (vj ◦ wk ) + γ Ti (vj ◦ wk ) + �i,j,k
+Cov[yi,j,k , yi,l,m ] = E[γ Ti (vj ◦ wk )(vl ◦ wm )T γ i ]
+= tr((vj ◦ wk )(vl ◦ wm )T Ψ)
+= tr([(vj vTl ) ◦ (wk wTm )]Ψ)
+Each unit has a measurement under conditions (j, k) and under (l, m), and the covariance of these
+measurements across experimental units is determined by vj vTl , wk wTm and the covariance matrix
+Ψ. Fixing Ψ in advance places restrictions on the form of this covariance. This suggests the use of
+a hierarchical model as an alternative, whereby the mean and variance of the factors of each mode
+are estimated from the observed data. Returning to the general case of K modes, the proposed
+
+7
+
+hierarchical model is as follows:
+iid
+
+(k)
+
+{u1 , . . . , u(k)
+mk } ∼ multivariate normal(µk , Ψk )
+Ψk
+µk |Ψk
+
+∼ inverse-Wishart(S0 , ν0 )
+∼ multivariate normal(µ0 , Ψk /κ0 )
+
+2
+Diﬀuse priors can be used as a default, such as µ0 = 0, κ0 = 1, ν0 = R + 1 and S−1
+0 = Iτ0 , where
+
+τ02 is some prespecified value determined by the scale of the measurements. The full conditional
+distributions for all parameters have straightforward derivations, and are summarized in the following Gibbs sampling scheme: Given current values of {U(1) , . . . , U(K) } and σ 2 , new values of
+these parameters are generated as follows:
+
+1. For each k ∈ {1, . . . , K} in random order,
+(a) sample Ψk ∼ inverse-Wishart([U(k)T U(k) + Iτ02 ]−1 , mk + R + 1)
+(b) sample µk ∼ multivariate normal(U(k)T 1/[mk + 1], Ψk /[mk + 1])
+˜ k, Ψ
+˜ k , I), where
+(c) sample U(k) ∼ matrix normal(M
+˜ k = (Qk /σ 2 + Ψ−1 )−1
+• Ψ
+k
+
+˜ k = (Lk /σ 2 + 1µT Ψ−1 )Ψ
+˜k
+• M
+k k
+2. sample σ 2 ∼ inverse-gamma(˜
+ν0 /2, ν˜0 σ
+˜02 /2), where
+• ν˜0 = ν0 +
+
+�K
+
+k=1 mk
+
+• ν˜0 σ
+˜02 = ν0 σ02 + ||Y − �U(1) , . . . , U(K) �||2
+Note that {(µk , Ψk ), k = 1, . . . , K} will not be separately identifiable since, for example, the scales
+
+of {U(k) , k = 1, . . . , K} are not separately identifiable. However, a non-hierarchical Bayesian approach restricts the overall scale of Θ, as well the shrinkage point for the U(k) ’s. In contrast, the
+hierarchical model allows these things to be determined by the data.
+
+4
+
+Comparison of estimators
+
+This section presents a small simulation study comparing the performance of diﬀerent estimation
+methods. Fifty random rank-4 10 × 8 × 6 Θ-arrays were simulated, each to be estimated from a
+
+corresponding simulated “observed” data array Y. The Θ and Y arrays were simulated as follows:
+8
+
+1. For each mode k ∈ {1, 2, 3},
+(a) sample µk ∼ normal(0, I) and Ψk ∼ inverse-Wishart(I, 4 + 2);
+(b) sample U(k) ∼ multivariate normal (µk , Ψk ).
+iid
+
+2. Set Y = �U(1) , U(2) , U(3) � + E, where {�i,j,k } ∼ normal(0, 12).
+The error variance of 3 × 4 = 12 was selected as the product of the mode and the rank of the array
+Θ. This variance makes the estimation of Θ from Y feasible but not trivial.
+
+4.1
+
+Known rank
+
+We first examine the case where the true rank of Θ and the presumed rank are the same. Three
+estimates were computed for each of the fifty simulated Θ-arrays:
+ˆ LS (least squares), an estimate obtained via the alternating least-squares algorithm;
+Θ
+ˆ IB (independent Bayes), the posterior mean estimate when the elements u(k) of the UΘ
+i,r
+matrices are assumed to be a priori independent normal(0, 100) random variables.
+ˆ HB (hierarchical Bayes), the posterior mean estimate under the hierarchical model of Section
+Θ
+3.2, with Ψ(i) ∼ inverse-Wishart (I, 4 + 1) and µ(i) |Ψ(i) ∼ multivariate normal(0, Ψ(i) ).
+The Bayesian estimates were obtained using the Gibbs sampling schemes described in the previous sections, with 500 iterations to allow for convergence to the stationary distribution (“burn-in”),
+followed by 5000 iterations for estimating the mean matrix. Mixing of the algorithm was assessed
+by monitoring the value of ||Θ||2 across the 5000 iterations of the Markov chain. Mixing was gener-
+
+ally good, with median eﬀective sample sizes (the equivalent numbers of independent Monte Carlo
+samples) for ||Θ||2 being 3370 and 3733 for the independent Bayes and hierarchical approaches,
+respectively. The least squares estimates were obtained by running the ALS algorithm using three
+
+diﬀerent random starting values, and then selecting the one that gave the minimum residual sum
+of squares (the three estimates were typically very close to one another).
+The results of the simulation study are summarized in Figure 1. For each dataset and estimation
+ˆ − Θ||2 /||Y − Θ||2 was computed to assess the performance of Θ
+ˆ relative to
+method, the ratio of ||Θ
+
+the unbiased estimate Y. In this example where the true rank of Θ is known, using the reducedrank ALS estimate is superior to using Y, giving reductions of mean squared error of roughly 56
+9
+
+0.20
+
+independent
+hierarchical
+
+Bayesian MSEs
+0.2
+0.3
+
+●
+
+●
+
+●
+
+●
+●
+●
+
+●
+
+0.05
+
+●
+
+0.0
+
+0.1
+
+●
+●
+● ●
+●●
+●●
+●
+●● ●
+●●
+●●
+●
+●
+●●
+●
+●
+●●●
+● ● ●● ●●●
+● ●●●
+● ●
+●● ●
+●●● ●
+●
+● ● ●
+●●
+●
+●●
+● ●●
+●
+●
+●●
+●● ● ●
+●●
+● ●●●●
+● ●●
+●●
+● ● ●●
+●●
+●
+●●
+●
+
+hierarchical Bayes MSE
+0.10
+0.15
+
+0.4
+
+●
+
+0.0
+
+0.1
+
+0.2
+0.3
+least squares MSE
+
+0.4
+
+0.05
+
+0.10
+0.15
+independent Bayes MSE
+
+0.20
+
+Figure 1: Comparison of MSEs for diﬀerent estimation methods.
+to 77%. However, the first panel of Figure 1 indicates that the two Bayesian estimators provide
+a substantial further reduction in MSE, amounting to an additional reduction of 54% on average
+and up to 88% for particular datasets.
+ˆ IB and Θ
+ˆ HB is highlighted in the second panel of the
+The diﬀerence in performance between Θ
+ˆ HB based on the hierarchical
+figure. For 48 out of the 50 simulated {Θ, Y} pairs, the estimator Θ
+ˆ IB , based on independent prior distributions. This outcome is not unexmodel outperformed Θ
+
+pected: The random mechanism used for simulating the datasets was very similar to the model
+ˆ HB is based, and so in some sense it is obvious that this estimator performs better
+upon which Θ
+than the others. However, the implications for model-based multiway analysis are not vacuous:
+There exist Θ-arrays having patterns that are not well represented by uncorrelated, mean-zero
+values of the U(i) ’s. The fact that the hierarchical model performs better than an uncorrelated,
+independence model indicates that information about the mean and correlations of the U(i) ’s is
+available in the observed data and can be used to improve estimation of Θ = �U(1) , . . . , U(K) �.
+
+4.2
+
+Misspecified rank
+
+A more realistic situation is one in which the true rank of Θ is not known. In this subsection we
+ˆ LS , Θ
+ˆ IB and Θ
+ˆ HB for estimating the rank-4 arrays generated as described
+investigate the MSEs of Θ
+10
+
+above, but when the assumed rank is R ∈ {1, . . . , 8}
+
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+−1
+●
+
+●
+●
+
+−4
+
+3
+
+4
+
+5
+
+●
+●
+
+6
+
+7
+
+●
+●
+
+●
+●
+
+●
+●
+
+2
+
+●
+
+●
+
+●
+
+8
+
+1
+
+●
+
+2
+
+3
+
+4
+
+5
+
+●
+
+●
+
+6
+
+7
+
+●
+
+●
+
+8
+
+1
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+2
+
+3
+
+5
+
+6
+
+7
+
+8
+
+4
+
+−2
+−3
+
+−1
+
+−2
+
+−1
+
+●
+
+−3
+
+−1
+log MSE
+−2
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+0
+
+0
+
+●
+
+●
+●
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+
+0
+
+1
+
+●
+●
+
+−3
+
+●
+
+−4
+
+−3
+
+●
+●
+●
+
+−4
+
+−3
+
+●
+●
+
+−2
+
+−1
+−2
+
+log RSS
+−2
+
+−1
+
+0
+
+hierarchical Bayes
+
+0
+
+independent Bayes
+
+0
+
+least squares
+
+−3
+
+●
+
+●
+
+1
+
+2
+
+3 4 5 6
+assumed rank
+
+7
+
+8
+
+−4
+
+−4
+
+−4
+
+●
+
+1
+
+2
+
+3 4 5 6
+assumed rank
+
+7
+
+8
+
+1
+
+2
+
+3 4 5 6
+assumed rank
+
+7
+
+8
+
+Figure 2: RSSs and MSEs under diﬀerent presumed ranks and estimation methods.
+Using the same simulation and estimation procedures as described in the previous subsection,
+ˆ was obtained for each of the fifty simulated Θ-arrays and for each combination of the three
+aΘ
+estimation methods and ranks R ∈ {1, . . . , 8}. For each of these 50×3×8 estimates, a relative MSE
+ˆ − Θ||2 /||Y − Θ||2 was computed as before, as well as a relative residual sum of squares (RSS),
+||Θ
+ˆ 2 /||Y||2 . The first of these measures the fidelity of the estimate to the true underlying
+||Y − Θ||
+parameter, and the second to the the data.
+
+A summary of the results are plotted in the six panels of Figure 2. For example, each boxplot in
+the upper left-hand panel of the figure summarizes the fifty RSS values of the least squares estimates
+assuming a given rank. As expected, as the rank increases the percentage of the variation in Y
+explained by the least-squares estimate goes up and the RSS goes down. However, the first plot
+of the bottom row shows that increasing the rank of the least-squares estimate beyond 2 generally
+ˆ IB : Although
+increases the MSE. A similar pattern holds for the independent Bayes estimator Θ
+11
+
+RSS goes down with increased rank, the MSE generally goes up with R > 2. In contrast, the
+ˆ HB remains stable as the presumed rank is increased beyond the
+MSE of the hierarchical estimate Θ
+rank used to generate Θ. This suggests that the hierarchical Bayes approach to estimation is more
+robust to overfitting than either the least squares or independent Bayes methods. Since the “true”
+rank of Θ is generally not known, it may be desirable to fit a model with a moderately large rank
+in the hopes of capturing as much of Θ as possible. The above results suggest that a hierarchical
+Bayes estimate may be preferable in such situations, as it provides a more stable estimate of Θ
+across diﬀerent choices of the presumed rank.
+ˆ HB was outperforming Θ
+ˆ IB simply because the
+Finally, one might consider the possibility that Θ
+prior variance for the latter was too large and not enough shrinkage was occurring. To investigate
+ˆ IB was obtained using a
+this, for each of the 50 datasets and ranks R ∈ {1, . . . , 8} an estimated Θ
+normal(0, 1) prior distribution for the elements of the factor matrices. Results using this prior were
+
+ˆ HB was lower
+similar to those using the more diﬀuse prior. In the known rank case, the MSE for Θ
+ˆ IB for all 50 datasets. In the unknown rank case, Θ
+ˆ IB still gave an increasing
+than this version of Θ
+MSE with increasing fitted rank, although the increase was slightly shallower than with the more
+diﬀuse prior variance.
+
+5
+
+Example: Multiway means for cross-classified data
+
+Large scale surveys collect data on a variety of numerical and categorical variables. Numerical
+data are often summarized by computing sample averages for combinations of a set of categorical
+variables. For example, letting y be a p-dimensional vector of numerical variables and x a Kdimensional vector of categorical variables, interest may lie in the population average of y for a
+given value of x, which is denoted as µx ∈ Rp . However, if the number of categorical variables
+
+or their number of levels is large compared to the sample size, then we may lack suﬃcient data
+to provide stable estimates for each µx separately. For example, the 2008 General Social Survey
+includes data on the following six variables:
+• y1 (words): number of correct answers out of 10 on a vocabulary test;
+• y2 (tv): hours of television watched in a typical day;
+• x1 (deg) highest degree obtained: none, high school, Bachelor’s, graduate;
+12
+
+• x2 (age): 18-34, 35-47, 48-60, 61 and older;
+• x3 (sex): male or female;
+• x4 (child) number of children: 0, 1, 2, 3 or more.
+Complete data for these variables are available for 1116 survey participants. However, there are
+4 × 4 × 2 × 4 = 128 levels of x: More than half of these cells have 5 or fewer observations in them,
+and about 75% have less than 12 observations. As such, an estimator of µx that uses only data
+from group x, that is {yi : xi = x}, will be subject to a large sampling variance.
+
+5.1
+
+A multilinear model for group means
+
+Statistical remedies to this problem typically allow the estimate of µx to depend on data from groups
+other than that corresponding to x. One such approach is to parameterize the set of multivariate
+means {µx : x ∈ X} by a smaller number of parameters. Another approach is via a hierarchical
+model that allows for the shrinkage of set of parameters towards a common group center. Here we
+consider the following model which has both of these features:
+iid
+
+(3)
+
+= βx + γ x
+
+(4)
+
+iid
+
+(5)
+
+{yi : xi = x} ∼ multivariate normal(µx , Σ)
+µx
+
+{γ x : x ∈ X } ∼ multivariate normal(0, Ω)
+
+Equation 3 says that the data within a cell are modeled as multivariate normal, with cell-specific
+means and a common covariance matrix. Equations 4 and 5 express each µx as equal to a “systematic” component β x plus patternless noise γ x . The collection {β x : x ∈ X } can be represented
+as an m1 × · · · × mK × p array B, where mk is the number of levels of categorical variable xk .
+
+These values are not separately estimable from the noise γ x unless we assume B lies in a restricted
+subset of the set of arrays of this size, such as the set of rank-R arrays. In this setting, where one
+of the modes of the array represents variables and each other mode represents the diﬀerent levels
+of a single categorical variable, it is useful to express the array decomposition as follows:
+B = �U(1) , . . . , U(K) , V� , or equivalently
+(K)
+β x = V(u(1)
+x1 ◦ · · · ◦ uxK ).
+
+13
+
+2
+−1
+
+0
+
+1
+
+2
+−1
+
+0
+
+1
+
+2
+−1
+
+0
+
+1
+
+2
+1
+words
+−1
+0
+
+1
+
+2
+
+●
+
+●
+
+−2
+●
+
+4
+
+male
+
+female
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+0
+
+●
+
+●
+
+●
+
+●
+
+●
+
+●
+
+1
+
+2
+
+3
+
+●
+
+●
+
+●
+
+●
+●
+
+●
+●
+
+●
+
+●
+
+2
+
+2
+
+●
+
+●
+
+3
+
+●
+
+●
+
+3
+
+●
+●
+●
+●
+
+●
+
+−3
+
+4
+
+●
+
+3
+
+3
+
+−2
+●
+
+●
+●
+●
+●
+●
+●
+
+2
+
+2
+
+●
+
+3
+
+●
+
+●
+
+3
+
+1
+
+●
+●
+
+2
+
+●
+
+−3
+
+−3
+
+●
+
+−3
+
+−2
+
+−2
+
+●
+
+2
+
+3
+deg
+
+4
+
+1
+
+2
+
+3
+
+4
+
+1
+−1
+−2
+
+0
+
+1
+0
+
+−1
+1
+
+●
+
+−1
+
+−2
+
+−1
+−2
+
+●
+
+−2
+
+1
+
+●
+
+0
+
+●
+●
+
+0
+
+tv
+1
+
+●
+
+male
+
+age
+
+female
+sex
+
+●
+
+0
+
+1
+
+2
+
+3
+
+child
+
+Figure 3: Marginal distributions of vocabulary score and television hours watched for diﬀerent
+levels of degree, age sex and number of children.
+The equations above describe a hierarchical model in which the heterogeneity among {µx : x ∈ X }
+is centered around a low-dimensional array B = {β x : x ∈ X }. Such a model is similar to
+
+representing an interaction term in an ANOVA with a reduced rank matrix [Tukey, 1949, Boik,
+1986, 1989]. However, the hierarchical approach used here allows for consistent estimation of each
+µx , but shrinks towards the lower-dimensional representation B when data are limited.
+Estimation for this model can proceed as described in Section 4 with a few modifications. As
+before, a Gibbs sampler can be used to approximate the posterior distribution of the unknown
+parameters. Using a conjugate inverse-Wishart prior distribution for Σ and the other prior distributions as in Section 4, one iteration of the Markov chain is as follows:
+1. sample Σ ∼ p(Σ|{yi : i = 1, . . . , n}, {µx : x ∈ X }), an inverse-Wishart distribution;
+2. sample µx ∼ p(µx |{yi : xi = x}, β x , Σ), a multivariate normal distribution for each x ∈ X ;
+3. sample Ω ∼ p(Ω|{µx , β x : x ∈ X }, V), an inverse-Wishart distribution;
+14
+
+4. iteratively sample {U(k) , k = 1, . . . , K} as in Section 3;
+5. sample V ∼ p(V|U, {µx : x ∈ X }, Ω), a matrix normal distribution.
+Derivations of the full conditional distributions are straightforward and are available from the
+author and in the computer code available at the author’s website. Provided here are only the
+following comments which describe some of the calculations: Let the model for the p × R matrix V
+
+be such that the R columns are i.i.d. multivariate normal with a zero mean vector and covariance
+equal to Ω. Doing so links the scale of the factor eﬀects for µx to the scale of the across-group
+˜ = Ω−1/2 V, we have
+˜ x = Ω−1/2 µx and V
+diﬀerences γ x . Writing µ
+˜x
+µ
+
+˜ (1) ◦ · · · ◦ u(K) ) + γ
+˜ x , with
+= V(u
+x1
+xK
+iid
+
+{˜
+γ x } ∼ multivariate normal(0, I).
+From this, we see that sampling from the full conditional distribution of U(1) , . . . , U(K) can be done
+just as in Section 3.2, with σ 2 replaced by 1 and the observed array data replaced by the values
+˜ is the matrix normal
+˜ x : x ∈ X }. Similarly, the full conditional of V
+of the array defined by {µ
+˜ x : x ∈ X } taking the place
+distribution from Section 3.1, again with σ 2 replaced by 1 and {µ
+
+of the observed array data. A value of V can be generated from its full conditional distribution
+˜ from this matrix normal distribution and then setting V = Ω1/2 V.
+˜ Finally, note
+by sampling V
+that the inverse-Wishart full conditional distribution of for Ω depends on V: If we have Ω ∼
+−1
+inverse-Wishart(Ω−1
+0 , η0 ) then the full conditional distribution of Ω is inverse-Wishart(Ω1 , η1 )
+�
+�
+T
+T
+where η1 = η0 + R + K
+k=1 mk and Ω1 = Ω0 + V V +
+x (µx − β x )(µx − β x ) .
+
+5.2
+
+Posterior analysis of GSS data
+
+We now discuss posterior inference for the GSS data based on the above model and estimation
+scheme. The numerical variables y1 (words) and y2 (tv) were first centered and scaled to have zero
+mean and unit variance. Prior distributions for the covariance matrices Σ and Ω were taken to
+be independent inverse-Wishart distributions with p + 1 = 3 degrees of freedom each and centered
+around the sample covariance (correlation) matrix of {yi,1 , yi,2 , i = 1, . . . , n}. Doing so gives these
+prior distributions an empirical basis while still keeping them relatively weak. Such priors are
+
+similar to the “unit information” prior distributions described in Kass and Wasserman [1995]. A
+
+15
+
+1
+yx − µ^x
+−1
+
+deg.2
+
+deg.1
+child.0
+age.3
+
+0.0
+u1
+
+0.5
+
+●
+●
+
+●
+●
+
+●
+
+−3
+
+−1.0
+
+−0.5
+
+●
+●●
+●
+
+●
+
+child.3
+child.2
+child.1
+age.4
+
+−1.0
+
+●
+●
+●
+●
+● ●
+●
+●●●
+●●
+●●
+●●
+●●●●
+●●
+●●●● ●
+●
+●
+●●●
+●
+●
+●●
+●●● ●
+●●●●
+●● ● ●
+●
+●●●
+●
+●
+●
+●
+●● ●
+●●
+● ●
+●
+●
+●
+●
+●●
+●●●
+●●
+●
+●
+●●
+● ● ●●●●
+●●
+●● ●
+●●
+●●●
+●●
+●●
+●●
+●●●
+●●
+●
+●
+●
+● ●● ● ●
+●●●
+●
+●
+●
+●
+●●
+●
+●
+●●
+●●
+●
+● ●● ● ●
+●●
+●●
+●●●●
+●
+●●
+●●●
+● ●●
+● ●
+●●
+
+−2
+
+−0.5
+
+u2
+0.0
+
+0.5
+
+tv
+
+deg.4
+deg.3 sex.f
+age.2
+words
+age.1
+sex.m
+
+0
+
+1.0
+
+●●
+
+1.0
+
+●
+
+0
+
+10
+
+20
+
+30
+40
+sample size
+
+50
+
+60
+
+Figure 4: Posterior estimates of factor scores, along with the amount of shrinkage as a function of
+cell-specific sample size.
+rank-2 model for the array of means was used so that the estimated factor eﬀects could represented
+with a simple two-dimensional plot.
+The algorithm described above was used to construct a Markov chain consisting of 22,000
+iterations, the first 2000 of which were discarded to allow for convergence to the stationary distribution. Parameter values were saved every 10th iteration, leaving 2000 saved values for Monte
+Carlo approximation. Mixing of the Markov chain was examined by inspecting the sequences of
+saved values of Σ, Ω and the average value of {β x } across levels of x. The eﬀective sample sizes
+for these parameters were all over 1000. Some summary descriptions of the resulting posterior
+
+estimates are shown in Figure 4. The first panel plots point estimates of the latent factors V and
+¯ was obtained from the
+U(1) , . . . , U(4) . These were obtained as follows: A posterior mean array B
+2000 saved values of B from the Markov Chain. This array is not quite a rank-2 array, as rank is not
+generally preserved under array addition. An alternating least-squares algorithm was performed
+¯ to obtain a rank-2 point estimate B
+ˆ and a multiplicative decomposition in terms of matrices
+on B
+ˆ U
+ˆ (1) , . . . , U
+ˆ (4) . The diﬀerence between B
+¯ and B
+ˆ was small, with ||B
+¯ − B||
+ˆ 2 /||B||
+¯ 2 = 0.00011.
+V,
+These point estimates of the latent factors are shown in the first panel in Figure 4: For example, the
+
+16
+
+ˆ (1) represents the multiplicative eﬀects of deg, and consists of a two-dimensional vector
+matrix U
+for each level of this variable. These vectors are plotted in the figure with “deg.1” representing no
+ˆ has a two-dimensional
+degree, “deg.2” a high school degree, and so on. Similarly, the matrix V
+vector for each of the two numerical variables. To interpret the figure, note that the estimated
+mean for either numeric variable in any cell can be obtained by coordinate-wise multiplication and
+then addition of the latent factor vectors. For example, the proximity of the “words” vector to the
+“deg.3” and “deg.4” vectors indicates that these two groups have higher mean vocabulary scores
+than the other two degree categories. Similarly, the close proximity of the “child.1”, “child.2” and
+“child.3” vectors indicates lack of heterogeneity in the means for three of these four categories
+across levels of the other x-variables. Finally, note that some care should go into interpreting the
+figure, as the array B = �U(1) , . . . , U(4) , V� is invariant to certain transformations of the factors:
+
+For example, multiplying either the first or second column of each of an even number of factor
+matrices by -1 does not change the value of B.
+ˆ x } diﬀer from the
+The second plot in Figure 4 highlights how the estimated cell means {µ
+
+empirical cell means {¯
+yx } as a function of sample size. This plot indicates what we would expect
+
+from a hierarchical model: The diﬀerence between estimated cell mean and empirical cell mean
+¯x ≈ µ
+ˆ x , whereas a
+decreases with increasing sample size. A cell with a large sample size will have y
+
+ˆ x shrunk towards the reduced-rank value
+cell with a small sample size will have an estimated mean µ
+ˆ . Note that without the multiplicative eﬀects in Equation 4 of the hierarchical model, the cell
+β
+x
+means would all be shrunk towards a common vector, regardless of the value of x. In contrast, the
+hierarchical multiplicative eﬀects model allows cell-specific shrinkage, as estimated by the reduced
+ˆ
+rank array B.
+An alternative approach to the analysis of these data might involve MANOVA or a hierarchical
+model similar to the one above but in which β x is parameterized in terms of additive eﬀects, so
+(1)
+
+(K)
+
+(k)
+
+that β x = ux1 + · · · + uxK with each uxk ∈ Rp . Such additive models have representations
+
+as multilinear models, although of course they are restricted to be additive. For comparison, an
+ˆ )2 was computed, measuring the
+additive MANOVA model was fit and the average value of (¯
+yx − β
+x
+
+lack-of-fit of the additive model. This value was about the same as the corresponding value for the
+multilinear model for the tvhours variable, but 15% larger for the words variable. This indicates
+that some patterns among the cell means for words cannot be represented with an additive model.
+
+17
+
+In general, we may expect that some aspects of the heterogeneity among the µx ’s will not be
+additive. In such situations, it may be preferable to use a multiplicative model whose complexity
+can be controlled with the choice of the rank R rather than to have to consider the inclusion and
+estimation of a variety of higher-order interaction terms.
+
+6
+
+Example: Analysis of longitudinal conflict data
+
+The theory of the Kantian peace holds that militarized interstate disputes are less likely to occur
+between democratic countries. Ward et al. [2007] evaluate this theory using international cooperation and conflict data from the cold war period. The data include records of militarized conflict and
+cooperation every five years from 1950 to 1985, along with economic and political characteristics of
+the countries. In this section we analyze a subset of the data from Ward et al. [2007]. These data
+include cooperation, conflict and gross domestic product data (gdp) for each of m = 66 countries
+every fifth year, t ∈ {1950, 1955, . . . , 1980, 1985}. Additionally, each country in each of these years
+
+has a polity score, measuring the level of openness in government. A positive polity score is given
+to democratic states, while a negative score is given to authoritarian states.
+The cooperation and conflict data form a three-way array with two modes representing country
+pairs and one mode representing time. In this section we will fit an ordered probit model of
+cooperation and conflict data as a function of gdp and polity. Specifically, for each unordered pair
+{i, j} of countries and each time t, our data are as follows:
+yi,j,t ∈ {−5, −4, . . . , +1, +2}, indicating the level of military cooperation (positive) or conflict
+(negative) between countries i and j in year t;
+
+xi,j,t,1 = log gdpi + log gdpj , the sum of the log gdps of the two countries;
+xi,j,t,2 = (log gdpi ) × (log gdpj ), the product of the log gdps;
+xi,j,t,3 = polityi × polityj , where polityi ∈ {−1, 0, +1};
+xi,j,t,4 = (polityi > 0) × (polityj > 0).
+The sample space for yi,j,t is ordered but the scale is not meaningful: The diﬀerence between y = 0
+and y = 1 is not comparable to the diﬀerence between y = −5 and y = −4. For this reason we use
+18
+
+the following ordered probit model to relate yi,j,t to xi,j,t :
+zi,j,t = β T xi,j,t + γi,j,t
+yi,j,t = max{k : zi,j,t > ck , k ∈ {−5, −4, . . . , +1, +2}}
+In this model the parameters to estimate include the regression coeﬃcients β and the cutoﬀs
+c = (c−4 , . . . , c+2 ), with c−5 = −∞. The usual probit regression model would assume the γi,j,t ’s are
+
+independent standard normal variables (standard, as the scale of these error terms is not separately
+identifiable from β and c). However, results of Ward et al. [2007] suggest that the residuals from
+regression models of international relations data are generally not patternless. For example, we
+might expect γi,1,t , . . . , γi,66,t to exhibit statistical correlation, as these residuals are all associated
+with country i. More subtle might be higher order patterns common in relational data: If i and j
+have a positive relationship and j and k have a positive relationship, then a positive relationship
+between i and k is more likely.
+Hoﬀ [2008] describes how two-way factor models can be used to represent patterns in ordinal
+matrix-valued relational and social network data. Here we extend this idea, using a three-way
+factor model to represent the longitudinal relational patterns represented by the array Γ = {γi,j,t }.
+Specifically, the following factor model is proposed:
+γi,j,t
+
+= �ui , uj , vt � + �i,j,t , with
+iid
+
+{�i,j,t = �j,i,t } ∼ normal(0, 1).
+The uj ’s are vectors representing heterogeneity among the countries and the vt ’s represent heterogeneity over time. This is a modification of the usual three-way PARAFAC representation
+to accommodate the fact that the data are symmetric (yi,j,t = yj,i,t ). This model has a simple
+interpretation: Letting Γt = {γi,j,t : (i, j) ∈ {1, . . . , m}2 }, we have
+Γt = UΛt UT + Et , where U = (u1 , . . . , um )T and Λt = diag(vt ).
+This symmetric version of the PARAFAC model is analogous to a type of eigenvalue decomposition
+of a collection of square matrices {Γ1950 , . . . , Γ1985 } in which the eigenvectors are held constant
+across matrices, but the eigenvalues are allowed to vary.
+
+The unobserved quantities in this model include the latent variable array Z as well as the parameters U, V and β. Using the same hierarchical prior distributions for U and V described in
+19
+
+40
+30
+
+25
+
+10
+
+20
+
+density
+15
+
+0
+
+5
+0
+
+−0.06
+−0.02
+gdp sum
+
+0.02
+
+−0.2
+
+0.0 0.1 0.2 0.3 0.4 0.5
+polity product
+
+−0.08
+
+−0.06
+
+−0.04 −0.02
+gdp product
+
+0.00
+
+0
+
+0.0
+
+1
+
+1.0
+
+2.0
+
+density
+2 3
+
+4
+
+3.0
+
+5
+
+−0.10
+
+−0.4 −0.2 0.0 0.2 0.4
+jointly positive polity
+
+0.6
+
+Figure 5: Posterior densities for the elements of β. Gray lines are 95% confidence intervals.
+Section 3.2 and a diﬀuse multivariate normal(0, 100 × I) prior distribution for β, we can implement
+a Gibbs sampler to approximate the joint posterior distribution p(Z, U, V, β|Y, X). All full con-
+
+ditionals are standard, and are available from the supplementary material at the author’s website.
+Using a rank-2 model, the Gibbs sampler was run for 505,000 iterations, dropping the first 5,000
+to allow for burn-in and then saving the parameter values every 10th iteration. Convergence of
+the Markov chain was monitored via the sampled values of β. The eﬀective sample sizes for the
+four regression coeﬃcients based on the 50,000 saved scans were 12,548, 16,622, 1,386 and 8,878
+respectively.
+The plots in Figure 5 show the marginal posterior distributions of the four regression coeﬃcients,
+along with 95% highest posterior density confidence intervals. The results indicate a negative
+association between gdp and the latent variable z, reflecting the fact that a majority of the conflicts
+over the cold war period involved economically large countries. The plots in the second row indicate
+that zi,j tends to be larger if both i and j have polity scores of the same sign, but that there is not
+strong evidence for a further increase if the polities of i and j are both positive.
+20
+
+0.6
+PHI
+THI
+
+TAW
+
+HUN
+RUM
+
+JOR
+
+USR
+
+0.0
+
+UKG
+
+u2
+
+0.2
+
+IND BUL
+
+TUR
+CAN
+
+EGY
+
+v1
+
+AUL
+NEW
+
+0.4
+
+ROK
+
+SPN
+LEB
+FRN
+
+GFR
+NOR
+ITA
+NTH
+
+SAU
+
+HON BRA
+NEP
+DEN
+SAF
+VENSAL
+ARG
+COL
+ETH
+DOM
+COS
+ALB
+HAI
+BEL OMA
+IRE
+CHL
+LBRSWD
+AFG PAN
+GUA
+SRI
+
+POR
+PER
+
+IRQ
+
+IRN
+
+GRC
+
+YUG
+
+GDR
+
+1950
+
+1955
+
+1960
+
+1965
+
+1970
+
+1975
+
+1980
+
+1985
+
+1950
+
+1955
+
+1960
+
+1965
+
+1970
+
+1975
+
+1980
+
+1985
+
+CZE
+INS
+CUB
+NIC
+AUS
+ECU
+
+0.6
+
+USA
+
+PRK
+
+0.2
+
+ISR
+
+v2
+
+0.4
+
+MYA
+
+0.0
+
+CHN
+
+u1
+
+Figure 6: Posterior estimates of the country- and time-specific factors.
+Figure 6 displays a summary of the posterior distribution of U and V. This summary was
+ˆ of the posterior mean of the threeobtained as follows: First, a Monte Carlo approximation Θ
+way array Θ = �U, U, V� was obtained using the values generated from the Markov chain. The
+
+ˆ to obtain values U
+ˆ and V.
+ˆ The columns
+alternating least-squares algorithm was then applied to Θ
+ˆ were normalized to be unit vectors, and the columns of V
+ˆ were then rescaled accordingly. The
+of U
+columns of the latent factor matrices were then permuted so that the magnitude of the columns
+ˆ were in decreasing order. The resulting values are plotted in Figure 6. The large square plot
+of V
+shows the estimates of the two-dimensional latent factor vectors {ˆ
+ui } for each country, with a larger
+
+font used for those countries with larger vectors. The second column gives the values of vˆt,k , sorted
+ˆ i2 } being in similar
+chronologically. Since all of these values are positive, two latent vectors {ˆ
+ui1 , u
+directions indicates a tendency for countries i1 and i2 to cooperate militarily, whereas vectors in
+opposite directions indicate a tendency for conflict. For example, the vectors corresponding to USA
+and South Korea are similar to each other and in the opposite direction of China and North Korea.
+ˆ t ’s over time allows for diﬀerent patterns of conflict across the years. For
+The heterogeneity of the v
+example, cooperation and conflict in 1980 and 1985 are described primarily by the first dimension
+
+21
+
+of the factors (u1 ), whereas events in 1955 and 1975 primary by the second (u2 ).
+
+7
+
+Discussion
+
+This article has presented a hierarchical version of a reduced-rank multilinear model for array data
+and a Bayesian method for parameter estimation. Unlike least-squares estimation, a Bayesian
+approach allows for regularized estimates of the potentially large number of parameters in a multilinear model. Unlike a non-hierarchical Bayesian approach, the hierarchical approach provides
+a data-driven method of regularization, and a more flexible representation of the patterns in the
+data array. Additionally, in a simulation study the estimates provided by the hierarchical approach
+showed robustness to rank misspecification, as compared those obtained from a least-squares or
+non-hierarchical approach.
+Another advantage of the Bayesian approach is that it allows for the incorporation of multilinear
+structure into a broad class of statistical models. For example, a least-squares approach would be
+inappropriate for the ordinal cooperation and conflict data in Section 6, but Bayesian estimation for
+these data, using a probit model with multilinear eﬀects, is relatively straightforward. As another
+example, the survey data presented in Section 5 was not in the form of an array, but the cell
+means corresponding to the 128 levels of the 4 categorical variables can be represented as such. A
+reduced-rank multilinear model provides a parsimonious representation of the cell means, but also
+is more flexible than a simple additive eﬀects model.
+An important line of future research is the study of the theoretical properties of hierarchical
+Bayesian approaches to parameter estimation for multiway data arrays. For a matrix model in
+which Y = Θ + E and E is a matrix of normally-distributed noise, Tsukuma [2008, 2009] studies
+Bayesian and hierarchical Bayesian approaches to providing admissible and minimax estimates of
+Θ. One aspect of this work shows that under certain prior distributions on the singular vectors
+of Θ, the Bayes estimates are equivariant and can be obtained by shrinking the singular values
+of Y. Such estimates are somewhat analogous to those presented in this article for multiway
+data, as shrinking the singular values of a matrix is similar to regularizing the variance of a set of
+multiplicative factors. The author is currently investigating the extent to which such similarities
+between the matrix and array models lead to similar theoretical properties of Bayesian estimates
+in the two cases.
+22
+
+Replication code and data for the numerical results in this paper are available at the author’s
+website: http://www.stat.washington.edu/~hoff
+
+References
+Robert J. Boik. Testing the rank of a matrix with applications to the analysis of interaction in
+ANOVA. J. Amer. Statist. Assoc., 81(393):243–248, 1986. ISSN 0162-1459.
+Robert J. Boik. Reduced-rank models for interaction in unequally replicated two-way classifications.
+J. Multivariate Anal., 28(1):69–87, 1989. ISSN 0047-259X.
+R. Coppi and S. Bolasco, editors. Multiway data analysis. North-Holland Publishing Co., Amsterdam, 1989. ISBN 0-444-87410-0. Papers from the International Meeting on the Analysis of
+Multiway Data Matrices held in Rome, March 28–30, 1988.
+K. R. Gabriel. The biplot graphic display of matrices with application to principal component
+analysis. Biometrika, 58:453–467, 1971. ISSN 0006-3444.
+K. Ruben Gabriel. Generalised bilinear regression. Biometrika, 85(3):689–700, 1998. ISSN 00063444.
+R.A. Harshman. Foundations of the PARAFAC procedure: Models and conditions for an “explanatory” multi-modal factor analysis. UCLA working papers in phonetics, 16(1):84, 1970.
+R.A. Harshman and M.E. Lundy. The PARAFAC model for three-way factor analysis and multidimensional scaling. Research methods for multimode data analysis, pages 122–215, 1984.
+Peter Hoﬀ. Modeling homophily and stochastic equivalence in symmetric relational data. In J.C.
+Platt, D. Koller, Y. Singer, and S. Roweis, editors, Advances in Neural Information Processing
+Systems 20, pages 657–664. MIT Press, Cambridge, MA, 2008.
+Robert E. Kass and Larry Wasserman. A reference Bayesian test for nested hypotheses and its
+relationship to the Schwarz criterion. J. Amer. Statist. Assoc., 90(431):928–934, 1995. ISSN
+0162-1459.
+
+23
+
+Pieter M. Kroonenberg. Applied multiway data analysis. Wiley Series in Probability and Statistics.
+Wiley-Interscience [John Wiley & Sons], Hoboken, NJ, 2008. ISBN 978-0-470-16497-6. With a
+foreword by Willem J. Heiser and Jarqueline Meulman.
+J. B. Kruskal. Rank, decomposition, and uniqueness for 3-way and N -way arrays. In Multiway
+data analysis (Rome, 1988), pages 7–18. North-Holland, Amsterdam, 1989.
+Joseph B. Kruskal. More factors than subjects, tests and treatments: an indeterminacy theorem
+for canonical decomposition and individual diﬀerences scaling. Psychometrika, 41(3):281–293,
+1976. ISSN 0033-3123.
+Joseph B. Kruskal. Three-way arrays: rank and uniqueness of trilinear decompositions, with application to arithmetic complexity and statistics. Linear Algebra and Appl., 18(2):95–138, 1977.
+Giorgio Tomasi and Rasmus Bro. A comparison of algorithms for fitting the PARAFAC model.
+Comput. Statist. Data Anal., 50(7):1700–1734, 2006. ISSN 0167-9473.
+Hisayuki Tsukuma. Admissibility and minimaxity of Bayes estimators for a normal mean matrix.
+J. Multivariate Anal., 99(10):2251–2264, 2008. ISSN 0047-259X.
+Hisayuki Tsukuma. Generalized Bayes minimax estimation of the normal mean matrix with unknown covariance matrix. J. Multivariate Anal., 100(10):2296–2304, 2009.
+J.W. Tukey. One degree of freedom for non-additivity. Biometrics, 5(3):232–242, 1949.
+L. Vega-Montoto and P.D. Wentzell. Maximum likelihood parallel factor analysis (MLPARAFAC).
+Journal of Chemometrics, 17(4):237–253, 2003.
+L. Vega-Montoto, H. Gu, and P.D. Wentzell. Mathematical improvements to maximum likelihood
+parallel factor analysis: theory and simulations. Journal of chemometrics, 19(4), 2005.
+M.D. Ward, R.M. Siverson, and X. Cao. Disputes, democracies, and dependencies: A reexamination
+of the Kantian peace. American Journal of Political Science, pages 583–601, 2007.
+
+24
+
+

@@ -1,0 +1,3417 @@
+New specifications for
+exponential random graph models1
+Tom A.B. Snijders
+University of Groningen, Netherlands
+Philippa E. Pattison
+Garry L. Robins
+University of Melbourne, Australia
+Mark S. Handcock
+University of Washington, Seattle
+
+Working Paper no. 42
+Center for Statistics and the Social Sciences
+University of Washington
+April 23, 2004
+
+1 Tom
+
+A.B. Snijders is Professor of Methodology and Statistics, Faculty of Psychology, Sociology, and Education, University of Groningen, Grote Rozenstraat 31, 9712 TG Groningen,
+The Netherlands. E-mail: T.A.B.Snijders@ppsw.rug.nl; Philippa E. Pattison is Professor
+of Psychology, University of Melbourne, 12th Floor, Redmond Barry Building, The University
+of Melbourne, Victoria 3010, Australia. E-mail: p.pattison@psych.unimelb.edu.au; Garry
+L. Robins is Senior Lecturer, Department of Psychology, University of Melbourne, 12th Floor,
+Redmond Barry Building, The University of Melbourne, Victoria 3010, Australia. E-mail:
+g.robins@psych.unimelb.edu.au; Mark S. Handcock is Professor of Statistics and Sociology,
+Department of Statistics, University of Washington, Box 354322, Seattle WA 98195-4322. Email: handcock@stat.washington.edu; Web: www.stat.washington.edu/handcock. This research supported by Grant DA012831 from NICHD and Grant HD041877 from NIDA.
+
+Abstract
+The most promising class of statistical models for expressing structural properties of social
+networks is the class of Exponential Random Graph Models (ERGMs), also known as p∗
+models. The strong point of these models is that they can represent structural tendencies,
+such as transitivity, that define complicated dependence patterns not easily modeled by more
+basic probability models. Recently, MCMC algorithms have been developed which produce
+approximate Maximum Likelihood estimators. Applying these models in their traditional
+specification to observed network data often has led to problems, however, which can be
+traced back to the fact that important parts of the parameter space correspond to nearly
+degenerate distributions, which may lead to convergence problems and a poor fit to empirical
+data.
+This paper proposes new specifications of the exponential random graph model. These
+specifications represent structural properties such as transitivity and heterogeneity of degrees
+by more complicated graph statistics than the traditional star and triangle counts. Three
+kinds of statistic are proposed: geometrically weighted degree distributions, alternating ktriangles, and alternating independent two-paths. Examples are presented both of modeling
+graphs and digraphs, in which the new specifications lead to much better results than the
+earlier existing specifications of the ERGM. It is concluded that the new specifications increase the range and applicability of the ERGM as a tool for the statistical analysis of social
+networks.
+KEY WORDS: Statistical modeling, Social networks, Graphs, Transitivity, Clustering,
+Maximum likelihood, MCMC, p∗ model.
+
+1
+
+Introduction
+
+Transitivity of relations, expressed for friendship by the adage, ‘friends of my friends are
+my friends’, has resisted attempts to being expressed in network models in such a way as
+to be amenable for statistical inference. Davis (1970) found in an extensive empirical study
+on relations of positive interpersonal affect that transitivity is the outstanding feature that
+differentiates observed data from a pattern of random ties. Transitivity is expressed by triad
+closure: if i and j are tied, and so are j and h, then closure of the triad i, j, h would mean that
+also i and h are tied. (When the condition holds that the pairs (i, j) as well as (j, h) are tied,
+which forms a “two-star” or “two-path” in the terminology used below, the triad is called
+potentially transitive.) The preceding description is for non-directed relations, and applies in
+modified form to directed relations. Davis found that triads in data on positive interpersonal
+affect tend to be transitively closed much more often than could be accounted for by chance;
+and this consistently over a large collection of datasets. Of course in empirically observed
+social networks far from all potentially transitive triads are transitive indeed, so the tendency
+towards transitivity is stochastic rather than deterministic.
+Davis’s finding was based on comparing data with a non-transitive null model. More
+sophisticated methods along these lines were developed by Holland and Leinhardt (1976),
+but they remained restricted to the testing of structural characteristics such as transitivity
+against null models expressing randomness or, in the case of directed graphs, expressing
+only the tendency toward reciprocation of ties. A next step in modeling is to formulate a
+stochastic model for networks that expresses transitivity and could be used for statistical
+analysis of data. Such models have to include one or more parameters indicating the strength
+of transitivity, and these parameters have to be estimated and tested, controlling for other
+effects – such as covariate and node-level effects. Then, of course, it would be interesting to
+model other network effects in addition to transitivity.
+The importance of controlling for node-level effects, such as actor attributes, arises because there are several distinct localized social processes that may give rise to transitivity.
+First, social ties may “self-organize” to produce triangular structures, as indicated by the
+process noted above, that the friends of my friends are likely to become my friends (i.e.,
+a structural balance effect). In other words, the presence of certain ties may induce other
+ties to form, in this case with the triangulation occurring explicitly as the result of a social
+process involving three people. Alternatively, certain actors may be very popular, and hence
+attract ties, including from other popular actors. This process may result in a core-periphery
+network structure with popular actors in the core. Many triangles are likely to occur in the
+core as an outcome of tie formation based on popularity. Both of these triangulation effects
+
+1
+
+are structural in outcome, but one represents an explicit social transitivity process whereas
+the other is the outcome of a popularity process. In the second case, the number of triangles
+could be accounted for on the basis of the distribution of the actors’ degrees without referring to transitivity. In a separate third possibility, however, ties may arise because actors
+select partners based on attribute homophily (as reviewed in McPherson, Smith-Lovin, and
+Cook, 2001), or some other process of social selection, in which case triangles of similar
+actors may be a side-product of homophilous dyadic selection processes. An often important question is, once accounting for homophily, whether there are still structural processes
+present. This would indicate the presence of organizing principles within the network that
+go beyond dyadic selection. In that case, can we determine whether this self-organization
+is based within triads, or whether triangulation is the outcome of some other organizing
+principle? Given the diversity of processes that may lead to transitivity, the complexity of
+statistical models for transitivity is not surprising.
+It can be concluded that transitivity is widely observed in networks empirically. For a full
+understanding of the processes that give rise to and sustain the network, it is crucial to model
+transitivity adequately, particularly in the presence of – and controlling for – attributes. In
+a wide-ranging review, Newman (2003) deplores the inadequacy of existing general network
+models in this regard. When the requirement is made that the model is tractable for the
+statistical analysis of empirical data, exponential random graph (or p∗ ) models offer the
+most promising framework within which such models can be developed. These models are
+described in the next section; it will be explained, however, that current specifications of
+these models often do not provide adequate accounts of empirical data. It is the aim of
+this paper to present some new specifications for exponential random graph models that
+considerably extend our capacity to model observed social networks.
+
+1.1
+
+Exponential random graph models
+
+The following terms and notation will be used. A graph is the mathematical representation
+of a relation, or a binary network. The number of nodes in the graph is denoted by n. The
+random variable Yij indicates whether there exists a tie between nodes i and j (Yij = 1) or
+not (Yij = 0). We use the convention that there are no self-ties, i.e., Yii = 0 for all i. A
+random graph is represented by its adjacency matrix Y with elements Yij . Graphs are by
+default non-directed (i.e., Yij = Yji holds for all i, j), but much attention is given also to
+directed relations, represented by directed graphs, for which Yij indicates the existence of a
+tie from i to j, and where Yij is allowed to differ from Yji . Denote the set of all adjacency
+matrices by Y. The notational convention is followed where random variables are denoted
+by capitals and their outcomes by small letters. We do not consider non-binary ties here,
+2
+
+although they may be considered within this framework (Snijders and Kenny 1999; Hoff
+2003).
+A stochastic model expressing transitivity was proposed by Frank and Strauss (1986).
+They defined that a probability distribution for a graph is a Markov graph if the number
+of nodes is fixed at n and possible edges between disjoint pairs of nodes are independent
+conditional on the rest of the graph. Formulated less compactly, for the case of an undirected
+graph: if i, j, u, v are four distinct nodes, the Markov property requires that Yij and Yuv
+are independent, conditional on all other variables Yts . This is an appealing but quite
+restrictive definition, generalizing the idea of Markovian dependence for random processes
+with a linearly ordered time parameter and for spatial processes on a lattice (Besag, 1974).
+The basic idea is that two possible social ties are dependent only if a common actor is involved
+in both. Frank and Strauss obtained an important characterization of Markov graphs. They
+used the assumption of permutation invariance, stating that the distribution remains the
+same when the nodes are relabeled. With this assumption and using the HammersleyClifford theorem (Besag, 1974) they proved that a random undirected graph is a Markov
+graph if and only if the probability distribution can be written as
+!
+n−1
+X
+Pθ {Y = y} = exp
+θk Sk (y) + τ T (y) − ψ(θ, τ )
+
+y∈Y
+
+(1)
+
+k=1
+
+where the statistics Sk and T are defined by
+P
+S1 (y) =
+number of edges
+1≤i<j≤n yij
+ 
+P
+yi+
+Sk (y) =
+number of k-stars (k ≥ 2)
+1≤i≤n
+k
+P
+T (y) =
+1≤i<j<h≤n yij yih yjh number of triangles,
+
+(2)
+
+the greek letters θk and τ indicate parameters of the distribution, and ψ(θ, τ ) is a normalizing
+constant ensuring that the probabilities sum to 1. Replacing an index by the + sign denotes
+summation over the index, so yi+ is the degree of node i. A configuration (i, j1 , . . . , jk ) is
+called a k-star if i is tied to each of j1 , j2 , up to jk . For all k, the number of k-stars in which
+
+node i is involved, is given by yki+ . An edge is a one-star, so S1 (y) is also equal to the
+number of one-stars. Some of these configurations are pictured in Figure 1.
+It may be noted that this family of distributions contains for θ2 = . . . = θn−1 = τ = 0
+the trivial case of the Bernoulli graph, i.e., the purely random graph in which all edges occur
+independently and have the same probability eθ1 /(1 + eθ1 ).
+Frank and Strauss (1986) elaborated mainly the three-parameter model where θ3 = . . . =
+θn−1 = 0, for which the probability distribution depends on the number of edges, the number
+of two-stars, and the number of transitive triads. They observed that parameter estimation
+3
+
+• j3
+•
+
+•
+
+. ..
+... .....
+...
+...
+..
+...
+.
+.
+...
+...
+...
+..
+.
+...
+.
+...
+...
+.
+...
+.
+.
+.
+...
+...
+...
+.
+..
+...
+.
+.
+..
+.........................................................
+
+•
+i
+
+...
+...
+..
+...
+...
+...
+...
+..
+
+i
+
+h
+
+. ..
+... .....
+...
+...
+..
+...
+.
+.
+...
+...
+...
+..
+.
+...
+.
+...
+...
+.
+...
+.
+.
+.
+...
+...
+...
+.
+..
+...
+.
+.
+..
+
+•
+
+•
+
+j
+
+j1
+
+triangle
+= transitive triad
+
+•
+
+j2
+
+two-star
+= two-path
+
+• i
+
+..
+....
+.....
+.....
+....
+.
+.
+.
+...
+.....
+.....
+....
+
+•
+
+.....
+.....
+.....
+.....
+.....
+.....
+.....
+.....
+..
+
+j1
+
+•
+
+j2
+three-star
+
+Figure 1: Some configurations for undirected graphs
+for this model is difficult and presented a simulation-based method for the maximum likelihood estimation of any one of the three parameters in this model, given that the other
+two are fixed at 0, which is only of theoretical value. They also proposed the so-called
+pseudo-likelihood estimation method for estimating the complete vector of parameters. This
+is based on maximizing the pseudo-loglikelihood defined by
+
+X 
+`(θ) =
+ln Pθ {Yij = yij | Yuv = yuv for all u < v, (u, v) 6= (i, j)} .
+
+(3)
+
+i<j
+
+This method can be carried out relatively easily, as it is algorithmically formally equivalent to
+a logistic regression. However the properties of pseudo-loglikelihood estimators have not been
+adequately established for social networks. In analogous situations in spatial statistics the
+maximum pseudo-loglikelihood estimator has been observed to overestimate the dependence
+in situations where the dependence is strong and to perform adequately when the dependence
+is weak (Geyer and Thompson 1992). For most social networks the dependence is strong
+and the maximum pseudo-loglikelihood is suspect.
+The paper by Frank and Strauss was seminal and led to many papers published in the
+1990’s. In the first place, Frank (1991) and Wasserman and Pattison (1996) proposed to use
+a model of this form, both for undirected and for directed graphs, with arbitrary statistics
+u(y) in the exponent. This yields the probability functions
+
+Pθ {Y = y} = exp θ0 u(y) − ψ(θ)
+
+y∈Y
+
+(4)
+
+where y is the adjacency matrix of a graph or digraph and u(y) is any vector of statistics of
+the graph. Wasserman and Pattison called this family of distributions the p∗ model. As this
+is an example of what statisticians call an exponential family of distributions (e.g., Lehmann,
+1983) with u(Y ) as the sufficient statistic, the family also is called an exponential random
+graph model (ERGM).
+4
+
+Various extensions of this model to valued and multivariate relations were published
+(among others, Pattison and Wasserman, 1999; Robins, Pattison, and Wasserman, 1999),
+focusing mainly on subgraph counts as the statistics included in u(y), motivated by the
+Hammersley-Clifford theorem (Besag, 1974). To estimate the parameters, the pseudolikelihood method continued to be used, although it was acknowledged that the usual chisquared likelihood ratio tests were not warranted here, and there remained uncertainty about
+the qualities and meaning of the pseudo-likelihood estimator. The concept of Markovian dependence as defined by Frank and Strauss was extended by Pattison and Robins (2002) to
+partial conditional independence, meaning that whether edges Yij and Yuv are independent
+conditionally on the rest of the graph depends not only on whether they share nodes, but
+also on the pattern of ties in the rest of the graph. This concept will be used later in this
+paper.
+Recent developments in general statistical theory suggested Markov chain Monte Carlo
+(MCMC) procedures both for obtaining simulated draws from ERGMs, and for parameter
+estimation. An MCMC algorithm for maximum likelihood estimation of the parameters in
+ERGMs was proposed by Snijders (2002). This method uses a general property of maximum
+likelihood (ML) estimates in exponential families of distributions such as (4), viz., that the
+ML estimate is the value θˆ for which the expected value of the statistics u(Y ) is precisely
+equal to the observed value u(y):
+Eθˆu(Y ) = u(y) .
+
+(5)
+
+In other words, the parameter estimates require the model to reproduce exactly the observed
+values of the sufficient statistics u(y).
+The MCMC simulation procedure, however, brought to light serious problems in the
+definition of the model given by (1) and (2). These were discussed by Snijders (2002),
+Handcock (2002a,2002b, 2003), and Robins, Pattison and Woolcock (in press), and go back
+to a type of model degeneracy discussed in a more general sense by Strauss (1986). A
+probability distribution can be termed degenerate if it is concentrated on a small subset of the
+sample space, and for exponential families this term is used more generally for distributions
+defined by parameters on the boundary of the parameter space; near degeneracy here is
+defined by the distribution placing disproportionate probability on a small set of outcomes
+(Handcock 2003). A simple instance of the basic problem with these models occurs as follows.
+In models with only edge and transitivity parameters, for sufficiently positive values of the
+transitivity parameter τ , and moderate values of the other parameters, the exponent in (1) is
+extremely large if y is the complete graph (where all edges are present, i.e., yij = 1 for all i, j)
+and much smaller for all other graphs which are not almost complete. This difference is so
+5
+
+extreme that for positive values of τ –except for quite small positive values–, the probability
+is almost 1 that the density of the random graph Y is very close to 1. On the other hand,
+if the edge parameter is sufficiently negative for a fixed positive transitivity parameter, the
+model produces only low density graphs. So for a fixed positive transitivity parameter, as the
+edge parameter becomes more negative there is a point at which the simulation procedure
+changes dramatically from producing only complete graphs to only low density graphs. This
+model has been studied asymptotically by Jonasson (1999a,b) and Handcock (2002a). If τ
+is non-negative, Jonasson shows that asymptotically the model produces only three types
+of distributions: complete graphs, Bernoulli graphs, or mixtures of complete and Bernoulli
+graphs. These are not interesting in terms of transitivity. This phenomenon is similar to the
+phase transitions known for the Ising and some other models (e.g., Besag, 1974; Newman
+and Barkema, 1999). Some examples for more complex models are given in Sections 4 and 5
+below. About this phase transition there is a small region of the parameter space where both
+complete and low density graphs are possible; graphs with a low or intermediate density and
+an amount of triangles that is high, given the density, are hardly likely under any parameter
+value, even for rather small values of n.
+One potential way out of these problems is to condition on the total number of ties, i.e., to
+consider only graphs having the observed number of edges. However, Snijders (2002) showed
+that although conditioning on the total number of ties does sometimes lead to successful
+parameter estimation, the mentioned problems still occur in more subtle forms, and there
+still are many data sets for which satisfactory parameter estimates cannot be obtained. Note,
+in addition, that models conditional on the number of ties are also ERGMs on the reduced
+sample space of graphs. Hence the problems considered here apply on that space.
+The question, then, is to what extent model (1) when applied to empirical data produces
+parameter estimates that are in, or too close to the nearly degenerate area, resulting in the
+impossibility of obtaining satisfactory parameter estimates. A next question is, whether a
+model such as (1) will provide a good fit. Our overall experience is that, although sometimes
+it is possible to attain parameter estimates that work well, even though they are close to the
+nearly degenerate area, there are many empirically observed graphs having a moderate or
+large degree of transitivity and a low to moderate density, which cannot be well represented
+by a model such as (1), either because no satisfactory parameter estimates can be obtained or
+because the fitted model does not give a satisfactory representation of the observed network.
+This model offers little medium ground between a very slight tendency toward transitivity,
+and a distribution that is for all practical purposes concentrated on the complete graph or
+on more complex ‘crystalline’ structures as demonstrated in Robins, Pattison and Woolcock
+(in press).
+
+6
+
+The present paper aims to extend the scope of modeling social networks using ERGMs
+by representing transitivity not only by the number of transitive triads, but in other ways
+that are in accordance with the concept of partial conditional independence of Pattison
+and Robins (2002). We have couched this introduction in terms of the important issue of
+transitivity, but the modeling of transitivity also requires attention to star parameters, or
+equivalently, aspects of the degree distribution. New representations for transitivity and the
+degree distribution in the case of undirected graphs are presented in Section 3, preceded by
+a further explanation of simulation methods for the ERGM in Section 2. After the technical
+details in Section 3, we present in Section 4 some new modeling possibilities made possible by
+these specifications, based on simulations, showing that these new specifications push back
+some of the problems of degeneracy discussed above. In Section 5 the new models are applied
+to data sets that hitherto have not been amenable to convergent parameter estimation for
+the ERGM. A similar development for directed relations is given in Section 6.
+
+2
+
+Gibbs Sampling and Change Statistics
+
+Exponential random graph distributions can be simulated, and the parameters can be estimated, by Markov chain Monte Carlo (MCMC) methods as discussed by Snijders (2002)
+and Handcock (2003). This is implemented in the computer programs SIENA (Snijders
+and Huisman, 2003) and ergm (Handcock et al. 2004). A straightforward way to generate
+random samples from such distributions is to use the Gibbs sampler (Geman and Geman,
+1983): cycle through the set of all random variables Yij (i 6= j) and simulate each in turn
+according to the conditional distribution
+Pθ {Yij = yij | Yuv = yuv for all (u, v) 6= (i, j)} .
+
+(6)
+
+Continuing this procedure a large number of times defines a Markov chain on the space
+of all adjacency matrices which converges to the desired distribution. Instead of cycling
+systematically through all elements of the adjacency matrix, another possibility is to select
+one pair (i, j) randomly under the condition i 6= j, and then generate a random value of Yij
+according to the conditional distribution (6); this procedure is called mixing (Tierney, 1994).
+Instead of Gibbs steps for stochastically updating the values Yij , another possibility is to
+use Metropolis-Hastings steps. These and some other procedures are discussed in Snijders
+(2002).
+For the exponential model (4), the conditional distributions (6) can be obtained as follows,
+as discussed by Frank (1991) and Wasserman and Pattison (1996). For a given adjacency
+matrix y, define by y (ij1) and y (ij0) , respectively, the adjacency matrices obtained by defining
+7
+
+(ij1)
+
+the (i, j) element as yij
+
+(ij0)
+
+= 1 and yij
+
+= 0 and leaving all other elements as they are in y,
+
+and define the change statistic with (i, j) element by
+
+
+zij = u y (ij1) − u y (ij0) .
+
+(7)
+
+The conditional distribution (6) is formally given by the logistic regression with the change
+statistics in the role of independent variables,
+logit Pθ {Yij = 1 | Yuv = yuv for all (u, v) 6= (i, j)}
+
+
+
+= θ0 zij .
+
+(8)
+
+This is also the form used in the pseudo-likelihood estimation procedure, cf. (3).
+The change statistic for a particular parameter has an interpretation that is helpful in
+understanding the implications of the model. When multiplied by the parameter value, it
+represents the change in log-odds for the presence of the tie due to the effect in question.
+For instance, in model (1), if an edge being present on (i, j) would thereby form three new
+triangles, then according to the model the log-odds of that tie being observed would increase
+by 3τ due to the transitivity effect.
+The problems with the exponential random graph distribution discussed in the preceding
+section reside in the fact that for specifications of the statistic u(y) containing the number
+of k-stars for k ≥ 2 or the number of transitive triads, if these statistics have positive
+parameters, changing some value yij can lead to large increases in the change statistic for
+other variables yuv . The change in yuv suggested by these change statistics will even further
+increase values of other change statistics, and so on, leading to an avalanche of changes
+which ultimately leads to a complete graph from which the probability of escape is negligible
+– hence the near degeneracy. Note that this is not intrinsically an algorithmic issue – the
+algorithm reflects the full-conditional probability distributions of the model. The cause is
+that the underlying model places significant mass on complete (or near complete) graphs.
+For a theoretical analysis of these issues see Handcock (2003).
+An example is the specification (1), (2) of the Markov model for undirected graphs with
+edge, two-star, and triangle parameters. The change statistic is
+
+
+
+
+z1ij
+1
+ z2ij  =  y˜i+ (i, j) + y˜j+ (i, j) 
+z3ij
+L2ij
+
+(9)
+
+where y˜(i, j) denotes the adjacency matrix obtained from y by letting y˜ij (i, j) = 0 and leaving
+all other yuv unaffected, and y˜i+ (i, j) and y˜j+ (i, j) are for this reduced graph the degrees of
+nodes i and j; while L2ij is the number of two-paths connecting i and j,
+X
+L2ij =
+yih yhj .
+h6=i,j
+
+8
+
+(10)
+
+All these change statistics are elementwise non-decreasing functions of the adjacency matrix
+y. Therefore, if parameters θ2 and τ are positive, increasing some element yij from 0 to 1 will
+increase many of the change statistics and thereby the logits (8), which then will increase
+the odds that a next variable yuv will also obtain the value 1, which further increases many
+of the change statistics, etc., leading to the avalanche effect. Note that the maximum value
+of z2 is 2(n − 2) and the maximum of z3 is (n − 2), both of which increase indefinitely as the
+number of nodes of the graph increases, and this large maximum value is one of the reasons
+for the problematic behavior of this model. Note that it is tempting to reduce this effect
+by choosing the coefficient of the edges strongly negative. However, this forces the model
+toward the empty graph. If the two forces are balanced the combined effect is a mixture of
+(near) empty and (near) full graphs with a paucity of the intermediate graphs that are closer
+to realistic observations. If the Markov random graph model contains a balanced mixture
+of positive and negative star parameter values, this avalanche effect can be smaller or even
+absent. This property is exploited in the following section.
+
+3
+
+Proposals for New Specifications for Star and Transitivity Effects
+
+We begin this section by considering proposals that will model all k-star parameters as a
+function of single parameter. Since the number of stars is a function of the degrees, this
+is equivalent to modeling the degree distribution. Suitable functions will ensure that the
+avalanche effect referred to in the previous section will not occur, or at least be constrained.
+These steps can be taken within the framework of the Markov dependence assumption.
+We then turn to transitivity, which is more important from a theoretical point of view,
+but which is treated after the models for k-stars and the degree distribution because of the
+greater complexity of the graph structures involved. The model for transitivity uses a new
+graph configuration that we term a k-triangle. We model k-triangles in similar ways to the
+stars, in that all k-triangle parameters are modeled as a function of a single parameter. But
+these new parameters are not encompassed by Markov dependence, and we need to relax the
+dependence assumption to partial conditional dependence. The discussion is principally for
+undirected graphs; the case of directed graphs is presented more briefly in a later section.
+
+3.1
+
+Geometrically weighted degrees and related functions
+
+Expression (2) shows that the exponent of a Markov graph model can contain an arbitrary
+linear function of the k-star counts Sk , k = 1, . . . , n − 1. These counts Sk are given by
+binomial coefficients, which are independent polynomials of the node degrees yi+ , Sk being
+9
+
+a polynomial of degree k. But it is known that every function of the numbers 1 through
+n − 1 can be expressed as a linear combination of polynomials of degrees 1, . . . , n − 1.
+Therefore, any function of the degree distribution (i.e., any function of the degrees that does
+not depend on the node labels) can be represented as a linear combination of the k-star
+counts S1 , . . . , Sn−1 . In other words, we have complete liberty to include any function of
+the degree distribution in the exponent of (4), and still remain within the family of Markov
+graphs. The only requirement therefore will be to provide a satisfactory fit to the empirical
+data at hand with a small number of parameters.
+Saturated models for the degree sequence were discussed by Snijders (1991) and by Snijders and van Duijn (2002). These models have the virtue of giving a perfect fit to the
+degree distribution and to control perfectly for the degrees when estimating and testing
+other parameters, but at the expense of an exceedingly high number of parameters and the
+impossibility to do more with the degree distribution than describe it. Therefore we do not
+discuss these models here.
+Geometrically weighted degree counts
+A specification that has been traditional since the original paper by Frank and Strauss
+(1986), is to use the k-star counts themselves. Such subgraph counts, however, if they have
+positive weights θk in the exponent in (4), are precisely among the villains responsible for
+the degeneracy that has been plaguing ERGMs, as noted above. One primary difficulty is
+that the model places high probability on graphs with large degrees. A natural solution is
+to use a statistic that places decreasing weights on the higher degrees.
+An elegant way is to use degree counts with geometrically decreasing weights, as in the
+definition
+u(d)
+α (y)
+
+=
+
+n−1
+X
+k=0
+
+−αk
+
+e
+
+dk (y) =
+
+n
+X
+
+e−αyi+ ,
+
+(11)
+
+i=1
+
+where dk (y) is the number of nodes with degree k and α > 0 controls the geometric rate of
+decrease in the weights. We refer to α as the degree weighting parameter. For large values
+of α the contribution of the higher degree nodes is greatly decreased. As α → 0 the statistic
+places increasing weight on the low degree graphs. This model is clearly a sub-class of the
+model (4) where the vector of statistics is u(y) = d(y) ≡ {d0 (y), . . . , dn−1 (y)} but with a
+parametric constraint on the natural parameters
+θk = e−αk
+
+k = 1, . . . , n − 1 ,
+
+(12)
+
+that may be called the geometrically decreasing degree distribution assumption. This model
+is hence a curved exponential family (Efron 1975). The statistic (11) will be called the
+geometrically weighted degrees with parameter α.
+10
+
+As the degree distribution is a one-to-one function of the number of k-stars, some additional insight can be gained by considering the equivalent model in terms of k-stars. Define
+(s)
+
+S4
+Sn−1
+S3
++ 2 − ... + (−1)n−2 n−3
+λ
+λ
+λ
+n−1
+X
+Sk
+=
+(−1)k k−2 .
+λ
+k=2
+
+uλ (y) = S2 −
+
+(13)
+
+Note that the weights have alternating signs, so that positive weights of some k-star counts
+are balanced by negative weights of other k-star counts. In this expression, due to the
+alternating signs, the contribution from extra k-stars is kept in check by the contribution
+from extra (k + 1)-stars. Using expression (2) for the number of k-stars and the binomial
+theorem, we obtain that
+(s)
+
+2
+uλ (y) = λ2 u(d)
+α (y) + 2λS1 − nλ
+
+(14)
+
+for λ = eα /(eα − 1) ≥ 1; the parameters α and λ are decreasing functions of one another.
+This shows that the two statistics form the same model in the presence of an edges or 1-star
+term. This model is a curved exponential family based on (1) but with additional constraints
+on the star parameters, i.e.
+θk = −θk−1 /λ ,
+
+(15)
+
+This is equivalent to the geometrically decreasing degree distribution assumption and can,
+alternatively, be called the geometric alternating k-star assumption. Statistic (13) will be
+called an alternating k-star with parameter λ.
+As α → ∞, it follows that λ → 1, and (11) approaches
+u(d)
+∞ (y) = d0 (y) .
+
+(16)
+
+Thus, the boundary case α = ∞ (λ = 1) implies that the number of isolated nodes is
+modeled distinctly from other terms in the model. This can be meaningful for two reasons.
+In the first place, social processes leading to the isolation of some actors in a group may be
+quite different from the social processes that determine which ties the non-isolated actors
+have. Second, it is not uncommon that isolated actors are perceived as not being part of
+the network, and are therefore left out of the data analysis. This is usually unfortunate
+practice. From a dynamic perspective (and our ultimate goal is to be able to express models
+dynamically), isolated actors may become connected and other actors may become isolated.
+To exclude isolated actors in a single network study is to make the implausible presupposition
+that such effects are not present.
+11
+
+The associated change statistic is
+
+
+zij = − 1 − e−α e−α˜yi+ + e−α˜yj+
+
+(17)
+
+where y˜ = y˜(i, j) is the reduced graph as defined above. This change statistic is an elementwise non-decreasing function of the adjacency matrix, but the change becomes smaller as
+the degrees y˜i+ become larger, and for α > 0 the change statistic is negative and bounded
+below by 2(e−α − 1). Thus, according to the criterion in Handcock (2003), a full-conditional
+MCMC for this model will mix close to uniformly. This should help protect such the model
+from the inferential degeneracy that has hindered unconstrained models.
+As discussed above, the change statistic aids interpretation. If the parameter value is
+positive, then we see that the conditional log-odds of a tie on (i, j) is greater among highdegree actors. In a loose sense, this expresses a version of preferential attachment (Albert
+and Barab´asi, 2002) with ties from low degree to high degree actors being more probable
+than ties among low degree actors. However preference for high degree actors is not linear
+in degree: the marginal gain in probability for connections to increasingly higher degree
+partners is geometrically decreasing with degree.
+For instance, if α = ln(2) (i.e., λ = 2) in equation (17), for a fixed degree of i, a connection
+to a partner j1 who has two other partners is more probable than a connection to j2 with
+only one other partner, the difference in the change statistics being 0.25. But if j1 and j2
+have degrees 5 and 6 respectively (from their ties to others than i), the difference in the
+change statistics is less than 0.02. So, nodes with degree 5 and higher are treated almost
+equivalently. Given these two effects – a preference for connection to high degree nodes, and
+little differentiation among high degree nodes beyond a certain point, we expect to see two
+outcomes from models with this specification compared to Bernoulli graphs: a tendency for
+somewhat higher degree nodes, and a tendency for a core-periphery structure.
+Other functions of degrees
+Other functions of the node degrees could also be considered. It has been argued recently
+(for an overview see Albert and Barab´asi, 2002) that for many phenomena degree frequencies
+tend to 0 more slowly than exponential functions, e.g., as a negative power of the degrees.
+This suggests sums of reciprocals of degrees, or higher negative powers of degrees, instead
+of exponential functions such as (14). An alternative specification of a slowly decreasing
+function which exploits the fact that factorials are recurrent in the combinatorial properties
+of graphs and which is in line with recent applications of the Yule distribution to degree
+distributions (see Handcock and Jones, 2004), is a sum of ascending factorials of degrees,
+u(y) =
+
+n
+X
+i=1
+
+1
+(yi+ + c)r
+
+(18)
+12
+
+where (d)r for integers d is Pochhammer’s symbol denoting the rising factorial,
+(d)r = d(d + 1) . . . (d + r − 1) ,
+and the parameters c and r are natural numbers (1, 2, ...). The associated change statistic
+is
+zij (y) =
+
+−r
+−r
++
+.
+(˜
+yi+ + c)r+1
+(˜
+y+j + c)r+1
+
+(19)
+
+Suppose, for instance, r = c = 1 with a positive parameter value. Then the change
+statistic multiplied by the parameter is a negative multiple of the degrees raised to the
+power −1. In this case, the general interpretation is similar to the previous case, but here
+the effect of a node of degree 4 is about twice that of a node of degree 10, and the effects for
+higher degree nodes will be more strongly differentiated (given adequate data).
+The choice between this statistic and (13), and the choice of the parameters α or λ, c,
+and r, will depend on considerations of fit to the observed network. Since these statistics
+are linearly independent for different parameter values, several of them could in principle be
+included in the model simultaneously (although this will sometimes lead to collinearity-type
+problems and change the interpretation of the parameters).
+
+3.2
+
+Modeling transitivity by alternating k-triangles
+
+The issues of degeneracy discussed above suggest that in many empirical circumstances the
+Markov random graph model of Frank and Strauss (1986) is too restrictive. Our experience
+in fitting data suggests that problems particularly occur with Markov models when the
+observed network includes not just triangles but larger “clique-like” structures that are not
+complete but nevertheless contain many triangles. Each of the three processes discussed
+in the introduction are likely to result in networks with such denser “clumps”. These are
+indeed the subject of much attention in network analysis (cohesive subset techniques), and
+the transitivity parameter in Markov models (and perhaps the transitivity concept more
+generally) is in part a surrogate to examine such clique-like sections of the network because
+the triangle is the simplest clique that is not just a tie. But the linearity of the triangle count
+within the exponential is a source of the near-degeneracy problem in Markov models, when
+observed incomplete cliques are somewhat large and hence contain many triangles. What
+is needed to capture these ‘clique-ish’ structures is a transitivity-like concept that expresses
+triangulation also within subsets of nodes larger than three, and with a statistic that is not
+linear in the triangle count. Such a concept is proposed in this section.
+From the problems associated with degeneracy, given the equivalence between the Markov
+conditional independence assumption and model (1), we draw two conclusions: (A) edges
+13
+
+that do not share a tie may still be conditionally dependent (i.e., the Markov dependence
+assumption may be too restrictive); (B) with regard to transitivity, the existence of a tie
+between two social actors often will not depend simply on the total number of transitive
+triangles to which this tie would contribute: i.e., the representation of transitivity by the
+total number of triangles often is too simplistic.
+A more general type of dependence is the partial conditional independence introduced by
+Pattison and Robins (2002), which formulates a condition on the dependence that takes into
+account not only which nodes are being potentially tied, but also the other ties that exist
+in the graph: i.e., the dependence model is realization-dependent. This is a quite general
+approach.
+To introduce k-triangles, we use the following specific dependence assumption: in addition to the usual Markov dependencies, Yiv and Yuj are conditionally dependent, given the
+rest of the graph, whenever yiu = yvj = 1 (see Figure 2). This partial conditional indepenu •.. ....... ....... ....... ....... ....... •.. j
+.
+.
+...
+...
+..
+...
+...
+...
+...
+...
+...
+...
+..
+
+...
+...
+..
+...
+...
+...
+...
+...
+...
+...
+..
+
+i • ....... ....... ....... ....... ....... • v
+Figure 2: Partial conditional dependence when four-cycle is created
+dence assumption states that two possible edges with four distinct nodes are conditionally
+dependent whenever their existence in the graph would create a four-cycle. One substantive
+interpretation is that the possibility of a four-cycle establishes the structural basis for a “social setting” among four individuals (Pattison and Robins, 2002), and that the probability
+of a dyadic tie between two nodes (here, i and v) is affected not just by the other ties of
+these nodes but also by other ties within such a social setting, even if they do not directly
+involve i and v.
+A four-cycle assumption is a natural extension of modeling based on triangles (threecycles), and was first used by Lazega and Pattison (1999) in an examination of whether such
+larger cycles could be observed in an empirical setting to a greater extent than could be
+accounted for by parameters for configurations involving at most 3 nodes. Let us consider
+the four-cycle assumption alongside the Markov dependence. Under the Markov assumption,
+Yiv is conditionally dependent on each of Yiu , Yuv , Yij and Yjv , because these edge indicators
+share a node. So if yiu = yjv = 1 (the precondition in the four-cycle partial conditional
+dependence), then all five of these possible edges can be mutually dependent, and hence
+the exponential model (4) could contain a parameter corresponding to the count of such
+14
+
+configurations. We term this configuration, given by
+yiv = yiu = yij = yuv = yjv = 1 ,
+a two-triangle (see Figure 3). It represents the edge yij = 1 as part of the triadic setting
+yij = yiv = yjv = 1 as well as the setting yij = yiu = yju = 1.
+j •.. ............................................
+..
+.
+.
+
+u •.. .................................................................•.. j
+.
+. .
+..
+....
+...
+.....
+..
+.....
+....
+.
+.
+...
+.
+.
+.....
+...
+.....
+...
+.....
+.....
+...
+.....
+.
+.
+...
+.
+.....
+...
+.....
+...
+.....
+.... .........
+...
+.........................................................
+
+i •
+
+..
+...
+..
+...
+...
+...
+...
+...
+...
+...
+....
+
+..
+...........
+......
+......
+...........
+...
+......
+...........
+..
+......
+...........
+......
+...........
+...
+......
+...........
+..
+...
+..
+...
+.
+.
+.
+.
+.....
+...
+.
+.
+....
+...........
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+...
+.
+.
+.
+.
+...
+..
+...
+...........
+......
+..........
+......
+...
+...........
+......
+.... ........... ....................
+.......................
+...
+
+•u
+
+•v
+
+i •
+
+•v
+
+Figure 3: Two pictures of a two-triangle
+Motivated by this approach, we introduce here a generalization of triadic structures in the
+form of graph configurations that we term k-triangles. For a non-directed graph, a k-triangle
+with base (i, j) is defined by the presence of a base edge i − j together with the presence of at
+least k other nodes adjacent to both i and j. We denote a ‘side’ of a k-triangle as any edge
+that is not the base. The integer k is called the order of the k-triangle. Thus a k-triangle is
+a combination of k individual triangles, each sharing the same edge i − j. The concept of a
+k-triangle can be seen as a triadic analogue of a k-star. If kmax denotes the highest value of
+k for which there is a k-triangle on a given base edge (i, j), then the larger kmax , the greater
+the extent to which i and j are adjacent to the same nodes, or alternatively to which i and
+j share network partners. Because the notion of k-triangles incorporates that of an ordinary
+triangle (k = 1), k-triangle statistics have the potential for a more granulated description of
+transitivity in social networks.
+j •. ..................................................................................................................................................................................................
+...
+..
+...
+..
+.
+.
+...
+...
+..
+...
+...
+...
+...
+...
+...
+...
+...
+...
+...
+...
+..
+
+..... ........ ............ ............... ...................
+.
+.
+.....
+.
+.
+..... ................ .......................................................................................
+............
+.
+.
+.....
+.........
+............ ............................. .....................................
+.....
+.........
+...............
+.....
+............
+.........
+............... .....................................
+.....
+............
+.........
+...............
+...................
+.....
+............
+.........
+...............
+...................
+.....
+............
+.
+........
+...............
+..
+...................
+.........
+..
+....
+.....
+.........
+..
+.....
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+...................
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.....
+..................
+.......
+.........
+...
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+..
+....
+...
+.....
+........
+............ ............................. ....................................
+.....
+.........
+.
+............
+.....
+......... ...................... .................................................................
+.....
+.........
+..
+...
+....
+..... ................ ......................................................................................
+.
+.
+.
+.
+.
+..... ......... .....................................................
+..... ...........................................................
+...................................................................
+..........................................
+
+•h1
+
+•h2
+
+•h3
+
+•h4
+
+• h5
+
+i •
+
+Figure 4: k-triangle for k = 5, i.e., 5-triangle
+A summary of how dependence structures relate to conditional independence models is
+given by Robins and Pattison (in press). Here we use the property, proved by Pattison and
+Robins (2002), that a partial conditionally independent graph model will be an exponential
+random graph (4) with certain statistics in the exponent.
+15
+
+We propose a model where the statistics u(y) contain, in addition to those of the Markov
+model, parameters for all k-triangles. It should be noted that the k-triangle counts for
+different k are all related. A three-triangle configuration, for instance, necessarily comprises
+three two-triangles, so the number of three-triangles cannot be less than thrice the number
+of two-triangles. Assuming appropriate graph realizations, every possible edge in a threetriangle configuration is conditionally dependent on every other possible edge through one or
+the other of the two-triangles, and hence as all possible edges are conditionally dependent,
+there is a parameter pertaining to the three-triangle in the model. Induction on k shows that
+the Markovian conditional dependence with the four-cycle partial conditional dependence
+implies that there can be a parameter in the model for each possible k-triangle configuration.
+We see advantage in using k-triangles as a basis for assessing transitivity because large
+counts of individual triangles can be subsumed into smaller counts of k-triangles for k > 1,
+and because limiting the number of high-order k-triangles is a good way to let the probability
+distribution stay away from the complete graph.
+A suitable representation of transitivity in social networks cannot be based on triangles
+alone, as it must express not only that there are comparitively many triangles, but also that
+there are not too many high-order k-triangles. Therefore we propose to introduce relations
+among the various k-triangle count statistics in much the same way as for alternating kstars, so as to limit the probability of occurrence of a large number of high-order k-triangles.
+Analogous to the alternating k-stars model, the k-triangle model described below implies
+a possibly substantial increase in probability for an edge to appear in the graph if it is
+involved in only one triangle, with further but smaller increases in probability as the number
+of triangles that would be created increases (i.e., as the edge forms k-triangle of larger and
+larger order.) Thus, the increase in probability for creation of a k-triangle is a decreasing
+function of k. There is a substantively appealing interpretation: if a social tie is not present
+despite many shared social partners, then there is likely to be a serious impediment to that tie
+being formed at all (e.g., impediments such as limitations to the number of nodes connected
+together in a very dense cluster, mutual antipathy, or geographic distance, depending on the
+empirical context). In that case, the addition of even more shared partners is not likely to
+increase the probability of the tie greatly.
+The number of k-triangles can be expressed by the formula
+n
+
+Tk = ] {i, j}, {h1 , h2 , . . . , hk } | {i, j} ⊂ V, {h1 , h2 , . . . , hk } ⊂ V,
+o
+yij = 1 and yih` = yh` j = 1 for ` = 1, . . . , k
+X L2ij 
+=
+yij
+(for k ≥ 2),
+k
+i<j
+16
+
+(20a)
+
+where L2ij , defined in (10), is the number of two-paths connecting i and j. (Note that for
+undirected graphs, two-paths and two-stars refer to the same configuration yih = yhj = 1;
+the name ‘star’ points attention to the middle vertex h, the name ‘path’ to the end vertices
+i and j.) If there exists a tie i − j, the value k = L2ij is also the maximal order k for which
+a k-triangle exists on the base (i, j). The formula for the number of triangles, which can be
+called 1-triangles, is different, due to the symmetry of these configurations:
+1 X
+T1 =
+yij L2ij .
+3 i<j
+
+(20b)
+
+We propose a model where these k-triangle counts occur as sufficient statistics in (4),
+
+but with weights for the binomial coefficients Lk2ij that have alternating signs and are
+geometrically decreasing, like those in the alternating k-stars.1 We start with the 1-triangles
+– in contrast to (13) –, these being the standard type of triangles on which the others are
+based, with a weight of 3 aimed at obtaining a simple expression in terms of the numbers
+L2ij . This leads to the following statistic, for which three equivalent expressions are given
+using (20) and the binomial formula,
+(t)
+
+uλ (y) = 3 T1 −
+=
+
+X
+
+yij
+
+i<j
+
+T3
+Tn−2
+T2
++ 2 − ... + (−1)n−3 n−3
+λ
+λ
+λ
+
+
+
+
+n−2
+k−1
+X −1
+L2ij
+λ
+
+k=1
+
+(
+= λ
+
+X
+i<j
+
+yij
+
+1−
+
+
+1−
+
+1
+λ
+
+k
+L2ij )
+.
+
+(21)
+
+This counts the number of triangles but downweights the large numbers of triangles formed
+by the single tie i − j when there are many actors linked to i as well as j — i.e., when L2ij
+is large. Note that the factor {1 − (1 − 1/λ)L2ij } increases from 0 for L2ij = 0 to almost 1
+for L2ij = n − 2. As in the case of k-stars, the statistic can be constructed by imposing the
+constraint τk = −τk−1 /λ, where τk is the parameter pertaining to Tk .
+We propose to use this statistic as a component in the exponential model (4) to model
+transitivity, in an attempt to provide a model that will be better able than the Markov
+graph model to represent empirically observed networks. In some cases, this statistic can
+be used alongside T = T1 in the vector of sufficient statistics, in other cases only either
+(21) (or, perhaps, only T1 ) will be used – depending on how the best fit to the empirical
+data is achieved, and on the possibility to obtain a non-degenerate model and satisfactory
+convergence of the estimation algorithm.
+1
+
+Here also, a decomposition analogous to the geometrically weighted degree count could be given, but
+this would be more complicated.
+
+17
+
+The associated change statistic is
+(
+
+L˜ )
+1 2ij
+zij = λ 1 − 1 −
+λ
+(
+
+L˜
+
+L˜ )
+X
+1 2ih
+1 2hj
++
+yih yjh 1 −
++ yhi yhj 1 −
+,
+λ
+λ
+h
+
+(22)
+
+˜ 2uv is the number of two-paths connecting nodes u and v in the reduced graph y˜
+where L
+(where y˜ij is forced to be 0) for the various nodes u and v.
+The change statistic demonstrates some interesting properties of the k-triangle model.
+Suppose λ = 2 and the edge i − j is at the base of a k-triangle and consider the first term in
+the expression above. Then, similarly to the alternating k-stars, there is no great difference
+to the conditional log-odds of the edge being observed for values of k above 4 or 5 (unless
+perhaps the parameter value is rather large compared to other effects in the model). The
+model expresses the notion that it is the first one to three shared partners that principally
+influence transitive closure, with additional partners not substantially increasing the chances
+of the tie being formed. The second and third terms of the change statistic relate to situations
+where the tie completes a k-triangle as a side rather than as the base. Here there is a different
+effect. E.g., for the second term, the edge i − h is the base and h is a partner shared with
+j; the change statistic decreases as a function of the number of two-paths from i to h. This
+might be interpreted as actor i, already sharing many partners with h, feeling little impetus
+to establish a new shared partnership with j who also is a partner to h.
+Just as for the alternating k-stars, this statistic is considered for λ ≥ 1, and the downweighting of higher-order k-triangles is greater accordingly as λ is larger. Again, the boundary case λ = 1 has a special interpretation. For λ = 1 the statistic is equal to
+X
+(t)
+u1 (y) =
+yij I{L2ij ≥ 1} ,
+
+(23)
+
+i<j
+
+the number of pairs (i, j) that are directly linked (yij = 1) but also indirectly linked (yih =
+yhj = 1 for at least one other node h). In this case the change statistic is
+o
+Xn
+˜ 2ij ≥ 1} +
+˜ 2ih = 0} + yhi yhj I{L
+˜ 2hj = 0} .
+zij = I{L
+yih yjh I{L
+
+(24)
+
+h
+
+3.3
+
+Alternating independent two-paths
+
+It is tempting to interpret the effect of the alternating k-triangles as an effect for a tie to form
+on a base, emergent from the various two-paths that constitute the sides. But the change
+statistic makes clear that formation of alternating k-triangles involves not only the formation
+18
+
+of new bases of k-triangles, but also new sides of k-triangles, which should be interpreted
+as contributing to prerequisites for transitive closure rather than as establishing transitive
+closure. In order to differentiate between these two interpretations, it is desirable to control
+for the prerequisites for transitive closure, i.e., the number of configurations that would be
+the sides of k-triangles if there would exist a base edge. This means that we consider in
+addition the effect of connections by two-paths, irrespective of whether the base is present or
+not. This is precisely analogous in a Markov model to considering both potential triangles i.e., two-stars and two-paths – and actual triangles. For Markov models, the presence of the
+two-star effect permits the triangle parameter to be interpreted simply as transitivity, rather
+than a combination of both transitivity and two-paths. Otherwise it is not clear whether
+triangles have formed merely as a chance agglomeration of many two-paths. Including the
+following configuration implies that the same interpretation is valid in our new model.
+We introduced k-triangles as an outcome of a four-cycle dependence structure. Of course,
+a four-cycle is a combination of two two-paths. The sides of a k-triangle can be viewed as
+combinations of four-cycles. More simply, we construe them as independent (the graphtheoretical term for non-intersecting) two-paths connecting two nodes.
+j •..........................
+..
+
+...
+.......
+.......
+...
+.......
+...
+.......
+...
+.......
+...
+.......
+...
+.......
+...
+.......
+...
+.......
+....
+.
+.
+.
+...
+.
+.......
+..
+.
+.
+.
+.
+.
+.
+.
+.
+.
+...
+.......
+.......
+...
+.
+.
+.
+.
+.
+.
+.
+.
+....
+...
+.......
+...
+.......
+...
+.......
+... .........
+................
+....
+
+•h2
+
+i •
+
+j •............................................................................................................................................................................
+..
+...
+..
+..
+
+... ....... .......... .............. ..................
+.
+.
+.
+.......
+...
+....... ..................................................................................
+...
+...
+.......
+..
+...........
+...
+.......
+........... ........................... ..................................
+...
+.......
+..................
+..............
+...........
+...
+.
+..................
+..............
+.
+...........
+.
+.
+.
+.
+...
+.......
+..................
+..............
+...........
+.......
+...
+..................
+..............
+.
+...........
+.....
+.
+............
+..................
+....
+.
+.
+......
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+..................
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.................
+.......
+.........
+.....
+.
+..
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+..
+.
+..
+...
+.......
+..................
+...........
+..............
+.......... .......................... ..................................
+.......
+.
+...
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+..
+...
+..
+...
+..
+..................
+.......
+...........
+..............
+...
+....... ...............................................................................
+...
+.......
+... ........ .......................................................
+................................................................................................
+.
+.
+.....................................
+........................
+
+•h1
+
+• h1
+
+•h2
+
+•h3
+
+•h4
+
+• h5
+
+i •
+
+Figure 5: 2-independent two-paths (left) and 5-independent two-paths (right)
+Thus, we define k-independent two-paths as configurations (i, j, h1 , . . . , hk ) where all
+nodes h1 to hk are adjacent to both i and j, irrespective of whether i and j are tied. Their
+number is expressed by the formula
+n
+
+Uk = ] {i, j}, {h1 , h2 , . . . , hk } | {i, j} ⊂ V, {h1 , h2 , . . . , hk } ⊂ V,
+o
+i 6= j, yih` = yh` j = 1 for ` = 1, . . . , k
+X L2ij 
+=
+(for k 6= 2)
+k
+i<j
+
+
+1 X L2ij
+U2 =
+(number of four-cycles);
+2 i<j
+2
+
+(25a)
+(25b)
+
+the specific expression for k = 2 is required because of the symmetries involved. The
+
+19
+
+corresponding statistic with alternating and geometrically decreasing weights is
+k−1
+n−2 
+X
+2
+−1
+p
+uλ (y) = U1 − U2 +
+Uk
+λ
+λ
+k=3
+(
+
+L )
+X
+1 2ij
+= λ
+,
+1 − 1−
+λ
+i<j
+
+(26)
+
+where, in analogy to the statistic for the k-triangles, the extra factor 2 is used for U2 in order
+for the binomial formula to yield the nice expression (26). This is called the alternating
+independent two-paths statistic. The change statistic is
+( 
+L˜
+
+L˜ )
+X
+1 2ih
+1 2hj
+zij =
+yjh 1 −
++ yhi 1 −
+.
+λ
+λ
+h6=i,j
+
+(27)
+
+As for the alternating k-star and k-triangle statistics, the alternating independent twopaths statistic can be generated by imposing the constraint νk = −νk−1 /λ, where νk is the
+parameter corresponding to Uk .
+For λ = 1 the statistic reduces to
+X
+up1 (y) =
+I{L2ij ≥ 1} ,
+
+(28)
+
+i<j
+
+the number of pairs (i, j) which are indirectly connected by at least one two-path. This
+statistic is counterpart to statistic (23), the number of pairs both directly and indirectly
+linked. Taken together they assess effects for transitivity in precise analogy with triangles
+and two-stars for Markov graphs. Since two nodes i and j are at a geodesic distance of two if
+they are indirectly linked but not directly linked, the number of nodes at a geodesic distance
+two is equal to (28) minus (23). The change statistic for λ = 1 is
+o
+Xn
+˜
+˜
+zij =
+yjh I{L2ih = 0} + yhi I{L2hj = 0} .
+
+(29)
+
+h6=i,j
+
+3.4
+
+Summarizing the proposed statistics
+
+Summarizing the preceding discussion, we propose to model transitivity in networks by
+exponential random graph models that could contain in the exponent u(y) the following
+statistics.
+1. The total number of edges S1 (y), to reflect the density of the graph;
+this is superfluous if the analysis is done conditional on the total number of edges –
+and this indeed is our advice.
+20
+
+2. The geometrically weighted degree distributions defined by (11), or equivalently the
+alternating k-stars (13), for a given suitable value of α or λ, to reflect the distribution
+of the degrees.
+3. This can be supplemented, or replaced, by the number of two-stars S2 (y) or sums
+of reciprocals or ascending factorials (18); the choice between these degree-dependent
+statistics will be determined by the resulting fit to the data and the possibility to
+obtain satisfactory parameter estimates.
+4. The alternating k-triangles (21) and the alternating independent two-paths (26), again
+for a suitable value of λ (which should be the same for the k-triangles and the alternating independent two-paths, but may differ from the value used for the alternating
+k-stars), to reflect transitivity and the preconditions for transitivity.
+5. This can be supplemented with the triad count T (y) = T1 (y), if a satisfactory estimate
+can be obtained for the corresponding parameter, and if this yields a better fit as shown
+from the t-statistic for this parameter.
+Of course, actor and dyadic covariate effects can also be added. The choice of suitable values
+of α and λ depends on the data set. Fitting this model to a few data sets, we had good
+experience with λ = 2 or 3 and the corresponding α = ln(2) or ln(1.5). In some cases it may
+be useful to include the statistics for more than one value of λ, e.g., λ = 1 (with the specific
+interpretations as discussed above) together with λ = 3.
+Under the ERGM defined by these statistics, two edge indicators Yij and Yuv are conditionally dependent, given all other edges, only if either
+(1) the vertices i, j, u, v are not all distinct, i.e., {i, j} ∩ {u, v} =
+6 ∅, or
+(2) the vertices i, j, u, v are all distinct, and Yiu = Yvj = 1 or Yiv = Yuj = 1, i.e., if the edges
+existed they would be part of a four-cycle.
+This dependence extends the classical Markovian dependence, expressed by the first condition, in a meaningful way to a dependence within social settings. It should be noted,
+however, that this type of partial conditional dependence is satisfied by a much wider class
+of stochastic graph models than the transitivity-based models proposed here. Parsimony of
+modeling leads to restricting attention primarily to the statistics proposed here. Further
+modeling experience and theoretical elaboration will have to show to what extent it is desirable to continue modeling by including counts of other higher-order subgraphs, representing
+more complicated group structures.
+
+21
+
+4
+
+New Modeling Possibilities With These Specifications
+
+In this section, we present some results from simulation studies of these new model specifications. This section is far from a complete exploration of the parameter space. It only
+provides examples of the types of network structures that may emerge from the new specifications. More particularly, it is illustrated how the new alternating k-triangle parameterization
+avoids certain of the problems with degeneracy noted above in regard to Markov random
+graph models.
+We present results for distributions of non-directed graphs of 30 nodes. The simulation procedure is similar to that used in Robins et al (in press). In summary, we simulate graph distributions using the Metropolis-Hastings algorithm from an arbitrary starting
+graph, choosing parameter values judiciously to illustrate certain points. Typically we have
+simulation runs of 50,000, with a burn-in of 10,000, although when MCMC diagnostics indicate that burn-in may not have been achieved we carry out a longer run, sometimes up
+to half a million iterations. We sample every 100th graph from the simulation, examining
+graph statistics, and geodesic and degree distributions.
+
+4.1
+
+Geometrically weighted degree distribution
+
+The graph in Figure 6 is from a distribution obtained by simulating with an edge parameter
+of –1.7 and a weighting parameter (α = ln(2) = 0.693, corresponding to λ = 2) of 2.6.
+This is a low density graph with 25 edges and a density of 0.06, and in terms of graph
+statistics is quite typical of graphs in the distribution. Even despite the low density, the
+graph shows elements of a core-periphery structure, with some relatively high degree nodes
+(one with degree 7), several isolated nodes, and some low degree nodes with connections
+into the higher degree “core”. What particularly differentiates the graph from a comparable
+Bernoulli graph distribution with a mean of 25 edges is the number of stars, especially higher
+order stars. For instance, the number of 4-stars in the graph is 3.5 standard deviations
+above that from the Bernoulli distribution. This is the result of a longer tail on the degree
+distribution, compensated by larger numbers of low degree nodes. (For instance, less than
+2% of corresponding Bernoulli graphs have the combination expressed in this graph of 18
+or more nodes isolated or of degree 1, and of at least one node with degree 6 or above.)
+Because of the core-periphery elements, the triangle count in the graph, albeit low, is still 3.7
+standard deviations above the mean from the Bernoulli distribution. Monte Carlo maximum
+likelihood estimates using the procedure of Snijders (2002) as implemented in the program
+SIENA (Snijders and Huisman, 2003) reassuringly reproduced the original parameter values,
+22
+
+with an estimated edge parameter of –1.59 (standard error 0.35) and a significant estimated
+geometrically weighted degree parameter of 2.87 (s.e. 0.86) .
+
+Figure 6: A graph from an alternating k-star distribution
+It is useful to compare the geometrically weighted degree distribution, or alternatively
+alternating k-star graph distribution, of which the graph in Figure 6 is an example, against
+the Bernoulli distribution with the same expected number of edges. Figure 7 is a scatter plot
+comparing the number of edges against the alternating k-stars statistic for both distributions.
+The figure demonstrates a small but discernible difference between the two distributions in
+terms of the number of k-stars for a given number of edges. There is also a tendency here
+for greater dispersion of edges and alternating k-stars in the k-star distribution. As with
+our example graph, in the alternating k-star distributions there are more graphs with high
+degree nodes, as well as graphs with more low degree nodes.
+Finally, in Figure 8, we illustrate the behavior of the model as the alternating k-star
+parameter increases. The figure plots the mean number of edges for models with an edge
+parameter of –4.3 and varying alternating k-star parameters, keeping λ = 2. Equation (13)
+implies that, as a graph becomes denser, the change statistic for alternating k-stars becomes closer to its constant maximum, so that high density distributions are very similar
+to Bernoulli graphs. In Figure 8, with an alternating k-star parameter of 1.0 or above, the
+properties of individual graphs within these distributions are difficult to differentiate from
+Bernoulli graphs. Even so, the distributions themselves (except those that are extremely
+dense) tend to exhibit much greater dispersion in graph statistics, including in the number
+of edges. The important point to note here is that there is a relatively smooth transition
+from low density to high density graphs as the parameter increases, without the almost discontinuous jumps that betoken degeneracy and are often exhibited in Markov random graph
+models with positive star parameters.
+
+23
+
+Figure 7: Scatterplot of edges against alternating k-stars for Bernoulli and alternating k-star
+graph distributions
+
+4.2
+
+Alternating k-triangles
+
+The degeneracy issue for transitivity models, and the advance presented by the alternating
+k-triangle specification, are illustrated in Figure 9. This figure depicts mean number of edges
+for three transitivity models for various values of a transitivity-related parameter. Each of
+these models contains a fixed edge parameter, set at –3.0, plus certain other parameters.
+The first model (labeled ‘triangle without star parameters’ in the figure) is a Markov
+model with simply the edge parameter and a triangle parameter. For low values of the triangle parameter, only very low density graphs are observed; for high values only complete
+graphs are observed. There is a small region, with a triangle parameter between 0.8 and
+0.9, where either a low density or a complete graph may be the outcome of a particular
+simulation. This bimodal graph distribution for certain triangle parameter values was observed by Snijders (2002). Clearly, this simple two parameter model is quite inadequate to
+model realistic social networks that exhibit transitivity effects. It reinforces the argument
+by Robins et al (in press) that more complex models may give greater leverage in avoiding
+degeneracy.
+The second model (labeled ‘triangle with negative star parameters’ in the figure) is a
+Markov model with the inclusion of 2- and 3-star parameters as recommended by Robins
+et al (in press), in particular a positive 2-star parameter value (0.5) and a negative 3star parameter value (–0.2), and a triangle parameter with various values. The negative
+star parameter (in this case, the 3-star) widens the non-degenerate region of the parameter
+
+24
+
+Figure 8: Mean number of edges in alternating k-star distributions with different values of
+the alternating k-star parameter
+space, by preventing the explosion of edges that leads to complete graphs. In this example,
+this works well until the triangle parameter reaches about 1.1. Below this value, the graph
+distributions are stochastic, of relatively low density, and tend to have high clustering relative
+to the number of edges (in comparison to Bernoulli graph distributions). With a triangle
+parameter above 1.1, however, the graph distribution tends to be “frozen”, not on the empty
+or full graph but on disconnected cliques akin to the caveman graphs of Watts (1999). This
+area of near degeneracy was observed by Robins et al (in press).
+The third model (labeled ‘ktriangle’ in the figure), on the other hand, does not seem
+to suffer the discontinuous jump, nor the caveman area of near degeneracy, of the first and
+second models. It is a two parameter model with an edge parameter and an alternating ktriangles parameter, and the expected density increases smoothly as a function of the latter
+parameter.
+A similar type of result can be seen by fixing the transitivity parameter in these models
+and varying the edge parameter, as in Figure 10 (for the two Markov models, with a triangle
+parameter of 1.0 and with star parameters as before; and for the alternating k-triangles
+model, with an alternating k-triangles parameter of 0.8). Again there is a major discontinuity
+for the Markov model without star parameters, and again the Markov model with star
+parameters freezes into caveman-like structures at a certain point (with an edge parameter
+greater than about –1.5). But once more the alternating k-triangle model moves from low
+to high density in a relatively smooth way.
+Figure 11 contains two examples of graphs from alternating k-triangles distributions. The
+25
+
+Figure 9: Mean number of edges in various graph distributions with different values of a
+triangle parameter
+higher alternating k-triangles parameter (right panel of the figure) results understandably
+in a denser graph but the transitive effects are quite apparent from the diagrams. Both
+distributions have significantly higher transitivity than Bernoulli graphs. This is illustrated
+in Figure 12 representing features of three graph distributions: the alternating k-triangles
+distribution of which the right panel graph in Figure 11 is a representative (edge parameter
+= –3.7; alternating k-triangle parameter = 1.1); the Bernoulli graph distribution with mean
+number of edges identical to this alternating k-triangle distribution (edge parameter = –1.35,
+resulting in a mean 89.5 edges); and a Markov random graph model with positive 2-star,
+negative 3-star and positive triangle parameters, with parameter values chosen to produce
+the same mean number of edges (edge parameter = –2.7; 2-star parameter = 0.5; 3-star
+parameter = –0.2, triangle parameter = 1.0, mean number of edges = 88.8). We can see
+from the figure that for the same number of edges the alternating k-triangle distribution
+is clearly differentiated both from its comparable Bernoulli model, as well as the Markov
+model, in having higher numbers of triangles. The Markov model also tends to have more
+triangles than the Bernoulli model, reflecting its positive triangle parameter.
+For an edge-plus-alternating-k-triangle model applied to the graph in the left hand panel
+of Figure 11, SIENA produced Monte Carlo maximum likelihood estimates that converged
+satisfactorily and were consistent with the original parameter values: edge –3.45 (s.e. 0.31),
+alternating k-triangles 0.97 (s.e. 0.15). Estimates for a Markov model with 2-,3-star and
+triangle parameters did not converge adequately in SIENA. Use of the ergm program suggested that no maximum likelihood estimate existed for models including up to 4-stars, with
+26
+
+Figure 10: Mean number of edges in various graph distributions with different values of an
+edge parameter
+or without triangle parameters. It seems that the dense core of triangulation produced in
+graphs from this distribution take us into nearly degenerate regions of the parameter space
+of Markov models.
+
+4.3
+
+Independent two-paths
+
+Some of the distinctive features of independent two-path distributions are as follows. A
+simple way to achieve many independent two-paths is to have cycles through two high degree nodes. This is what we see in Figure 13, which is a graph from a distribution with
+edge parameter –3.7 and independent two- paths parameter 0.5. Compared to a Bernoulli
+graph distribution with the same mean number of edges, this graph distribution has substantially more stars, triangles, k-stars, k-triangles and of course independent two-paths. It
+is dramatically different from the Bernoulli distribution.
+With increasing independent two-paths parameter, the resulting graphs tend to have
+two centralized nodes, but with more edges among the non-central nodes. For lower (but
+positive) independent two-paths parameters, however, only one centralized node appears,
+resulting in a single star-like structure, with several isolates. We know of no set of Markov
+graph parameters that can produce such large star-like structures, without conditioning on
+degrees.
+
+27
+
+Figure 11: A low density and a higher density k-triangle graph
+(Note: edge parameter = –3.7 for both; alternating k-triangles parameter = 1.0 for left panel
+and 1.1 for right panel)
+
+4.4
+
+Combinations of the parameters
+
+We have experimented with various combinations of the parameters to examine the emergent
+properties of the distribution. This is a matter for ongoing work but there are a few early
+results that we can briefly note here, particularly in regard to combinations of alternating
+k-triangles and independent two-paths. A strong alternating k-triangle effect may produce
+one core of high density nodes with many triangles among them, as in the right panel
+of Figure 11. When a positive alternating k-triangle effect is combined with a negative
+independent two-paths effect, the result can be a structure akin to a caveman graph with
+two caves, although in this case the simulation is not frozen and remains stochastic. This
+is a notable result that opens the possibility of estimation for structures of which hitherto
+only deterministic versions have been studied. As might be expected, a positive independent
+two-paths parameter in the presence of a negative k-triangle parameter results in graphs
+with two centralized nodes without a connection between them, or, for lower densities, in
+graphs with one highly centralized node.
+
+5
+
+Example: Collaboration Between Lazega’s Lawyers
+
+Several examples will be presented based on a data collection by Lazega, described extensively in Lazega (2001) on relations between lawyers in a New England law firm (also see
+Lazega and Pattison, 1999). As a first example, the symmetrized collaboration relation was
+used between the 36 partners in the firm, where a tie is defined to be present if both partners
+indicate that they collaborate with the other. The average degree is 6.4, the density is 0.18,
+and degrees range from 0 to 13. Several actor covariates were considered: seniority (rank
+28
+
+Figure 12: Number of triangles against number of edges for three different graph distributions
+
+number of entry in the firm), gender, office (there were three offices in different cities), years
+in the firm, age, practice (litigation or corporate law), and law school attended (Yale, Other
+Ivy League, or non-Ivy League).
+It was investigated how this collaboration relation can be explained on the basis of the
+three structural statistics introduced above (alternating combinations of two-stars, alternating k-stars, and alternating independent two-paths), the more traditional other structural
+statistics (counts of k-stars and triangles), and the covariates. For the covariates X with
+values xi , two types of effect were considered as components of the statistic u(y) in the exponent of the probability function. The first is the main effect, represented by the component
+xi . A positive parameter for this variable indicates that actors i high on X have a higher
+tendency to make ties to others, which will show in a positive correlation between X and
+the degrees. This main effect was considered for the numerical and dichotomous covariates.
+The second is the similarity effect. For numerical covariates like age and seniority, this was
+represented by the dissimilarity within pairs of actors expressed by the component | xi − xj |.
+For the categorical covariates, office and law school, this was represented by the within-dyad
+identity of the variable, expressed by the indicator function I{xi = xj } defined as 1 if xi = xj
+and 0 otherwise. A negative parameter for the dissimilarity effect and a positive parameter
+for the within-dyad identity effect reflect that actors who are similar on X have a higher
+tendency to be collaborating, which will show in a positive network autocorrelation of X.
+The estimations were carried out using the program SIENA (Snijders and Huisman,
+2003), version 1.99, implementing the Metropolis-Hastings algorithm for generating draws
+29
+
+Figure 13: A graph from a independent two-path distribution
+from the exponential random graph distribution, and the stochastic approximation algorithm
+described in Snijders (2002). Since, as any MCMC algorithm, this is a stochastic algorithm,
+results will be different for different starting values of the estimates and the random number
+streams of the algorithm. Checks were made for the stability of the algorithm by making
+independent restarts, and these yielded practically the same outcomes. The program contains
+a convergence check (indicated in the program as ‘Phase 3’): after the estimates have been
+obtained, a large number of Metropolis-Hastings steps is made with these parameter values,
+and it is checked if the average of the statistics u(Y ) calculated for the generated graphs
+(with much thinning to obtain approximately independent draws) is indeed very close to
+the observed values of the statistics. Only results are reported for which this stochastic
+algorithm converged well, as reflected by t-statistics less than 0.1 in absolute value for the
+deviations between all components of the observed u(y) and the average of the simulations,
+which are the estimated expected values Eθˆu(Y ) (cf. (5) and also equation (34) in Snijders,
+2002).
+The estimation kept the total number of ties fixed at the observed value, which implies
+that there is a not a separate parameter for this statistic. This conditioning on the observed
+number of ties is helpful for the convergence of the algorithm (for the example reported here,
+however, good convergence was obtained also without this conditioning). Effects were tested
+using the t-ratios defined as parameter estimate divided by standard error, and referring
+these to an approximating standard normal distribution as the null distribution. Effects are
+considered to be significant at approximately the level of α = 0.05 when the absolute value
+of the t-ratio exceeds 2.
+Some explorative model fits were carried out, and it turned out that of the covariates,
+
+30
+
+the important effects are the main effects of seniority and practice, and the similarity effects
+of gender, office, and practice. In Model 1 of Table 1, estimation results are presented
+of a model which contains the three structural effects: geometrically weighted degrees for
+α = ln(1.5) = 0.405 (corresponding to alternating combinations of two-stars for λ = 3),
+alternating k-stars and alternating independent two-paths, both for parameter λ = 3 and
+in addition, the last two of these effects for parameter λ = 1; as indicated above, the latter
+effects are equal to the number of pairs of nodes both directly and indirectly connected, and
+the number of pairs indirectly connected.
+
+Table 1. MCMC parameter estimates for the symmetrized collaboration relation
+among Lazega’s lawyers.
+Model 1
+Parameter
+est.
+s.e.
+Geom. w. degrees, α = ln(1.5)
+–0.797 2.844
+Alternating k-triangles, λ = 3
+0.572 0.190
+Alternating independent two-paths, λ = 3 –0.042 0.154
+Number pairs dir. & ind. connected
+0.486 0.513
+Number pairs indirectly connected
+–0.025 0.188
+Seniority main effect
+0.023 0.006
+Practice (corporate law) main effect
+0.391 0.116
+Same practice
+0.390 0.100
+Same gender
+0.343 0.124
+Same office
+0.577 0.110
+
+Model 2
+est.
+s.e.
+–
+–
+0.608 0.089
+–
+–
+–
+–
+–
+–
+0.024 0.006
+0.375 0.109
+0.385 0.101
+0.359 0.120
+0.572 0.100
+
+The results show that none of the structural effects except the alternating k-triangles
+has a t-ratio greater than 2. There is quite some collinearity between these effects. E.g.,
+the estimated correlation between the estimate for the alternating independent two-paths
+and that for the number of pairs indirectly connected is –0.93. All of the retained covariate
+effects have t-ratios larger than 2. With a backward selection procedure, non-significant
+effects were stepwise deleted from the model. The result is presented as Model 2 in Table 1.
+The only remaining structural effect is the alternating k-triangles effect (θˆj = 0.608, t = 6.8).
+This indicates that there is strong evidence for transitivity, as represented by the k-triangles
+effect, and not for any other structural effects except what is already represented by the
+covariates.
+It appears that this model is successful in representing also other structural characteristics
+of this network, such as the numbers of two-, three-, and four-stars and the number of
+triangles. The observed number of triangles is 120, while simulations of the ERGM (carried
+31
+
+out also using the SIENA program) show that the expected number of triangles under Model
+2 is 128.5 and its standard deviation is 13.2. So the difference is less than one standard
+deviation. Fitting the model extended with the number of triangles indeed led to a nonsignificant effect for the number of triangles. The observed number of four-stars is 6091,
+and under Model 2 the expected number of four-stars is equal to 6635 and the standard
+deviation is 1042; so here also the difference between observed and expected value is less
+than one standard deviation. Thus, even though these statistics are not directly fitted,
+the representation of the network structure by the alternating k-triangles together with the
+covariate effects does give an adequate representation also of these graph statistics.
+The estimates for the covariates are hardly different from those in Model 1. Note that
+these can be interpreted as estimates of the covariate effects on a log-odds scale, similar to
+effects in logistic regression models, except that they are controlled for the structural effects.
+This implies that exp(θj d) is the multiplicative effect that a difference d on variable j has
+on the estimated odds of a tie. Seniority ranges from 1 to 36, so the more senior partners
+collaborate with more others, the odds ratio for the greatest difference of 35 being exp(0.024×
+35) = 2.32. Corporate lawyers have an odds of collaboration that is exp(0.375) = 1.45 higher
+than those doing litigation, and having the same specialty makes collaboration exp(0.385) =
+1.47 more likely. The odds ratio related to having the same gender is exp(0.359) = 1.43,
+that related to working in the same office is exp(0.572) = 1.77. All these odds ratios are
+controlled for the structural transitivity effect. Summarizing, there are especially large effects
+of seniority and of working in the same office, and slightly smaller but still large effects of
+doing corporate law, having the same specialty, and having the same gender; in addition,
+there is a strong transitivity effect.
+The latter effect, represented by the alternating k-triangles, can be interpreted as evidence
+that there are organizing principles in this network that go beyond homophilous selection
+in creating triangles. The non-significance of the weighted degrees effect suggests that this
+transitivity may not be the result of popularity selection effects alone. In this firm of lawyers,
+it seems that collaborative structures arise not just because of lawyers’ personal backgrounds;
+nor do they emerge by popular collaborators attracting less popular followers; rather, next
+to the covariate effects, there is a distinct balance effect of self-organizing team formation,
+resulting in close-knit transitive structures.
+The good fit in the sense of good reproduction of a variety of other network statistics is
+not strongly dependent on the value of the parameter λ. Values λ = 2, 4, and 5 also yielded
+good results. The values λ = 1 and 6 were not satisfactory in this sense.
+Model specifications containing the numbers of two-stars and of transitive triangles also
+yielded convergence of the estimation algorithm, but did not succeed well in reproducing the
+
+32
+
+observed number of pairs of nodes tied directly and indirectly; this implies that the number
+of pairs at a geodesic distance equal to two was not reproduced adequately. Thus, we can
+conclude that this example is a case where the traditional Markov random graph model for
+transitivity can be practically applied, but where our new model specification yields a better
+fit to the data.
+
+5.1
+
+Parameter sensitivity in various models
+
+To illustrate the differences between the various model specifications and the difficulties of
+some specifications, we present some simulation results where a parameter is varied in fitted
+models. We contrast the specification based on the number of triangles to the one using the
+alternating k-triangles. In addition, we compare models without and with conditioning on
+the total number of edges.
+A model similar to model 2 in Table 1 was fitted to this data set, and then a long sequence
+of graphs was simulated by the MCMC procedure, starting with the empty graph, where all
+parameters except one kept their fixed value, and one designated parameter slowly increased
+from a low to a high value, and then decreased again to the low value, with 40,000 MCMC
+iteration steps for each value of this parameter. The designated parameter was the parameter
+representing transitivity, being the number of triangles, or the alternating k-triangles. The
+figures present the generated values of the associated statistic after the 40,000 iterations for
+each single parameter value.
+Figure 14 gives the generated values for the model without conditioning on the number of
+edges (which for the number of triangles did not lead to convergence, but was used anyhow).
+A vertical line is plotted at the estimated parameter value, and a horizontal line at the
+observed value of the statistic. This implies that the curve of expected values should exactly
+go through the intersection of these two lines.
+For the number of triangles, an almost discontinuous jump is observed, right at the
+intersection point that was the target for the estimation procedure. In this left panel, for the
+increasing parameter values, the jump up is made at a somewhat higher parameter value than
+the jump down for the decreasing parameter values. This path-dependence, or hysteresis,
+was also observed in Snijders (2002, p. 9), and is well-known for Ising models (Newman and
+Barkema, 1999) which show a similar kind of degeneracy. In a small interval of parameter
+values where this jump occurs, the distribution of the statistic (and of the graph density)
+has a bimodal shape. The suddenness of the jump, and the fact that the observed statistic
+is in the region of the jump, is associated with the large practical difficulties in fitting this
+model to realistic data.
+For the alternating k-triangles (right panel), a smoother sequence of values is obtained,
+33
+
+uj (y)
+
+uj (y)
+
+∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗
+∗ 
+∗ 
+
+7200
+6000
+5000
+
+1500
+
+1200
+
+900
+4000
+3000
+
+600
+
+2000
+300
+1000
+0
+
+∗
+∗
+∗
+∗
+∗∗∗
+∗
+∗∗
+∗
+∗
+∗
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+∗∗
+∗∗∗∗
+∗
+
+∗
+
+
+∗
+∗
+∗∗
+∗
+∗
+∗
+
+∗∗∗
+∗
+∗
+∗
+
+∗
+∗
+
+
+∗
+∗
+∗
+∗
+
+∗
+∗
+
+
+
+∗
+∗
+∗∗
+∗
+∗
+
+∗∗
+∗
+
+∗
+
+∗
+
+∗∗
+∗
+
+∗
+
+∗∗
+∗
+∗
+∗∗
+∗
+∗
+∗∗
+∗∗
+∗
+∗
+
+∗
+∗
+
+∗
+∗
+∗
+∗
+∗
+∗
+∗
+∗
+∗
+∗
+∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗
+∗∗∗
+∗∗∗∗∗∗
+∗
+∗∗
+∗∗∗
+
+0
+−0.2
+
+θj
+
+0.2
+
+0.6
+
+1.0
+
+1.4
+
+θj
+
+Figure 14: Generated statistics for unconditional models, for triangle parameter (left) and
+alternating k-triangles parameter (right).
+(Symbol  indicates simulated values generated for increasing parameter values, ∗ those
+generated for decreasing values.)
+but still the slope is quite large, especially near the parameter value of about 0.6 where the
+simulated values ‘take off’ from their starting values close to 0. This is similar to what is
+shown for the expected values of the density in Figures 8 and 9.
+Analogous simulated values, but for models conditioning on the observed number of
+edges, are given in Figure 15.
+Here we see in both cases a much smoother process. The hysteresis effect for the number
+of triangles is not observed any more, suggesting good mixing of the MCMC procedure, but
+this model still has a quite strong slope near the observed value of the statistic. For the right
+panel in Figure 15, which combines conditional estimation with the alternating k-triangles
+statistic, the generated values form a smooth pattern which confirms that estimation can
+proceed smoothly for this model. The figures together illustrate that both working with
+the newly proposed statistics rather than with the number of triangles, and conditioning on
+the number of edges, contribute to better possibilities for parameter estimation. Combining
+both elements yields especially good results.
+
+6
+
+Directed Relations
+
+Directed relations are perhaps more frequent in social network research than undirected
+relations. For directed relations, the requirement Yij = Yji for the adjacency matrix is
+dropped, and the oriented nature of ties is reflected by using the term ‘arcs’ rather than
+‘edges’. Except for the number of ties, all statistics discussed above have multiple analogues
+for the directed case, depending on the orientation of the ties. Rather than listing and
+34
+
+uj (y)
+500
+
+400
+
+300
+
+200
+
+100
+
+uj (y)
+
+∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗
+∗ ∗∗∗∗∗∗ 
+
+∗∗∗∗∗∗∗
+∗∗
+∗
+∗
+∗∗
+
+
+∗∗∗∗∗
+∗∗
+∗∗∗∗∗∗∗∗∗∗∗
+∗
+∗
+∗
+∗
+
+∗
+
+
+∗
+
+
+∗
+
+
+
+∗
+∗
+∗
+∗
+∗∗∗
+∗
+∗∗∗
+∗∗
+∗∗
+∗
+
+∗∗∗
+0.0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1.0
+
+320
+
+250
+200
+150
+100
+
+∗
+∗
+∗
+∗∗∗∗
+
+∗∗
+∗
+
+∗∗∗
+
+∗
+∗
+∗
+
+
+∗
+
+
+∗
+∗
+∗
+∗∗∗
+
+∗
+
+ ∗
+∗∗∗
+∗
+∗∗∗
+∗∗
+
+
+∗
+∗
+
+
+
+∗
+∗
+∗
+
+∗
+
+∗
+∗
+∗
+∗∗∗
+
+∗∗
+∗
+∗
+∗
+
+∗
+
+
+∗
+∗∗∗
+
+∗∗∗
+∗
+∗∗∗
+
+∗
+∗
+
+∗
+∗
+
+
+∗
+∗
+∗∗∗∗
+∗
+
+
+
+∗
+∗∗
+∗
+∗∗∗
+∗
+
+
+∗
+∗
+∗
+∗
+
+∗
+∗∗∗∗
+∗∗
+∗
+∗
+∗∗∗∗
+∗
+ 
+∗
+
+50
+
+−0.2
+
+θj
+
+0.2
+
+0.6
+
+1.0
+
+1.4
+
+θj
+
+Figure 15: Generated statistics for conditional models, for triangle parameter (left) and
+alternating k-triangles parameter (right).
+(Symbol  indicates values generated for increasing parameter values, ∗ those generated for
+decreasing values.)
+discussing, for the statistics proposed above, all different analogues that can occur depending
+on the possible tie orientations, we give in this section a brief list of what we think are the
+most important versions of these statistics for directed graphs. Since an elaborate discussion
+would mainly repeat much of what has been said above, we refrain from giving an extensive
+motivation. (It may be noted that in the formulae given above for the undirected case, we
+have chosen the order of the subscripts indicating the nodes in such a way that many of the
+formulae are valid also for the directed case.)
+For directed relations, we propose to use exponential random graph models with the
+following statistics for the structural part of the model.
+1. The total number of arcs
+X
+Yij ;
+i6=j
+
+this is a superfluous element of the sufficient statistics if the analysis is done (as advised)
+conditional on the number of arcs.
+2. The number of mutual dyads
+X
+Yij Yji .
+i<j
+
+3. Geometrically weighted out-degrees
+u(od)
+α (y)
+
+=
+
+n−1
+X
+
+(out)
+e−αk dk (y)
+
+=
+
+n
+X
+i=1
+
+k=0
+
+35
+
+e−αyi+ ,
+
+(30)
+
+and geometrically weighted in-degrees
+u(id)
+α (y)
+
+=
+
+n−1
+X
+
+(in)
+e−αk dk (y)
+
+=
+
+(out)
+
+e−αy+i ,
+
+(31)
+
+i=1
+
+k=0
+
+where dk
+
+n
+X
+
+(in)
+
+(y) and dk (y), respectively, are the numbers of nodes with out-degree
+
+or in-degree equal to k. Similar to (14), these statistics can be expressed also as
+alternating out-k-star combinations and alternating in-k-star combinations.
+4. This can be supplemented, or replaced, by the number of in-two-stars and the number
+of out-two-stars, reflecting the in-degree variance and the out-degree variance.
+5. The alternating transitive k-triangles defined by
+(
+
+L )
+X
+1 2ij
+λ
+yij 1 − 1 −
+λ
+i,j
+
+(32)
+
+and the alternating independent two-paths defined by
+(
+
+L )
+X
+1 2ij
+,
+λ
+1 − 1−
+λ
+i,j
+
+(33)
+
+where L2ij is still the number of two-paths defined by (10); the orientations implied by
+these formulae are illustrated in Figure 16.
+j •. .....................................................................................................
+.
+.
+..
+..
+
+.
+......... ........... ................. ........................
+............
+.........
+......
+...
+............
+.........
+......
+............
+.........
+....
+......
+............
+.........
+......
+..
+............
+.........
+......
+............
+.........
+...
+......
+...........
+.....
+...
+...
+.
+.
+.
+.
+.
+.
+.
+.
+.
+................
+.
+.
+...
+.
+...............
+.
+........
+............ ..
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+...
+.
+.
+.
+.
+.
+.
+.
+.
+....
+.........
+.............
+...
+.....
+.............
+.........
+......
+...
+......... ........................
+......
+.
+.........
+...
+...... ..........................................
+.
+.
+.
+.
+...
+.
+.
+.
+.. ... .....
+..................................
+...................................
+
+•h1
+
+•h2
+
+•h3
+
+i •
+
+j •.........................................................................................
+..
+..
+.
+
+..
+........
+.....
+........ .....................
+.....
+...........
+........
+.....
+...........
+........
+.....
+...........
+........
+.....
+...........
+........
+.....
+...........
+........
+.....
+...........
+........
+.......
+..
+.
+..
+.
+.
+.
+.
+.
+.
+.
+..............
+.
+.
+.
+.
+.
+.
+.
+.
+.........
+........... ..
+.......
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+...
+..
+........
+...........
+.....
+........
+...........
+.....
+....... .....................
+.....
+........
+..
+.... ...................................
+.
+.
+.
+. ..
+....
+..... ......................
+................................
+
+•h1
+
+•h2
+
+•h3
+
+i •
+
+Figure 16: Transitive three-triangle (left) and 3-independent two-paths (right)
+6. This can be supplemented with the count of transitive triads
+X
+Yij Yjh Yih
+i,j,h
+
+and the number of two-paths, the latter reflecting the covariance between in-degrees
+and out-degrees.
+The change statistic for the geometrically weighted out-degrees is
+
+zij = − 1 − e−α e−α˜yi+ .
+
+(34)
+
+The change statistic is still given for the alternating transitive k-triangles by (22), and for
+the alternating independent two-paths by (27).
+36
+
+6.1
+
+Example: friendship between Lazega’s lawyers
+
+As an example of modeling a directed relation, we use the friendship relation between the
+36 partners in the law firm studied by Lazega (2001). This is a network with density 0.21
+and average degree 7.4. In-degrees vary from 2 to 16, out-degrees from 0 to 21. The larger
+variability of the degrees and skewness of the distribution of the out-degrees indicates that
+here it may be more difficult to obtain a well fitting model than in the preceding example. The
+same covariates are used as in the above analysis of the collaboration relation. For effects of
+actor-level covariates on directed relations, instead of the main effect we distinguish between
+(1) the activity or out-degree effect, represented in u(y) by the component xi+ , for which
+a positive parameter will lead to a positive correlation between the covariate and the outdegrees; and (2) the popularity or in-degree effect, represented by x+i , which contributes to
+the correlation between the covariate and the in-degrees. Preliminary analyses showed that
+the main covariate effects were the similarity effect of working in the same office, and the
+effects associated with seniority (rank number of entry in the firm) and practice (litigation
+vs. corporate law). The same procedure for estimation was used as in the preceding example.
+A forward selection procedure using the effects listed above, with estimation conditional on
+the total number of ties, led to the results presented in Table 2. Model 1 contains, next
+to various covariate effects, the four structural effects proposed above. This appeared not
+to give a good fit with respect to the number of out-k-stars for k = 2, 3, 4. Therefore the
+model was extended with the the numbers of in-two-stars, out-two-stars, and two-paths.
+This means that the observed covariance matrix of the in- and out-degrees is fitted exactly.
+The results are presented in Table 2 as Model 2.
+The estimation procedure for both models presented in this table converged well, but
+in this case without conditioning on the total number of ties it was not possible to obtain
+convergence of the estimation algorithm. Model specifications including the total number
+of transitive triplets as a separate statistic likewise did not lead to converging estimates.
+The strong correlations between the structural statistics leads to very strongly correlated
+parameter estimates, so that for a good reproduction of the model actually more decimal
+places for the parameter estimates are required than given in Table 2 (cf. the remark on p. 32
+of Snijders, 2002). The parameter estimates for the geometrically weighted out-degrees, geometrically weighted in-degrees, and alternating independent two-paths effects are strongly
+different between Models 1 and 2, due to the inclusion in Model 2 of the out-two-stars,
+in-two-stars, and two-paths effects. There is a strong transitivity effect, represented by alternating transitive k-triangles with λ = 2 (t = 0.704/0.146 = 4.8 in Model 2). Further,
+there is evidence that –controlling for these structural effects– friendship is more likely between partners working in the same office, between those similar in seniority (this can be
+37
+
+Table 2. MCMC parameter estimates for the friendship relation between Lazega’s
+lawyers.
+
+Parameter
+Mutual dyads
+Out-two-stars
+In-two-stars
+Two-paths
+Geom. w. out-degrees, α = ln(2)
+Geom. w. in-degrees, α = ln(2)
+Alternating transitive k-triangles, λ = 2
+Alternating independent two-paths, λ = 2
+Same office
+Seniority popularity
+Seniority activity
+Seniority dissimilarity
+Practice (corp. law) popularity
+Practice (corp. law) activity
+Same practice
+
+Model 1
+est.
+s.e.
+1.653 0.257
+–
+–
+–
+–
+–
+–
+0.940 1.180
+–4.572 2.204
+0.661 0.142
+–0.140 0.031
+0.582 0.125
+–0.002 0.007
+0.013 0.007
+–0.039 0.008
+–0.052 0.160
+0.328 0.137
+0.279 0.125
+
+Model 2
+est.
+s.e.
+2.405 0.291
+0.131 0.015
+0.149 0.024
+–0.090 0.019
+–1.332 1.364
+–8.384 3.708
+0.704 0.146
+–0.065 0.034
+0.859 0.169
+0.001 0.007
+0.010 0.006
+–0.041 0.008
+0.067 0.114
+0.200 0.097
+0.292 0.129
+
+interpreted in part as a cohort effect), and those with the same practice. Those doing corporate law mention more friends than those doing litigation. The other covariate effects are
+not significant. Other effects, such as the number of transitive triplets and the numbers of
+three-stars and four-stars also are represented adequately, each with a difference between
+observed and estimated expected value of less than 1.5 standard deviation.
+A positive effect of alternating k-triangles in the presence of a negative independent twopaths effect suggests that the friendship network tends to be clique-like, with possibly several
+different denser clusters of friends. Because the geometrically weighted in-degree parameters
+are negative, high in-degrees and high order in-stars are less likely in this network, unless of
+course they are implied by the transitive structure and therefore are involved in cliques of
+friends. So popular friends tend to be popular within clusters of dense friendships, rather
+than between clusters.
+Compared to the collaboration relation, modeling the friendship relation requires a much
+more complicated structural model. This network is an example where modeling transitivity
+by the number of transitive triplets by itself is not successful, whereas modeling transitivity
+by the alternating transitive k-triangles is successful and also does provide a good fit for the
+number of transitive triplets.
+38
+
+6.2
+
+Parameter sensitivity in two models
+
+For this model also, the sensitivity of generated statistics to the parameter representing
+transitivity can yield insights in the possibility of modeling by using a particular model
+specification. Two models were considered, both with conditioning on the observed number
+of ties: the model in Table 2 and the corresponding model with the four new statistics
+replaced by the number of transitive triplets. For the latter model the parameter estimation
+did not converge satisfactorily, but the parameter values were used anyway. Figure 17 gives
+simulated statistics for a continuous MCMC chain of graphs, where all parameter values were
+fixed at these estimated values, except for the number of transitive triplets (left panel) and
+the alternating k-triangles (right panel), which started at a very low value, increased in little
+steps to a very high value, and then decreased again to the low value. Again, 40,000 iteration
+steps of the MCMC algorithm were made for each parameter value and the resulting value
+of the statistic corresponding to the changing parameter is represented in the figure.
+uj (y)
+
+uj (y)
+4000
+
+3000
+
+∗
+∗
+∗
+∗
+
+∗
+∗
+∗∗∗∗∗∗∗
+∗∗
+∗∗
+∗∗
+∗∗
+
+∗
+∗
+
+
+∗
+
+∗
+
+∗
+
+
+∗
+∗
+∗
+
+∗
+∗
+
+∗
+∗
+∗∗
+∗
+∗∗∗
+∗
+∗
+∗∗∗
+∗
+∗∗
+∗
+∗
+
+
+
+∗
+
+∗
+∗
+∗∗
+∗∗
+∗
+∗∗
+
+∗
+∗
+∗∗∗∗∗
+∗
+
+∗∗
+∗
+∗
+∗
+∗
+∗∗
+
+∗
+∗
+∗∗∗∗
+∗∗
+
+
+500
+
+∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗
+∗
+
+
+400
+
+300
+2000
+200
+
+
+1000
+
+0
+
+100
+
+∗
+∗∗
+
+
+∗
+
+∗
+∗
+∗
+∗
+
+∗∗
+∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗∗
+−1.0
+
+0
+
+1.0
+
+θj
+
+∗
+
+
+
+
+∗
+
+∗
+∗
+∗
+
+∗
+∗
+∗
+∗
+∗
+∗∗
+∗∗
+∗∗∗∗
+
+−1.0
+
+0.0
+
+1.0
+
+2.0
+
+θj
+
+Figure 17: Generated statistics for models for transitive triplets parameter (left) and alternating k-triangles parameter (right).
+(Symbol  indicates values generated for increasing parameter values, ∗ those generated for
+decreasing values.)
+For the transitive triplets model, there is a very strong jump that occurs right at the
+observed value of the statistic, indicating the impossibility to adequately model this data
+set using this particular model – even when conditioning on the observed number of ties.
+A hysteresis effect can again be discerned (for more iteration runs than 40,000, this would
+decrease and eventually disappear). For the alternating k-triangles model (right panel),
+there is a jump but it occurs in a region representing a much smaller extent of transitivity
+than observed (at a parameter value about –0.5), and does not invalidate the application
+of this model for this data set. The generated statistics for this model vary stochastically
+39
+
+about a smooth function of this parameter in a wide region comprising the observed value
+of the statistic, which corresponds to the possibility to indeed obtain adequate parameter
+estimates for this specification.
+
+7
+
+Discussion
+
+The methodology based on exponential random graph models, also called p∗ models, of which
+the principles were introduced and elaborated by (among others) Frank and Strauss (1986),
+Frank (1991), Wasserman and Pattison (1996), Snijders (2002), and Handcock (2002b), currently is the only statistical methodology for representing transitivity and other structural
+features in non-longitudinal network data. Its use has been hampered by problems which
+now can be diagnosed –at least in part– as deficiencies in the specification of the sufficient
+statistics defining the exponential model. The traditional specification, where transitivity
+is represented by the number of transitive triangles or triplets as implied by the Markov
+assumption of Frank and Strauss (1986), does not allow a good representation of the quite
+large but far from complete tendency to transitivity that is commonly observed in social networks. A symptom of these problems is the difficulty to find maximum likelihood estimates,
+but the near degeneracy and poor fit of the implied model is the more fundamental issue.
+In this paper we have proposed a new specification of network statistics defining the
+exponential random graph model. The new statistics are geometrically weighted degrees to
+represent degree heterogeneity; alternating k-triangles to represent transitivity; and alternating independent two-paths to represent the preconditions for transitive configurations.
+Section 3.4 summarizes for undirected graphs the resulting approach to model specification,
+and Section 6 gives the similar approach for directed graphs. Although the new statistics
+are not a panacea, our experience up to now, illustrated by examples presented above, suggest that the models defined by these statistics can be used to give a reasonable or good
+representation of the transitivity and degree heterogeneity in observed social networks, also
+for data sets in which modeling on the basis of the traditional specification, using only stars
+and the number of transitive triplets or triangles, was not feasible. This is associated to
+the fact that the new specification does not satisfy the Markov conditional independence
+assumption of Frank and Strauss (1986), which often is too stringent, but satisfies only a
+weaker type of partial conditional independence as discussed in Pattison and Robins (2002).
+The degeneracy problems plaguing the traditional specification are much weaker with this
+new specification. Obtaining maximum likelihood estimates under these specifications by
+MCMC algorithms is relatively uncomplicated for many data sets. The freely available computer programs SIENA (Snijders and Huisman, 2003) and ergm (Handcock et al., 2004) can
+
+40
+
+be used for this purpose.
+The statistics proposed here may look rather contrived at first reading, but they are nevertheless a means to express that regions of incomplete clique-like structures will occur in
+social networks, but that these cannot be expressed merely by noting that the network contains many triangles. The k-triangle parameters should therefore be interpreted somewhat
+differently from the traditional transitivity parameters based on only the triangle count;
+e.g., in our second example we argued that the estimates give evidence for the emergence of
+close-knit transitive structures that might be interpretable as self-organizing team formation.
+Such a “higher order” interpretation is not really available in models containing only Markov
+transitivity based completely on the prevalence of single triangles in the network.
+Other network statistics might also be possible to achieve these modeling possibilities. We
+do think that any statistics that achieve this will have arbitrary elements, or seem contrived
+to some degree. This may have to do with the fact that network structure, as observed
+at one given moment, in most cases is the result of many different forces and mechanisms
+that operated in a period – often of long duration – before the observation of the network,
+precluding a simple representation of the dependencies within the network.
+Depending on the observed data set, it still is possible that degeneracy problems occur
+even with these new specifications. More experience with these models, and the further
+development of new models, is required before a satisfactory and well-balanced methodology
+for the statistical modeling of networks will be attained. We think that especially the representation of social settings (Pattison and Robins, 2002) will need more attention, and will
+be possible by incorporating extra model elements. In some cases such extra model elements
+will be individual and dyadic covariates, or interactions of covariates with the structures
+proposed above, which is easy to carry out as it remains within the framework of the exponential random graph model. In other cases the model would have to be compounded with
+additional elements, e.g. latent structure models like the Euclidean models of Hoff, Raftery
+and Handcock (2002), the ultrametric models of Schweinberger and Snijders (2003), or the
+model-based clustering version of Tantrum, Handcock and Raftery (2004); in still other cases,
+in the exponential model one could include other complicated statistics in addition to those
+proposed here, along the lines of Pattison and Robins (2002).
+
+41
+
+References
+Albert, R´eka, and Albert-L´aszl´o Barab´asi. 2002. Statistical mechanics of complex networks.
+Review of Modern Physics, 74: 47 – 97.
+Besag, Julian. 1974. Spatial interaction and the statistical analysis of lattice systems.
+Journal of the Royal Statistical Society, ser. B, 36: 192 – 225.
+Boer, Peter, Mark Huisman, Tom A.B. Snijders, and Evelien P.H. Zeggelink. 2003. StOCNET: an open software system for the advanced statistical analysis of social networks.
+Version 1.4. Groningen: ProGAMMA / ICS.
+Davis, James A. 1970. Clustering and Hierarchy in Interpersonal Relations: Testing Two
+Theoretical Models on 742 Sociograms. American Sociological Review 35: 843–852.
+Davis, James A., and Samuel Leinhardt. 1972. The Structure of Positive Interpersonal
+Relations in Small Groups. In Joseph Berger (ed.), Sociological Theories in Progress.
+Volume 2. Boston: Houghton-Mifflin.
+Frank, Ove. 1991. Statistical analysis of change in networks. Statistica Neerlandica, 45: 283
+– 293.
+Frank, Ove, and David Strauss. 1986. Markov graphs. Journal of the American Statistical
+Association, 81: 832 – 842.
+H¨aggstr¨om, Olle, and Johan Jonasson. 1999. Phase transition in the random triangle model.
+Journal of Applied Probability, 36, 1101–1115.
+Handcock, Mark S. 2002a. Specifying Models for Social Networks. Paper presented at Contact Networks and Transmission Dynamics of STDs, Centers for Disease Control and
+Prevention, National Center for HIV, STD, and TB Prevention Meeting Washington
+(D.C.), April 17–20, 2002.
+Handcock, Mark S. 2002b. Statistical Models for Social Networks: Inference and Degeneracy.
+Pp. 229 – 240 in Dynamic Social Network Modeling and Analysis: Workshop Summary
+and Papers, edited by Ronald Breiger, Kathleen Carley, and Philippa E. Pattison. National Research Council of the National Academies. Washington, DC: The National
+Academies Press.
+Handcock, Mark S. 2003. Assessing Degeneracy in Statistical Models of Social Networks
+Center for Statistics and the Social Sciences, University of Washington, Working Paper
+No. 39.
+Handcock, Mark S., and James H. Jones. 2004. Likelihood-Based Inference for Stochastic
+Models of Sexual Network Formation. Theoretical Population Biology, in press.
+Handcock, Mark S. and Hunter, David and Butts, Carter T. and Goodreau, Steven M. and
+Morris, Martina 2004. ergm: An R package for the Statistical Modeling of Social Networks
+
+42
+
+Center for Statistics and the Social Sciences, University of Washington, Working Paper
+No. 40.
+Hoff, Peter D. 2003. Bilinear Mixed Effects Models for Dyadic Data. Center for Statistics
+and the Social Sciences, University of Washington, Working Paper No. 32.
+Hoff, Peter D., Adrian E. Raftery, and Mark S. Handcock. 2002. Latent Space Approaches to
+Social Network Analysis. Journal of the American Statistical Association 97: 1090–1098.
+Jonasson, Johan. 1999. The random triangle model. Journal of Applied Probability, 36,
+852–867.
+Lazega, Emmanuel. 2001. The Collegial Phenomenon : The Social Mechanisms of Cooperation Among Peers in a Corporate Law Partnership Oxford: Oxford University Press.
+Lazega, Emmanuel, and Philippa E. Pattison. 1999. Multiplexity, generalized exchange and
+cooperation in organizations: a case study. Social Networks, 21: 67–90.
+Lehmann, Erich L. 1983. Theory of Point Estimation. New York: Wiley.
+McPherson, Miller, Lynn Smith-Lovin, and James M. Cook. 2001. Birds of a Feather:
+Homophily in Social Networks. Annual Review of Sociology, 27: 415–44.
+Newman, Mark E.J., and Gerard T. Barkema. 1999. Monte Carlo methods in statistical
+physics. Oxford: Clarendon Press.
+Pattison, Philippa E., and Garry L. Robins 2002. Neighbourhood based models for social
+networks. Pp. 301–337 in Sociological Methodology, Vol. 22, edited by Ross M. Stolzenberg. Boston, MA: Blackwell Publishing.
+Pattison, Philippa E., and Stanley Wasserman 1999. Logit models and logistic regressions
+for social networks: II. Multivariate relations. British Journal of Mathematical and
+Statistical Psychology, 52: 169 – 193.
+Robins, Garry L., Philippa E. Pattison, and Stanley Wasserman. 1999. Logit models and
+logistic regressions for social networks, III. Valued relations. Psychometrika, 64: 371 –
+394.
+Robins, Garry L., and Philippa E. Pattison. 2004 (in press). Interdependencies and social
+processes: Generalized dependence structures. In Peter Carrington, John Scott, and
+Stanley Wasserman (Eds.), Models and Methods in Social Network Analysis. Cambridge
+University Press.
+Robins, Garry L., Philippa E. Pattison, and Jodie Woolcock. 2004 (in press). Small and
+Other Worlds: Global network structures from local processes. American Journal of
+Sociology.
+Schweinberger, Michael, and Tom A.B. Snijders. 2003. Settings in Social Networks: A
+Measurement Model. Pp. 307–341 in Sociological Methodology, Vol. 23, edited by Ross
+M. Stolzenberg. Boston, MA: Blackwell Publishing.
+
+43
+
+Snijders, Tom A.B. 1991. Enumeration and simulation methods for 0-1 matrices with given
+marginals. Psychometrika, 56: 397 – 417.
+Snijders, Tom A.B. 2002. Markov Chain Monte Carlo Estimation of Exponential Random
+Graph Models. Journal of Social Structure, 3.2. Web journal available from
+http://www2.heinz.cmu.edu/project/INSNA/joss/index1.html.
+Snijders, Tom A.B., and Mark Huisman. 2003. Manual for SIENA version 1.98. Groningen:
+ICS.
+Snijders, Tom A.B., and David A. Kenny. 1999. The Social Relations Model for Family
+Data: A Multilevel Approach. Personal Relations, 6: 471 – 486.
+Snijders, Tom A.B., and Marijtje A.J. van Duijn. 2002. Conditional maximum likelihood
+estimation under various specifications of exponential random graph models. Pp. 117 –
+134 in Jan Hagberg (ed.), Contributions to Social Network Analysis, Information Theory,
+and Other Topics in Statistics; A Festschrift in honour of Ove Frank. University of
+Stockholm: Department of Statistics.
+Strauss, David. 1986. On a general class of models for interaction. SIAM Review, 28: 513 –
+527.
+Tantrum, Jeremy, Mark S. Handcock, and Adrian E. Raftery. 2004. Model Based Clustering for Social Networks. Center for Statistics and the Social Sciences, University of
+Washington. Working Paper.
+Tierney, Luke. 1994. Markov chains for exploring posterior distributions (with Discussion).
+Annals of Statistics, 22: 1701 – 1762.
+Wasserman, Stanley, and Philippa E. Pattison. 1996. Logit models and logistic regression
+for social networks: I. An introduction to Markov graphs and p∗ . Psychometrika, 61: 401
+– 425.
+
+44
+
+

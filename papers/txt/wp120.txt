@@ -1,0 +1,2272 @@
+Evaluation of Heckman Selection Model Method for Correcting
+Estimates of HIV Prevalence from Sample Surveys
+via Realistic Simulation
+
+Samuel J. Clark & Brian Houle
+
+Working Paper no. 120
+Center for Statistics and the Social Sciences
+University of Washington
+
+September 28, 2012
+
+1
+
+Contents
+1 Correcting for Selection Bias in Estimates of HIV Prevalence from Sample Surveys
+1.1 Aim: Does the Heckman Selection Model Correction Procedure Work? . . . . . . . . . . . .
+1.2 Overview of the Heckman Selection Model . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+3
+3
+3
+
+2 Method – Simulation Investigation
+
+4
+
+3 Simulations
+3.1 Creating Realistic Virtual Populations Infected with HIV . . . . . . .
+3.1.1 Data Generating Preliminaries, Age & Sex . . . . . . . . . . .
+3.1.2 Interviewer Variable . . . . . . . . . . . . . . . . . . . . . . . .
+3.1.3 Selection Variable . . . . . . . . . . . . . . . . . . . . . . . . .
+3.1.4 Outcome Variable . . . . . . . . . . . . . . . . . . . . . . . . .
+3.1.5 Correlated Errors . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.2 Simulation Dataset Specifications . . . . . . . . . . . . . . . . . . . . .
+3.2.1 Base . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.2.2 Outcome Strong . . . . . . . . . . . . . . . . . . . . . . . .
+3.2.3 Outcome Weak . . . . . . . . . . . . . . . . . . . . . . . . .
+3.2.4 Non-normal Squared . . . . . . . . . . . . . . . . . . . . . .
+3.2.5 Non-normal Cubed . . . . . . . . . . . . . . . . . . . . . . .
+3.2.6 Sizes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.3 Simulation Scenario Parameter Values . . . . . . . . . . . . . . . . . .
+3.4 Calculation and Comparison of HIV Prevalence Values . . . . . . . . .
+3.4.1 Real HIV Prevalence . . . . . . . . . . . . . . . . . . . . . . . .
+3.4.2 Corrected HIV Prevalence using the Heckman Selection Model
+3.5 Comparison of Real and Corrected HIV Prevalence values . . . . . . .
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+4
+4
+5
+5
+5
+6
+7
+7
+7
+8
+8
+8
+8
+8
+8
+11
+11
+11
+12
+
+4 Results
+4.1 Base . . . . . . . . . . .
+4.2 Outcome Strong . . .
+4.3 Outcome Weak . . .
+4.4 Non-normal Squared
+4.5 Non-normal Cubed .
+4.6 Sizes . . . . . . . . . .
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+12
+13
+13
+13
+13
+14
+14
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+5 Discussion
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+.
+.
+.
+.
+.
+.
+
+14
+
+2
+
+1
+
+Correcting for Selection Bias in Estimates of HIV Prevalence
+from Sample Surveys
+
+A common method of measuring HIV prevalence is to include HIV biomarker collection in household sample
+surveys primarily designed for a variety of other investigations. The usual procedure is:
+1. Choose a sample.
+2. Attempt to contact households and individuals in the sample. Some fraction of the sampled individuals
+are found and agree to be interviewed.
+3. Interview the consenting members of the sample and in the course of the interview attempt to collect
+biomarkers. Some fraction of the interviewed individuals agree to provide biomarkers.
+4. Conduct assays to provide HIV status for individuals who were i) found and agreed to interview and
+ii) agreed to provide biomarkers for testing.
+5. Transform the HIV status of the individuals who were tested into population-level estimates of HIV
+prevalence.
+There are two selection processes that separate the population from the individuals who agree to biomarker
+collection. At both stages, the selected sample can be (increasingly) systematically different from the population, resulting in bias in the population-level estimate of HIV prevalence. Under specific conditions the
+Heckman selection model is designed to identify the effect of selection in a single selection step. This ability can be used to identify a selection effect in the second stage of the process outlined above for a typical
+survey-based HIV prevalence study – the selection to test among those who are found and interviewed.
+The correction is accomplished by:
+1. Using the Heckman selection model to identify and quantify the selection bias in estimated HIV prevalence.
+2. Using estimated results from the Heckman selection model to predict the HIV status of the individuals
+who did not agree to biomarker collection.
+3. Combining the real data describing those who did agree to testing with the predicted HIV status of
+those who did not agree to testing to produce an estimate for the entire group of individuals who were
+found and agreed to be interviewed, not yet the whole population.
+
+1.1
+
+Aim: Does the Heckman Selection Model Correction Procedure Work?
+
+The aim of this work is to test the Heckman selection model correction procedure. We want
+to characterize the effectiveness of the Heckman selection model procedure to correct estimates of HIV
+prevalence from sample survey data in a situation where we know the real prevalence.
+
+1.2
+
+Overview of the Heckman Selection Model
+
+There are two processes at work. One mechanism leads to individuals being observed and another affects
+whether or not they are HIV+. These mechanisms work at the same time and may be related. The Heckman
+selection model assumes that we can model the selection process as a binary outcome with an individual
+either being observed S = 1 or not S = 0. Similarly, the process leading to being HIV+ can be modeled
+as a binary outcome with an individual either being HIV+ H = 1 or not H = 0. The catch is that
+the outcome H is only observed when the individual is selected. The Heckman probit technique models
+the binary outcomes as having normally distributed probabilities, hence both are probit models. After
+3
+
+accounting for the variation associated with known explanatory variables associated with both selection and
+outcome, the Heckman probit method assumes that each process is left with normally distributed errors.
+Possible correlation between selection and outcome is allowed by correlating these error terms. The Heckman
+probit estimation procedure simultaneously estimates the regression coefficients associated with the covariates
+explaining the selection and outcome processes and the value of correlation coefficient associated with the
+relationship between the error terms.
+For the Heckman probit method to work well, there must be sets of explanatory variables associated with
+both selection and outcome, and optimally there should be one or more variables (the ‘selection’ variables)
+that only appear in the selection relationship. These selection variables should not affect the outcome. This
+yields two equations, one for selection that includes the selection variables, and one for the outcome: the
+‘selection’ and ‘outcome’ equations.
+There are standard procedures for estimating the biprobit Heckman selection model, and they strictly require:
+1. the conditional joint error distribution be bivariate Normal, and
+2. the ‘instrumental’ variables that appear in the selection equation, those that appear only in the selection
+equation, are not related to the outcome.
+
+2
+
+Method – Simulation Investigation
+
+The biprobit Heckman selection model requires two strong assumptions, and in general it is not possible to
+test these assumptions using real data. Consequently we apply a simulation approach:
+1. Define a number of simulation scenarios that fulfill the assumptions and break them in various ways.
+2. Simulate datasets corresponding to each scenario.
+3. Apply the Heckman selection model correction procedure to simulated datasets in each scenario.
+4. For each scenario, compare the prevalence estimated using the Heckman selection model procedure
+with the real prevalence that we baked into the data.
+5. Finally, compare how well the procedure does across the scenarios.
+
+3
+3.1
+
+Simulations
+Creating Realistic Virtual Populations Infected with HIV
+
+We are interested in testing the Heckman selection model correction procedure using data with a structure
+similar to that of real populations along important dimensions over which we know HIV prevalence changes.
+To keep things tractable we include sex and age and generate datasets with sex-age-specific HIV prevalence
+rates that are similar to those found in high HIV prevalence populations living in Southern Africa. We
+generate simulated data using a model analogous to the data generating process assumed by the Heckman
+probit method. We create a virtual population with a sex-age composition similar to a real population living
+in Southern Africa, and we infect the virtual people with HIV so that the sex-age profile of HIV prevalence
+matches that same real population.
+
+4
+
+3.1.1
+
+Data Generating Preliminaries, Age & Sex
+
+We start by creating a variable number of virtual people and assign them ages (continuous variable) to match
+the age structure of the Southern African population shown in Table 1. In an independent process we then
+assign sexes with 52% female and 48% male.
+Table 1.
+
+3.1.2
+
+Population Age Structure
+
+Age Group
+
+Fraction of Population (%)
+
+15-19
+20-24
+25-29
+30-34
+35-39
+40-44
+45-49
+50-54
+55-59
+60-64
+65+
+
+20.3
+17.2
+14.0
+11.2
+9.0
+7.2
+5.6
+4.4
+3.5
+3.0
+4.0
+
+Interviewer Variable
+
+To model the interview and selection process we need a comparatively small number of interviewers to
+interview our virtual subjects. We want to test well-specified Heckman selection models and also break the
+assumptions underlying the model. Hence, variation in the ‘effectiveness’ of the interviewers can affect both
+the selection and outcome processes, only selection for simulated populations that fulfill the assumptions of
+the Heckman selection model, and both for populations that break those assumptions.
+We randomly assign a variable number of interviewers to our virtual subjects. Each interviewer is assigned
+an ID I and given a random ‘interview effectiveness’ Ie drawn from a normal distribution with mean µIe = 1
+and standard deviation σIe = 1. Variation in this effectiveness is allowed to affect the selection and outcome
+variables in flexible ways that allow us to explore the ability of the Heckman selection models to accurately
+correct estimates of HIV prevalence.
+3.1.3
+
+Selection Variable
+
+The selection variable is constructed by working a probit model backward, starting with the linear predictor
+and ending up with a binary variable that indicates selection.
+For individual j the value of the linear predictor of selection κ?j is
+κ?j = zj γ + µsj
+κ?j = ω + θ1 (agej − 40)2 + θ2 [sexj = male]
+
+(1)
+
++ θ3 [Ij = 2] + ... + θ11 [Ij = 10]
++ µsj
+(
+where indicator variables are noted using Iverson’s bracket notation: [α] =
+
+5
+
+1
+0
+
+if α is true
+if α is false
+
+The probability of being selected Sj for individual j is the Normal probability associated with the value of
+κ?j
+Pr([Sj ]|zj ) = Φ(κ?j )
+(2)
+We observe the binary value (0,1) of the selection variable for individual j
+(
+1 if κ?j > 0
+Sj =
+0 if κ?j ≤ 0
+
+(3)
+
+The values of ω, θ1−11 , and µs are adjusted to create different selection scenarios. Our model of the selection
+process includes the possibility of both a sex effect and a parabolic age effect centered at age 40. By adjusting
+ω and θ1−2 we can eliminate and/or adjust these effects.
+The reference group for sex is ‘female’. All of our simulations have ten interviewers, and the reference group
+for interviewer is I = 1.
+3.1.4
+
+Outcome Variable
+
+The HIV status variable is constructed in a similar fashion by working another probit model backward. In this
+case the linear predictor is slightly more complicated because we want the HIV prevalence of the simulated
+population to reflect something realistic with respect to the sex-age distribution of the population.
+We take measured sex-age-specific prevalence of HIV from the population living in Southern Africa and add
+a small amount of noise. We operationalize sex and age as indicator variables for sex and five-year age groups
+from 15 to 65+. Using the real data we estimate a regular probit model predicting HIV status to generate a
+set of coefficients for each sex-age category and their two-way interactions that we can use to simulate data
+that encode a sex-age pattern of HIV prevalence that matches the real population. These coefficients are
+inserted into Equation 4.
+For individual j the value of the linear predictor κj of the outcome is
+κj = xj β + µhj
+κj = λ + δ1 [sexj = male] + δ2 [agej = 20 − 24] + ... + δ11 [agej = 65+]
++ δ12 [sexj = male ∧ agej = 20 − 24] + ... + δ21 [sexj = male ∧ agej = 65+]
+
+(4)
+
++ δ22 [Ij = 2] + ... + δ30 [Ij = 10]
++ µhj
+The probability of being HIV+ Hj for individual j is the Normal probability associated with the value of
+κj
+Pr([Hj ]|xj ) = Φ(κj )
+(5)
+Only when individual j is selected (i.e. when Sj = 1), we observe the binary value (0,1) of the outcome
+(
+1 if κj > 0
+Hj =
+0 if κj ≤ 0
+
+(6)
+
+For the purpose of generating data, virtual individuals are given an HIV status regardless of their selection status, but when we estimate the Heckman selection models we only acknowledge the HIV status of
+individuals who are selected.
+The values of λ and δ1−21 (the coefficients that generate the sex-age pattern of HIV prevalence) remain
+constant across all of our simulations. We adjust the values of δ22−30 and µh to create and vary an interviewer
+effect on HIV status.
+The reference groups for sex and interviewer I are the same as for the selection generating process, and for
+age the reference group is ‘15 − 19’.
+6
+
+3.1.5
+
+Correlated Errors
+
+To create the type of relationship between selection and HIV status that the Heckman selection model is
+designed to identify and estimate, we correlate the error terms in the generating equations 1 and 4:
+µs ∼ N (0, 1)
+
+(7)
+
+µh ∼ N (0, 1)
+
+(8)
+
+corr(µs , µh ) = ρ
+
+(9)
+
+Consequently the probabilities of being selected and being HIV+ can be correlated with either sign and any
+magnitude – e.g. strong negative correlation implies that those who are selected are less likely to be HIV+
+than those who are not, the worrying potential issue that motivates this work!
+
+3.2
+
+Simulation Dataset Specifications
+
+The simulation scenarios are organized as follows:
+1. Base: benchmark; all of the Heckman selection model assumptions are met.
+2. Outcome scenarios: both the ‘Outcome’ scenarios break the assumption that the selection variable
+does not affect the outcome.
+3. Non-normal scenarios: both the ‘Non-normal’ scenarios break the assumption that conditioned on
+the selection and outcome equations, the joint error distribution is bivariate Normal.
+4. Sizes: this scenario varies the sample size of the virtual population.
+For each of the first four simulation scenarios – Base, Outcome Strong, Outcome Weak, Non-normal
+Squared, Non-normal Cubed & Sizes – we generate 500 datasets with 5,000 observations each for each
+parameter set. For these scenarios we vary the Heckman ρ and the degree of selection through ω. The degree
+of selection results in various fractions of the virtual populations being selected for observation – i.e. results
+in situations with varying numbers of unobserved individuals for whom the Heckman selection method must
+produce a predicted probability of being HIV positive. For the remaining scenario – Sizes – we generate
+500 datasets with varying numbers of observations for a fixed intermediate level of selection.
+To keep things manageable we vary the Heckman ρ over nine values −0.8(0.2)0.81 and the level of selection
+over four values 0.5(1.0)3.5. This yields 36 combinations of ρ and ω for each the first five simulation scenarios,
+which in turn requires 18,000 individual datasets for each simulation scenario; 90,000 datasets in total for
+the first five simulation scenarios. For the last scenario Sizes, there are 20 combinations of ρ and sample
+size with a fixed level of selection. This creates 10,000 more datasets to bring the grand total to 100,000
+datasets for the complete simulation investigation.
+3.2.1
+
+Base
+
+The Base simulation scenario corresponds to a high HIV prevalence population that fulfills the assumptions
+of the Heckman selection model. There is a good selection variable, Interviewer ID, and conditional on the
+selection and outcome equations, the joint error distribution is bivariate Normal. This is the ‘base’ scenario
+because it represents everything working well and is used as the benchmark to which to compare all of the
+variously pathologic scenarios that follow.
+1 At various points in the text and Table 2 sequences of values are specified using the notation s(i)e where s is the start
+value, i is the increment value used to generate consecutive values in an additive fashion (value(k+1) = valuek + i), and e is
+the end value – e.g. 4(2)8 corresponds to the sequence [4, 6, 8].
+
+7
+
+3.2.2
+
+Outcome Strong
+
+In the Outcome Strong scenario, the selection variable Interviewer ID has a strong effect on the outcome
+variable HIV status. This is accomplished by adding terms to Equation 4 with values for coefficients δ22−30
+of 0.25 × Ie . This creates a strong relationship between Interviewer ID and the probability of being HIV
+positive.
+3.2.3
+
+Outcome Weak
+
+In the Outcome Weak scenario, the selection variable Interviewer ID has a weak effect on the outcome
+variable HIV status. The δ coefficients in Equation 4 have values of 0.05 × Ie .
+3.2.4
+
+Non-normal Squared
+
+In the Non-normal Squared scenario the conditional joint error distribution is distorted by squaring the
+error terms in the selection and outcome equations, Equations 7 and 8. This results in a joint distribution
+that is ‘bunched-up’ close to the origin for original error term values between -1 and 1 and greatly ‘expanded’
+for original values with absolute value greater than 1. The whole distribution occupies the 1st quadrant of the
+Cartesian plane and is concentrated near the origin with a long ‘tail’ toward increasing positive values.
+3.2.5
+
+Non-normal Cubed
+
+In the Non-normal Cubed scenario the conditional joint error distribution is distorted by cubing the error
+terms in the selection and outcome equations, Equations 7 and 8. This results in a joint distribution that
+is greatly condensed and expanded depending on the exact values of the original error terms, and the result
+occupies potentially all four quadrants of the Cartesian plane.
+3.2.6
+
+Sizes
+
+The Sizes scenario is the same as the Base scenario with varying ‘sample sizes’, i.e. numbers of virtual
+individuals. Five sample sizes are tested: 100(2,500)10,100.
+
+3.3
+
+Simulation Scenario Parameter Values
+
+The specific parameter values used to generate datasets for each simulation scenario are listed in Tables 2
+and 3.
+
+8
+
+Table 2.
+
+Simulation Selection, Correlation & Observations Specifications
+Selection Affects Outcome
+
+Coefficient
+
+Variable
+
+Base
+
+Strong
+
+Weak
+
+Non-normal Error Distribution
+Squared
+
+Cubed
+
+Sizes
+
+0.5(1.0)3.5
+0.008
+-na-0.300
+-na2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+µ2s
+
+0.5(1.0)3.5
+0.008
+-na-0.300
+-na2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+µ3s
+
+2.0
+0.008
+-na-0.300
+-na2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+-na-
+
+-0.8(0.2)0.8
+5,000
+
+-0.8(0.2)0.8
+100(2,500)10,100
+
+Selection
+
+9
+
+ω
+θ1
+-naθ2
+-naθ3
+θ4
+θ5
+θ6
+θ7
+θ8
+θ9
+θ10
+θ11
+µ0s
+
+age
+sex=female
+sex=male
+I=1
+I=2
+I=3
+I=4
+I=5
+I=6
+I=7
+I=8
+I=9
+I=10
+
+0.5(1.0)3.5
+0.008
+-na-0.300
+-na2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+-na-
+
+0.5(1.0)3.5
+0.008
+-na-0.300
+-na2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+-na-
+
+0.5(1.0)3.5
+0.008
+-na-0.300
+-na2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+2.5 × Ie
+-na-
+
+Heckman ρ and Number of Observations
+ρ
+Observations
+
+-0.8(0.2)0.8
+5,000
+
+-0.8(0.2)0.8
+5,000
+
+-0.8(0.2)0.8
+5,000
+
+-0.8(0.2)0.8
+5,000
+
+Table 3.
+
+Coefficient
+
+Variable
+
+Base
+
+Simulation Output Specifications
+Selection Affects Outcome
+
+Non-normal Error Distribution
+
+Strong
+
+Squared
+
+Cubed
+
+Sizes
+
+-1.522
+-na-0.882
+-na0.928
+1.220
+1.348
+1.383
+1.109
+1.135
+0.829
+0.848
+0.392
+0.044
+-na-0.086
+0.407
+0.877
+0.878
+1.042
+0.700
+1.076
+1.126
+1.110
+0.878
+-na-na-na-na-na-na-na-na-na-naµ2h
+
+-1.522
+-na-0.882
+-na0.928
+1.220
+1.348
+1.383
+1.109
+1.135
+0.829
+0.848
+0.392
+0.044
+-na-0.086
+0.407
+0.877
+0.878
+1.042
+0.700
+1.076
+1.126
+1.110
+0.878
+-na-na-na-na-na-na-na-na-na-naµ3h
+
+-1.522
+-na-0.882
+-na0.928
+1.220
+1.348
+1.383
+1.109
+1.135
+0.829
+0.848
+0.392
+0.044
+-na-0.086
+0.407
+0.877
+0.878
+1.042
+0.700
+1.076
+1.126
+1.110
+0.878
+-na-na-na-na-na-na-na-na-na-na-na-
+
+Weak
+
+HIV Status (Outcome)
+
+10
+
+λ
+-naδ1
+-naδ2
+δ3
+δ4
+δ5
+δ6
+δ7
+δ8
+δ9
+δ10
+δ11
+-naδ12
+δ13
+δ14
+δ15
+δ16
+δ17
+δ18
+δ19
+δ20
+δ21
+-naδ22
+δ23
+δ24
+δ25
+δ26
+δ27
+δ28
+δ29
+δ30
+µ0h
+
+constant
+sex=female
+sex=male
+age=15-19
+age=20-24
+age=25-29
+age=30-34
+age=35-39
+age=40-44
+age=45-49
+age=50-54
+age=55-59
+age=60-64
+age=65+
+sex=male, age=15-19
+sex=male, age=20-24
+sex=male, age=25-29
+sex=male, age=30-34
+sex=male, age=35-39
+sex=male, age=40-44
+sex=male, age=45-49
+sex=male, age=50-54
+sex=male, age=55-59
+sex=male, age=60-64
+sex=male, age=65+
+I=1
+I=2
+I=3
+I=4
+I=5
+I=6
+I=7
+I=8
+I=9
+I=10
+
+-1.522
+-na-0.882
+-na0.928
+1.220
+1.348
+1.383
+1.109
+1.135
+0.829
+0.848
+0.392
+0.044
+-na-0.086
+0.407
+0.877
+0.878
+1.042
+0.700
+1.076
+1.126
+1.110
+0.878
+-na-na-na-na-na-na-na-na-na-na-na-
+
+-1.522
+-na-0.882
+-na0.928
+1.220
+1.348
+1.383
+1.109
+1.135
+0.829
+0.848
+0.392
+0.044
+-na-0.086
+0.407
+0.877
+0.878
+1.042
+0.700
+1.076
+1.126
+1.110
+0.878
+-na0.25 × Ie
+0.25 × Ie
+0.25 × Ie
+0.25 × Ie
+0.25 × Ie
+0.25 × Ie
+0.25 × Ie
+0.25 × Ie
+0.25 × Ie
+-na-
+
+-1.522
+-na-0.882
+-na0.928
+1.220
+1.348
+1.383
+1.109
+1.135
+0.829
+0.848
+0.392
+0.044
+-na-0.086
+0.407
+0.877
+0.878
+1.042
+0.700
+1.076
+1.126
+1.110
+0.878
+-na0.05 × Ie
+0.05 × Ie
+0.05 × Ie
+0.05 × Ie
+0.05 × Ie
+0.05 × Ie
+0.05 × Ie
+0.05 × Ie
+0.05 × Ie
+-na-
+
+3.4
+3.4.1
+
+Calculation and Comparison of HIV Prevalence Values
+Real HIV Prevalence
+
+Calculation of the real HIV prevalence for a virtual population is straightforward. The real HIV prevalence
+Hp is
+N
+1 X
+Hp =
+[Hi = 1]
+(10)
+N i=1
+where N is the total number of virtual individuals and Hi is the HIV status of individual i.
+3.4.2
+
+Corrected HIV Prevalence using the Heckman Selection Model
+
+Calculation of the corrected HIV prevalence for a virtual population consists of two parts, one for selected
+(observed) individuals and another for individuals who are not selected (observed). For selected individuals
+the procedure is as above for the calculation of real HIV prevalence. For those who are not selected, we use
+the Heckman selection model to estimate their probability of being HIV positive, and then summarize that
+and combine it with the real prevalence among the selected population to arrive at the corrected prevalence
+for the entire population.
+For each of the simulated datasets we estimate the biprobit Heckman selection model specified in Equation
+11 for selection and Equation 12 for HIV status using the heckprob procedure in the statistical package
+Stata 11.2 with the options iterate(15) and difficult.
+Pr([Si ]|zi ) = Φ(ηi? )
+ηi? = Ω + Θ1 [sexi = male]
++ Θ2 [agei = 20 − 24] + ... + Θ11 [agei = 65+]
+
+(11)
+
++ Θ12 [Ii = 2] + ... + Θ20 [Ii = 10]
++ Msi
+Pr([Hi ]|xi ) = Φ(ηi )
+ηi = Λ + ∆1 [sexi = male]
++ ∆2 [agei = 20 − 24] + ... + ∆11 [agei = 65+]
++ ∆12 [sexi = male ∧ agei = 20 − 24]
+
+(12)
+
++ ... + ∆21 [sexi = male ∧ agei = 65+]
++ Mhi
+The estimated ‘Heckman ρ’ R is
+R = corr(Ms , Mh )
+
+(13)
+
+If an estimation attempt succeeds (converges on a high likelihood solution), we use Stata’s predict command
+with the options pmarg, p10, p11 and psel to generate and calculate the predicted values shown in Table
+4.
+Corrected HIV prevalence Hpc is
+Hpc
+
+
+
+g
+n
+X
+X
+1 
+[Hi = 1] +
+P (H = 1|S = 0)j 
+=
+N i=1
+j=1
+
+(14)
+
+where N is the total number of virtual individuals, n is the number of selected (observed) virtual individuals,
+and g is the number of virtual individuals who are not selected (observed); N = n + g. Hi is the HIV status
+of individual i and P (H = 1|S = 0) is calculated as in Table 4.
+11
+
+Table 4.
+
+Predicted Probabilities after heckprob Estimation
+Probability
+
+Stata Predict Option
+or Formula
+
+P (H = 1)
+P (H = 1 ∧ S = 0)
+P (H = 1 ∧ S = 1)
+P (S = 1)
+
+pmarg
+p10
+p11
+psel
+
+P (S = 0)
+
+1 − P (S = 1)
+
+Probability of not being selected given HIV+
+
+P (S = 0|H = 1)
+
+P (H=1,S=0)
+P (H=1,S=0)+P (H=1,S=1)
+
+→ Probability of being HIV+ given not selected
+
+P (H = 1|S = 0)
+
+P (H=1,S=0)
+1−P (S=1)
+
+Marginal probability of being HIV+
+Joint probability of being HIV+ and not selected
+Joint probability of being HIV+ and selected
+Probability of being selected
+Probability of not being selected
+
+To actually calculate the corrected HIV prevalence we use the following procedure:
+1. Create a new variable Hpc containing a value of 0 for each virtual individual.
+2. For virtual individuals who were observed (S = 1), replace Hpc with the value in their HIV status
+variable: 0 if they are negative and 1 if positive.
+3. For the remaining unobserved virtual individuals, replace Hpc with the predicted probability of being
+HIV positive derived from the Heckman estimation: P (H = 1|S = 0), calculated as in the bottom row
+of Table 4.
+4. Calculate the corrected prevalence for the population of virtual individuals as the mean value of Hpc .
+The calculation of the mean is weighted correctly because the sum is over each individual in the virtual
+population.
+
+3.5
+
+Comparison of Real and Corrected HIV Prevalence values
+
+We evaluate the success of the correction with a metric that compares the corrected and real HIV prevalences
+controlling for the overall level of HIV prevalence, or the ‘size’ of the epidemic, recognizing that an error that
+is small in an absolute sense is more problematic when HIV prevalence is low. Our metric is the proportional
+error Eprop
+Hpc − Hp
+Eprop =
+(15)
+Hp
+
+4
+
+Results
+
+Figures 1 and 2 display the mean proportional errors for each simulation scenario. The mean is taken over
+the 500 estimation attempts for each parameter set in each scenario. The plots display the proportional
+error by values of the Heckman ρ and the percent of individuals who were not selected. For some simulated
+datasets the estimation procedure for the biprobit Heckman selection model was not able to converge. The
+fractions of the 500 estimation attempts for each parameter set for each scenario that did not converge
+successfully are shown in Table 5.
+
+12
+
+4.1
+
+Base
+
+Panel 1 of Figure 1 displays results for the Base simulation scenario in which all of the Heckman selection
+model assumptions are valid. The magnitude of the proportional error never exceeds 0.4 percent, and there
+is little variation with the fraction of individuals who were not selected to test. There is some variation with
+the Heckman ρ such that there is a consistent bias toward slightly underestimating the true value of HIV
+prevalence when the absolute value of the Heckman ρ is small – roughly -0.5 to 0.5.
+There is substantial variation in the fraction of estimation attempts that fail in the Base simulation scenario,
+see Table 5. The percent estimation failures increases dramatically as the fraction of individuals not selected
+increases and the Heckman ρ decreases toward -0.8. At the extreme values of these parameters, almost half
+of the estimation attempts fail – 47.4 percent.
+
+4.2
+
+Outcome Strong
+
+Panel 2 of Figure 1 displays results for the Outcome Strong simulation scenario. This scenario models a
+strong effect of the selection variable on the outcome. The Heckman selection correction procedure performs
+very badly in this scenario. The magnitude of the proportional error is never less than 5 percent and reaches
+20 percent for some parameter sets. As expected, the direction of the error is always positive because this
+effect is modeled with positive coefficients δ22−30 so that the selection variable has a positive effect on the
+outcome – i.e. increases the probability of being HIV positive. There is a clear deterioration in the correction
+procedure as the fraction of individuals not selected for testing increases, or as the percent missing goes up.
+Performance is slightly better for extreme values of the Heckman ρ in all cases.
+Most of the estimation attempts succeed for this simulation scenario, see Table 5. The largest fraction of
+failures occur for highly negative values of the Heckman ρ and extreme values of the percent of individuals
+not selected for testing.
+
+4.3
+
+Outcome Weak
+
+Panel 3 of Figure 1 displays results for the Outcome Weak simulation scenario. This scenario models
+a weak effect of the selection variable on the outcome. The results for this scenario are very similar to
+the Outcome Strong scenario, with magnitudes that are about 1/5th of that in the Outcome Strong
+scenario. This suggests a linear relationship between the value of the parameters that model this effect and
+the outcome. Parameters δ22−30 in the Outcome Strong scenario are 5× the corresponding values in the
+Outcome Weak scenario.
+Most of the estimation attempts succeed for this simulation scenario, see Table 5. The largest fraction of
+failures occur for highly negative values of the Heckman ρ and extreme values of the percent of individuals
+not selected for testing.
+
+4.4
+
+Non-normal Squared
+
+Panel 4 of Figure 1 displays results for the Non-normal Squared simulation scenario. This scenario models
+a violation of the requirement that the conditional error distribution be bivariate Normal. The correction
+procedure performs well in spite of the distorted error distribution; the magnitude of the proportional error
+is never more than 0.8 of a percent. However, in this scenario all of the errors are negative and underestimate
+prevalence. The errors become worse in a symmetric way as the magnitude of the Heckman ρ increases and
+as the fraction of individuals not selected increases.
+
+13
+
+Very few estimation attempts fail in this scenario, see Table 5. The largest fractions failing are found when
+few individuals are not selected for testing and this fraction never exceeds 5.5 percent.
+
+4.5
+
+Non-normal Cubed
+
+Panel 5 of Figure 1 displays results for the Non-normal Cubed simulation scenario. This scenario models
+a different violation of the requirement that the conditional error distribution be bivariate Normal. The
+results are similar to the Non-normal Squared scenario but worse. Again the errors are consistently
+negative, but in this case the magnitude reaches 7 percent in the worst case. The symmetry seen for the
+Non-normal Squared scenario is not observed for this scenario. The errors are worse all around but much
+worse for negative values of the Heckman ρ. In contrast, there is less variation in the magnitude of the error
+as the fraction of individuals not selected for testing changes.
+Almost a third of the estimation attempts fail for some parameter sets in this scenario, and there is a strong
+pattern in the failure profile with Heckman ρ and fraction of individuals not selected to test, see Table 5.
+The fraction of failures is low when both are moderate and increase rapidly as the Heckman ρ decreases
+away from 0 and the fraction individuals not selected increases and as the Heckman ρ increases from 0 and
+the fraction of individuals not selected decreases.
+
+4.6
+
+Sizes
+
+Figure 2 displays results for the Sizes simulation scenario. This scenario investigates what happens at the
+‘sample size’ changes. This is accomplished by varying the number of virtual individuals in the simulated
+datasets. The parameter values used in this scenario are the same as for the Base scenario except the
+fraction of individuals not selected for testing is fixed at an intermediate value. Not surprisingly, the results
+are very similar to the Base scenario for all sample sizes except the smallest, 100. When the sample was
+only 100 the method essentially failed and produced large errors that are strongly related to the value of the
+Heckman ρ.
+The fraction of estimation attempts that fail in this scenario is also very similar to the Base scenario except
+when the sample size is 100, and in that case virtually all estimation attempts fail, see Table 5.
+
+5
+
+Discussion
+
+This investigation used a simulation approach to test the Heckman selection model correction procedure
+designed to identify and correct for selection effects in sample surveys used to estimate HIV prevalence. The
+main results are very clear:
+1. When the conditions required by the Heckman selection model are met, the method works very well.
+2. When the two important assumptions of the Heckman selection model are violated, even mildly, the
+method does not work well.
+3. A reasonable sample size of magnitude 1,000 is necessary for the procedure to function.
+The results from the Base simulation scenario demonstrate how well the procedure functions when the
+conditional error structure is bivariate Normal and the selection variables do not affect the outcome at all.
+Results from the Outcome simulation scenarios demonstrate that the method is essentially useless if the
+selection variable affects the outcome even a little bit. Likewise, the Non-normal scenarios reveal that the
+shape of the conditional error distribution matters a lot.
+
+14
+
+Table 5.
+Heckman ρ
+
+Estimation Failures, Percent of 500 Attempts
+-0.8
+
+-0.6
+
+-0.4
+
+-0.2
+
+Fraction Not Selected
+Lots
+Some
+A few
+Not many
+
+47.4
+32.6
+13.0
+9.4
+
+28.6
+14.2
+7.8
+4.8
+
+12.8
+7.6
+4.4
+2.4
+
+3.2
+1.0
+0.8
+2.0
+
+15.2
+6.4
+5.2
+12.8
+
+17.6
+5.6
+2.4
+4.0
+
+5.6
+4.8
+2.6
+3.2
+
+40.2
+23.6
+11.8
+7.4
+
+35.0
+13.4
+5.2
+5.2
+
+2.4
+2.2
+1.6
+3.8
+
+14.2
+7.4
+3.4
+3.2
+
+2.0
+1.4
+0.8
+1.8
+
+0.8
+1.2
+2.4
+5.2
+
+0.2
+0.2
+0.6
+1.8
+
+0.6
+0.4
+0.6
+1.2
+
+0.2
+0.4
+1.0
+2.6
+
+7.0
+4.4
+1.4
+2.0
+
+1.4
+0.2
+0.6
+1.0
+
+0.4
+0.8
+1.0
+1.0
+
+2.8
+1.2
+2.0
+3.2
+
+5.4
+4.0
+3.6
+8.6
+
+0.6
+0.4
+0.2
+3.0
+
+0.0
+0.2
+0.2
+1.6
+
+0.0
+0.0
+0.4
+1.0
+
+0.2
+0.4
+0.0
+0.6
+
+0.6
+0.2
+0.0
+1.0
+
+1.8
+0.2
+0.4
+2.0
+
+3.4
+2.2
+2.0
+5.2
+
+0.2
+0.2
+0.2
+1.6
+
+0.8
+0.4
+0.0
+0.4
+
+0.6
+1.2
+2.0
+4.2
+
+0.2
+0.2
+0.4
+1.4
+
+0.0
+0.2
+1.0
+4.8
+
+0.8
+1.2
+7.0
+13.0
+
+1.2
+6.0
+20.2
+28.4
+
+91.8
+3.0
+0.4
+0.4
+0.0
+
+94.4
+4.8
+1.0
+0.8
+0.0
+
+92.6
+6.4
+1.6
+0.4
+0.0
+
+94.0
+11.8
+4.4
+1.6
+0.8
+
+0.6
+0.4
+0.4
+2.0
+
+3.4
+1.6
+0.6
+1.2
+
+2.2
+0.6
+0.4
+0.6
+
+1.0
+1.2
+1.4
+2.8
+
+0.4
+1.2
+0.4
+1.8
+
+Non-normal Cubed
+16.6
+6.8
+4.0
+1.2
+
+6.6
+2.2
+1.2
+0.0
+
+4.6
+1.4
+0.6
+0.0
+
+1.8
+0.4
+0.4
+0.0
+
+Sample Size
+100
+2,600
+5,100
+7,600
+10,100
+
+0.8
+
+Non-normal Squared
+
+Fraction Not Selected
+Lots
+Some
+A few
+Not many
+
+0.6
+
+Outcome Weak
+
+Fraction Not Selected
+Lots
+Some
+A few
+Not many
+
+0.4
+
+Outcome Strong
+
+Fraction Not Selected
+Lots
+Some
+A few
+Not many
+
+0.2
+
+Base
+
+Fraction Not Selected
+Lots
+Some
+A few
+Not many
+
+0
+
+2.0
+0.8
+0.0
+0.2
+Sizes
+
+94.4
+30.0
+23.8
+15.8
+12.4
+
+93.2
+21.0
+11.6
+7.8
+4.0
+
+92.4
+12.2
+8.2
+3.0
+1.2
+
+15
+
+93.6
+5.4
+1.2
+0.4
+0.6
+
+91.8
+4.0
+3.2
+0.8
+0.8
+
+Mean Proportional Error (%)
+
+Mean Proportional Error between Corrected and True HIV Prevalence by
+Heckman ρ and Fraction of Individuals not Selected. Each point is the mean of values
+from 500 simulations, each with 5,000 virtual individuals. Simulation scenarios numbered 1-5
+and named as in text.
+
+1: Base
+
+2: Outcome Strong
+20
+
+.2
+.1
+
+15
+
+0
+10
+
+−.1
+−.2
+
+5
+
+−.3
+−.4
+
+0
+−.8 −.6 −.4 −.2 0
+
+.2
+
+.4
+
+.6
+
+.8
+
+−.8 −.6 −.4 −.2
+
+Mean Proportional Error (%)
+
+Heckman ρ
+
+0
+
+.2
+
+.4
+
+.6
+
+.8
+
+Heckman ρ
+
+39% missing
+
+28% missing
+
+39% missing
+
+28% missing
+
+19% missing
+
+12% missing
+
+19% missing
+
+12% missing
+
+3: Outcome Weak
+
+4: Non−normal Squared
+.2
+
+4
+
+0
+
+3
+
+−.2
+2
+
+−.4
+
+1
+
+−.6
+
+0
+
+−.8
+−.8 −.6 −.4 −.2 0
+
+.2
+
+.4
+
+.6
+
+.8
+
+−.8 −.6 −.4 −.2
+
+Heckman ρ
+
+Mean Proportional Error (%)
+
+Figure 1.
+
+0
+
+.2
+
+.4
+
+.6
+
+.8
+
+Heckman ρ
+
+39% missing
+
+28% missing
+
+29% missing
+
+20% missing
+
+19% missing
+
+12% missing
+
+12% missing
+
+7% missing
+
+5: Non−normal Cubed
+0
+−1
+−2
+−3
+−4
+−5
+−6
+−7
+−.8 −.6 −.4 −.2 0
+
+.2
+
+.4
+
+.6
+
+.8
+
+Heckman ρ
+40% missing
+
+30% missing
+
+22% missing
+
+15% missing
+
+16
+
+Figure 2.
+
+Mean Proportional Error between Corrected and True HIV Prevalence by
+Heckman ρ and Number of Virtual Individuals in the Sample. Each point is the
+mean of values from 500 simulations, each with varying number of virtual individuals. This is
+the Sizes simulation scenario. The left panel ‘With 100 Virtual Individuals’ displays all of the
+results; the right panel ‘Without 100 Virtual Individuals’ removes results from the simulation
+with 100 virtual individuals to expand the y-axis to reveal detail from the other levels of the
+sample size variable.
+
+With 100 Virtual Individuals
+
+Without 100 Virtual Individuals
+
+Mean Proportional Error (%)
+
+10
+
+.4
+
+.3
+
+5
+
+.2
+0
+.1
+−5
+0
+−10
+
+−.1
+−.8
+
+−.6
+
+−.4
+
+−.2
+
+0
+
+.2
+
+.4
+
+.6
+
+.8
+
+−.8
+
+Heckman ρ
+100 Inds.
+
+2,600 Inds.
+
+7,600 Inds.
+
+10,100 Inds.
+
+−.6
+
+−.4
+
+−.2
+
+0
+
+.2
+
+.4
+
+.6
+
+.8
+
+Heckman ρ
+5,100 Inds.
+
+2,600 Inds.
+
+5,100 Inds.
+
+7,600 Inds.
+
+10,100 Inds.
+
+In general it is not possible to definitely test real data to determine if either of these assumptions is valid.
+The shape of the error distribution is only revealed through the estimation process, and is a sensitive function
+of the variables included in the selection and outcome equations. If some of the variables affecting selection
+and outcome are missing, then it will by definition be impossible to properly characterize the conditional
+error distribution, and since no survey will every have all the variables affecting either, it is purely a matter
+of story telling to ascertain how close to conditionally Normal the error distribution is.
+Likewise, it is not possible in a general sense to be sure that selection variables are not related to the
+outcome, and as the Outcome Weak scenario makes clear, even a weak association is enough to produce
+systematically incorrect results with large magnitude.
+Given these results, our advice is:
+1. Only use the Heckman selection model correction technique when ‘good’ selection variables are available
+and the sample size is relatively large, ∼1,000s.
+2. Interpret the results in a limited sense:
+• If the Heckman selection model converges nicely and produces stable estimates and if the estimate
+of the Heckman ρ is statistically significant and of a reasonable magnitude, take this as an
+indication that there may be a problem with selection in your data.
+• Do not use the corrected HIV prevalence values as an indication of the true prevalence. Because
+the assumptions of the Heckman selection model are essentially untestable, there are effectively no
+circumstances in which you can be sure that they are met, and therefore given the de facto high
+likelihood of being wrong, the relatively large magnitude of the likely error, and the consequences
+
+17
+
+associated with being wrong, it is not advisable to ‘correct’ estimates of HIV prevalence with this
+procedure.
+
+18
+
+

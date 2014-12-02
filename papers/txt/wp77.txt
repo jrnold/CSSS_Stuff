@@ -1,0 +1,998 @@
+Representing Degree Distributions, Clustering, and
+Homophily in Social Networks With Latent Cluster
+Random Effects Models
+Pavel N. Krivitsky
+
+Mark S. Handcock
+Adrian E. Raftery
+1
+Peter D. Hoff
+University of Washington
+
+Working Paper no. 77
+Center for Statistics and the Social Sciences
+University of Washington
+August 7, 2007
+
+1 Pavel
+
+N. Krivitsky is Graduate Student, Mark S. Handcock is Professor and Chair, Adrian E.
+Raftery is Blumstein-Jordan Professor of Statistics and Sociology, and Peter D. Hoff is Associate
+Professor, all at the Department of Statistics, University of Washington, Box 354322, Seattle, WA
+98195-4322. The research of Krivitsky and Handcock was supported by NIDA Grant DA012831
+and NICHD Grant HD041877. The research of Krivitsky and Raftery was supported by NIH grant
+8 R01EB 002137–02. Raftery thanks Miroslav K´arn´
+y and the Institute of Information Theory
+and Automation, Prague, as well as Gilles Celeux and INRIA, France, for hospitality during the
+preparation of this paper.
+
+Abstract
+Social network data often involve transitivity, homophily on observed attributes, clustering,
+and heterogeneity of actors. We propose the latent cluster random effects model to take
+account of all of these features, and we describe a Bayesian estimation method. The model
+fits two real datasets well. We show by simulation that networks with the same degree
+distribution can have very different clustering behaviors. This suggests that scale-free and
+small-world network models may not be adequate for all types of network, while our model
+recovers both the clustering and the degree distribution.
+
+1
+
+Introduction
+
+Social network data consist of data about pairs of actors or nodes. Often these data represent
+the presence, absence or value of a relationship between pairs of actors, such as liking, respect,
+familial relationship, shared membership in a group of individuals, or volume of trade for
+collectivities such as countries or companies. Here we consider binary social network data,
+representing presence or absence of a relationship.
+Much social network data share a number of features. One of these is transitivity, for
+example the fact that if actor A relates to actor B and actor B relates to actor C, then actor
+A is more likely to relate to actor C. Another is homophily on observed attributes, according
+to which actors with similar characteristics are more likely to relate. A third feature is
+clustering, according to which actors cluster into unobserved groups, within which links are
+more likely. This can be due to social self-organization or to homophily on unobserved
+attributes (such as, for example, interest in the same sport, about which the analyst might
+not have information). A fourth feature is heterogeneity, namely the tendency of some actors
+to send and/or receive links more than others.
+Hoff, Raftery, and Handcock (2002) proposed the latent space model for social networks.
+This postulates an unobserved Euclidean social space in which each actor has a position. The
+probability of a link between pairs of actors depends on the distance between them in the
+space and on their observed characteristics. Estimation of the model involves estimating both
+the latent positions and the parameters of the model specifying how the probability of a link
+depends on distance and observed attributes. This accounts for transitivity automatically
+through the latent space and is flexible enough to include the other common features of
+social network data also. This was extended by Handcock, Raftery, and Tantrum (2007) —
+hereafter HRT — to include model-based clustering of the latent space positions, giving a
+way to detect groups of actors. Separately, Hoff (2005) added random sender and receiver
+effects to model inhomogeneity of the actors, similarly to those in the p2 model (van Duijn,
+Snijders, and Zijlstra, 2004).
+No model so far proposed has modeled all the four common features of social network
+data that we mentioned above. In this paper we propose the Latent Cluster Random Effects
+Model, which explicitly models all four features by adding the random sender and receiver
+effects as proposed by Hoff (2005) to the latent position cluster model of HRT.
+Heterogeneity of actors in social networks has often been modeled via the degree distribution and assuming the network is scale free. These models assume that all networks with
+the same degree distribution are equally likely. We show through a number of simulated
+examples that the latent cluster random effects model can model such heterogeneity effec-
+
+1
+
+tively. We also show that networks with the same degree distribution can have very different
+clustering behavior, suggesting that scale-free and small-world networks are not adequate to
+model all networks with the same degree distribution.
+In Section 2 we introduce the latent cluster random effects model and in Section 3 we
+describe our Bayesian method for estimating it using Markov chain Monte Carlo. In Section
+4 we illustrate the method using two social network datasets and two simulated datasets
+with the same degree distribution but different clustering behavior.
+
+2
+
+The Latent Cluster Random Effects Model for Social
+Networks
+
+We first review the latent position cluster model of HRT and then expand it to allow for
+actor-specific random effects. The data we model consist of yi,j , the value of the relation
+from actor i to actor j for each dyad consisting of two of the n actors. These form the
+elements of the n × n sociomatrix Y. There may also be dyadic-level covariate information
+represented by p matrices X = {Xk }pk=1 ∈ Rn×n×p . We focus on binary-valued relations,
+
+although the methods in this paper can be extended to more general relational data. Both
+directed and undirected relations can be analyzed with our methods, although the models
+are slightly different in the two cases.
+The model posits that each actor i has an unobserved position, Zi , in a d-dimensional
+Euclidean latent social space, as in Hoff et al. (2002) and HRT. We then assume that the
+tie values are stochastically independent given the distances between the actors’ positions.
+Specifically:
+logit (p(Yi,j = 1|Z, X, β)) = ηi,j =
+
+p
+X
+k=1
+
+βk Xk,i,j − ||Zi − Zj ||,
+
+(1)
+
+where logit(p) = log(p/(1 − p)) and β denotes the parameters to be estimated. The model
+accounts for transitivity, through the latent space, as well as homophily on the observed attributes X. As in HRT, we allow for any clustering in the Zi via a finite spherical multivariate
+normal mixture:
+Zi
+
+i.i.d.
+
+∼
+
+G
+X
+
+λg MVNd (µg , σg2 Id ) i = 1, . . . , n,
+
+g=1
+
+where λg is the probability that an actor belongs to the g-th group, so that λg ≥ 0 (g =
+P
+1, . . . , G) and G
+g=1 λg = 1, and Id is the d × d identity matrix. Thus the positions of the
+actors are drawn from one of G groups, each one centered on a different mean and dispersed
+with a different variance. The simplification provided by the spherical covariance matrices is
+2
+
+motivated by the symmetry of the latent social space, although more structure can be added
+(see the discussion of HRT).
+To represent heterogeneity in the propensity for actors to form ties not captured by the
+dyad-level covariates or actor positions, we introduce actor-specific random effects. The
+nature of the effects differ for directed and undirected relationships. For an undirected
+relationship, each actor i has a latent “sociality” denoted by δi , representing his or her
+propensity to form ties with other actors. The effect of these random effects on the propensity
+to form ties is modeled as:
+ηi,j =
+
+p
+X
+k=1
+
+βk Xk,i,j − ||Zi − Zj || + δi + δj .
+
+(2)
+
+The sociality δi is then the conditional log-odds ratio of an actor i having a tie with another
+actor compared to an actor with similar position and covariates but having δ = 0.
+This model can also be used for directed relationships. In this case we define both sender
+and receiver random effects, δi and γi , representing actor i’s propensity to send and receive
+links, respectively. The model then becomes:
+ηi,j =
+
+p
+X
+k=1
+
+βk Xk,i,j − ||Zi − Zj || + δi + γj ,
+
+(3)
+
+where
+δi
+
+i.i.d.
+
+N(0, σδ2 ) i = 1, . . . , n,
+
+γi
+
+i.i.d.
+
+N(0, σγ2 ) i = 1, . . . , n,
+
+∼
+
+∼
+
+and the variances σδ2 and σγ2 measure the heterogeneity in propensity to send and receive
+links. The use of random effects in the latent space model was proposed by Hoff (2003), and
+van Duijn et al. (2004) who made a similar proposal for the p2 model.
+
+3
+3.1
+
+Estimation
+Bayesian Estimation and Prior Distributions
+
+We propose a Bayesian approach to estimate the latent cluster random effects model given
+by (1) and (2), or by (3). The approach estimates the latent positions, the clustering model
+and the actor-specific effects simultaneously. We implement the methods computationally
+using a Markov chain Monte Carlo (MCMC) algorithm.
+We introduce the new variables Ki , equal to g if the i-th actor belongs to the g-th group,
+as is standard in Bayesian estimation of mixture models (Diebolt and Robert, 1994).
+3
+
+We specify prior distributions as follows:
+β
+
+∼
+
+MVNp (ξ, Ψ),
+
+λ
+
+∼
+
+Dirichlet(ν),
+
+σδ2
+σγ2
+
+∼
+
+2
+αδ σ0,δ
+Invχ2αδ ,
+
+∼
+
+2
+αγ σ0,γ
+Invχ2αγ ,
+
+∼
+
+2
+αZ σ0,Z
+Invχ2αZ g = 1, . . . , G,
+¡
+¢
+MVNd 0, ω 2 Id , g = 1 . . . G,
+
+σg2
+
+i.i.d.
+
+µg
+
+i.i.d.
+
+∼
+
+2
+2
+2
+where ξ, Ψ, ν = (ν1 , . . . , νG ), σ0,Z
+, αZ , σ0,δ
+, αδ , σ0,γ
+, αγ , and ω 2 are hyperparameters to be
+
+specified by the user.
+We set νg to the smallest group size we are willing to consider for the network of interest,
+and ξ = 0 and Ψ = 9I, which allows a wide range of values of β. The other hyperparameters
+are not so clear-cut. In general, larger networks with larger groups and more structure tend
+to have greater prior within-cluster and between-cluster variances.
+p
+p
+p
+√
+2
+= 81 d/2 Gn , αZ = Gn , ω 2 = 41 d/2 n, and νg = Gn . HeuristiIn particular, we used σ0,Z
+
+cally, networks with larger clusters call for greater prior variances, and it is helpful to have
+slightly stronger priors for larger clusters, but as a network gets larger, the role of the prior
+variances in determining the posterior variances should decline. The hyperparameter choices
+used reflect these intuitions.
+
+3.2
+
+Markov chain Monte Carlo algorithm
+
+Our MCMC algorithm iterates over the model parameters with the priors given above, the
+latent positions zi , the random effects δi and γi , and the group memberships Ki . We update
+variables in turn, and block-update those we expect to be highly correlated. For those
+variables for which a conjugate prior was specified, full conditional updates are used. The
+others are updated using Metropolis-Hastings. We describe these in turn.
+We first describe the full conditional updates. Let ellipsis (“. . . ”) represent those variables
+from which the variable being sampled is separated, and which thus do not figure in its full
+conditional distribution. The relevant priors being conjugate, the full conditionals for those
+variables that can be Gibbs-sampled are as follows:
+
+4
+
+σδ2 |δ, . . . ∼
+
+Ã
+
+σγ2 |γ, . . . ∼
+
+Ã
+
+2
+αδ σ0,δ
++
+
+2
+αγ σ0,γ
++
+
+n
+X
+
+i=1
+n
+X
+
+δi2
+
+!
+
+Invχ2αδ +n ,
+
+!
+
+γi2 Invχ2αγ +n ,
+
+i=1
+
+¶
+σg2
+ng Z¯g
+∼ MVNd
+g = 1, . . . , G,
+,
+ng + σg2 /ω 2 ng + σg2 /ω 2
+¢
+ind ¡
+2
+σg2 |Z, K, µg , . . . ∼ αZ σZ,0
++ SSZg Invχ2αZ +ng d g = 1, . . . , G,
+
+µg |Z, K, σg2 , . . .
+
+ind
+
+µ
+
+λ|K, . . . ∼ Dirichlet (ν1 + n1 , . . . , νG + nG ) ,
+λg fMVNd (µg ,σg2 Id ) (Zi )
+¡
+¢ ind
+i = 1, . . . , n,
+Pr Ki = g|λ, Z, µg , σg2 , . . .
+= PG
+λ
+f
+(Z
+)
+2
+k
+i
+k=1
+MVNd (µk ,σk Id )
+
+1Ki =g (Zi − µg )T (Zi − µg ), the sum of squared deviations of the latent
+P
+positions in cluster g from their cluster’s mean, and ng = ni=1 1Ki =g , the number of actors
+assigned to cluster g during a particular iteration.
+where SSZg =
+
+Pn
+
+i=1
+
+We now describe the Metropolis-Hastings updates. Two kinds of Metropolis-Hastings
+proposals are used. First, actor-specific parameters (latent space positions and random
+effects) are updated one actor at a time, in a random order. Second, covariate coefficients
+are block-updated with the scale of latent space positions and a shift in random effects.
+An independent d-variate normal jump is proposed for each actor (in random order). For
+a particular actor i, the proposal
+¢
+¡
+Zi∗ ∼ MVNd Zi , τZ2 Id
+
+is made. At the same time, an independent proposal is made for the sender and receiver
+effects of that actor:
+¡
+¢
+δi∗ ∼ N δi , τδ2 ,
+¡
+¢
+γi∗ ∼ N γi , τγ2 .
+
+The parameters Zi∗ , δi∗ , and γi∗ are then accepted or rejected as a block. The reason for this
+block-updating is that parameters pertaining to a particular node are likely to be associated.
+This proposal is symmetric. Because each actor is assigned to one cluster at each MCMC
+iteration, the acceptance probability is
+Ã
+!
+fY |Zi ,δi ,γi ,... (y|Zi∗ , δi∗ , γi∗ , . . . )fMVNd (µKi ,σK2 Id ) (Zi∗ )fN(0,σδ2 ) (δi∗ ) fN(0,σγ2 ) (γi∗ )
+i
+min 1,
+.
+fY |Zi ,δi ,γi ,... (y|Zi , δi , γi , . . . )fMVNd (µKi ,σK2 Id ) (Zi )fN(0,σδ2 ) (δi ) fN(0,σγ2 ) (γi )
+i
+
+5
+
+An independent p-variate normal proposal is used for β, namely
+¡
+¢
+β ∗ ∼ N β, τβ2 Ip .
+
+At the same time, a proposal is made to scale all the latent positions and clustering
+variables away from the origin by a factor drawn from the lognormal distribution:
+h ∼ LN(0, τZ2 ),
+and
+Zi∗ = hZi
+
+i = 1, . . . , n,
+
+µ∗g = hµg
+
+g = 1, . . . , G,
+
+σg2∗ = h2 σg2
+
+g = 1, . . . , G.
+
+The lognormal distribution is multiplicatively symmetric about 1 (∀h>0 fX ∗ |X (hx|x) = fX ∗ |X ( h1 x|x)),
+so this is still a Metropolis proposal.
+In addition to that, a proposal hδ |β ∗ − β is made to shift all sender effects by a random
+amount, and similarly hγ |hδ , β ∗ −β with receiver effects. The proposals are set up so that their
+
+joint distribution is multivariate normal centered at the origin, and the pairwise correlations
+among the three proposed jumps are negative. Thus,
+δi∗ ∼ δi + hδ
+
+γi∗ ∼ γi + hγ
+
+i = 1, . . . , n,
+i = 1, . . . , n.
+
+The acceptance probability is
+Q
+µ
+¶
+∗
+fY |β,Z,δ,γ,... (y|β ∗ , Z ∗ , δ ∗ , γ ∗ , . . . ) fPrior (β ∗ , µ∗ , σ 2∗ ) ni=1 fActor
+i
+Q
+min 1,
+,
+fY |β,Z,δ,γ,... (y|β, Z, δ, γ, . . . ) fPrior (β, µ, σ 2 ) ni=1 fActor i
+
+where
+
+2
+
+fPrior (β, µ, σ ) = fMVNp (ξ,Ψ) (β)
+
+G ³
+Y
+
+2 Invχ2
+fMVNd (0,ω2 Id ) (µg ) fαZ σ0,Z
+α
+
+Z
+
+g=1
+
+fActor i = fMVNd (µKi ,σK2
+
+i
+
+Id )
+
+(Zi ) fN(0,σδ2 ) (δi ) fN(0,σγ2 ) (γi ) ,
+
+and
+∗
+fActor
+i = fMVNd (µ∗K
+
+i
+
+2∗ I )
+,σK
+d
+i
+
+(Zi∗ ) fN(0,σδ2 ) (δi∗ ) fN(0,σγ2 ) (γi∗ ) .
+
+6
+
+¡ 2 ¢´
+σg ,
+
+3.3
+
+Identifiability of Parameters and Initialization
+
+The likelihood is a function of the latent positions only through their distances, and so it
+is invariant to reflections, rotations and translations of the latent positions. The likelihood
+is also invariant to relabelling of the clusters, in the sense that permuting the cluster labels
+does not change the likelihood (Stephens, 2000).
+We use the approach of HRT to resolve these near nonidentifiabilities by post-processing
+the MCMC output. The approach is to find a configuration of cluster labels and positions
+with implied distribution close to the corresponding “true” distribution in terms of Bayes
+risk. See the appendix of HRT for the technical details. The post-processed actor positions
+are denoted by ZMKL .
+For visualization purposes, posterior cluster means and variances corresponding to chosen
+positions are also needed. We use the full conditionals for µg , σg2 , λ, and K given in Section
+3.2 to Gibbs-sample µ, σ 2 , λ, K|ZMKL , and we use the posterior means of µ|ZMKL and σ 2 |ZMKL
+
+as point estimates to go with ZMKL .
+The proposal distribution variance parameters, τZ , τγ , τδ , and τβ , are set by the user to
+achieve good performance of the algorithm.
+To speed convergence, we start the algorithm at an approximation to the posterior mode.
+Specifically:
+1. Multidimensional scaling is performed on geodesic distances between the graph vertices
+to get initial latent space positions ZMDS (Breiger, Boorman, and Arabie, 1975). These
+are then centered at the origin.
+2. Model-based clustering is used to get a hard clustering KMDS of ZMDS (Fraley and
+Raftery, 2002). To improve robustness, the first time through, locations with Mahalanobis distances from the origin greater than 20 are excluded. This threshold value
+was found experimentally to exclude small graph components and isolates but still provide a good margin of safety for vertices containing useful information about structure.
+For the excluded points, KMDS is arbitrarily assigned to the largest cluster.
+3. Numerical optimization is used to find the posterior mode conditional on KMDS .
+4. Steps 2 and 3 are repeated to convergence.
+The proposal distribution variance parameters, τZ , τγ , τδ , and τβ , are set by the user to
+achieve good performance of the algorithm.
+
+7
+
+Table 1: Characteristics of Example Networks
+Add Health
+Sampson’s
+Isolates
+Original
+Monks
+removed
+Yes
+Yes
+Yes
+directed
+18
+71
+69
+actors
+88
+305
+305
+edges
+(0.29)
+(0.061)
+(0.065)
+(density)
+1
+3
+1
+components (incl. isolates)
+0
+2
+0
+isolates
+(0.0)
+(0.028)
+(0.0)
+(proportion)
+18
+69
+69
+# actors in biggest component
+(1.0)
+(0.97)
+(1.0)
+(proportion)
+−
+−
+−
+(Clustering Coefficient)
+
+4
+
+Small world
+Unclustered
+
+Clustered
+
+No
+150
+244
+(0.022)
+7
+0
+(0.0)
+137
+(0.91)
+9.55%
+
+No
+150
+244
+(0.022)
+3
+0
+(0.0)
+143
+(0.95)
+15.06%
+
+Examples
+
+We consider four datasets summarized in Table 1. The first two have previously been analyzed using latent position and latent position cluster models, and we compare the model
+fits to those previously obtained. Both of these are directed. The third and fourth dataset
+represent two forms of “small-world” networks. Both are undirected.
+
+4.1
+
+Example 1: Liking between Monks
+
+We consider the social relations between 18 monks in an isolated American monastery (Sampson, 1969). While resident at the monastery, Sampson collected extensive sociometric information using interviews, experiments and observation. Here we focus on the social relation
+of “liking.” We say a monk has the social relation of “like” to another monk if he ranked that
+monk in the top three monks for positive affection in any of three interviews given over a
+twelve month period. The minimum Kullback-Leibler estimates of the latent space positions
+(Shortreed et al., 2006) are presented visually in Figure 1.
+The measurement process for these data imposed constraints on the monk-specific sender
+and receiver effects. In particular, the sender effects are limited: Sampson asked each monk
+to name the three others that he liked most, three times over the period of the study, so the
+out-degree of each monk is bounded. The dataset pools these nominations, so a tie between
+one monk and another exists if the first monk nominated the second as one of his top three
+most liked at least once. Thus, the number of out-ties a monk has is less a measure of the
+monk’s sociality and more a measure of how often the monk changes his friends. On the
+other hand, receiver effects are interpretable.
+8
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+
+Ramauld
+Bonaventure
+Ambrose
+Berthold
+Peter
+Louis
+Victor
+Winfred
+John
+
+10
+11
+12
+13
+14
+15
+16
+17
+18
+
+Gregory
+Hugh
+Boniface
+Mark
+Albert
+Amand
+Basil
+Elias
+Simplicius
+
+Figure 1: Relationships between monks within a monastery.
+Sampson (1969) identified three main groups of monks: the Young Turks (7 members),
+the Loyal Opposition (5 members) and the Outcasts (3 members). The other three monks
+wavered between the Loyal Opposition and the Young Turks, which he described as being
+in intense conflict (Sampson 1969, p. 370; White, Boorman and Breiger 1976, p.752-753.)
+We fit two versions of our clustering model: a two-dimensional, three-cluster, latent space
+model without random effects, and one with receiver effects. We used the hyperparameter
+2
+2
+values ν1 = ν2 = ν3 ≈ 2.45, σ02 = 0.75, αZ ≈ 2.54, σ0,δ
+= 1.0, αδ = 3, σ0,γ
+= 1.0, αγ = 3, and
+
+ω 2 = 4.5. We fit our model using MCMC with 1,000 burn-in iterations that were discarded,
+and a further 20,000 iterations, of which we kept every 10th value. Visual display of trace
+
+plots and more formal assessments of convergence (e.g. Raftery and Lewis 1996), indicated
+that this gave results that were accurate enough for our purposes.
+The fits are summarized in Figure 2. A grouping given by Sampson (1969) is shown
+by the letters: (T)urks, (L)oyal Opposition, (O)utcasts, and (W)averers. The ties (i.e. the
+data) are shown by the arrows. The monks are well separated into the three groups and our
+model assigns each monk to the same group that Sampson did, with high probability. The
+groups from top to bottom are Loyal Opposition, Turks, followed by the combined Outcasts
+and Waverers. The Young Turks are also more tightly clustered than the Loyal Opposition.
+The performance of the model without random effects is similar to that of the latent position
+cluster model reported in HRT.
+An interesting contrast between models with and without receiver effects is Monk #1
+(Ramauld). This monk is relatively unpopular: he has out-ties to 4 of the 6 members of
+Loyal Opposition (as identified in Sampson’s original paper), but few in-ties from anyone.
+In the model without receiver effects (Fig. 2a), this monk is thus pushed to the edge of the
+9
+
+(a) without random effects
+
+(b) with receiver effects
+
+Figure 2: Relationships between monks within a monastery. The ties (i.e. the data) are
+shown by the arrows. Panel (a) gives a latent cluster model without monk-specific random
+effects; panel (b) adds receiver random effects. For the latter, the area of the plotting symbol
+is proportional to the conditional odds ratio of a nomination for the monk due to its receiver
+effect. The radius of the circles is equal to the cluster standard deviations, σg .
+
+10
+
+Loyal Opposition group. When the receiver effects are added (Fig. 2b), this monk moves
+toward the center of the Loyal Opposition group because of his out-ties to them and has a
+small receiver effect to compensate. Thus, the receiver effect absorbs his unpopularity and
+the model gives him a more informative position in the social space.
+
+4.2
+
+Example 2: Add Health
+
+The second social network is from the National Longitudinal Study of Adolescent Health,
+known as the “Add Health” study. Add Health is a school-based, longitudinal study of the
+health-related behaviors of adolescents and their outcomes in young adulthood (Harris et al.,
+2003). Here we consider a single school of 71 adolescents from grades seven through twelve.
+Each student was asked to nominate up to five boys and five girls within the school they
+regarded as their best friends. Thus each student could nominate up to ten students within
+the school (Udry, 2003). These data were previously analyzed by HRT, who excluded two
+adolescents who had no ties in the network. One visualization of the data is shown in Figure
+3.
+2
+Based on the formulae given earlier, we used hyperparameters σ0,Z
+≈ 1.44 and ω 2 ≈ 17.25.
+These variances are larger than for the monks’ dataset in the last section, reflecting the fact
+
+that this is a larger network, and so requires more space for the latent positions. Also,
+νg = αZ ≈ 3.39. The results are shown in Figure 4.
+
+We would expect the students to tend to be linked to others in their own grade, but we
+did not use the information about which grade a student was in when fitting the model. The
+
+extent to which estimated clusters correspond to grades can therefore be used as a partial
+check on the clustering procedure. The clusters did correspond quite well to the grades.
+As can be seen from Figure 4(b), the estimated receiver effects for the students do not
+vary dramatically in this case and so the results from the model with random receiver effects
+do not differ greatly from those from the latent position cluster model without random
+effects.
+
+4.3
+
+Example 3: Scale-Free and Small-world Networks
+
+Two features of networks that have received a great deal of recent attention are local clustering and average minimum path length, the determinants of the so-called “small world”
+network effect. Small-world networks can arise from power-law models of the degree distribution (Amaral et al., 2000). Small world graphs are of interest because their properties
+differ from purely random networks with the same density of ties. For example, the epidemic
+potential of small world networks is much higher than that of other sparse networks because
+of their relatively high connectedness (Newman, 2002).
+11
+
+Figure 3: Visualization of the friendship network in the Add Health school. The grades of
+each student are shown as numbers.
+
+12
+
+(a) No random effects
+
+(b) Receiver effects
+
+Figure 4: Estimated positions from the latent position cluster model for the adolescent health
+data, where the number of clusters is constrained to be 6.
+Plot (a) gives a plain latent cluster model fit to the Add Health dataset (Fig. 1), and plot
+(b) adds a receiver effect for each student. For the latter, the area of the plotting symbol is
+proportional to the conditional odds ratio of a tie for its vertex due to its random receiver
+effect.
+
+13
+
+The measure of local clustering we use is the clustering coefficient defined as
+C=
+
+3N3∗
+N3
+
+where N3∗ is the number of complete subgraphs of size 3 and N3 is the number of connected
+triples of actors, or 2-stars (Frank and Strauss, 1986; Newman, 2003). This is the proportion
+of complete triads in the networks out of a total number of possible triads, and is thus a
+measure of transitivity. Note that the term clustering is used here in a different sense than
+in the rest of this paper.
+There has been a focus on the various “scale-free,” preferential attachment and powerlaw models for networks, especially in the physics literature (Newman, 2003). These models
+assume that all networks with the same degree distribution are equally likely. Let D be
+the degree of a randomly chosen actor in the network. We say that P (D = k) has powerlaw behavior with scaling exponent φ > 1 if there exist constants c1 , c2 , and M such that
+0 < c1 ≤ P (D = k)k φ ≤ c2 < ∞ for k > M (Jones and Handcock, 2003). Scale free
+networks are one form of small world networks, although some researchers focus on the
+subclass of networks with high local clustering relative to a random network with the same
+
+degree sequence (Newman, 2003).
+Here we consider two networks generated from small world processes. Each has 150 actors
+and an undirected relationship between them. They are sparse networks with density 2.2%.
+The first is a network following the preferential attachment model of Handcock and Jones
+(2004). In this model the degree sequences follow a Yule probability distribution, and the
+actors form ties independently given this sequence. The network generating process exhibits
+power-law behavior with φ = 2.5. It is thus a scale-free network, and is an example of a
+network with no latent clustering and a very right-skewed sociality effects distribution. The
+technical details of this model and computational details are given in Handcock and Morris
+(2007). The network is visualized in Figure 5(a). Note how the high-degree actors act as
+“hubs” for the other actors.
+The second network has the same sociality effects as the first but with latent positions
+drawn from the model (2) with G = 3 groups in d = 2 dimensions. The clusters are dispersed
+with µ1 = (0, 0), µ2 = (−1.5, 1.5), µ3 = (1.5, 1.5) The intra-cluster standard deviation in
+positions is σg = 0.2. The network is a random draw from the Latent Cluster Random
+Effects Model conditional on the degree sequence of the first network. This network also
+satisfies preferential attachment, has power-law structure and is a small world. However it
+also has clustered latent positions that lead to highly clustered pattern of links.
+The second network is visualized in Figure 5(b). The positions are those drawn from the
+mixture model. Note that despite their differing appearance the two networks have the same
+14
+
+(a) Independence
+
+(b) Latent cluster
+
+(c) Degree distribution (same for both graphs)
+Figure 5: Yule model networks. These 150-actor networks (a) and (b) have been generated
+from the Yule model, scale-free, with ρ = 2.5, giving the degree distribution shown in (c).
+In the independence network (a), the ties are independent given the degree distribution.
+In the latent cluster network (b), a dyad-level latent space distance term was also added.
+The latent space positions were generated from a bivariate normal mixture model with three
+components.
+
+15
+
+degree distribution, shown in Figure 5(c). Note the extreme right tail that is characteristic
+of scale-free distributions. Neither of these networks is a draw from the Latent Cluster
+Random Effects Model. Both have markedly non-Gaussian sociality effects, and the first
+does not have multiple groups.
+The strength of the small world effects for the undirected networks is given by the clustering coefficient values in Table 1. The clustering coefficient for a purely random network
+with 150 actors and the same density as these networks is 2.04%. Thus the first network has
+almost five times this level of clustering. The second network has over seven times the level.
+Thus both networks can be classified as small worlds. Note that the latent position clustering can lead to much greater small world structure — here increasing it by over 50%. This
+suggests that the small world phenomenon can be induced by the presence of an unobserved
+social space.
+We now report the results of fitting the Latent Cluster Random Effects Model to these
+networks. In each case, we fit two models: a latent 3-cluster model with no random effects,
+and a latent 3-cluster model with random sociality effect. We used the hyperparameters
+2
+σ0,Z
+= 6.25, ω 2 = 37.5, and ν1 = ν2 = ν3 = 7.07.
+The fits of the two models (with and without random sociality effects) to the unclustered
+small world network are shown in Figure 6. The estimated latent space positions vary very
+little for either model. For example, for the model with sociality effects, only about half of
+the estimated latent positions are a distance of more than 1 from the origin. Thus neither
+of the two latent space models that we fit (with and without random sociality effects) finds
+much evidence of distinct groups. There are no groups in the data, so both models reach
+the right conclusion in this case.
+The “successful” fits of the two models to the clustered small world network are shown in
+Figure 7. While both models models are able to detect the distinct groups that are present
+in the data, we found that the model with random effects was substantially more reliable in
+this: in our example, 3-cluster fits of the model without random effects were only occasional
+(and “unsuccessful” fits look more like those fits based on the unstructured network). We
+believe the extremely skewed sociality levels masked the group structure under the simpler
+model. In contrast, the Latent Cluster Random Effects Model did find the three groups and
+placed them approximately in the right places and the right distances apart. For the latent
+cluster model with random effects, 87% of the vertices were clustered correctly (82% for the
+model without random effects).
+
+16
+
+(a) Latent position cluster model
+(no sociality effects)
+
+(b) Latent cluster random effects model
+with undirected sociality effects
+
+Figure 6: Minimum Kullback-Leibler locations from the models for the unclustered small
+world network in Figure 5(a). In plot (b), the area of the plotting symbol is proportional to
+the conditional odds ratio of a tie for its vertex, due to its random sociality effect.
+
+17
+
+(a) Latent position cluster model
+(no sociality effects)
+
+(b) Latent cluster random effects model
+with undirected sociality effects
+
+Figure 7: Minimum Kullback-Leibler locations from the models for the clustered small world
+network in Figure 5(b). In plot (b), the area of the plotting symbol is proportional to the
+conditional odds ratio of a tie for its vertex, due to its random sociality effect.
+
+18
+
+5
+
+Discussion
+
+We have introduced an extension to the latent space model of Hoff et al. (2002) and the
+latent position clustering model of HRT that also models heterogeneity in actor sociality
+levels by including random effects. Called the latent cluster random effects model, this gives
+satisfactory fits to two real datasets. Heterogeneity among actors in social networks has
+often been modeled using scale-free and small-world network models that assume that all
+networks with the same degree distribution are equally likely. With two simulated datasets
+we show that networks with the same degree distribution can have very different clustering
+behavior. Our model can capture both the degree distribution and the clustering behavior
+adequately.
+We have focused here on binary networks, but much network data is not of this kind.
+For example, links may consist of counts, such as the number of phone calls two actors
+exchange, or amounts, such as the amount of trade between two countries. Following Hoff
+(2005), the latent class random effects model can be extended to deal with such situations
+by replacing the binary response in (1) with a different distribution, such as Poisson if the
+links are counts, and normal, lognormal or gamma if they are amounts.
+One problem we have not addressed here is that of choosing the number of groups and
+the latent space dimension. This can be done by recasting the problem as one of statistical
+model selection and using Bayesian model selection to solve it. HRT did this for choosing
+the number of groups in their latent position cluster model, Oh and Raftery (2001) did it for
+choosing the dimension of the latent space for a related Bayesian multidimensional scaling
+model, and Oh and Raftery (2007) did it for choosing both the number of groups and the
+latent space dimension simultaneously in model-based clustering for dissimilarities. This
+work could be adapted and extended to the latent cluster random effects model.
+We have used a Euclidean distance for our latent social space, but this is not the only
+possible measure on which to base the model. In particular, Hoff, Raftery, and Handcock
+(2002) and Hoff (2005) have proposed using an inner product, which has certain advantages.
+The hyperparameter settings that we have used have varied slightly between our examples, reflecting the outcome of experimentation. It would be desirable to have a more
+automatic way of choosing the hyperparameters. One possibility would be to fit a logit
+model with node-specific effects, and then use the variances of these effects to obtain an
+empirical Bayes-type prior. This issue will be the focus of future research.
+
+19
+
+References
+P. D. Hoff, A. E. Raftery, M. S. Handcock, Latent space approaches to social network
+analysis, Journal of the American Statistical Association 97 (2002) 1090–1098.
+M. S. Handcock, A. E. Raftery, J. M. Tantrum, Model-based clustering for social networks
+(with discussion), Journal of the Royal Statistical Society, Series A 170 (2007) 301–354.
+P. D. Hoff, Bilinear mixed-effects models for dyadic data, Journal of the American Statistical
+Association 100 (2005) 286–295.
+M. A. J. van Duijn, T. A. B. Snijders, B. H. Zijlstra, p2 : A random effects model with
+covariates for directed graphs, Statistica Neerlandica 58 (2004) 234–254.
+P. D. Hoff, Random effects models for network data, in: R. Breiger, K. Carley, P. Pattison
+(Eds.), Dynamic Social Network Modeling and Analysis, Vol. 126, Committee on Human
+Factors, Board on Behavioral, Cognitive, and Sensory Sciences, National Academy Press,
+Washington, DC., 2003, pp. 302–322.
+J. Diebolt, C. P. Robert, Bayesian estimation of finite mixture distributions, Journal of the
+Royal Statistical Society, Series B 56 (1994) 363–375.
+M. Stephens, Dealing with label-switching in mixture models, Journal of the Royal Statistical
+Society, Series B, Methodological 62 (2000) 795–809.
+R. L. Breiger, S. A. Boorman, P. Arabie, An algorithm for clustering relational data with application to social network analysis and comparison with multidimensional scaling, Journal
+of Mathematical Psychology 12 (1975) 328–383.
+C. Fraley, A. E. Raftery, Model-based clustering, discriminant analysis and density estimation, Journal of the American Statistical Association 97 (2002) 611–631.
+S. F. Sampson, Crisis in a cloister, Ph.D. thesis, Cornell University (1969).
+S. Shortreed, M. S. Handcock, P. D. Hoff, Positional estimation within the latent space
+model for networks, Methodology 2 (2006) 24–33.
+A. E. Raftery, S. M. Lewis, Implementing MCMC, in: W. R. Gilks, D. J. Spiegelhalter,
+S. Richardson (Eds.), Markov Chain Monte Carlo in Practice, Chapman and Hall, London,
+1996, pp. 115–130.
+
+20
+
+K. M. Harris, F. Florey, J. Tabor, P. S. Bearman, J. Jones, R. J. Udry, The national
+longitudinal of adolescent health: Research design [WWW document], Tech. rep., Carolina Population Center, University of North Carolina at Chapel Hill, Available at:
+http://www.cpc.unc.edu/projects/addhealth/design (2003).
+R. J. Udry, The national longitudinal of adolescent health: (add health), waves I and II,
+1994-1996; wave III, 2001-2002 [machine-readable data file and documentation], Tech.
+rep., Carolina Population Center, University of North Carolina at Chapel Hill (2003).
+L. A. N. Amaral, A. Scala, M. Barthelemy, H. E. Stanley, Classes of small-world networks,
+Proceedings of the National Academy of Sciences of the United States of America 97 (2000)
+11149–11152.
+M. E. J. Newman, Spread of epidemic disease on networks, Physical Review E 66 (2002) art.
+no.–016128.
+O. Frank, D. Strauss, Markov graphs, Journal of the American Statistical Association 81
+(1986) 832–842.
+M. E. J. Newman, The structure and function of complex networks, SIAM Review 45 (2003)
+167–256.
+J. H. Jones, M. S. Handcock, An assessment of preferential attachment as a mechanism
+for human sexual network formation, Proceedings of the Royal Society of London, B 270
+(2003) 1123–1128.
+M. S. Handcock, J. H. Jones, Likelihood-based inference for stochastic models of sexual
+network formation, Theoretical Population Biology 65 (2004) 413–422.
+M. S. Handcock, M. Morris, A simple model for complex networks with arbitrary degree
+distribution and clustering, in: E. M. Airoldi (Ed.), Workshop on Statistical Network
+Analysis, ICML 2006, Pittsburgh, USA, June 29, 2006, Vol. 4503 of Lecture Notes in
+Computer Science, Springer, 2007, pp. 103–114.
+M. S. Oh, A. E. Raftery, Bayesian multidimensional scaling and choice of dimension, Journal
+of the American Statistical Association 96 (2001) 1031–1044.
+M. S. Oh, A. E. Raftery, Model-based clustering with dissimilarities: A Bayesian approach,
+Journal of Computational and Graphical Statistics 16 (2007) to appear.
+
+21
+
+

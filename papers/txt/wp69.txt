@@ -1,0 +1,1343 @@
+Probabilistic Projections of HIV Prevalence Using
+Bayesian Melding
+Leontine Alkema, Adrian E. Raftery, Samuel J. Clark
+University of Washington
+
+1
+
+Working Paper no. 69
+Center for Statistics and the Social Sciences
+University of Washington
+January 5, 2007
+
+1 Leontine
+
+Alkema is Graduate Student, Department of Statistics, and Shanahan fellow at
+the Center for Studies in Demography and Ecology, University of Washington, Seattle, WA
+98195-4322 (Email: alkema@u.washington.edu), Adrian E. Raftery is Blumstein-Jordan Professor of Statistics and Sociology, University of Washington, Seattle, WA 98195-4320 (Email:
+raftery@u.washington.edu), and Samuel J. Clark is Assistant Professor, Department of Sociology,
+University of Washington, Seattle, WA 98195-3340 (Email: samclark@u.washington.edu). This
+work was partially supported by a seed grant from the Center for Statistics and the Social Sciences
+(CSSS) at the University of Washington. The authors are grateful to Jeff Eaton for research assistance and to Tim Brown, Peter Ghys, Nick Grassly, Eleanor Gouws, Meade Morgan, Josh Salomon
+and Karen Stanecki for helpful discussions. Alkema and Raftery thank the Institute of Information
+Theory and Automation, Prague, Czech Republic, for hospitality.
+
+Abstract
+The Joint United Nations Programme on HIV/AIDS (UNAIDS) has developed the Estimation and Projection Package (EPP) for making national estimates and short term projections
+of HIV prevalence based on observed prevalence trends in antenatal clinics. Understanding
+uncertainty in its projections and related quantities is important for more informed policy
+decision making. We propose using Bayesian melding to assess the uncertainty around the
+EPP predictions. Prevalence data as well as information on the input parameters of the
+EPP model are used to derive probabilistic HIV prevalence projections – a probability distribution on a set of future prevalence trajectories. We relate antenatal clinic prevalence
+to population prevalence and account for variability between clinics using a random effects
+model. Predictive intervals for clinic prevalence are derived for checking the model. We discuss predictions given by the EPP model and the results of the Bayesian melding procedure
+for Uganda where prevalence peaked at around 28% in 1990; the 95% prediction interval for
+2010 ranges from 1% to 7%.
+Keywords: Antenatal clinic prevalence; HIV Population prevalence estimation; Predictive
+distribution; Random effects model; UNAIDS Estimation and Projection Package; Uncertainty assessment.
+
+Contents
+1 Introduction
+
+1
+
+2 The Estimation and Projection Package
+
+2
+
+3 Bayesian Melding for the EPP Model
+3.1 Bayesian Melding . . . . . . . . . . . . . . .
+3.2 Priors on Input Parameters . . . . . . . . .
+3.3 Likelihood for Population Prevalence . . . .
+3.4 Assessing Model Fit: Predictive distribution
+
+. .
+. .
+. .
+for
+
+. . . . . . . . . . .
+. . . . . . . . . . .
+. . . . . . . . . . .
+clinical prevalence
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+.
+.
+.
+.
+
+4 Results
+
+4
+4
+5
+6
+8
+9
+
+5 Discussion
+
+13
+
+List of Figures
+1
+2
+3
+4
+5
+6
+7
+8
+
+The influence of the parameters of the EPP model on the shape of the epidemic curve
+Posterior distribution of urban HIV prevalence in Uganda over time . . . . . . . . .
+Sample from the posterior predictive distribution of urban HIV prevalence in Uganda
+in 2005 and 2010. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Posterior samples and prior densities of EPP input parameters for urban prevalence
+in Uganda . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Sample from the joint posterior distribution of the rate of infection and the start
+year for urban prevalence in Uganda . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Posterior urban prevalence in Uganda, based on increasing observation periods. . . .
+Samples from the posterior predictive distributions of urban HIV prevalence in
+Uganda in 2010, based on increasing observation periods . . . . . . . . . . . . . . . .
+Predictive distributions for two urban clinics in Uganda, compared with the actual
+observations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+1
+
+3
+9
+10
+11
+12
+12
+13
+14
+
+1
+
+Introduction
+
+In this article we propose a way to obtain probabilistic projections of HIV prevalence for generalized epidemics in countries with little detailed knowledge of HIV prevalence. Generalized
+HIV/AIDS epidemics are epidemics in which the disease is spread widely in the population.
+To qualify as generalized an epidemic must affect one percent or more of pregnant women
+(Ghys et al. 2004), and by this definition many countries in sub-Saharan Africa have generalized HIV/AIDS epidemics. In countries with high HIV prevalence the HIV epidemic has
+a big impact on the population, and prevalence predictions are necessary to understand and
+plan for the effects on the population in the future.
+UNAIDS has to produce current estimates and short-term projections of HIV prevalence
+for all countries with significant HIV epidemics. To do this, it developed the Estimation and
+Projection Package (EPP). EPP is software that implements a differential equation model.
+It is designed to reproduce in a parsimonious way the overall dynamics of a generalized HIV
+epidemic. In order to meet the UNAIDS requirement to produce estimates and projections
+for all countries with more than one percent of pregnant women infected with HIV, the EPP
+model must be general, robust and very simple; simple because many countries with significant HIV epidemics have very little data to describe those epidemics. For most countries
+in sub-Saharan Africa the main, and often only, source of information on HIV prevalence
+is the prevalence of HIV among women who attend antenatal clinics. As a result, the EPP
+model is designed to produce past and future trends in HIV prevalence that are consistent
+with measured trends in antenatal clinic prevalence. For a small number of countries, larger
+quantities of higher quality data are available. It is conceivable that for those countries one
+could design a model that is better able to capture the complex dynamics revealed by the
+data. However, this would violate the requirement that a single consistent method be used
+to produce estimates and projections of HIV prevalence for all affected countries, and could
+confuse comparison of the estimates between countries and perhaps across time for the same
+country.
+The EPP 2005 software and supporting documentation can be downloaded from
+www.unaids.org. EPP is used by UNAIDS, the World Health Organization (WHO), and
+a variety of national and other agencies to produce HIV prevalence estimates. EPP is often used in combination with Spectrum, an extended sex- and age-differentiated population
+model (Stover 2004; Stover et al. 2006). Spectrum uses the prevalence trends generated
+by EPP to produce annual sex- and age-specific HIV incidence, deaths and other quantities
+of interest. EPP and Spectrum together have been used to analyse the global impact of
+HIV/AIDS prevention and treatment programs, and WHO has proposed using their combined output to estimate the number of people in need of antiretroviral treatment.
+Uncertainty is an inherent component of forecasts of future trends in HIV prevalence,
+
+1
+
+and understanding this uncertainty is crucial for policy decision making. In 2003 UNAIDS
+included information on uncertainty in its estimates and projections by calculating and
+presenting plausibility bounds (Grassly et al. 2004). These bounds were derived by combining the results of a bootstrap method with expert opinion regarding the range of possible
+epidemic curves. As noted by Morgan et al. (2006, p.iii77): “plausibility bounds do not represent and should not be interpreted as formal statistical confidence intervals”. A Bayesian
+framework solves this problem by providing a mechanism for including expert opinion while
+still producing formal statistical confidence intervals.
+We propose Bayesian melding to obtain probabilistic projections of HIV prevalence.
+Bayesian melding was first developed to estimate the rate of increase of whale populations
+(Raftery et al. 1995; Poole and Raftery 2000) and was successfully applied to policy-making
+in that context. Bayesian melding fully accounts for information describing uncertainty in
+both the inputs and outputs of a deterministic model. In this paper we discuss the application of the Bayesian melding procedure to the EPP model. In Section 2 we describe the EPP
+model, in Section 3 we explain the Bayesian melding procedure and a random effects model
+for HIV prevalence, in Section 4 we present results for urban HIV prevalence in Uganda, and
+in Section 5 we discuss possible improvements to the methodology.
+
+2
+
+The Estimation and Projection Package
+
+The Estimation and Projection Package (EPP) was developed by UNAIDS to satisfy two
+major constraints. First it has to be able to capture the main dynamics of an HIV epidemic in
+any country, often without detailed knowledge of the transmission patterns in that country,
+and second it has to be simple enough to be used by national planning officials in a wide
+variety of developing countries. The UNAIDS Reference Group on Estimates, Modeling
+and Projections (UNAIDS Reference Group on Estimates, Modelling and Projections 2002)
+recognized that there are many complex models that incorporate patterns of risk behavior
+and mixing and provide useful tools for understanding the spread and control of HIV. Many
+of these models are unsuitable for the task at hand, however, because they require a large
+number of biological and behavioral parameter values that are not available from all the
+countries that require estimates and projections of HIV prevalence.
+UNAIDS has developed a simple epidemiological Susceptible-Infected model that satisfies
+these two constraints. The population at time t is divided into three groups, a not-at-risk
+group X(t), an at-risk group Z(t) and an infected group Y (t). The model assumes a constant
+non-AIDS mortality rate µ and fertility rate b and does not represent migration or age
+structure. Time-evolving prevalence (the fraction of the population infected) is modeled by
+estimating four parameters, r, f0 , t0 and φ. The parameter r is the rate of infection, f0 is
+the fraction of the population in the at-risk category at the start of the epidemic, t0 is the
+2
+
+60
+
+60
+
+Prevalence(%)
+20
+30
+40
+
+50
+
+f0 = 0.2
+f0 = 0.4
+f0 = 0.6
+
+0
+
+10
+
+50
+0
+
+10
+
+Prevalence(%)
+20
+30
+40
+
+r=1
+r=2
+r=4
+
+1980 1990 2000 2010 2020 2030
+Year
+
+1980 1990 2000 2010 2020 2030
+Year
+
+10
+
+phi = −10
+phi = 0
+phi = 10
+
+0
+
+0
+
+10
+
+Prevalence(%)
+20
+30
+40
+
+50
+
+t = 1980
+t = 1985
+
+Prevalence(%)
+20
+30
+40
+
+50
+
+60
+
+(b) Changing f0
+
+60
+
+(a) Changing r
+
+1980 1990 2000 2010 2020 2030
+Year
+
+1980 1990 2000 2010 2020 2030
+Year
+
+(c) Changing t0
+
+(d) Changing φ
+
+Figure 1: The influence of r, f0 , t0 or φ on the shape of the epidemic curve while holding
+other parameters fixed at the values r = 2, f0 = 0.4, t0 = 1980, φ = 0.
+start time of the epidemic and φ represents the behavioral response.
+The influence of each of these parameters on the shape of the epidemic is shown in
+Figure 1. Note the standard overall shape of the epidemic in all of the plots. The fraction of
+the HIV negative population infected each year, or incidence, increases to a maximum and
+declines thereafter. As long as the number of new HIV infections is greater than the number
+of AIDS deaths, the prevalence rate increases. An epidemic peaks when the incidence and
+mortality rates are about equal. After the peak the prevalence rate comes down because
+the number of AIDS deaths continues to increase as a result of the lag between becoming
+infected and dying of AIDS. An epidemic stabilizes when the number of new HIV infections
+equals the number of AIDS deaths.
+The greater the rate of infection r, the faster prevalence increases at the beginning of
+the epidemic, as can be seen from Figure 1a. If a fraction f of the population is at risk of
+HIV infection, every infected person infects r · f people each year (r · f is called the force of
+infection). The fraction of population in the at-risk category at the start of the epidemic f0
+influences when and at what prevalence the epidemic peaks. If a higher proportion of the
+population is initially at risk, the epidemic will peak at a higher level, as is apparent from
+Figure 1b. The epidemic is shown for two different start years in Figure 1c. Changing the
+start year, t0 , does not change the shape of the epidemic, only its timing.
+The behavioral response, φ, influences the level at which the epidemic levels off after
+the peak, as shown by Figure 1d. The parameter φ is positively related to steady state
+
+3
+
+prevalence. Negative values of φ correspond to a situation in which new members of the
+population change their behavior when they see others dying of AIDS, so that fewer of them
+enter the at-risk group. Positive values of φ correspond to the opposite situation in which a
+larger fraction of new members enter the at-risk group. This can be thought of as reflecting
+a gradual recruitment situation in which pockets of the population that were previously
+isolated, perhaps by geography or culture, are exposed to infection.
+The rates at which the sizes of the groups change – through recruitment, behavior and
+infection – are described by three differential equations:
+
+
+
+dX(t)
+X(t)
+
+E(t) − µX(t),
+=
+1
+−
+f
+,
+f
+,
+φ
+
+0
+N (t)
+
+ dt
+
+
+
+X(t)
+Y (t)
+dZ(t)
+=
+f
+,
+f
+,
+φ
+E(t)
+−
+µ
++
+r
++
+λ(t)
+Z(t),
+0
+dt
+
+ N (t)
+
+
+ N (t)
+
+R
+
+ dY (t) = r Y (t) + λ(t) Z(t) − t r Y (τ ) + λ(τ ) Z(τ )g(t − τ )dτ,
+dt
+N (t)
+N (τ )
+0
+
+in which N(t) is the total population, N(t) = X(t)+Z(t)+Y (t), and µ is the non-HIV death
+rate. The function g(τ ) specifies the HIV death rate τ years after infection. Survival after
+infection is assumed to have a Weibull(2.4, 10.5) distribution, so that the median survival
+time is 9 years. The start year of the epidemic is defined as the first year in which people
+are infected; the time at which a fraction λ0 of the at-risk group Z moves to the infected
+group Y . Similar epidemics can be generated with either a larger, earlier pulse or a smaller,
+later pulse. We set λ0 = 0.001 so that the start year is the year in which 0.1% of the at-risk
+population gets infected. The initial pulse is modeled such that λ(t) = λ0 · δ(t − t0 ) where
+R∞
+δ(t) is the Dirac Delta function, and so −∞ λ(t)Z(t)dt = λ0 Z(t0 ).
+
+The population being modeled is aged 15+. New members of the population are the
+ones who survive to age 15. When entering the population, they are assigned to either the
+not-at-risk group X(t) or the at-risk group Z(t). The total number of new members at time
+t, E(t), depends on the population size 15 years ago, the birth rate and the survival rate
+from birth to age 15. The birth rate is applied to both the uninfected and infected groups,
+taking into account the HIV-related fertility reduction experienced by the infected group and
+the transmission of HIV from mother to child. A fraction of the new 15-year-old members
+
+enter the at-risk group Z(t) at time t. This fraction is given by f X(t)
+,
+f
+,
+φ
+and depends on
+0
+N (t)
+the fraction of the population in the not-at-risk group, the fraction initially at risk, and the
+behavioral response φ. The remainder of the new 15-year-olds enter the not-at-risk group
+X(t).
+
+3
+3.1
+
+Bayesian Melding for the EPP Model
+Bayesian Melding
+
+The EPP model transforms the input θ, consisting of the four input parameters (r, f0 , t0 , φ),
+into a series of HIV prevalence rates, ρ, for the population during a given period. We
+4
+
+denote the EPP model by M, so that ρ = M(θ). The Bayesian melding procedure combines
+information on inputs and outputs. Expert knowledge provides a prior distribution q(θ) for
+the inputs. The observed prevalence rates provide a likelihood L(ρ) for the model output.
+Then the posterior distribution of the inputs is given by:
+π(θ) ∝ q(θ)L(θ) = q(θ)L(M(θ)).
+The inputs have prior density q(θ), and so ρ = M(θ) also has a prior density because it
+is a transformation of θ. The posterior distribution of the output is given by
+π(ρ) ∝ q ∗ (ρ)L(ρ),
+
+(1)
+
+where q ∗ (ρ) is the prior on the outputs induced by the prior on the inputs and the EPP
+model. It is not possible to write q ∗ (ρ) analytically, and so we approximate it using Monte
+Carlo methods.
+We approximate the posterior distribution in (1) by drawing a random sample from it
+using the Sampling Importance Resampling algorithm (Rubin 1987; Rubin 1988):
+1. Sample {θ 1 , ..., θ n } from the input prior q(θ) on θ = (r, f0 , t0 , φ).
+2. For each θ i , determine the corresponding series of prevalence rates, ρi = M(θ i ), by
+running the EPP model. This gives a sample from the induced prior q ∗ (ρ) on the
+outputs.
+3. Form the sampling importance weights for each ρi and thus for each θ i :
+L(ρ )
+.
+wi = Pn i
+i=1 L(ρi )
+
+(2)
+
+4. Sample from the discrete distribution of {θ 1 , ..., θ n } with probabilities wi to approximate the posterior distribution for the inputs, and do the same for the outputs.
+
+3.2
+
+Priors on Input Parameters
+
+The Bayesian melding procedure requires that we specify a joint prior distribution for the
+four input parameters θ = (r, f0 , t0 , φ). Separate sources of information are used to specify
+each of these priors, and so we define these four parameters to be independent a priori.
+We assume that the rate of infection r can take any value between 0 and 15 with equal
+probability, r ∼ U[0, 15], meaning that the average number of people an infected person
+infects per year can range from zero to 15 times the fraction at risk. The start year of the
+epidemic t0 has a uniform discrete distribution on {1970, 1981, . . . , 1990}.
+The fraction initially at risk f0 can be any value between zero and one, f0 ∼ U[0, 1]. We
+
+X(t)
+, f0 , φ .
+assume a uniform prior on [0, 1] for the fraction entering the at-risk population f N
+(t)
+5
+
+These two priors together define a prior for the behavioral response φ. In the model the
+fraction entering the at-risk group Z(t) is given by:
+
+exp( φχ(t) )
+
+, f0 , φ =
+f
+N(t)
+exp( φχ(t) ) − 1 +
+ X(t)
+
+
+
+1
+f0
+
+,
+
+(3)
+
+where χ(t) is the difference between the fraction in the not-at-risk group at time t, namely
+X(t)/N(t), and the fraction (1 − f0 ) that was not at risk at the beginning of the epidemic,
+so that
+X(t)
+χ(t) =
+− (1 − f0 ).
+(4)
+N(t)
+Using (3), φ can be written in terms of the fractions entering the at-risk group and
+initially at risk. With uniform priors on both fractions,
+ the behavioral response parameter
+2
+
+π
+has a logistic distribution with mean χ1 log f10 − 1 and variance 3χ
+2 , and with a prior
+estimate f0 = 0.5, the behavioral response is centered around zero. The smaller the prior
+
+estimate of χ the more spread out the prior will be. We set χ = 0.1 meaning that a priori
+we expect an average difference of 10% between the current and initial fractions not at risk.
+
+3.3
+
+Likelihood for Population Prevalence
+
+In many of the countries with generalized HIV/AIDS epidemics, the data available for calibrating the EPP model consist of estimated prevalences among pregnant women at antenatal
+clinics. We will consider calibration of the EPP model in a country, or a part of a country,
+that is considered to be relatively homogeneous in terms of the pattern of the epidemic.
+UNAIDS often considers the urban areas of a country to form one such part, and the rural
+areas to form another part. Here we assume that the prevalence among the attendees at
+an antenatal clinic gives an unbiased estimate of population prevalence (see discussion in
+Section 5).
+We now derive an output likelihood for the data, namely the antenatal clinic prevalences,
+given the model outputs, namely the population prevalences for each year during the observation period, ρ = (ρ1 , . . . , ρT ), where ρt is the overall population prevalence in year t. The
+data consist of the number of infected women, Yst , and the number of women tested, Nst ,
+for clinic s in year t, for the S clinics s = 1, . . . , S. Data are available for clinic s for years
+t = t(s, 1), . . . , t(s, Ts ), where Ts is the number of years in which data were collected at clinic
+s.
+We denote by γst the prevalence at clinic s in year t. We assume that Yst ∼ Binomial(Nst , γst ),
+and that the Yst are conditionally independent of each other given the γst . Antenatal clinic
+data often include repeated measurements at the same clinic. To account for this repeated
+measurement structure, we approximate the likelihood by modeling Yst on the probit scale
+and using a hierarchical normal linear model. We let Wst = Φ−1 (xst ), where Φ(·) is the
+
+6
+
+standard normal cumulative distribution function, and xst = (Yst + 12 )/(Nst + 1). The constants 21 and 1 in the definition of xst are introduced to avoid problems with zeros, and they
+also have an approximate Bayesian justification because xst would be the posterior mean of
+γst with a noninformative Jeffreys Beta( 12 , 21 ) prior distribution, in the absence of any other
+information.
+Our model is then
+Wst = Φ−1 (ρt ) + bs + εst ,
+
+(5)
+
+iid
+
+(6)
+
+ind
+
+(7)
+
+bs ∼ N(0, σ 2 ),
+εst ∼ N(0, vst ),
+with
+	
+
+vst = 2π exp Φ−1 (γst )2 γst (1 − γst )/Nst .
+
+(8)
+
+In our model (5), bs is the clinic random effect for clinic s, assumed to be constant over time.
+The error term εst approximates the binomial variation. Equation (8) is an approximation
+derived from the binomial distribution of Yst using the delta method.
+Bayesian estimation of the model (5)–(7) requires only a prior for σ 2 , and we use a
+standard Inverse Gamma (α, β) prior. To assess values of α and β we considered the results
+of fitting the model to urban antenatal clinic data from nine countries in sub-Sarahan Africa,
+and chose values of α and β that made this prior distribution spread out enough to amply
+cover the results of the model fits: α = 0.58, β = 93.
+We now use the model (5)–(7) to derive the likelihood of the data W = (W s : s =
+1, . . . , S), where W s = (Wst : t = t(s, 1), . . . , t(s, Ts )), given the population prevalences
+ρ = (ρ1 , . . . , ρT ). This likelihood follows by integrating out the clinic random effects,
+b = (b1 , . . . , bS ), and the random effects variance, σ 2 , as follows:
+Z Z
+p(W |ρ) =
+p(W |ρ, b) p(b|σ 2 )db p(σ 2 ) dσ 2
+(9)
+σ2 b
+)
+Z Z (Y
+S
+=
+p(Ws |ρ, bs ) p(bs |σ 2 ) db p(σ 2 ) dσ 2
+σ2
+
+=
+where As (σ 2 ) =
+
+R QS
+bs
+
+Z
+
+σ2
+
+b
+
+s=1
+
+( S
+Y
+
+2
+
+As (σ )
+
+s=1
+
+s=1 p(Ws |ρ, bs ) p(bs |σ
+2
+
+2
+
+)
+
+p(σ 2 ) dσ 2 ,
+
+) dbs .
+
+The quantity As (σ ) can be evaluated analytically as follows. Let dst = Wst −Φ−1 (ρt ) and
+
+ds = ds,t(s,1) , . . . , ds,t(s,Ts) . Then ds = bs 1Ts + εs , where 1Ts is a Ts -vector of ones and εs =
+
+εs,t(s,1) , . . . , εs,t(s,Ts) . Thus ds ∼ MVNTs (0, Σs ), where Σs = σ 2 J Ts + V s , with J Ts defined
+as a Ts ×Ts matrix all of whose elements are one, and V s = diag (vst : t = t(s, 1), . . . , t(s, Ts )).
+
+It follows that As (σ 2 ) is equal to the MVNTs (0, Σs ) density evaluated at ds . The error
+variance vst is approximated as in (8) with γst = xst .
+7
+
+We have now reduced the integral (9) to a one-dimensional integral. This has no analytic solution and we evaluate it using numerical quadrature, specifically the globally adaptive interval subdivision method (Piessens et al. 1983), as implemented in the R function
+integrate.
+
+3.4
+
+Assessing Model Fit: Predictive distribution for clinical prevalence
+
+We assess the fit of the overall prediction procedure, including the EPP model itself, the
+Bayesian melding estimation method and the approximations we have used in deriving the
+likelihood, using out-of-sample predictive distributions. We are therefore interested in the
+predictive distribution of observed prevalence at clinic s at a future time u > T . Clinicspecific prediction intervals can be used to evaluate the predictive quality of the EPP model
+by forecasting prevalence using data before a given point in time and comparing prediction
+intervals with observed clinic prevalence after that point.
+A sample from the posterior distribution of population prevalence for observed and future
+years, p(ρ|W ), is given by the Bayesian melding output, ρ(1) , . . . , ρ(J) , where now ρ includes
+future prevalences up to year u, so that ρ = (ρ1 , . . . , ρT , . . . , ρu ). The predictive distribution
+of the future transformed observed prevalence at clinic s and time u is
+Z Z
+p(Wsu |bs , ρ) p(bs |ρ, W )dbs p(ρ|W )dρ.
+p(Wsu |W ) =
+ρ
+
+bs
+
+A Monte Carlo approximation to this is
+
+J
+1X
+(j)
+p(Wsu |b(j)
+s , ρu ),
+J j=1
+
+(j)
+
+where bs is one value sampled from p(bs |ρ(j) , W ). This density is proportional to:
+p(bs |ρ(j) , W ) = p(bs |d(j)
+s )
+
+(10)
+
+∝ p(d(j)
+s |bs )p(bs )
+!
+−α− 21
+Ts
+(j)
+1 2 1
+(dst − bs )2
+1X
+,
+b +
+∝ exp −
+2 t=1
+vst
+2 s β
+
+(11)
+(12)
+
+because d(j)
+s |bs ∼ MVNTs (bs 1Ts , V s ) and the prior distribution of bs is proportional to
+1
+
+−α−
+2
+1 2
+1
+b +β
+.
+2 s
+We sample from p(bs |d(j)
+s ) using rejection sampling. Then the predictive distribution of
+
+the transformed observed prevalence is
+(j)
+(j)
+(j) (j)
+Wsu |b(j)
+s , ρu ∼ N(ωu + bs , vsu ),
+(j)
+
+(j)
+
+(j)
+
+(j)
+
+(j)
+
+where ωu = Φ−1 (ρu ), and vsu is given by (8) with γsu = Φ(ωu + bs ). Transforming the
+prevalence back to its original scale gives a sample from the posterior predictive distribution
+of the future observed prevalence.
+8
+
+50
+40
+30
+20
+
+Prevalence(%)
+
+10
+0
+1980
+
+1990
+
+2000
+
+2010
+
+Year
+
+Figure 2: Posterior distribution of urban HIV prevalence in Uganda over time. Each dot is
+an observation, and dots with the same symbol correspond to repeated observations at the
+same clinic. Each grey line is a unique trajectory in the posterior sample of epidemic curves.
+The dashed lines are the 2.5% and 97.5% quantiles, and the solid black line is the median of
+the posterior sample.
+
+4
+
+Results
+
+Data describing prevalence at urban and rural antenatal clinics are available from the Epidemiological Fact Sheets on HIV/AIDS and Sexually Transmitted Infections 2006 at
+http://www.who.int/globalatlas/predefinedReports/EFS2006/index.asp. As an example, we will discuss urban prevalence in Uganda, from where antenatal clinic prevalence
+data are available through 2002. Prevalence was observed at five clinics in Kampala and
+most observations were at two missionary hospitals. Prevalence has been falling since the
+early 1990s, as can be seen from Figure 2, which plots observed prevalence against time.
+We ran the Bayesian melding procedure as described in the previous section for the five
+urban clinics in Uganda. We sampled 200,000 combinations of input parameters from their
+prior distribution. After calculating the likelihood for each of those inputs, we resampled
+3,000 trajectories of which 508 were unique. The trajectory with the largest likelihood was
+resampled 107 times. Figure 2 shows the posterior sample of epidemic curves. The decrease
+in prevalence is projected to continue until around 2015 when it levels off between 0 and 5%,
+with a posterior median of about 1%. Figure 3 shows histograms of the samples of posterior
+predictive prevalence for 2005 and 2010. Although there is considerable uncertainty about
+the prevalence in any given future year, the results clearly predict a continuing overall decline
+in prevalence.
+Figure 4 displays the prior density and the histogram of a sample from the posterior
+distribution of each of the four input parameters. The posterior mean of the rate of infection
+r is 4.5 (95% confidence interval [1.8, 12.4]), meaning that on average each year an infected
+9
+
+0.30
+0.00
+
+0.10
+
+Density
+
+0.20
+
+0.30
+0.20
+
+Density
+
+0.10
+0.00
+0
+
+5
+
+10
+
+15
+
+0
+
+Post. pred. prev. (%) in 2005
+
+5
+
+10
+
+15
+
+Post. pred. prev. (%) in 2010
+
+Figure 3: Sample from the posterior predictive distribution of urban HIV prevalence in
+Uganda in 2005 and 2010.
+
+person infects a number of people equal to between 2 and 12 times the at-risk fraction of the
+population. The posterior median of the start year t0 is 1979 ([1972, 1984]). The fraction
+initially at risk f0 is centered around 0.33 ([0.22, 0.43]). The behavioral response φ is negative
+with a mean of -6.5 (95% confidence interval [-11, -4.6]). This means that as the number of
+AIDS deaths becomes significant, a smaller proportion of 15 year olds are being drawn into
+the at-risk group than at the start of the epidemic.
+Even though they are independent a priori, the four parameters of the EPP model are
+correlated a posteriori. Often the posterior relationship between the parameters is nonlinear.
+For example in Figure 5 the rate of infection r is plotted against the start year of the
+epidemic t0 . This shows the classic “banana shape” often observed in posterior distributions
+of parameters of deterministic simulation models of this kind; see Raftery et al. (1995)
+for other examples. In this case the banana shape of the posterior arises because the data
+contain substantial information about the product of the rate of increase r and the time since
+the start of the epidemic (t − t0 ) but less information on either r or (t − t0 ) individually, as
+can be seen from Figure 4. As a result r · (t − t0 ) is fairly well identified, leading roughly to
+a reflected hyperbola in the plot of the joint posterior distribution of r and t0 .
+To examine the predictive performance of the EPP model we ran the Bayesian melding
+procedure using data describing different truncated historical periods and compared the outof-sample predicted prevalences to the observed prevalences. Figure 6 displays the prediction
+intervals for urban prevalence based on data through 1994, 1998 and 2002. Each grey line is
+a unique trajectory in the posterior sample of epidemic curves, the dotted lines are the 2.5%
+and 97.5% quantiles and the solid black line is the median of the posterior sample for each
+year.
+
+10
+
+6
+0
+
+0.00
+
+2
+
+4
+
+Density
+
+8
+
+0.20
+0.10
+
+Density
+
+0
+
+5
+
+10
+
+15
+
+0.15
+
+0.30
+f0
+
+0.00
+
+0.06
+
+Density
+
+0.06
+0.00
+
+Density
+
+0.12
+
+0.12
+
+r
+
+0.45
+
+1970
+
+1980
+
+−30
+
+t0
+
+−10
+
+10
+
+30
+
+phi
+
+Figure 4: Posterior samples (histograms) and prior densities (solid lines) of input parameters
+for urban prevalence in Uganda: (a) r; (b) f0 ; (c) t0 ; (d) φ
+.
+
+Figure 6a presents results based on observed prevalence through 1994 (the vertical line).
+At that time prevalence was predicted to be declining but there was substantial uncertainty
+about future prevalence. Based on the data through 1994 only, the 95% prediction interval for
+2010 was [0%, 22%] with a median prediction of 1%. The subsequent clinic observations for
+1995–2002 lay well within the posterior intervals for future overall prevalence. (In interpreting
+this result, it should be borne in mind that these bounds give predictive intervals for national
+urban prevalence and not for individual clinic observations.) Based on data through 1998,
+the posterior predictive distribution of prevalence in 2010 was much more concentrated:
+[0%, 6%] instead of [0%, 22%], although the posterior predictive median was unchanged at
+1%; see Figure 6b. Again the subsequent observations lay within the posterior bounds for
+future overall prevalence. Using data through 2002, the 95% prediction interval for 2010 is
+[1%, 7%] with median predicted prevalence of 3%; see Figure 6c.
+The 2010 posterior predictive distributions based on data through 1994, 1998 and 2002
+are shown in Figure 7. As more data became available after 1998, prevalence was no longer
+predicted to decrease to zero.
+To assess the fit of our overall modeling procedure, including the EPP model itself,
+the Bayesian melding method, and the approximations used in deriving the likelihood, we
+compared observed clinic prevalence with its predictive distribution, as described in Section
+11
+
+14
+12
+10
+8
+6
+2
+
+4
+
+Posterior r
+
+1970
+
+1975
+
+1980
+
+1985
+
+Posterior t0
+
+Figure 5: Sample from the joint posterior distribution of the rate of infection and the start
+year for urban prevalence in Uganda
+
+3.4. Figure 8 shows the predictive intervals for the two missionary hospitals in Kampala,
+Nsambya and Rubaga – the other clinics do not have data after 1994. Figures 8a and 8b
+display prediction intervals based on data through 1994, and Figures 8c and 8d display
+the results using data through 1998. For both hospitals at both time points, the observed
+future prevalences lay within their prediction intervals. These results are consistent with
+the statement that the EPP model combined with the Bayesian melding procedure produces
+
+1980
+
+1990
+
+2000
+
+2010
+
+Year
+
+(a) Data through 1994
+
+50
+30
+0
+
+10
+
+20
+
+Prevalence(%)
+
+40
+
+50
+40
+30
+0
+
+10
+
+20
+
+Prevalence(%)
+
+30
+20
+0
+
+10
+
+Prevalence(%)
+
+40
+
+50
+
+reasonable predictive intervals.
+
+1980
+
+1990
+
+2000
+
+2010
+
+Year
+
+(b) Data through 1998
+
+1980
+
+1990
+
+2000
+
+2010
+
+Year
+
+(c) Data through 2002
+
+Figure 6: Posterior urban prevalence in Uganda, based on increasing observation periods.
+
+12
+
+20
+
+30
+
+40
+
+(a) Data through 1994
+
+Density
+0
+
+5
+
+10
+
+15
+
+20
+
+Post. prev. (%) in 2010 (data till 1998)
+
+(b) Data through 1998
+
+0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7
+
+Density
+10
+
+Post. prev. (%) in 2010 (data till 1994)
+
+0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7
+
+0.4
+0.3
+0.2
+
+Density
+
+0.1
+0.0
+0
+
+0
+
+5
+
+10
+
+15
+
+20
+
+Post. prev. (%) in 2010 (data till 2002)
+
+(c) Data through 2002
+
+Figure 7: Histograms of samples from the posterior predictive distributions of urban HIV
+prevalence in Uganda in 2010, based on increasing observation periods.
+
+5
+
+Discussion
+
+In this article we propose using Bayesian melding to obtain probabilistic projections of
+HIV prevalence from the EPP model developed by UNAIDS. EPP generates HIV prevalence
+trends for generalized epidemics and is typically fit to trends in the prevalence of women who
+attend antenatal clinics. For many countries in sub-Saharan Africa this is the only available
+information, a fact that precludes the use of more sophisticated models that require detailed
+information describing the behavioral and biological determinants of an HIV epidemic.
+Using the Bayesian melding procedure, uncertainty about future prevalence is described
+by building probabilistic projections. A random effects model is used to account for differences between clinics, and out-of-sample predictive distributions are derived and compared
+with data to assess the predictive quality of the overall modeling procedure, including the
+EPP model and Bayesian melding.
+We apply our method to Uganda where a relatively long series of antenatal clinic prevalence observations is available. The out-of-sample predictive performance of our method was
+good in this example, which lends support to the use of Bayesian melding for describing
+uncertainty. This also indicates that the relatively simple EPP model itself is effective at
+predicting prevalence, which is reassuring given how widely EPP is used. It also indicates
+that the approximations we used in deriving the likelihood have not unduly affected the
+procedure’s predictive performance. These include our use of a normal distribution on the
+probit scale to approximate the binomial distribution. It would be possible to build a model
+that instead uses the binomial response explicitly, but this would be considerably more complicated, and our results suggest that the gain in performance from doing so would be modest
+at best.
+We base our prevalence predictions on data from antenatal clinics, which is the usual way
+in which the EPP model is used. However it has been convincingly argued that prevalence
+
+13
+
+50
+30
+0
+
+10
+
+20
+
+Prevalence(%)
+
+40
+
+50
+40
+30
+20
+
+Prevalence(%)
+
+10
+0
+
+1990
+
+1995
+
+2000
+
+2005
+
+1990
+
+Year
+
+2000
+
+2005
+
+Year
+
+40
+30
+20
+10
+0
+
+0
+
+10
+
+20
+
+30
+
+Prevalence(%)
+
+40
+
+50
+
+(b) Rubaga, 1994
+
+50
+
+(a) Nsambya, 1994
+
+Prevalence(%)
+
+1995
+
+1990
+
+1995
+
+2000
+
+2005
+
+1990
+
+Year
+
+1995
+
+2000
+
+2005
+
+Year
+
+(c) Nsambya, 1998
+
+(d) Rubaga, 1998
+
+Figure 8: Predictive distributions for the two urban clinics Nsambya and Rubaga in Uganda
+based on data through 1994 and 1998, compared with the actual observations. The dotted
+lines are the 2.5% and 97.5% quantiles and the solid black line is the median of the predictive
+distribution for each year.
+estimates from antenatal clinic data tend to be biased upward. This is true for various
+reasons including the fact that pregnant women tend to have higher HIV prevalence than
+the general population because they are by definition sexually active (Zaba et al. 2000), that
+urban antenatal clinics tend to be public rather than private and consequently oversample
+poorer women who are more likely to be HIV positive, and that rural antenatal clinics tend
+to underrepresent remote rural areas that tend to have lower prevalence and where a large
+fraction of the population often lives (Saphonn et al. 2002; Boerma et al. 2003).
+Nationally representative population surveys have been proposed as an alternative to
+antenatal clinic data, particularly the Demographic and Health Surveys (DHS) (Boerma
+et al. 2003). For countries with national HIV prevalence estimates, a bias term was included
+in the 2005 version of EPP to calibrate the estimates that it produces. There are problems
+with this also. The DHS estimates themselves tend to be biased downward largely due to
+non-response. People not living in households, who are often more likely to be HIV positive,
+including sex workers living in brothels, are underrepresented because the DHS is a household
+survey (Lydie et al. 2004; Zaba et al. 2004; Mishra et al. 2006). The DHS estimates can
+also be highly variable, particularly in low prevalence countries where they may be based on
+a relatively small number of HIV positive cases.
+
+14
+
+Future work will extend Bayesian melding for EPP to take account of the DHS prevalence
+estimates and information describing possible bias in both antenatal clinic and DHS data.
+One possible way of doing this is to add a second likelihood based on DHS data and bias
+terms for both antenatal clinic and DHS data. Priors for the bias terms could be set based
+on data from other countries.
+When constructing HIV projections in the future, the availability and possible effects of
+antiretroviral therapy (ART) will also need to be taken into account. So far the availability
+of ART is very limited and the effects negligible. Recently Botswana and South Africa were
+two of the first countries in sub-Saharan Africa to establish national ART programs. Other
+possible model improvements for EPP include additional parameters to model behavioral
+change; for example time variation in the force of infection to deal with rapid changes in
+behavior occurring in some countries (Ghys et al. 2006). It is not clear that making the
+model more complicated will improve its performance, however; whether or not this is the
+case in the presence of very limited data is an empirical question.
+
+References
+Boerma, J. T., P. D. Ghys, and N. Walker (2003). Estimates of HIV-1 prevalence from
+national population-based surveys as a new gold standard. Lancet 362, 1929–1931.
+Ghys, P. D., T. Brown, N. C. Grassly, G. Garnett, K. A. Stanecki, J. Stover, and N. Walker
+(2004). The UNAIDS Estimation and Projection Package: A software package to estimate and project national HIV epidemics. Sexual Transmitted Infections 80(Suppl I),
+i5 – i9.
+Ghys, P. D., N. Walker, and G. P. Garnett (2006). Improving analysis of the size and
+dynamics of AIDS epidemics. Sexually Transmitted Infections 82(Suppl III), iii34 –
+iii40.
+Grassly, N. C., M. Morgan, N. Walker, G. Garnett, K. A. Stanecki, J. Stover, T. Brown,
+and P. D. Ghys (2004). Uncertainty in estimates of HIV/AIDS: the estimation and
+application of plausibility bounds. Sexual Transmitted Infections 80(Suppl I), i31 –
+i38.
+Lydie, N., N. J. Robinson, B. Ferry, E. Akam, M. De Loenzien, and S. Abega (2004). Study
+group on heterogeneity of HIV epidemics in African cities, mobility, sexual behavior
+and HIV infection in an urban population in Cameroon. Journal of AIDS 35, 67–74.
+Mishra, V., M. Vaessen, J. T. Boerma, F. Arnold, A. Way, B. Barrere, A. Cross,
+H. Rathavuth, and J. Sangha (2006). HIV testing in national population-based surveys: Experience from the Demographic and Health Surveys. Bulletin of the World
+Health Organization 84, 537–545.
+15
+
+Morgan, M., N. Walker, E. Gouws, K. A. Stanecki, and J. Stover (2006). Improving
+analysis of the size and dynamics of AIDS epidemics. Sexually Transmitted Infections 82(Suppl III), iii71 – iii77.
+Piessens, R., E. deDoncker Kapenga, C. Uberhuber, and D. Kahaner (1983). Quadpack:
+a subroutine package for automatic integration. Springer Verlag.
+Poole, D. and A. E. Raftery (2000). Inference for deterministic simulation models: The
+Bayesian melding approach. Journal of the American Statistical Association 95, 1244–
+1255.
+Raftery, A. E., G. H. Givens, and J. E. Zeh (1995). Inference from a deterministic population dynamics model for bowhead whales (with discussion). Journal of the American
+Statistical Association 90, 402–416.
+Rubin, D. (1987). Comment on “The calculation of posterior distributions by data augmentation”, by M.Tanner and W.H.Wang. Journal of the American Statistical Association 82, 543–546.
+Rubin, D. (1988). Using the SIR algorithm to simulate posterior distributions. Bayesian
+Statistics 3, Eds. J.M. Bernardo, et al., Oxford, U.K.: Clarnedon Press, 395–402.
+Saphonn, V., L. B. Hor, S. P. Ly, S. Chhuon, T. Saidel, and R. Detels (2002). How well do
+antenatal clinic (ANC) attendees represent the general population? A comparison of
+HIV prevalence from ANC sentinel surveillance sites with a population-based survey of
+women aged 15–49 in Cambodia. International Journal of Epidemiology 31, 449–455.
+Stover, J. (2004). Projecting the demographic consequences of adult HIV prevalence
+trends: the Spectrum projection package. Sexually Transmitted Infections 80(Suppl
+I), i14 – i18.
+Stover, J., N. Walker, N. C. Grassly, and M. Marston (2006). Projecting the demographic
+impact of AIDS and the number of people in need of treatment: updates to the Spectrum projection package. Sexually Transmitted Infections 82(Suppl III), iii45 – iii50.
+UNAIDS Reference Group on Estimates, Modelling and Projections (2002). Improved
+methods and assumptions for estimation of the HIV/AIDS epidemic and its impact:
+Recommendations of the UNAIDS reference group on estimates, modelling and projections. AIDS 16(9), W1–W14.
+Zaba, B., L. M. Carpenter, J. T. Boerma, S. Gregson, J. Nakijingi, and M. Urassa (2000).
+Adjusting ante-natal clinic data for improved estimates of HIV prevalence among
+women in sub-Saharan Africa. AIDS 14, 2741–2750.
+Zaba, B., M. Marston, R. Isingo, M. Urassa, and P. D. Ghys (2004). How well do crosssectional population surveys measure HIV prevalence? In XV International AIDS
+Conference, Bangkok, 11–16 July, 2004.
+16
+
+

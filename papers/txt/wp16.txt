@@ -1,0 +1,5102 @@
+Bayesian Learning about Ideal Points
+of U.S. Supreme Court Justices, 1953-1999∗
+Andrew D. Martin†
+
+Kevin M. Quinn‡
+
+Center for Statistics and the Social Sciences
+University of Washington
+Working Paper no. 16
+July 23, 2001
+
+Abstract
+
+At the heart of attitudinal and strategic explanations of judicial behavior is the assumption that justices have policy preferences. These preferences have been measured
+in a handful of ways, including using factor analysis and multidimensional scaling techniques (Schubert, 1965, 1974), looking at past votes in a single policy area (Epstein
+et al., 1989), content-analyzing newspaper editorials at the time of appointment to the
+Court (Segal and Cover, 1989), and recording the background characteristics of the justices (Tate and Handberg, 1991). In this manuscript we employ Markov chain Monte
+Carlo (MCMC) methods to ﬁt Bayesian measurement models of judicial preferences for
+all justices serving on the U.S. Supreme Court from 1953 to 1999. We are particularly
+interested in considering to what extent ideal points of justices change throughout their
+tenure on the Court, and how the proposals over which they are voting also change
+across time. To do so, we ﬁt four longitudinal item response models that include dynamic speciﬁcations for the ideal points and the case-speciﬁc parameters. Our results
+suggest that justices do not have constant ideal points, even after controlling for the
+types of cases that come before the Court.
+
+∗
+
+We would like to thank Michael Bailey, Scott Comparato, Lee Epstein, Mark Handcock, Peter Hoﬀ, Rich Pacelle,
+Keith Poole, Adrian Raftery, Kate Stovel, and Steve Van Winkle for useful discussions along the way. All analyses
+were performed on Linux workstations using code written by the authors in C++ using the Scythe Statistical Library
+(Martin and Quinn 2001b). We gratefully acknowledge ﬁnancial support from the Center in Political Economy at
+Washington University. Data for replication can be obtained from the Supreme Court Database website at Michigan
+State University (http://www.ssc.msu.edu/∼pls/pljp/sctdata.html). Documented C++ code for these models will
+be available Fall 2001 at the authors’ websites.
+†
+Department of Political Science, Washington University, Campus Box 1063, One Brookings Drive, St. Louis, MO
+63130-4899, admartin@artsci.wustl.edu
+‡
+Department of Political Science and Center for Statistics in the Social Sciences, Box 354322, University of
+Washington, Seattle, WA 98195-4322, quinn@stat.washington.edu
+
+1
+
+1
+
+Introduction
+
+Whether one adopts an attitudinal (Segal and Spaeth, 1993) or strategic (Eskridge, 1991; Epstein
+and Knight, 1998) theoretical model of decision making on the Supreme Court, the key explanatory
+variables are the policy preferences of the justices. In this paper, we tackle the following question:
+Do ideal points of U.S. Supreme Court justices change over time? There are reasons to believe
+that they do not, as justices are sophisticated politicians, typically with vast experience on the
+bench. In reviewing the literature, Epstein et al. (1998) summarize the conventional wisdom in
+the judicial politics ﬁeld: “[t]he occasional anomaly notwithstanding, most jurists evince consistent
+voting behavior over the course of their careers” (p. 801). On the other hand, it is plausible that
+as justices learn by deciding new and diﬀerent cases, their world view – and thus their ideal points
+– change over time. Recent work by Epstein et al. (1998) demonstrate the the preferences of some
+justices may in fact change systematically over time. Of course, so too do the policy proposals
+that come to the Court, and the types of cases the justices hear. Does this mean that preferences
+change, or that the agenda changes?
+The purpose of this paper is to present a handful of models that can be used to estimate the
+ideal points of Supreme Court justices. This is well-tread methodological ground; in every decade
+since the 1950s, scores of articles have been published that estimate ideal points for legislatures
+and courts using various techniques. The seminal work in the judicial politics subﬁeld is Schubert’s
+The Judicial Mind (1965). He presents a comprehensive look at the attitudes and ideologies of all
+Supreme Court justices serving from the end of the Roosevelt era to the beginning of the Johnson
+administration. His i-points (what we would now term ideal points) and j-points (the case stimuli),
+along with his C scale (political liberalism) and E scale (economics), became an important part
+of the judicial politics vernacular, and let to a “behavioral revolution” in the study of Supreme
+Court decision making. Perhaps the best example in the legislative politics subﬁeld is the work by
+Keith Poole and Howard Rosenthal, who study the entirety of roll call voting in the United States
+House and Senate (Poole and Rosenthal, 1991a, 1997). Not only have their measures informed a
+2
+
+generation of Congress scholars, but the computational tools brought to the problem were quite
+innovative.
+As detailed below, we depart from the existing literature in two fundamental ways. First, we
+explicitly model the longitudinal nature of the data, allowing both ideal points and case-speciﬁc
+parameters to vary systematically over time. This is similar in spirit to the D-NOMINATE model
+proposed by Poole and Rosenthal, but our approach is quite diﬀerent in terms of speciﬁcation and
+estimation strategy. Second, we adopt a Bayesian approach. But for the development of Markov
+chain Monte Carlo (MCMC) methods in the late 1980s and early 1990s, the models we propose
+would have been intractable. Others have performed Bayesian inference for standard item response
+models (Albert, 1992; Patz and Junker, 1999) and item response models applied to congressional
+voting data (Clinton et al., 2000; Jackman, 2001), but to our knowledge no one has developed
+models for multiple cross-sections of votes that ﬂexibly model the temporal dependence that one
+might expect to ﬁnd.1
+The main substantive ﬁndings of this paper are that even after controlling for the dynamics
+of issue creation in the lower courts, there is strong evidence to support the assertion that many
+justices’ revealed preferences have changed (in some cases dramatically) over time. In many cases,
+these dynamics do not appear to be linear or quadratic functions of time. In addition, we ﬁnd
+evidence that the rulings of lower courts that come under review by the Supreme Court have
+generally become increasingly liberal over time. Recently, the rulings of the Supreme Court have
+tended to become more conservative.
+This paper proceeds as follows. In the following section we review other approaches scholars
+have employed to measure judicial preferences. This is followed in Section 3 by a presentation
+1
+
+Bailey and Chang (2001) allow the ideal points of Supreme Court justices to vary across time in their measurement
+model of Supreme Court ideal points. Their model assumes linear or quadratic trajectories based on the conclusions
+of Epstein et al. (1998). As discussed below, the conclusions drawn by Epstein et al. (1998) are open to some criticism;
+and, as a result, so too are the Bailey and Chang (2001) estimates. Additionally, no standard errors are reported
+for the ideal point estimates, so it is unclear whether real trending is taking place. A better approach is to choose a
+functional form that allows the data to speak about which justices’ preferences change over time, as well as the form
+of that change.
+
+3
+
+of the standard item response model which can be employed if justices are assumed to have constant preferences. In Section Four, we assume that ideal points are independent and identically
+distributed across time, and ﬁt a model based on that assumption. This is followed by our ﬁrst
+dynamic model, where we assume that a justice’s ideal point follows a Gaussian random walk. In
+Section Six, we extend this model one step further, and jointly model the dynamics in the ideal
+points and case-speciﬁc parameters. The ﬁnal section concludes with a discussion of directions for
+future research.
+
+2
+
+Measuring Judicial Preferences
+
+Over the last ﬁfty years many scholars have devoted a substantial amount of energy estimating
+ideal points for Supreme Court justices. The reason for this work is clear: regardless of theoretical
+approach, one requires a measure of the ideal policy position of each justice (or the Court, which is
+typically measured using the median justice) to explain judicial behavior. Here we remain agnostic
+as to whether justices behave attitudinally or strategically.2 Like many previous scholars, we are
+interested in estimating the policy preferences of justices. Unlike many others, we are not interested
+in creating a set of preference measures that can be simply plugged into regression models of various
+sorts as either left-hand-side or right-hand-side variables. Indeed, we believe that such approaches
+are often inappropriate since the assumptions often used to construct the measures of preferences
+are inconsistent with aspects of the regression models used by future researchers. Instead, we
+believe that if one wants to make causal inferences about the eﬀects of policy preferences, case
+characteristics, and other relevant independent variables on Supreme Court voting behavior, one
+must specify a structural model derived from theory and ﬁt the resulting model. This is what we
+pursue in this paper.
+The ﬁrst generation of research relating to ideal point estimation grew from the work of Schubert
+(1959). Schubert (1965) applied various scaling models to votes on the Court, and ﬁnds two primary
+2
+
+The attitudinal model is based on psychological stimulus-response models, while strategic approaches are based
+on economic rational actor models. Both can be viewed in terms of the spatial voting model (Downs, 1957; Enelow
+and Hinich, 1984), where each actor has an ideal point and votes for the policy alternative closest to that point. For
+expositional economy, we employ the parlance of the spatial voting model throughout this paper.
+
+4
+
+dimensions – political and economic liberalism – that explain votes on the merits for the Court
+from the late 1940s to the early 1960s. Nine years later, Schubert (1974) again ﬁnds that these two
+dimensions structure behavior through the Vinson and Warren Courts. The use of latent variable
+models to measure ideal points continued in the work of Rohde and Spaeth (1976), who ﬁnd three
+dimensions that structure the Warren Court and ﬁrst ﬁve terms of the Burger Court: freedom,
+equality, and what they term “New Dealism,” and Spaeth (1990) who considers civil liberties subscales on the Burger Court. In this vein, Martin and Quinn (2001a) ﬁt item response models
+to data from the seventh Burger Court. They develop models speciﬁcally suited to mediate the
+‘micro-committee problem’ that plagues the study of the Supreme Court.
+A similar approach relies on using past behavior in a policy area to explain votes in the same
+policy area in the future. Epstein et al. (1989) look at ﬁnal case decisions in all criminal justice
+cases before the Supreme Court between 1946 and 1986, and gauge the preferences of the Court
+by using the percentage of pro-criminal rights decisions in the previous term. Similarly, Segal and
+Spaeth (1989) report the fraction of liberal decision on civil liberties and economic cases for all
+justices serving between 1953 and 1985. They ﬁnd a great deal of variance within and between
+these two salient dimensions.
+Other scholars have developed a handful of novel measures not based on the votes of the justices:
+Segal and Cover (1989) content analyze newspaper editorials at the time of appointment to the
+Court, and Tate and Handberg (1991) record background characteristics of the justices. The most
+widely used of these measures are the Segal and Cover (1989) scores, which were updated by Segal
+et al. (1995) to include the Bush appointees, and backdated for seven Roosevelt and four Truman
+nominees. Epstein and Mershon (1996) perform a “methodological audit” of this measure, and
+demonstrate that it should only be used for their designed purpose: explaining aggregated civil
+liberties votes. It is interesting to note that these scores explain less than 20% of the variance in
+economics cases, the other salient dimension documented in previous scholarship.
+A key theoretical assumption on which both attitudinal and strategic models of Supreme Court
+5
+
+behavior rest is the idea of preferences being ﬁxed over time. The work of Schubert (1974), Baum
+(1988), Segal and Cover (1989), and many others suggest that the ideal points of justices rarely
+change. Epstein et al. (1998) challenge this notion, and seek to discover whether or not preferences
+do change. The preference measure they employ is the Baum-corrected percentage of each justice’s
+votes in the liberal direction on civil liberties cases in each term (Baum, 1988). This correction
+subtracts the median diﬀerence between a justice in the previous term and the current term from all
+justices, and is geared to control for agenda changes. Of the sixteen justices under study, Epstein
+et al. ﬁnd nine justices that exhibit changes over time. Not only did they include the justices
+which previous studies have demonstrated change over time, such as Black (Ulmer, 1973; Atkins
+and Sloope, 1986), Douglas (Ulmer, 1981), and Blackmun (Baum, 1992), but they also included
+some surprises like Frankfurter and Powell. Some justices – not surprisingly many of which are
+at the ends of the ideological spectrum – demonstrated no change, such as Brennan, Burger, and
+Marshall.
+There are some weaknesses of the Epstein et al. (1998) study which make its conclusions somewhat suspect. First, without explicitly modeling case-speciﬁc parameters, it is impossible to know
+whether the Baum correction adequately controls for the changing nature of the cases that are
+heard by the Court. Second, the dependent variable in the analysis (percent liberal on civil liberties cases) is treated as if it is a known quantity. However, with the small number of cases
+heard in each term, it is important to account for the inherent uncertainty in the measure. Third,
+this approach makes the theoretical assumption that ideal points are independent and identically
+distributed across terms. This is theoretically problematic, as we would expect some continuity
+in each justices’ outlook. Finally, this approach is not based on a fully parameterized statistical
+model, which makes inference diﬃcult.
+As Epstein et al. (1998) argue, whether or not the ideal points of Supreme Court justices change
+over time is a very important issue. The answer to the question will dictate the manner in which
+future scholars should measure preferences. If it is the case that ideal points do change, this has
+6
+
+profound implications for how all sorts of future research should be conducted, and it calls into
+question previous research ﬁndings. In this paper we pursue this question in the context of item
+response modeling. We begin by positing four theoretical models of judicial decision making across
+time, and then directly operationalize them into statistical models. Such a structural model has the
+property that if the theoretical model is correct, thus implying that the posited statistical assumptions hold, then such a model can explain votes in terms of preferences even though preferences are
+treated as latent variables.3
+
+3
+
+Modeling Supreme Court Decision Making
+
+Our focus in this paper are the T = 47 terms of the Court from 1953 to 1999. In this preliminary
+model, we assume that during this time period each justice has a ﬁxed ideal point.4 We obtain
+our data from The United States Supreme Court Judicial Database (Spaeth, 1999). We select all
+non-unanimous cases that are either formally decided cases with written opinions after full oral
+argument or cases decided by an equally divided vote.5 This results in votes for J = 29 justices
+who served in this time period. On a given case, at most nine justices cast a vote. A grand total
+of K = 3210 cases were decided, with an average of sixty-eight cases per term. The most active
+Courts sat during the 1972 and 1986 terms, deciding ninety-eight cases. The least active was the
+1996 term that decided only forty-one cases.
+The observed data matrix Y is thus a (K × J) matrix of votes and missing values. We can also
+partition this matrix by term t, and thus discuss the submatrices Yt. We code all votes as either
+being in favor of reversing (yk,j = 1) or aﬃrming (yk,j = 0) the decision of a lower court.6 A total
+3
+
+This focus on a uniﬁed structural model of voting and preference estimation is also found in Clinton et al. (2000).
+One key tenet of the strategic approach is that justices may behave in a non-sincere fashion. If it is the case
+justices are behaving strategically, their revealed preferences may not be the same as their sincere preferences. If
+one believes the attitudinal model, our estimates could be viewed as true ideal points. If one believes the strategic
+model, our estimates should be viewed as revealed preferences (which are likely to change over time due to strategic
+considerations).
+5
+The unit of analysis is the case citation (ANALU=0). We select cases where DEC TYPE equals 1 or 5, and drop
+all cases when VOTE equals 40, 50, 60, 70, 80, and 90. It would be possible to include unanimous decisions in our
+analysis if one is willing to ﬁx a priori the discrimination and diﬃculty parameters for these cases.
+6
+We use the disposition variable DIS in the Supreme Court Date Base to code aﬃrmances and reversals. An
+aﬃrmance (DIS=1) or a certiﬁcation to a lower court (DIS=9) are coded as aﬃrmances. Cases that are coded as
+reversed (DIS=2), reversed and remanded (DIS=3), vacated and remanded (DIS=4), ﬁve plus remanded (DIS=6),
+vacated (DIS=7), or petition denied or appeal dismissed (DIS=8) are coded as reversals.
+4
+
+7
+
+of 2018 lower court cases were reversed, while 1162 were aﬃrmed. Using the disposition variable
+in the Supreme Court Database, we are able to ﬂip the vote variables to form the data matrix.
+The data matrix thus contains zeros, ones, and missing values (in fact, most of the data matrix is
+missing data, as only nine justices sit on the Court in a given term). As discussed below, we use
+data augmentation to deal with missing data.
+
+3.1
+
+The Attitudinal Model Formalized
+
+Let Kt ⊂ {1, 2, . . . , K} denote the set of cases heard in term t. Similarly, let Jk ⊂ {1, 2, . . . , J}
+denote the set of justices who heard case k. We are interested in modeling the decisions made
+in terms t = 1, . . . , T on cases k ∈ Kt by justices j ∈ Jk in a D-dimensional issue space.7 Our
+assumption is that each justice’s vote is an expressive action and depends only on the value the
+justice attaches to the policy positions of the status quo and the policy alternative. Put another
+way, a justice will vote to aﬃrm the decision of the lower court if the utility the justice attaches to
+the status quo is greater than the utility the justice attaches to the alternative, regardless of the
+expected actions of the other actors.
+To operationalize this model, we begin by writing down random utility functions. Let
+(a)
+
+(a)
+
+(a)
+
+uk,j = −θ j − xk 2 + δk,j
+
+be the utility to justice j ∈ Jk of voting to aﬃrm on case k ∈ Kt in term t, and
+(r)
+
+(r)
+
+(r)
+
+uk,j = −θ j − xk 2 + δk,j
+
+be the utility to justice j ∈ Jk of voting to reverse on case k ∈ Kt in term t. θ j is justice j’s
+ideal point in the D-dimensional issue space. Note that we assume that each justice’s ideal point
+(a)
+
+is constant across terms. We thus call this model the “constant ideal point model.” xk
+
+is the
+
+(r)
+
+location of the policy under an aﬃrmance vote, xk is the location of the policy under a reversal,
+(a)
+
+(r)
+
+and δk,j and δk,j are Gaussian disturbances with zero mean and variances τa2 and τr2 respectively.
+7
+
+We derive the model for a D-dimensional issue space, although we only present results for the one-dimensional
+case (D = 1). For examples of multi-dimensional models, see Martin and Quinn (2001a) and Jackman (2001).
+
+8
+
+(r)
+
+(a)
+
+Given this spatial model, justice j will vote to reverse on case k when uk,j > uk,j or equivalently
+(r)
+
+(a)
+
+(r)
+
+(a)
+
+when uk,j − uk,j > 0. Let zk,j be the diﬀerence between uk,j and uk,j . We can write and simplify
+this utility diﬀerence zk,j as follows:8
+(r)
+
+(a)
+
+(r)
+
+(r)
+
+(a)
+
+(a)
+
+zk,j = uk,j − uk,j = −θ j − xk 2 + δk,j + θ j − Xk 2 − δk,j
+
+
+ 
+
+ 
+
+(r) 
+(r)
+(r)
+(a) 
+(a)
+(a)
+= − θ j − xk
+θ j − xk + δk,j + θ j − xk
+θ j − xk − δk,j
+ (r)
+
+ (a)
+
+= −θ j θ j + 2θ j xk − xk xk + δk,j + θ j θ j − 2θ j xk + xk xk − δk,j
+ 
+
+
+ 
+
+ (r) (r)
+(a) (a)
+(r)
+(a)
+(r)
+(a)
+= xk xk − xk xk + 2θ j xk − xk + δk,j − δk,j
+(r)
+
+(r)
+
+(r)
+
+(a)
+
+(a)
+
+(a)
+
+(1)
+
+= αk + βk θ j + εk,j
+Here αk is a scalar, β k is a D × 1 column vector, and θ j is a D × 1 column vector. Given this
+model, justice j will vote to aﬃrm on case k when zk,j > 0.
+
+3.2
+
+A Multi-Dimensional Item Response Model
+
+The process of translating the spatial voting model above (presented in Equation 1) into a statistical
+model begins by noting the relationship between the spatial voting model and our observed data.
+For observed votes, we assume that:
+
+yk,j =
+
+1 if zk,j > 0
+0 if zk,j ≤ 0
+
+(2)
+
+Where:
+zk,j = αk + β k θ j + εk,j
+
+iid
+
+εk,j ∼ N (0, 1).
+
+(3)
+
+Note that we have ﬁxed the variance of εk,j to one since this variance and the other model parameters
+are not separately identiﬁed in the likelihood. This is a typical assumption; e.g., one makes this
+assumption for the standard probit model for a dichotomous dependent variable.
+To form a probability model, we assume that:
+iid
+
+yk,j |αk , βk , θj ∼ Bernoulli(πk,j ).
+8
+
+Clinton et al. (2000) derive the same expression in the context of a model of legislative voting and go on to show
+the link with standard item response models.
+
+9
+
+Taken together, Equations 2 and 3 imply that πk,j = Φ(αk + β k θ j ) where Φ(·) is the standard
+normal cumulative distribution function. Thus, the sampling density of the observed data is:
+f (Y|α, β, θ) ∝
+
+T  
+
+
+1−yk,j
+
+Φ(αk + β k θ j )yk,j 1 − Φ(αk + βk θ j )
+
+t=1 k∈Kt j∈Jk
+
+We must deﬁne some additional notation to present our estimation strategy. Letα denote the
+stacked αk ∀ k ∈ {1, 2, . . . , K}, β to denote the stacked β k ∀ k ∈ {1, 2, . . . , K}, and θ denote
+the stacked θ j ∀ j ∈ {1, 2, . . . , J}. Bayesian inference for the justices’ ideal points θ and the case
+parameters α and the β proceeds by summarizing the posterior density given by:
+p(α, β, θ|Y) ∝ f (Y|α, β, θ)p(α, β, θ)
+where p(α, β, θ) represent our prior beliefs about these parameters.
+
+3.3
+
+Identiﬁcation and Prior Distributions
+
+It is well known that item response models suﬀer from identiﬁcation problems (see, for example,
+Albert, 1992; Johnson and Albert, 1999). The ﬁrst problem is called scale invariance. The parameters of interest α, β, and θ are identiﬁed only up to an arbitrary scale factor. Thus, one must
+anchor the scale on which ideal points are measured, just like one would ﬁx a scale to measure any
+quantity. In the Bayesian context, one typically ﬁxes the scale invariance problem by assuming a
+proper probability density function for the bliss points θ. The standard prior distribution for the
+iid
+
+ideal points is to assume θ j ∼ N (t0 , T0 ) for all justices j = 1, . . . , J. We assume independent
+standard Normal priors on the ideal points (t0 = 0 and T0 = ID ). For an alternative informative
+prior based on the ordering of the justices, see Martin and Quinn (2001a).
+An additional identiﬁcation problem is called rotational invariance. For the one-dimensional
+case under consideration (D = 1), multiplying all of the model parameters by negative one would
+not change the value of the likelihood function. Substantively, the model cannot determine what
+direction is liberal or conservative; i.e., should William Rehnquist be given a large positive or large
+negative score? We also remedy this problem by using prior distributions. We assign zero prior
+
+10
+
+probability that Marshall falls above zero, which forces us to estimate a conservatism measure, and
+thus ﬁxes rotational invariance.9
+So far we have discussed prior distributions for the bliss points θ, but it is also necessary to
+assign prior probabilities to the α and β parameters. The standard approach is to assume that
+these are drawn from normal distributions. In other words:
+
+
+αk
+∼ ND+1 (b0 , B0 ) ∀ k ∈ {1, . . . , K}
+βk
+In most applications, estimating these parameters is straightforward when there are many actors under study (whether students in the educational testing literature, or legislators in political
+science). However, when studying the Supreme Court, it becomes clear that estimating these parameters will be quite diﬃcult because only nine justices vote on each case. For each case, we must
+estimate (D + 1) case-speciﬁc parameters using essentially a probit model with nine observations.
+Our experience demonstrates that reliably estimating these parameters, using either frequentist
+or Bayesian methods, is impossible without additional information. For remedies to this ‘microcommittee problem’ for cross-sectional data, see Martin and Quinn (2001a). This problem is not
+unique to studying the Supreme Court. Londregan (2000b) studies legislative committees in Chile,
+and uses information about the agenda process to solve the problem.
+We are interested in the posterior density of the standard item response model, which simpliﬁes
+to the following given the priors above:
+p(θ, α, β|Y) ∝ f (Y|α, β, θ)p(θ)p(α,
+
+ β)
+1−yk,j 
+
+	
+	T 	
+×
+∝ t=1 k∈Kt j∈Jk Φ(αk + βk θ j )yk,j 1 − Φ(αk + β k θ j )
+	J
+	K
+k=1 p(ηk )
+j=1 p(θj )
+
+(4)
+
+For η k = (αk βk ) . As will become more apparent below, it will be useful to reexpress Equation 4
+as:
+
+p(θ, α, β|Y) = p(Z, θ, α, β|Y)dZ
+ 	T 	
+	K
+	J
+	
+=
+t=1
+k=1 p(ηk )
+j=1 p(θj )dZ
+k∈Kt
+j∈Jk {fN (zk,j |µk,j , 1)I(zk,j , yk,j )}
+9
+
+Londregan (2000a) discusses an additional identiﬁcation problem relating to likelihood based inference. Due to
+granularity of the voting data, estimates of the ideal points and case parameters are not jointly likelihood-identiﬁed.
+This problem does not plague the Bayesian approach due to the imposition of a prior distribution.
+
+11
+
+Where µk,j = αk + β k θ j , and I(a, b) is an indicator function equal to 1 when a > 0 and b = 1,
+or when a < 0 and b = 0, or when b is unobserved, and is equal to 0 otherwise. As we will see
+below, conditioning on the latent utility diﬀerences allows us to recast the item response model for
+a dichotomous response variable as a factor analysis model for a (latent) continuous response. The
+integration over Z is easily accomplished in the simulation methods we employ by sampling from
+the joint posterior distribution p(Z, θ, α, β), and then ignoring the draws of Z (Albert and Chib,
+1993; Johnson and Albert, 1999).
+
+3.4
+
+Markov chain Monte Carlo for the Constant Ideal Point Model
+
+The Gibbs sampling algorithm for this item response model contains three conditional distributions
+from which we iteratively sample. All of them take standard forms. To aid in exposition, we need
+to deﬁne two additional quantities. First, let θ ∗j = (1 θ j ) denote a (D + 1) × 1 column vector
+that contains a constant followed by the ideal point estimate. Second, we deﬁne θ ∗ to be the
+J × (D + 1) matrix formed by stacking the transpose of these elements for all j. The full conditional
+distributions are:
+1. f (Z|Y, θ, η). For terms t = 1, 2, . . . , T , cases k ∈ Kt, and justices j ∈ Jk , we simulate the
+latent utilities from the following distribution:
+
+
+if yk,j = 1
+ N[0,∞) (αk + β k θ j , 1)
+N(−∞,0] (αk + βk θ j , 1) if yk,j = 0
+f (zk,j |yk,j , θ j , αk , βk ) =
+
+if yk,j is unobserved
+N (αk + βk θ j , 1)
+N[a,b] denotes the Gaussian distribution truncated on the interval [a, b]. This is the standard
+set-up for estimating a probit model with missing data from Albert and Chib (1993) [see also
+Johnson and Albert, 1999].
+2. f (η|Y, Z, θ). For all cases k ∈ Kt we simulate the case-speciﬁc parameters η k from a (D + 1)variate Normal distribution:
+f (ηk |Y, Z, θ) = ND+1 (e, E)
+
+12
+
+ 
+
+ 
+−1
+−1
+∗ ∗
+Where e = E θ ∗ zk,· + B−1
+b
+θ
++
+B
+, and zk,· is the column vector of latent
+,
+E
+=
+θ
+0
+0
+0
+utilities for all justices on case k.
+3. f (θ|Y, Z, η). For all justices j ∈ {1, 2, . . . , J} we simulate their ideal point from a D-variate
+Normal distribution:
+f (θ j |Y, Z, η) = ND (t, T)
+
+
+−1
+
+t
+, and z·,j is a (1 × K) row vector of
+, T = β β + T0
+Where t = T β (α − z·,j ) + T−1
+0
+0
+latent utilities of member j across all cases and terms.
+One iterates a large number of times from these conditional distributions, using draws from the
+previous conditionals as updating values. This is a generalization of the Albert (1992) and Johnson
+and Albert (1999) algorithms to a D-dimensional issue space (see also Clinton et al., 2000; Jackman,
+2001).10 This algorithm requires a substantial amount of looping. In fact, for each iteration of the
+sampler Step 1 requires 93090 draws, Step 2 requires 3210 draws, and Step 3 requires 29 draws.
+We thus cannot rely on an interpreted language to estimate the model. This model, and all other
+models presented in this paper, are estimated in C++ using the Scythe Statistical Library (Martin
+and Quinn, 2001b).
+
+3.5
+
+Results for the Constant Ideal Point Model
+
+We summarize the posterior densities of the ideal points θ j in Table 1.11 The ﬁrst two columns
+of the table contain the posterior means and posterior medians for the justices. In nearly all cases
+these are the same. It is worth noting that the scale ranges from Douglas – a notorious liberal –
+on the far left (-6.513) to Clarence Thomas on the far right (3.909). Prima facie these results are
+sensible; Marshall, Warren, Brennan, and Fortas are on the left, Harlan, Burger, Rehnquist, and
+Scalia are on the far right. The posterior standard deviations in the third column can be thought
+of like standard errors in the classical setting. For the most part, these standard deviations are
+10
+
+Patz and Junker (1999) develop a similar algorithm for a one-dimensional model with a logit link function.
+These models were run for 200,000 Gibbs scans after 5000 burn-in scans. Standard diagnostics performed on the
+posterior samples suggests that the chain has reached steady state.
+11
+
+13
+
+quite small compared to the scale on which the justices are placed. Moderates are estimated with
+the greatest precision (such as Stewart, Clark, O’Connor, and Souter), while for extremists the
+estimates are somewhat less precise. This is intuitive, as it is much easier to discriminate those
+at the middle of the ideological spectrum. The ﬁnal two columns of the table contain the 95%
+Bayesian credible intervals for the ideal points, again illustrating the precision which with they are
+estimated.
+How does this measure compare to existing measures of judicial preferences? We ﬁrst correlate
+our measure with the percent conservative voting on civil rights, civil liberties, economics, and
+federalism cases across a justices’ career (these measures, as well as the percent liberalism scores
+below, are taken from Epstein et al., 2001). This is in the spirit of the methodological audit of
+Epstein and Mershon (1996). The results are quite interesting: the posterior means correlate with
+these issue areas at -0.86, -0.84, -0.73, and -0.52 respectively (J = 29). These clearly out-perform
+the scores of Segal and Cover (1989), which correlate at 0.63, 0.60, 0.43, 0.33 (J = 29). If one is
+willing to assume that ideal points are constant across time, employing these posterior means or
+medians as measures would be appropriate, although it would be vital to at least average over the
+a posteriori uncertainty of the measures, and ideally write down a full structural model and treat
+ideal points as latent data (Clinton et al., 2000). The measure also correlates highly with Schubert’s
+(1974) C-scale (0.74) and E-scale (0.58) [J = 17], and Rohde and Spaeth’s (1976) freedom (-0.81),
+equality (-0.75), and New Deal (-0.85) scales [J = 18].
+One advantage of performing Bayesian inference is that it is straightforward to summarize
+the posterior density of quantities of interest other than the parameters. One quantity of great
+substantive importance is the location of the median justice. We began by asking: Which justice is
+the over-all median justice from 1953-1999? Conditional on the constant ideal point model being
+true, there is a 50.6% chance that White is the median justice, and a 47.1% chance that Stewart
+is the median justice. Five other justices have non-zero posterior probabilities of being the over-all
+median: Clark, Reed, Minton, Jackson, and Souter.
+14
+
+The real quantity of interest, though, is the term-by-term median of the Court. These are
+valuable not only to study the policy outputs of the Court and bargaining on the Court, but also
+how the Court might relate to other institutions in the separation of powers system. In Figures 1
+and 2 we display the estimated posterior probability that each justice is the median justice in a
+given term. Since the ideal points are constant, the median will only change when there is personnel
+change on the Court. At the beginning of our study Minton has the highest probability of being
+the median justice, who is followed by Clark, who is the median justice up until 1962, when Black
+becomes the median. Interestingly, by the mid-1960s, Chief Justice Earl Warren is the median
+justice. This changes in 1970, when White becomes the median justice with probability around
+55% from 1970 to 1980, and then over 90% from 1980 to 1990. Throughout the 1990’s, O’Connor
+or Kennedy are most likely to be the median justice. If one is willing to make the assumption
+that preferences are indeed constant, these results should be very compelling. We question this
+assumption, however, and now turn to results for models that allow ideal points to change over
+time.
+
+4
+
+Independent Ideal Point Model
+
+The model ﬁt in the previous section presumes that each justices’ ideal point θ j is constant throughout their career on the high bench. This is a very strict assumption, and as suggested by Epstein
+et al. (1998), Baum (1988), and Ulmer (1981), may be entirely inappropriate. One alternative is to
+assume that a justices’ ideal point θ j are independent and identically distributed across the course
+of their careers. Substantively this is a bit troubling, as it in essence implies that judges have no
+memory about their past behavior, and that their current behavior does not in any way depend on
+the past. However, this independent ideal point model serves as a baseline for our ﬁnal two models.
+
+4.1
+
+A Modiﬁed Gibbs Sampling Algorithm
+
+This model is essentially the same as the constant ideal point model except for the fact that the
+θ j are indexed by time θ t,j . Our goal is now to estimate an ideal point for each term in which a
+
+15
+
+iid
+
+particular justice served. We again assume Normal priors for the ideal points: θ t,j ∼ N (t0,t, T0,t)
+(t0,t = 0 ∀ t and T0,t = ID ∀ t). One could just as easily employ informative Gaussian priors on
+the ideal points, such as having diﬀerent prior means for each justice. To estimate these additional
+parameters we only have to change the MCMC algorithm above in some minor ways. In Step 1,
+one has to merely substitute θ t,j for θ j in the update. In Step 2, one stacks θ t,j into a term-speciﬁc
+θ ∗t , which are employed in the updates. To complete the sampler, Step 3 requires simulating the
+θ t,j term-by-term. The conditional distribution is:
+f (θ t,j |Y, Z, η) = ND (t, T)
+
+
+−1
+
+t
+and T = β t βt + T0,t . Note that zt,·,j contains the
+Where t = T βt (αt − zt,·,j ) + T−1
+0,t
+0,t
+stacked utilities for all cases in term t for justice j, and αt and βt contain the stacked case parameters
+in term t.
+
+4.2
+
+Results from the Independent Ideal Point Model
+
+We summarize the posterior densities of the θ t,j in Figures 3 and 4. For each justice, the thick, dark
+line denotes the posterior mean, and the light lines ± 2 posterior standard deviations.12 What is
+immediately apparent in these ﬁgures is that the term-to-term changes for a particular justice are
+quite small. If it were the case that ideal points were in fact independent and identically distributed,
+we would expect there to be some large term-to-term ﬂuctuations. The implication is that there is
+a persistent component to these ideal points that should be modeled to get better estimates, not
+only of the ideal points, but also case parameters and other quantities of interest.
+We do see some interesting trending in these plots. Harlan seems to get more conservative
+toward the middle of his career, and then becomes moderate. Marshall trends more and more
+toward liberal throughout his career, as does Blackmun (a Nixon appointee who by the time he
+retired was one of the most liberal justices on the high bench). Stevens and Souter also look to
+become more liberal after 1990, after President Bush bolstered the conservative wing with the
+12
+This model was run for 200,000 scans after 5000 burn-in scans. Standard convergence tests suggest that the chain
+has reached steady state.
+
+16
+
+appointment of Clarence Thomas. Consistent with the ﬁndings of Ulmer (1973) and Atkins and
+Sloope (1986), Black seems to trend toward conservatism. Douglas, however, does not appear to
+become more liberal over time (c.f., Ulmer, 1981). These ﬁgures suggest that for at least some
+justices, ideal points change substantially over time. However, the statistical assumptions on which
+this model is based are faulty, and we must turn to a modeling strategy that allows for persistence.
+
+5
+
+Dynamic Ideal Point Model
+
+Assuming that each a justice’s ideal point at time t is independent of her ideal point at t − 1 is
+clearly problematic. And, as demonstrated in the previous section, leads to rather unsatisfactory
+estimates of the ideal points of the justices. A much better substantive assumption is that the ideal
+points follow a random walk process. This strikes a balance between the overly strong assumptions
+of both the constant ideal point model and the independent ideal point model, and allows for
+a wide range of temporal patterns. In this section, we propose such a model that uses a statespace representation to model the temporal evolution of the ideal points. We employ the forward
+ﬁltering, backward sampling algorithm of Carter and Kohn (1994) and Fr¨
+uhwirth-Schnatter (1994)
+[also discussed in West and Harrison (1997), Section 15.2.3] to estimate the ideal points.13
+This model begins with the same latent utility speciﬁcation:14
+zt,k,j = αk + βk θt,j + εt,k,j
+
+iid
+
+εt,k,j ∼ N (0, 1)
+
+We adopt the standard multivariate normal prior over the case-speciﬁc parameters:
+
+
+αk
+βk
+
+
+∼ N2 (0, I) ∀ k ∈ {1, 2, . . . , K}
+
+The model diﬀers in the structure of the prior on θt,j . For time period zero (which is unobserved),
+we assume that:
+θ0,j ∼ N (s0,j , S0,j )
+13
+
+For an excellent introduction to time series and dynamic modeling in the Bayesian context we recommend West
+and Harrison (1997). Chapters 2-4 contain a discussion of dynamic linear models (DLMs). Chapter 15 presents
+MCMC algorithms for DLMs. Our exposition here follows their account closely.
+14
+Here we restrict ourselves to the D = 1 case for concreteness. Since the usual dynamic linear model DLM results
+apply equally to scalar and vector state variables (West and Harrison, 1997), it is easy to re-specify and ﬁt the
+following model for the D > 1 case.
+
+17
+
+We model the dynamics of the ideal points with a separate random walk prior for each justice:
+θt,j ∼ N (θt−1,j , σθ2t,j ) for t = T j , . . . , T j and justice j on the Court
+T j is the ﬁrst term justice j served, and T j is the last term j served. We do not estimate ideal
+points for terms in which a justice did not serve. sj,0 is set equal to 0 for all justices except:
+Harlan, Douglas, Marshall, Brennan, Frankfurter, Fortas, Rehnquist, Scalia, and Thomas. Their
+prior means at time zero were set to 1, -3, -2, -2, 1, -1, 2, 2.5, and 2.5 respectively. S0,j was set
+to 1 for all justices except the aforementioned nine. Their prior variances at time zero were set to
+0.1. These informative priors were used to identify the model, thus ameliorating both the scale and
+rotational invariance problems. σθ2t,j was set equal to 0.1 for all justices except Douglas. Because
+of the small number of cases that Douglas heard towards the end of his career, it was necessary to
+use a more informative value of σθ2t,j = 0.001 to help identify his sequence of ideal points.
+
+5.1
+
+Estimation of Dynamic Ideal Points via MCMC
+
+Estimating this model is also a straightforward application of the Gibbs sampling algorithm. The
+ﬁrst two conditional distributions are precisely the same as those for the independent ideal point
+model. The only update that changes is that for the θt,j . Here we employ a state-space representation and use the forward ﬁltering, backward sampling algorithm of Carter and Kohn (1994) and
+Fr¨
+uhwirth-Schnatter (1994) to sample from f (θ ·,j |α, β, Z), where θ ·,j now represents the vector
+of j’s ideal points over his/her career (recall that we are estimating a one-dimensional dynamic
+model). Let Θj = {θ 0,j , θT j ,j , θT j +1,j , . . . , θT j ,j }. Further, let Dt denote all information available
+at time t. Given the assumed Markov dependence in the prior for θ ·,j is easy to show that the full
+conditional posterior density for Θj given Dt can be decomposed as follows:
+p(Θj |Dt) = p(θ T j ,j |DT j )p(θT j −1,j |θT j ,j , DT j −1 ) · · · p(θT j ,j |θ T j +1,j , DT j )p(θ0,j |θ T j ,j , D0 )
+This forms the basis of the forward ﬁltering, backward sampling sampling algorithm. In this
+context, this amounts to a three step process for each justice.
+
+18
+
+1. For t = T j , . . . , T j calculate the quantities at , Rt, st, St.
+2. Sample θT j ,j from N (sT j ,j , ST j ,j ).
+3. For t = (T j − 1), (T j − 2), . . . , T j sample θt,j from N (ht , Ht).
+In the forward ﬁltering stage of the algorithm (Step 1), it is necessary to compute the following
+quantities. First is at, which is the prior mean of θt,j given the information available at time t − 1,
+and Rt which is the prior variance of θt,j given the information available at time t − 1. These
+quantities are deﬁned as:
+at = st−1
+Rt = St−1 + σθ2t,j
+Next is st , which is the posterior mean of θt,j given the information available at time t (not
+the marginal mean given all the data), and St , which is the posterior variance of θt,j given the
+information available at time t (not the marginal variance given all the data). These quantities are
+deﬁned as:
+st = at + Atet
+St = Rt − AtQt At
+
+Where At = Rtβ k Q−1
+t , et = zt,·,j − αk − β k at , and Qt = β k Rt β k + I. Step 2 of the algorithm is
+
+just a draw using the quantities above.
+Step 3 of the algorithm is the backward sampling part of the algorithm. Using the quantities
+computed above, we sample down from t = T j − 1 to t = T j , backwards through the justices’
+career. The mean and variance for the Normal update is:
+ht = st + Bt (θt+1,j − at+1 )
+Ht = St − Bt2 Rt+1
+
+19
+
+Where Bt = St R−1
+t+1 , the the posterior variance of θt,j given the information available at time t
+divided by its prior variance given the information available at time t − 1. The beneﬁt of this
+algorithm over more direct Gibbs sampling approaches is that it allows us to sample Θj directly
+in one piece rather than sampling component by component. Given the generally high correlations
+between the components of Θj (which is why we are ﬁtting this dynamic model to begin with),
+component by component approaches mix very slowly. This algorithm is even more computationally
+intensive than that in the previous section, as for each scan of the sampler we use this forward
+ﬁltering, backward sampling approach for each justice.
+
+5.2
+
+Results from the Dynamic Ideal Point Model
+
+We now turn to the results for the dynamic ideal point model.15 In Figures 5 and 6 we summarize
+the posterior densities of the justices’ ideal points throughout their careers. Again the thick, dark
+line represents the posterior mean, and the light lines are ± 2 posterior standard deviations away
+from the posterior mean. The most striking diﬀerence between these results and those for the
+independent ideal point model is that the trajectories are smoother. This, of course, is a result
+of the random walk process used to model the ideal points. Again we see some trending. Harlan
+again follows a parabolic trajectory. Black, Scalia, and Thomas trend towards conservatism, while
+Marshall, Brennan, Blackmun, Stevens, and Souter trend towards liberalism. Again Blackmun is
+the most striking example, beginning well right of center and retiring well left of center. It seems
+that Epstein et al. (1998) are correct in their conclusion that some justices are moving over time,
+although these results suggest that the number of justices with non-constant ideal points is not
+nearly as great as they conclude.
+How does this measure fare against the Epstein and Mershon (1996) validity test? In short,
+very well. We present the term-by-term correlations between the posterior mean ideal points
+from the dynamic model with percent conservative decisions in Figure 9. To make the ﬁndings
+15
+
+This model was run for 100,000 iterations after 5000 burn-in iterations. Standard convergence tests suggest that
+the chain has reached steady state.
+
+20
+
+consistent with Epstein and Mershon (1996), the term-by-term measures are correlated with the
+percent conservative decisions for the entire justices’ career. This is quite sensible, as term-by-term
+percentages are often based on a very small number of cases. Looking across the cells it is clear
+that the model does exceedingly well, particularly for civil liberties and civil rights case. It also
+does quite well in economics cases, which is the major weakness of the Segal and Cover scores
+(1989). It also does well in federalism cases except for a few terms around 1970, and throughout
+the 1990s. This is suggestive of perhaps a second issue dimension that structures decision making
+in federalism cases during this time period. Not coincidentally, these are both time periods when
+“new federalism” was being considered in the executive and legislative branches respectively. When
+comparing these correlations with those from the constant model, it is clear that the dynamic model
+does a superior job.
+For the dynamic ideal point model we also explore the identity of the median justice in each
+term. These posterior probabilities are presented in Figures 7 and 8. Frankfurter is the median
+justice in 1953, followed by Clark, then Stewart, then Goldberg, then Black. Brennan is likely the
+median in a handful of terms in the 1960s. From the late 1960s to the early 1990s, White is the
+median justice in a good number of terms, although Stewart, Blackmun, and Powell are medians in
+certain terms. Finally, in the 1990s, O’Connor and Kennedy again appear to be the median justice,
+except for the 1989 term when it is likely Souter.
+The identity of the median justice is interesting, but so too is the location of the median on
+the estimated issue dimension. In Figure 10 we summarize the posterior density of the location of
+the median justice in each term. During the early Warren Courts, until 1961 when White joined
+the Court, the median is quite conservative. This changed in the 1962 term, with the addition of
+Goldberg, and later on in the decade Fortas and Marshall. There is a break from liberalism in the
+1969 term, when Nixon nominated Burger to replace Warren. With that nomination, and then the
+nomination of Blackmun in 1970, and Powell and Rehnquist in in 1971, the Court became quite
+conservative. It trended toward a more moderate position, but that changed with the O’Connor
+21
+
+appointment by President Reagan. The Court became more conservative during the late Reagan
+years, grew somewhat more moderate during the Bush administration, and then became somewhat
+more conservative during the Clinton years. The most conservative Court sat in the 1988 term.
+The most liberal sat in 1967. On face, these results are quite compelling. Perhaps it is the case,
+though, the agenda changes over time account not only for the trends in justices’ ideal points, but
+also in the location of the median justice. In the following section we model the case parameters
+over time to not only study the content of the cases reaching the Court, but also to see if controlling
+for them impacts the inferences we draw about the ideal points of the justices.
+
+6
+
+Dynamic Ideal Point and Case Parameter Model
+
+The results from the previous section are quite interesting. Many justices seem to be trending
+over time. But perhaps this is an artifact of the types of cases that are being heard by the Court
+rather than true preference change. The results above are conditioned on the fact that the αk and
+β k case parameters are a priori independent and identically distributed from standard Normal
+distributions. Just as this assumption was problematic for the ideal points, it is also troublesome
+for the case parameters. Additionally, we have information available to us – the federal circuit from
+which the case originated – that we can employ to better model these parameters.
+Recall that the utility diﬀerence between a reversal vote and an aﬃrmative vote for justice j
+on case k in term t can be written as:
+(r)
+
+(a)
+
+zt,k,j = ut,k,j − ut,k,j
+
+
+
+
+
+(a) (a)
+(r) (r)
+(r)
+(a)
+= xt,k xt,k − xt,k xt,k + 2θ t,j xt,k − xt,k + ,t,k,j
+(r)
+
+(a)
+
+While the xt,k and the xt,k parameters are not identiﬁed in the likelihood, they can be identiﬁed
+in the posterior if informative priors are used for these parameters as well as the ideal points. This
+is the approach we employ here. As in the previous section, we assume independent random walk
+priors for the ideal points:
+θt,j ∼ N (θt−1,j , σθ2t,j )
+Where σθ2t,j is assumed known for all j, t. Just as before, we assume θ0,j ∼ N (s0,j , S0,j )
+22
+
+Instead of assuming priors over the case-speciﬁc parameters (αk and β k ), we now parameterize
+the prior in terms of the aﬃrm and reversal points. For the policy positions under aﬃrmance, we
+assume:
+(a)
+
+xt,· |γ t ∼ N (Ctγ t , σx2(a) I)
+And:
+γ t ∼ N (γ t−1 , Σ t )
+(a)
+
+(a)
+
+Where xt,· is the vector of stacked xt,k ∀k ∈ Kt, and Ct is a matrix of dummy variables indicating
+the originating lower court for each case in term t.16 γ t is a coeﬃcient vector that estimates the
+mean position of the cases originating from each court of origin, σx2(a) is the prior variance of each
+(a)
+
+xt,k , and Σ t is the prior variance covariance matrix of γ t . We assume that σx2(a) and Σ t are
+known a priori. We also assume that γ 0 ∼ N (g0 , G0 ). This prior allows us to estimate the mean
+location of the policy proposals made by each circuit court.
+(r)
+
+For the reversal point xt,k , we assume a hierarchical prior that depends on the ideal point of
+the reversal opinion writer (if known):
+(r)
+xt,k
+
+
+N (θt,wk , σx2(r) )
+∼
+N (0, σx2(r) )
+
+if opinion writer known
+if opinion writer not known
+(r)
+
+(r)
+
+Where wk is the index of the justice who wrote xt,k and σx2(r) is the prior variance of xt,k which
+is assumed known. What this prior is saying substantively is that if the opinion writer is known,
+the reversal opinion likely resides near her ideal point. When the majority of the Court reverses
+an opinion of a lower Court, Spaeth (1999) codes the majority opinion writer. In the cases when
+the Court aﬃrms, the opinion writer supporting the reversal position is not known, so we assume
+a priori that the reversal point has mean zero and variance σx2(r) .
+16
+
+We cull these covariates from the Supreme Court Database. We assume that political geography matters, and
+thus cases the originate in lower federal courts or state courts in the twelve federal circuits are similar. This is a
+reasonable assumption: cases from lower courts in Texas or the Texas Supreme Court are likely to look like those from
+the Appeals Court of the Fifth Circuit. We thus employ the SOURCE variable from the Supreme Court Data Base,
+and use it to create thirteen dummy variables: one for each of the eleven circuits (note that the Eleventh Circuit was
+established in October, 1981 when the Fifth Circuit was split). The twelfth variable represents the DC circuit. Other
+miscellaneous federal courts, cases that arose under original jurisdiction, etc. comprise the ﬁnal category (there is no
+constant term).
+
+23
+
+6.1
+
+Conditional Distributions
+
+Conditional on the latent utility diﬀerences Z, we can write the posterior density for this model as:
+f (θ, x(a), x(r), γ|Z) ∝ f (Z|θ, x(a), x(r))f (x(a)|γ)f (γ)f (x(r)|θ)f (θ)
+Where x(a) and x(r) denote the stacked aﬃrmance and reversal positions for all k respectively. The
+full conditional densities are:
+
+if yk,j,t = 1
+ N[0,∞)(µt,k,j , 1)
+(a) (r)
+(µ
+, 1) if yk,j,t = 0
+N
+p(zt,k,j |θ, x , x , γ) =
+ (−∞,0] t,k,j
+if yk,j,t is unobserved
+N (µt,k,j , 1)
+
+(5)
+
+p(γ|Z, θ, x(a), x(r)) ∝ p(x(a)|γ)p(γ)
+
+(6)
+
+p(θ|Z, γ, x(a), x(r)) ∝ f (Z|θ, x(a), x(r))p(x(r)|θ)p(θ)
+
+(7)
+
+p(x(a), x(r)|Z, γ, θ) ∝ f (Z|θ, x(a), x(r))p(x(a)|γ)p(x(r)|θ)
+
+(8)
+
+Where the mean
+
+
+
+
+(a) (a)
+(r) (r)
+(r)
+(a)
+µt,k,j = xt,k xt,k − xt,k xt,k + 2θ t,j xt,k − xt,k
+is now deﬁned as a function of the reversal and aﬃrmance points instead of the case-speciﬁc
+parameters. The densities in Equation 5 are all easily simulated from (see the baseline constant
+ideal point model). The density in Equation 6 is the product of a Gaussian density and a random
+walk prior, and so can be simulated from using standard methods for dynamic linear models (now
+with covariates), as discussed in the previous section (West and Harrison, 1997). The densities in
+Equations 7 and 8 are nonstandard, and are best simulated from using Metropolis-Hastings steps.
+
+6.2
+
+Sampling Form p(θ|Z, γ, x(a), x(r))
+
+The full conditional for θ ·,j is similar to the corresponding full conditional for the dynamic ideal
+point model discussed in the previous section, except that now the term p(x(r)|θ) appears. This
+additional term makes the resulting full conditional non-standard. As a result, the forward ﬁltering, backward sampling algorithm for sampling θ no longer applies directly. Instead, we use a
+independent Metropolis-Hastings step [see Chib and Greenberg (1995), Robert and Casella (1999)].
+
+24
+
+To begin, note that the full conditional for justice j’s ideal points is independent of justice j  ’s
+ideal points for all j and j  . This allows us to sample each justice’s ideal points independently of
+one another. The target density for justice j is:
+(r)
+
+p(θ ·,j |z·,j , γ, x(a), x(r)) ∝ f (z·,j |θ·,j , x(a), x(r))p(xj |θ·,j )p(θ·,j ),
+(r)
+
+Where xj
+
+(9)
+
+denotes the reversal opinions that j authored.
+
+The independent Metropolis-Hasting algorithm is implemented by sampling a candidate value
+(can)
+
+of θ ·,j (denoted θ j
+
+(can)
+
+) from a candidate generating density, q(θj
+
+(cur)
+
+). We let θ j
+
+denote the
+
+current value of θ ·,j . The candidate value is accepted with probability:
+
+min
+
+(can)
+
+|z·,j , γ, x(a), x(r)) q(θj
+
+(cur)
+
+|z·,j , γ, x(a), x(r)) q(θ j
+
+p(θ j
+
+p(θ j
+
+(cur)
+
+)
+
+(can)
+
+)
+
+
+, 1
+
+(10)
+
+Our choice of candidate generating density is the following:
+(can)
+
+q(θj
+
+(can)
+
+) ∝ f (zj |θj
+
+(can)
+
+, x(a), x(r))p(θj
+
+)
+
+(11)
+
+Note that a candidate value can be sampled from this density using exactly the same forward
+ﬁltering, backward sampling algorithm used in dynamic ideal point model in the previous section.
+Substituting this choice of q(·) into Equation 10 reveals that the acceptance probability becomes:
+
+min
+
+6.3
+
+p(xj |θ j
+
+(r)
+
+(can)
+
+)
+
+(r)
+
+(cur)
+
+)
+
+p(xj |θ j
+
+
+, 1
+
+(12)
+
+Sampling From p(x(a), x(r)|Z, γ, θ)
+(a)
+
+(r)
+
+We use a random walk Metropolis step to sample from the full conditional distribution of {xk , xk }
+given the other model parameters. The candidate generating density is a bivariate student-t density
+(a)
+
+(r)
+
+centered at the current value of {xk , xk }. Given the latent zk,· , the target density is simply the
+product Gaussian densities:
+(a) (r)
+p(xt,k , xt,k |zt,k , γ, θt,· )
+
+∝
+
+Jt
+
+
+fN (zt,k,j |µt,k,j , 1)p(x(a)|γ)p(x(r)|θ t,·)
+
+j=1
+
+25
+
+Where µt,k,j is deﬁne above, and θ t,· denotes the stacked θ t,j for all justices j. With the symmetric
+candidate generating densities the Metropolis acceptance probability is:
+
+
+ p(x(a)(can), x(r)(can)|zt,k , γ, θ t,·) 
+t,k
+t,k
+min
+, 1
+ p(x(a)(cur), x(r)(cur)|zt,k , γ, θt,·) 
+t,k
+
+t,k
+
+To estimate the full dynamic ideal point and case parameter model, we iteratively sample from
+these three blocks along with the block for the latent utilities.
+
+6.4
+
+Results from the Dynamic Ideal Point and Case Parameter Model
+
+We report the estimated ideal points for the justices in Figures 11 and 12.17 The prior probabilities
+for the θ t,j are the same as those for the dynamic ideal point model above. We adopt an informative
+prior over the mean locations of the circuits γ 0 at time t = 0. We base our priors on a conversation
+with an expert on the federal appeals courts: Steve Van Winkle (SUNY Stony Brook). The most
+liberal circuits are the 2nd, 1st, and 9th, with prior means -0.5, 0.0, and 0.5 respectively. The
+DC circuit is assigned a prior mean of 0.6. The moderate circuits – the 6th, 7th, and 8th, all
+are assigned prior means of 0.7. For the conservative circuits, the 10th is assigned mean 0.8, the
+4th 1.0, the 3rd 1.1, and the 5th 1.4. The prior variance for these quantities is Σ 0 = 0.1 I.
+In our dynamic speciﬁcation, we must only assign priors for the initial state – the rest of the
+dynamics are determined by the data and the prior distribution at t = 0. Based on our conversation
+with the expert, we further expect there to be a structural break in 1983. We model this by
+assuming Σ 1983 = 0.1 I, while Σ t = 0.01 I for all other time periods. In essence this allows for a
+discontinuity in the evolution of the circuit court means (the γ t s) to occur in 1983. This is allowing
+for two years of percolation time from both the newly created 11th circuit (when the 5th was split
+in October, 1981), and for the eﬀect of Reagan’s initial appointees. It is well known that President
+Reagan was the ﬁrst president to aggressively screen judges for the lower bench, in eﬀect neglecting
+the past norm of senatorial courtesy.18
+17
+
+This model was run for 200,000 iterations after 20,000 burn-in iterations. Standard convergence tests suggest that
+the chain has reached steady state. This took approximately six days on a dedicated Pentium 933 Linux workstation
+using compiled and optimized C++ code.
+18
+Due to time constraints we have not been able to adequately assess prior sensitivity for this model. We have,
+(r)
+(a)
+however, ﬁt models in which the prior distribution of xk is uniform between xk and the ideal point of the justice
+
+26
+
+The results are quite striking. Again, many justices seem to trend over time. Just as with
+the dynamic model discussed above, Harlan demonstrates a parabolic trajectory, Black trends to
+conservatism, as does Frankfurter and Scalia. Many justices trend toward liberalism in both models:
+Marshall, Brennan, Blackmun, Stevens, Souter, and Ginsburg. For the most part, these dynamics
+mirror those of the dynamic ideal point model. This suggests that after controlling for case stimuli,
+many the ideal points of justices do in fact trend over time. How do these results compare to Epstein
+et al. (1998)? Of the seven justices they assert have constant preferences over time, our results
+diﬀer for Brennan, Harlan, Marshall, and Stewart. Of the remaining nine that they conclude trend
+over time, our results diﬀer for Clark, White, and Warren. It seems clear that without modeling
+case-speciﬁc parameters and controlling for case stimuli, it is quite diﬃcult to ascertain whether or
+not preferences change over time. Nonetheless, our major substantive conclusion agrees with that
+of Epstein et al. (1998): preferences of many Supreme Court justices do in fact change over time.
+It is interesting to look at the position of the median justice along the estimated dimension from
+1953 to 1999 (the posterior probabilities that a particular justice is the median is substantively quite
+similar to that in the previous section). We plot the posterior densities of the median justice in
+Figure 13. The results here are quite interesting. The early Warren courts were, on an absolute
+scale, the most conservative. The late Warren courts were the most liberal. The Burger and
+Rehnquist courts were certainly more conservative than the Warren courts, but, particularly in
+the 1990s, not as conservative as we might have expected (and which was suggested by the other
+models). This is not entirely surprising, as either O’Connor (or perhaps Kennedy) is likely the
+median justice. Further, many of the cases coming before the Court were decided by lower courts
+in fairly moderate directions. This is another reason to dynamically model the case parameters
+across time; to compare justices across time on an absolute scale, one has to control for temporal
+changes in the inputs to the system.
+It is also of interest to know where the lower federal courts are setting the status quo point for
+(r)
+
+who wrote xk . We have found the dynamics to be strikingly similar. This suggests that the data is in fact quite
+informative, and thus the prior is not driving the inference.
+
+27
+
+the Supreme Court; i.e., the policy reversion if the Court votes to aﬃrm. We plot these posterior
+densities in Figure 14. Again, the thick, dark line denotes the posterior mean, and the light lines
+are ± 2 posterior standard deviations away from the posterior mean. Many of the circuits exhibit
+a similar pattern: tending toward conservatism in the 1950s, becoming more liberal throughout
+the 1960s and 1970s, and slowly returning to conservatism in the 1980s, and turning slightly more
+liberal in the late 1990s. This pattern, which follows presidential politics quite well (with a time
+lag), is apparent for the 1st (New England), 2nd (New York, Vermont, and Connecticut), 4th (the
+mid-Atlantic states), 9th (the west coast), and DC circuits. Some circuits trend toward liberalism
+until the early-to-mid 1980s, and then either level out or start becoming increasingly conservative.
+The 3rd (Pennsylvania, New Jersey, and Delaware), the 5th (the deep South before 1981, and
+Texas, Louisiana, and Mississippi thereafter), the 6th (the Midwest), the 8th (the plains states),
+and the 10th (the Rocky Mountain states) follow this pattern. Overall, the 4th, 5th, 10th and 11th
+circuits are most conservative. It is also worth noting that while imposing a structural break in
+1983 a priori, there is little evidence of such a break in the data. One could argue that Reagan’s
+disregard for Senatorial courtesy was either counter-balanced by the increasing liberalization of
+society, or only manifested itself after a considerable time lag.
+
+7
+
+Discussion
+
+The results from these four models are quite informative, and have taught us a great deal about the
+Supreme Court. Some of the ﬁndings support those of previous research. Others are substantively
+more unique. The most important substantive conclusion to draw is that the ideal points of Supreme
+Court justices do change over time. This is not a universal phenomenon, but it is certainly the
+case that the preferences of some justices change over time even when controlling for the types of
+cases that come before the Court. This implies that a constant measure of judicial preferences –
+such as the measure of Segal and Cover (1989) – is not appropriate for explaining longitudinal
+judicial decision making. Our ﬁndings also demonstrate that the ﬁnal conclusion of Epstein et al.
+(1998) that judicial preferences change is correct, but our results demonstrate that the identity of
+28
+
+the changing justices and the temporal patterns that they exhibit are very diﬀerent. In addition
+to presenting posterior standard deviations (standard errors) for all measures, we also learned the
+identity and the location of the median justice on the Court during each term. Finally, we learned
+about the types of decisions that were selected out of each of the federal circuits by the Justices on
+the Supreme Court.
+We have also learned a great deal about the modeling strategies, in particular for dynamical
+systems. First, it is clearly important to account for persistence, as the results of both dynamic
+models illustrate. At a minimum, to understand how any social system works, it is vital to control
+for diﬀerent inputs to the system. Since the Supreme Court is an appellate court, it is necessary
+to control for the cases coming before it. Second, we have shown two advantages of adopting
+a Bayesian approach: (a) we were able to incorporate prior information to not only identify a
+statistical model, but also to bring additional information, such as the ideological predispositions
+of the federal appeals courts, to bear on the problem of estimating judicial ideal points; (b) we
+were able to estimate complex and ﬂexible models using Markov chain Monte Carlo methods.
+Finally, we have demonstrated the beneﬁts of using a compiled language, such as C++, to estimate
+computationally intensive, yet substantively meaningful models.
+This research is only the ﬁrst step of a research agenda. Others might be tempted to use our
+estimates as independent or dependent variables in other analyses. The better approach, which
+we leave for future research, is to write down a full structural decision making model, treating
+the ideal points as missing data. Such an approach is straightforward in a Bayesian context, and
+conditional on the modeling assumptions being true, allows for one to test various theories of
+decision making while also estimating the ideal points of the actor under study. Nonetheless, we
+have provided estimates that we hope others will ﬁnd useful in their research. Another important
+step is explaining the causes of the dynamics we observe. Why do justices’ ideal points change
+over time? Is this some psychological process, or do revealed preferences change with diﬀerent
+compositions of the Court, or perhaps because of separation of powers concerns? Why do the
+29
+
+circuits change ideologically? Is this simply due to replacement on the bench, or due to strategic
+concerns about en banc or Supreme Court review? We can incorporate suitable covariates in the
+statistical models to test for these explanations, or perhaps employ existing data about decision
+making in the Federal Courts of Appeal. Finally, there is additional data that can be brought to
+the problem. In particular, having data about the cert process would be quite informative about
+not only the status quo and alternative points, but also how a minority of the Court goes about
+setting the agenda. Such data is available in a limited form, but to date no comprehensive data
+base of cert votes publicly available.
+
+References
+Albert, James H. 1992. “Bayesian Estimation of Normal Ogive Item Response Curves Using Gibbs
+Sampling.” Journal of Educational Statistics 17(Fall):251–269.
+Albert, James H., and Siddhartha Chib. 1993. “Bayesian Analysis of Binary and Polychotomous
+Response Data.” Journal of the American Statistical Association 88(June):669–679.
+Atkins, Burton M., and Terry Sloope. 1986. “The ‘New’ Hugo Black and the Warren Court.” Polity
+18:621–637.
+Bailey, Michael, and Kelly Chang. 2001. “Comparing Presidents, Senators, and Justices: Interinstitutional Preference Estimation.” Journal of Law, Economics, and Organization, forthcoming
+.
+Baum, Lawrence. 1988. “Measure Policy Change in the United States Supreme Court.” American
+Political Science Review 82(September):905–912.
+Baum, Lawrence. 1992. “Membership Change and Collective Voting Change in the United States
+Supreme Court.” Journal of Politics 54(February):3–24.
+Carter, C. K., and R. Kohn. 1994. “One Gibbs Sampling for State-Space Models.” Biometrika
+81(September):541–533.
+Chib, Siddhartha, and Edward Greenberg. 1995. “Understanding the Metropolis-Hastings Algorithm.” The American Statistician 49(November):327–336.
+Clinton, Joshua, Simon Jackman, and Douglas Rivers. 2000. “The Statistical Analysis of Legislative Behavior: A Uniﬁed Approach.” Paper presented at the Annual Meeting of the Political
+Methodology Society.
+Downs, Anthony. 1957. An Economic Theory of Democracy. New York: Harper & Row.
+Enelow, James, and Melvin Hinich. 1984. The Spatial Theory of Voting: An Introduction. Cambridge: Cambridge University Press.
+Epstein, Lee, Valerie Hoekstra, Jeﬀrey A. Segal, and Harold J. Spaeth. 1998. “Do Political Preferences Change: A Longitudinal Study of U.S. Supreme Court Justices.” Journal of Politics
+60(Augut):801–818.
+
+30
+
+Epstein, Lee, and Jack Knight. 1998. The Choices Justices Make. Washington, DC: CQ Press.
+Epstein, Lee, and Carol Mershon. 1996. “Measuring Political Preferences.” American Journal of
+Political Science 40(February):261–294.
+Epstein, Lee, Jeﬀrey A. Segal, Harold J. Spaeth, and Thomas G. Walker. 2001. The Supreme Court
+Compendium: Data, Decisions, and Developments, Second Edition. Washington, DC: CQ Press.
+Epstein, Lee, Thomas G. Walker, and William J. Dixon. 1989. “The Supreme Court and Criminal Justice Disputes: A Neo-Institutional Perspective.” American Journal of Political Science
+33(November):825–841.
+Eskridge, William N. 1991. “Overriding Supreme Court Statutory Interpretation Decisions.” Yale
+Law Journal 101(November):331–417.
+Fr¨
+uhwirth-Schnatter, Sylvia. 1994. “Data Augmentation and Dynamic Linear Models.” Journal of
+Time Series Analysis 15:183–202.
+Jackman, Simon. 2001. “Multidimensional Analysis of Roll Call Data via Bayesian Simulation:
+Identiﬁcation, Estimation, Inference and Model Checking.” Political Analysis, forthcoming .
+Johnson, Valen E., and James H. Albert. 1999. Ordinal Data Modeling. New York: Springer.
+Londregan, John. 2000a.
+8(Winter):35–56.
+
+“Estimating Legislators’ Preferred Points.”
+
+Political Analysis
+
+Londregan, John. 2000b. Legislative Institutions and Ideology in Chile’s Democratic Transition.
+Cambridge: Cambridge University Press.
+Martin, Andrew D., and Kevin M. Quinn. 2001a. “Estimating Latent Structures of Voting for
+Micro-Committees, with Application to the U.S. Supreme Court.” Paper presented at the Annual
+Meeting of the Midwest Political Science Association.
+Martin, Andrew D., and Kevin M. Quinn. 2001b.
+http://scythe.wustl.edu/.
+
+“Scythe Statistical Library, Release 0.1.”
+
+Patz, Richard J., and Brian W. Junker. 1999. “A Straightforward Approach to Markov Chain Monte
+Carlo Methods for Item Response Models.” Journal of Educational and Behavioral Statistics
+24(Summer):146–178.
+Poole, Keith T., and Howard Rosenthal. 1991a. “Patterns of Congressional Voting.” American
+Journal of Political Science 35(February):228–278.
+Poole, Keith T., and Howard Rosenthal. 1997. Congress: A Political-Economic History of Roll-Call
+Voting. Oxford: Oxford University Press.
+Robert, Christian P., and George Casella. 1999. Monte Carlo Statistical Methods. New York:
+Springer.
+Rohde, David W., and Harold J. Spaeth. 1976. Supreme Court Decision Making. San Francisco:
+W. H. Freeman.
+Schubert, Glendon. 1959. Quantitative Analysis of Judicial Behavior . Glencoe, IL: Free Press.
+Schubert, Glendon. 1965. The Judicial Mind: The Attitudes and Ideologies of Supreme Court
+Justices, 1946-1963 . Evanston: Northwestern University Press.
+
+31
+
+Schubert, Glendon. 1974. The Judicial Mind Revisited: Psychometric Analysis of Supreme Court
+Ideology. London: Oxford University Press.
+Segal, Jeﬀrey A., and Albert D. Cover. 1989. “Ideological Values and the Votes of U.S. Supreme
+Court Justices.” American Political Science Review 83(June):557–565.
+Segal, Jeﬀrey A., Lee Epstein, Charles M. Cameron, and Harold J. Spaeth. 1995. “Ideological Values
+and the Votes of U.S. Supreme Court Justices Revisited.” Journal of Politics 57(August):812–
+823.
+Segal, Jeﬀrey A., and Harold J. Spaeth. 1989. “Decisional Trends on the Warren and Burger Courts:
+Results from the Supreme Court Data Base Project.” Judicature 73(June-July):103–107.
+Segal, Jeﬀrey A., and Harold J. Spaeth. 1993. The Supreme Court and the Attitudinal Model .
+Cambridge: Cambridge University Press.
+Spaeth, Harold J. 1990. “The Dimensions of Civil Liberties Decision Making on the Burger Court.”
+In Studies in U. S. Supreme Court Behavior ( Harold J. Spaeth, and Saul Brenner, editors), New
+York: Garland, pp. 184–194.
+Spaeth, Harold J. 1999. United States Supreme Court Judicial Database, 1953-1998 Terms [Computer File] . Ann Arbor, MI: Inter-University Consortium for Political and Social Research, 15th
+edition.
+Tate, C. Neal, and Roger Handberg. 1991. “Time Binding and Theory Building in Personal Attribute Models of Supreme Court Voting Behavior, 1916-88.” American Journal of Political
+Science 35(May):460–480.
+Ulmer, S. Sidney. 1973. “The Longitudinal Behavior of Hugo Lafayette Black: Parabolic Support
+for Civil Liberties, 1937-1971.” Florida State University Law Review 1.
+Ulmer, S. Sidney. 1981. “Parabolic Support of Civil Liberties Claims: The Case of William O.
+Douglas.” In Courts, Law, and Judicial Processes ( S. Sidney Ulmer, editor), New York: Free
+Press.
+West, Mike, and Jeﬀ Harrison. 1997. Bayesian Forecasting and Dynamic Models. New York:
+Springer.
+
+32
+
+Justice
+Harlan
+Black
+Douglas
+Stewart
+Marshall
+Brennan
+White
+Warren
+Clark
+Frankfurter
+Whittaker
+Burton
+Reed
+Fortas
+Goldberg
+Minton
+Jackson
+Burger
+Blackmun
+Powell
+Rehnquist
+Stevens
+O’Connor
+Scalia
+Kennedy
+Souter
+Thomas
+Ginsburg
+Breyer
+
+Post. Mean
+1.545
+-1.304
+-6.513
+0.403
+-2.002
+-1.643
+0.407
+-1.478
+0.160
+1.112
+1.078
+1.183
+1.140
+-1.609
+-1.011
+0.987
+1.132
+1.468
+-0.073
+0.809
+2.914
+-0.553
+1.309
+2.433
+1.293
+0.209
+3.909
+-0.227
+-0.180
+
+Post. Median
+1.540
+-1.303
+-6.504
+0.402
+-1.998
+-1.640
+0.407
+-1.476
+0.159
+1.108
+1.073
+1.178
+1.129
+-1.597
+-1.005
+0.979
+1.090
+1.466
+-0.073
+0.807
+2.906
+-0.552
+1.309
+2.422
+1.289
+0.209
+3.888
+-0.225
+-0.179
+
+Post. Std.
+0.124
+0.101
+0.593
+0.053
+0.113
+0.077
+0.044
+0.109
+0.068
+0.120
+0.143
+0.165
+0.213
+0.248
+0.194
+0.225
+0.494
+0.097
+0.043
+0.067
+0.176
+0.052
+0.085
+0.200
+0.104
+0.083
+0.432
+0.109
+0.117
+
+BCI
+2.5% 97.5%
+1.315 1.809
+-1.510 -1.109
+-7.691 -5.363
+0.299 0.511
+-2.231 -1.784
+-1.797 -1.496
+0.322 0.496
+-1.696 -1.277
+0.026 0.295
+0.879 1.354
+0.806 1.374
+0.879 1.517
+0.741 1.586
+-2.134 -1.151
+-1.414 -0.656
+0.556 1.454
+0.276 2.308
+1.287 1.657
+-0.157 0.009
+0.679 0.943
+2.582 3.277
+-0.658 -0.453
+1.145 1.475
+2.071 2.848
+1.103 1.507
+0.048 0.367
+3.105 4.781
+-0.444 -0.016
+-0.419 0.044
+
+Table 1: Posterior density summary of ideal points of U.S. Supreme Court Justices, 1953-1999, for
+the constant ideal point model.
+
+33
+
+1970
+
+1980
+
+1990
+
+0.8
+0.4
+0.0
+
+2000
+
+1960
+
+1970
+
+1980
+
+Marshall
+
+Brennan
+
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Warren
+
+Clark
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Whittaker
+
+Burton
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Fortas
+
+Goldberg
+
+2000
+
+1960
+
+1970
+
+1980
+
+term
+
+1990
+
+2000
+
+1990
+
+2000
+
+0.4
+0.0
+
+0.8
+0.4
+0.0
+
+0.8
+0.4
+
+term
+
+1990
+
+0.8
+
+Reed
+
+Pr(median justice)
+
+term
+
+Pr(median justice)
+
+term
+
+1980
+
+2000
+
+0.4
+
+2000
+
+term
+
+1970
+
+1990
+
+0.0
+
+0.8
+0.4
+0.0
+
+0.8
+0.4
+
+1990
+
+0.8
+
+Frankfurter
+
+Pr(median justice)
+
+term
+
+Pr(median justice)
+
+term
+
+1980
+
+2000
+
+0.4
+
+2000
+
+term
+
+1970
+
+1990
+
+0.0
+
+0.8
+0.4
+0.0
+
+0.8
+
+1990
+
+2000
+
+0.8
+
+White
+
+Pr(median justice)
+
+term
+
+Pr(median justice)
+
+term
+
+1980
+
+1990
+
+0.4
+
+2000
+
+term
+
+1970
+
+2000
+
+0.0
+
+0.8
+0.4
+0.0
+
+0.8
+0.4
+
+1970
+
+1990
+
+0.8
+
+Stewart
+
+Pr(median justice)
+
+term
+
+Pr(median justice)
+
+term
+
+0.0
+
+1960
+
+Pr(median justice)
+1960
+
+term
+
+0.0
+
+1960
+
+0.8
+
+2000
+
+0.4
+
+1960
+
+0.4
+
+Pr(median justice)
+1990
+
+Douglas
+
+0.0
+
+0.8
+0.4
+
+1980
+
+0.0
+
+Pr(median justice)
+
+1960
+
+Pr(median justice)
+
+1970
+
+0.0
+
+Pr(median justice)
+
+1960
+
+Pr(median justice)
+
+Black
+
+0.0
+
+Pr(median justice)
+
+Harlan
+
+1960
+
+1970
+
+1980
+
+term
+
+Figure 1: Estimated posterior probabilities that each justice in a given term is the median justice
+on the Court for the constant ideal point model, Justices Harlan-Goldberg.
+34
+
+1970
+
+1980
+
+1990
+
+0.8
+0.4
+0.0
+
+2000
+
+1960
+
+1970
+
+1980
+
+Powell
+
+Rehnquist
+
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+O’Connor
+
+Scalia
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Souter
+
+Thomas
+
+2000
+
+1960
+
+1970
+
+1980
+
+Ginsburg
+
+Breyer
+
+1980
+
+term
+
+1990
+
+2000
+
+1990
+
+2000
+
+0.4
+
+1960
+
+1970
+
+1980
+
+term
+
+0.4
+0.0
+
+0.8
+0.4
+
+1970
+
+2000
+
+0.8
+
+term
+
+Pr(median justice)
+
+term
+
+1990
+
+0.0
+
+0.8
+0.4
+0.0
+
+0.8
+0.4
+
+1990
+
+0.8
+
+Kennedy
+
+Pr(median justice)
+
+term
+
+Pr(median justice)
+
+term
+
+1980
+
+2000
+
+0.4
+
+2000
+
+term
+
+1970
+
+1990
+
+0.0
+
+0.8
+0.4
+0.0
+
+0.8
+
+1990
+
+2000
+
+0.8
+
+Stevens
+
+Pr(median justice)
+
+term
+
+Pr(median justice)
+
+term
+
+1980
+
+1990
+
+0.4
+
+2000
+
+term
+
+1970
+
+2000
+
+0.0
+
+0.8
+0.4
+0.0
+
+0.8
+0.4
+
+1970
+
+1990
+
+0.8
+
+Blackmun
+
+Pr(median justice)
+
+term
+
+Pr(median justice)
+
+term
+
+0.0
+
+1960
+
+Pr(median justice)
+1960
+
+term
+
+0.0
+
+1960
+
+0.8
+
+2000
+
+0.4
+
+1960
+
+0.4
+
+Pr(median justice)
+1990
+
+Burger
+
+0.0
+
+0.8
+0.4
+
+1980
+
+0.0
+
+Pr(median justice)
+
+1960
+
+Pr(median justice)
+
+1970
+
+0.0
+
+Pr(median justice)
+
+1960
+
+Pr(median justice)
+
+Jackson
+
+0.0
+
+Pr(median justice)
+
+Minton
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+term
+
+Figure 2: Estimated posterior probabilities that each justice in a given term is the median justice
+on the Court for the constant ideal point model, Justices Minton-Breyer.
+35
+
+2000
+
+1980
+
+1990
+
+0 2 4
+−4
+
+2000
+
+1960
+
+1970
+
+1980
+
+Brennan
+
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+White
+
+Warren
+
+Clark
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+term
+
+Frankfurter
+
+Whittaker
+
+Burton
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+term
+
+Reed
+
+Fortas
+
+Goldberg
+
+term
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+term
+
+1990
+
+2000
+
+2000
+
+1990
+
+2000
+
+−4
+
+conservatism
+
+−4
+
+conservatism
+1980
+
+1990
+
+0 2 4
+
+term
+
+0 2 4
+
+term
+
+1970
+
+2000
+
+−4
+
+conservatism
+
+conservatism
+1990
+
+−4
+
+−4
+
+1980
+
+1990
+
+0 2 4
+
+term
+
+0 2 4
+
+term
+
+1970
+
+2000
+
+−4
+
+conservatism
+
+−4
+
+conservatism
+1980
+
+1990
+
+0 2 4
+
+term
+
+0 2 4
+
+term
+
+0 2 4
+
+term
+
+1970
+
+2000
+
+−4
+
+conservatism
+
+−4
+
+conservatism
+1970
+
+1990
+
+0 2 4
+
+Marshall
+0 2 4
+
+Stewart
+0 2 4
+
+term
+
+−4
+
+1960
+
+1970
+
+term
+
+0 2 4
+
+1960
+
+conservatism
+1960
+
+term
+
+0 2 4
+
+1960
+
+0 2 4
+
+conservatism
+1990
+
+Douglas
+
+−4
+
+0 2 4
+
+1980
+
+−4
+
+conservatism
+
+1960
+
+conservatism
+
+1970
+
+−4
+
+conservatism
+
+1960
+
+conservatism
+
+Black
+
+−4
+
+conservatism
+
+Harlan
+
+1960
+
+1970
+
+1980
+
+term
+
+Figure 3: Posterior density summary of the ideal points of each justice for the terms in which they
+served for the independent ideal point model, Justices Harlan-Goldberg.
+36
+
+2000
+
+1980
+
+1990
+
+0 2 4
+−4
+
+2000
+
+1960
+
+1970
+
+1980
+
+Rehnquist
+
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+Stevens
+
+O’Connor
+
+Scalia
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+term
+
+Kennedy
+
+Souter
+
+Thomas
+
+2000
+
+1960
+
+1970
+
+1980
+
+term
+
+Ginsburg
+
+Breyer
+
+1980
+
+term
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+term
+
+−4
+
+conservatism
+1970
+
+2000
+
+0 2 4
+
+term
+
+1990
+
+2000
+
+−4
+
+conservatism
+
+conservatism
+1990
+
+−4
+
+−4
+
+1980
+
+1990
+
+0 2 4
+
+term
+
+0 2 4
+
+term
+
+1970
+
+2000
+
+−4
+
+conservatism
+
+−4
+
+conservatism
+1980
+
+1990
+
+0 2 4
+
+term
+
+0 2 4
+
+term
+
+0 2 4
+
+term
+
+1970
+
+2000
+
+−4
+
+conservatism
+
+−4
+
+conservatism
+1970
+
+1990
+
+0 2 4
+
+Powell
+0 2 4
+
+Blackmun
+0 2 4
+
+term
+
+−4
+
+1960
+
+1970
+
+term
+
+0 2 4
+
+1960
+
+conservatism
+1960
+
+term
+
+0 2 4
+
+1960
+
+0 2 4
+
+conservatism
+1990
+
+Burger
+
+−4
+
+0 2 4
+
+1980
+
+−4
+
+conservatism
+
+1960
+
+conservatism
+
+1970
+
+−4
+
+conservatism
+
+1960
+
+conservatism
+
+Jackson
+
+−4
+
+conservatism
+
+Minton
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+term
+
+Figure 4: Posterior density summary of the ideal points of each justice for the terms in which they
+served for the independent ideal point model, Justices Minton-Breyer.
+37
+
+1980
+
+1990
+
+2000
+
+6
+1980
+
+1990
+
+2000
+
+1960
+
+1980
+
+Brennan
+
+1980
+
+1990
+
+2000
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Clark
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Whittaker
+
+Burton
+
+2
+−6
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+term
+
+Reed
+
+Fortas
+
+Goldberg
+
+1980
+
+term
+
+1990
+
+2000
+
+2
+−6
+
+−2
+
+conservatism
+
+2
+−6
+
+−2
+
+conservatism
+
+2
+−2
+
+6
+
+term
+
+6
+
+term
+
+1970
+
+2000
+
+−2
+
+conservatism
+
+2
+−6
+
+−2
+
+conservatism
+
+2
+−2
+−6
+
+2000
+
+1990
+
+6
+
+Frankfurter
+6
+
+term
+
+1990
+
+2000
+
+2
+
+2000
+
+term
+
+1980
+
+1990
+
+−6
+1960
+
+term
+
+1970
+
+2000
+
+−2
+
+conservatism
+
+2
+−6
+
+−2
+
+conservatism
+
+2
+−2
+
+2000
+
+1990
+
+6
+
+Warren
+6
+
+White
+6
+
+term
+
+1990
+
+2000
+
+2
+
+2000
+
+term
+
+1980
+
+1990
+
+−6
+1960
+
+term
+
+1970
+
+2000
+
+−2
+
+conservatism
+
+2
+−6
+
+−2
+
+conservatism
+
+2
+−2
+
+1970
+
+1990
+
+6
+
+Marshall
+6
+
+Stewart
+6
+
+term
+
+−6
+
+1960
+
+1970
+
+term
+
+6
+
+1960
+
+2
+−6
+
+1970
+
+term
+
+6
+
+1960
+
+−2
+
+conservatism
+1960
+
+−6
+
+conservatism
+
+2
+−6
+
+1970
+
+−6
+
+conservatism
+
+1960
+
+conservatism
+
+−2
+
+conservatism
+
+2
+−2
+−6
+
+conservatism
+
+1960
+
+conservatism
+
+Douglas
+
+6
+
+Black
+
+6
+
+Harlan
+
+1960
+
+1970
+
+1980
+
+term
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+term
+
+Figure 5: Posterior density summary of the ideal points of each justice for the terms in which they
+served for the dynamic ideal point model, Justices Harlan-Goldberg.
+38
+
+1980
+
+1990
+
+2000
+
+6
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+Powell
+
+Rehnquist
+
+1980
+
+1990
+
+2000
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Scalia
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Souter
+
+Thomas
+
+2000
+
+2
+−6
+
+−2
+
+conservatism
+
+2
+−6
+
+−2
+
+conservatism
+
+2
+−2
+−6
+
+6
+
+Kennedy
+6
+
+term
+
+1990
+
+2000
+
+2
+
+2000
+
+term
+
+1980
+
+1990
+
+−6
+1960
+
+term
+
+1970
+
+2000
+
+−2
+
+conservatism
+
+2
+−6
+
+−2
+
+conservatism
+
+2
+−2
+
+2000
+
+1990
+
+6
+
+O’Connor
+6
+
+Stevens
+6
+
+term
+
+1990
+
+2000
+
+2
+
+2000
+
+term
+
+1980
+
+1990
+
+−6
+1960
+
+term
+
+1970
+
+2000
+
+−2
+
+conservatism
+
+2
+−6
+
+−2
+
+conservatism
+
+2
+−2
+
+1970
+
+1990
+
+6
+
+Blackmun
+6
+
+term
+
+6
+
+term
+
+1960
+
+1970
+
+1980
+
+term
+
+Ginsburg
+
+Breyer
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+term
+
+2
+−2
+−6
+
+−6
+
+−2
+
+2
+
+conservatism
+
+6
+
+term
+
+6
+
+1960
+
+2
+−6
+
+1970
+
+term
+
+6
+
+1960
+
+−2
+
+conservatism
+1960
+
+−6
+
+conservatism
+
+2
+−6
+
+1970
+
+−6
+
+conservatism
+
+1960
+
+conservatism
+
+−2
+
+conservatism
+
+2
+−2
+−6
+
+conservatism
+
+1960
+
+conservatism
+
+Burger
+
+6
+
+Jackson
+
+6
+
+Minton
+
+1960
+
+1970
+
+1980
+
+term
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+term
+
+Figure 6: Posterior density summary of the ideal points of each justice for the terms in which they
+served for the dynamic ideal point model, Justices Minton-Breyer.
+39
+
+1970
+
+1980
+
+1990
+
+0.8
+0.4
+0.0
+
+2000
+
+1960
+
+1970
+
+1980
+
+Marshall
+
+Brennan
+
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Warren
+
+Clark
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Whittaker
+
+Burton
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Fortas
+
+Goldberg
+
+2000
+
+1960
+
+1970
+
+1980
+
+term
+
+1990
+
+2000
+
+1990
+
+2000
+
+0.4
+0.0
+
+0.8
+0.4
+0.0
+
+0.8
+0.4
+
+term
+
+1990
+
+0.8
+
+Reed
+
+Pr(median justice)
+
+term
+
+Pr(median justice)
+
+term
+
+1980
+
+2000
+
+0.4
+
+2000
+
+term
+
+1970
+
+1990
+
+0.0
+
+0.8
+0.4
+0.0
+
+0.8
+0.4
+
+1990
+
+0.8
+
+Frankfurter
+
+Pr(median justice)
+
+term
+
+Pr(median justice)
+
+term
+
+1980
+
+2000
+
+0.4
+
+2000
+
+term
+
+1970
+
+1990
+
+0.0
+
+0.8
+0.4
+0.0
+
+0.8
+
+1990
+
+2000
+
+0.8
+
+White
+
+Pr(median justice)
+
+term
+
+Pr(median justice)
+
+term
+
+1980
+
+1990
+
+0.4
+
+2000
+
+term
+
+1970
+
+2000
+
+0.0
+
+0.8
+0.4
+0.0
+
+0.8
+0.4
+
+1970
+
+1990
+
+0.8
+
+Stewart
+
+Pr(median justice)
+
+term
+
+Pr(median justice)
+
+term
+
+0.0
+
+1960
+
+Pr(median justice)
+1960
+
+term
+
+0.0
+
+1960
+
+0.8
+
+2000
+
+0.4
+
+1960
+
+0.4
+
+Pr(median justice)
+1990
+
+Douglas
+
+0.0
+
+0.8
+0.4
+
+1980
+
+0.0
+
+Pr(median justice)
+
+1960
+
+Pr(median justice)
+
+1970
+
+0.0
+
+Pr(median justice)
+
+1960
+
+Pr(median justice)
+
+Black
+
+0.0
+
+Pr(median justice)
+
+Harlan
+
+1960
+
+1970
+
+1980
+
+term
+
+Figure 7: Estimated posterior probabilities that each justice in a given term is the median justice
+on the Court for the dynamic ideal point model, Justices Harlan-Goldberg.
+40
+
+1970
+
+1980
+
+1990
+
+0.8
+0.4
+0.0
+
+2000
+
+1960
+
+1970
+
+1980
+
+Powell
+
+Rehnquist
+
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+O’Connor
+
+Scalia
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Souter
+
+Thomas
+
+2000
+
+1960
+
+1970
+
+1980
+
+Ginsburg
+
+Breyer
+
+1980
+
+term
+
+1990
+
+2000
+
+1990
+
+2000
+
+0.4
+
+1960
+
+1970
+
+1980
+
+term
+
+0.4
+0.0
+
+0.8
+0.4
+
+1970
+
+2000
+
+0.8
+
+term
+
+Pr(median justice)
+
+term
+
+1990
+
+0.0
+
+0.8
+0.4
+0.0
+
+0.8
+0.4
+
+1990
+
+0.8
+
+Kennedy
+
+Pr(median justice)
+
+term
+
+Pr(median justice)
+
+term
+
+1980
+
+2000
+
+0.4
+
+2000
+
+term
+
+1970
+
+1990
+
+0.0
+
+0.8
+0.4
+0.0
+
+0.8
+
+1990
+
+2000
+
+0.8
+
+Stevens
+
+Pr(median justice)
+
+term
+
+Pr(median justice)
+
+term
+
+1980
+
+1990
+
+0.4
+
+2000
+
+term
+
+1970
+
+2000
+
+0.0
+
+0.8
+0.4
+0.0
+
+0.8
+0.4
+
+1970
+
+1990
+
+0.8
+
+Blackmun
+
+Pr(median justice)
+
+term
+
+Pr(median justice)
+
+term
+
+0.0
+
+1960
+
+Pr(median justice)
+1960
+
+term
+
+0.0
+
+1960
+
+0.8
+
+2000
+
+0.4
+
+1960
+
+0.4
+
+Pr(median justice)
+1990
+
+Burger
+
+0.0
+
+0.8
+0.4
+
+1980
+
+0.0
+
+Pr(median justice)
+
+1960
+
+Pr(median justice)
+
+1970
+
+0.0
+
+Pr(median justice)
+
+1960
+
+Pr(median justice)
+
+Jackson
+
+0.0
+
+Pr(median justice)
+
+Minton
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+term
+
+Figure 8: Estimated posterior probabilities that each justice in a given term is the median justice
+on the Court for the dynamic ideal point model, Justices Minton-Breyer.
+41
+
+1.0
+0.0
+
+0.2
+
+0.4
+
+Econ
+
+0.6
+
+0.8
+
+1.0
+0.8
+0.6
+0.4
+0.0
+
+0.2
+
+CivLib
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+2000
+
+1990
+
+2000
+
+1.0
+0.8
+0.6
+
+Fed
+
+0.0
+
+0.2
+
+0.4
+
+0.8
+0.6
+0.4
+0.0
+
+0.2
+
+CivRght
+
+1990
+
+term
+
+1.0
+
+term
+
+1980
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+1960
+
+term
+
+1970
+
+1980
+term
+
+Figure 9: Term-by-term correlations of the ideal point posterior mean for the dynamic ideal point
+model with the percent conservative votes in civil liberties, civil rights, economics, and federalism
+cases, 1953-1999.
+
+42
+
+1.5
+1.0
+0.5
+0.0
+−0.5
+−1.0
+−1.5
+1953 1957 1961 1965 1969 1973 1977 1981 1985 1989 1993 1997
+term
+
+Figure 10: Estimated posterior distribution of the location of the median justice for the dynamic
+ideal point model.
+43
+
+1980
+
+1990
+
+2000
+
+1980
+
+1990
+
+1960
+
+1980
+
+1970
+
+1980
+
+1990
+
+2000
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Clark
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Frankfurter
+
+Whittaker
+
+Burton
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Reed
+
+Fortas
+
+Goldberg
+
+1960
+
+1970
+
+1980
+
+term
+
+1990
+
+2000
+
+1990
+
+2000
+
+1
+−2 −1 0
+
+conservatism
+
+1
+
+conservatism
+2000
+
+−2 −1 0
+
+1
+
+term
+
+1990
+
+2
+
+term
+
+2
+
+term
+
+1980
+
+2000
+
+1
+
+2000
+
+term
+
+1970
+
+1990
+
+−2 −1 0
+
+conservatism
+
+1
+
+conservatism
+
+−2 −1 0
+
+1
+−2 −1 0
+
+1990
+
+2
+
+term
+
+2
+
+term
+
+1980
+
+2000
+
+1
+
+2000
+
+term
+
+1970
+
+1990
+
+−2 −1 0
+
+conservatism
+
+1
+
+conservatism
+
+−2 −1 0
+
+1
+
+2000
+
+2000
+
+2
+
+Warren
+2
+
+White
+2
+
+term
+
+1990
+
+1990
+
+1
+
+2000
+
+term
+
+1980
+
+2000
+
+2
+1960
+
+term
+
+1970
+
+1990
+
+−2 −1 0
+
+conservatism
+
+1
+−2 −1 0
+
+1
+
+conservatism
+
+2
+
+Brennan
+
+2
+
+Marshall
+
+−2 −1 0
+
+1960
+
+1970
+
+Stewart
+
+2
+
+1960
+
+−2 −1 0
+
+2000
+
+term
+
+2
+
+1960
+
+1
+
+2
+1970
+
+term
+
+−2 −1 0
+
+conservatism
+
+conservatism
+1960
+
+term
+
+−2 −1 0
+
+conservatism
+
+1960
+
+conservatism
+
+1
+
+conservatism
+1970
+
+−2 −1 0
+
+1
+−2 −1 0
+
+conservatism
+
+1960
+
+conservatism
+
+Douglas
+
+2
+
+Black
+
+2
+
+Harlan
+
+1960
+
+1970
+
+1980
+
+term
+
+Figure 11: Posterior density summary of the ideal points of each justice for the terms in which they
+served for the dynamic ideal point and case parameter model, Justices Harlan-Goldberg.
+44
+
+1980
+
+1990
+
+2000
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+O’Connor
+
+Scalia
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+Kennedy
+
+Souter
+
+Thomas
+
+2000
+
+1960
+
+1970
+
+1980
+
+term
+
+Ginsburg
+
+Breyer
+
+2000
+
+1990
+
+2000
+
+1
+
+1960
+
+1970
+
+1980
+
+term
+
+1960
+
+1970
+
+1980
+
+term
+
+1990
+
+2000
+
+1
+−2 −1 0
+
+−2 −1 0
+
+1
+
+conservatism
+
+2
+
+term
+
+1990
+
+−2 −1 0
+
+conservatism
+
+1
+
+conservatism
+
+−2 −1 0
+
+1
+−2 −1 0
+
+1990
+
+2
+
+term
+
+2
+
+term
+
+1980
+
+2000
+
+1
+
+2000
+
+term
+
+1970
+
+1990
+
+−2 −1 0
+
+conservatism
+
+1
+
+conservatism
+
+−2 −1 0
+
+1
+
+1990
+
+2000
+
+2
+
+Stevens
+2
+
+term
+
+2
+
+term
+
+1980
+
+1990
+
+1
+
+2000
+
+term
+
+1970
+
+2000
+
+−2 −1 0
+
+conservatism
+
+1
+
+conservatism
+1980
+
+−2 −1 0
+
+1
+
+1970
+
+1990
+
+2
+
+Rehnquist
+
+2
+
+Powell
+
+2
+
+Blackmun
+
+2
+
+1960
+
+−2 −1 0
+
+2000
+
+term
+
+2
+
+1960
+
+1
+
+2
+1970
+
+term
+
+−2 −1 0
+
+conservatism
+
+conservatism
+1960
+
+term
+
+−2 −1 0
+
+conservatism
+
+1960
+
+conservatism
+
+1
+
+conservatism
+1970
+
+−2 −1 0
+
+1
+−2 −1 0
+
+conservatism
+
+1960
+
+conservatism
+
+Burger
+
+2
+
+Jackson
+
+2
+
+Minton
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+term
+
+Figure 12: Posterior density summary of the ideal points of each justice for the terms in which they
+served for the dynamic ideal point and case parameter model, Justices Minton-Breyer.
+45
+
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+−0.2
+−0.4
+1953 1957 1961 1965 1969 1973 1977 1981 1985 1989 1993 1997
+term
+
+Figure 13: Estimated posterior distribution of the location of the median justice for the dynamic
+ideal point and case parameter model.
+46
+
+1970
+
+1980
+
+1990
+
+1.0
+0.0
+−1.5
+
+conservatism
+1960
+
+2000
+
+1960
+
+1970
+
+1980
+
+4th
+
+5th
+
+6th
+
+1990
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+7th
+
+8th
+
+9th
+
+2000
+
+1960
+
+1970
+
+1980
+
+1990
+
+1960
+
+1970
+
+1980
+
+10th
+
+11th
+
+DC
+
+term
+
+1960
+
+1970
+
+1980
+
+term
+
+1990
+
+2000
+
+1990
+
+2000
+
+0.0
+−1.5
+
+conservatism
+
+0.0
+
+conservatism
+2000
+
+−1.5
+
+0.0
+
+1990
+
+1.0
+
+term
+
+1.0
+
+term
+
+1980
+
+2000
+
+0.0
+
+2000
+
+term
+
+1970
+
+1990
+
+−1.5
+
+conservatism
+
+0.0
+
+conservatism
+
+−1.5
+
+0.0
+−1.5
+
+1990
+
+2000
+
+1.0
+
+term
+
+1.0
+
+term
+
+1980
+
+1990
+
+0.0
+
+2000
+
+term
+
+1970
+
+2000
+
+−1.5
+
+conservatism
+
+0.0
+
+conservatism
+1980
+
+−1.5
+
+0.0
+
+1970
+
+1990
+
+1.0
+
+term
+
+1.0
+
+term
+
+1.0
+
+term
+
+−1.5
+
+1960
+
+1.0
+
+2000
+
+1.0
+
+1960
+
+0.0
+
+conservatism
+1990
+
+3rd
+
+−1.5
+
+1.0
+0.0
+
+1980
+
+1.0
+
+1960
+
+conservatism
+
+1970
+
+−1.5
+
+conservatism
+
+1960
+
+conservatism
+
+2nd
+
+−1.5
+
+conservatism
+
+1st
+
+1960
+
+1970
+
+1980
+
+term
+
+1.0
+0.0
+−1.5
+
+conservatism
+
+Other
+
+1960
+
+1970
+
+1980
+
+1990
+
+2000
+
+term
+
+(a)
+
+Figure 14: Estimated position of the prior mean (γc,t) of aﬃrmance points [xt ] from the lower
+court of origin c for the dynamic ideal point and case parameter model.
+47
+
+

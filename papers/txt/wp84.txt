@@ -1,0 +1,2295 @@
+The mode oriented stochastic search (MOSS) algorithm
+for log-linear models with conjugate priors 1
+Adrian Dobra
+University of Washington, Seattle
+H´el`ene Massam
+York University, Toronto
+
+Working Paper no. 84
+Center for Statistics and the Social Sciences
+University of Washington
+March 21, 2008
+
+1 Adrian
+
+Dobra is Assistant Professor of Statistics and Nursing, Department of Statistics and
+Biobehavioral Nursing and Health Systems, University of Washington, Box 354322, Seattle WA
+98195-4322. E-mail: adobra@stat.washington.edu; Web: www.stat.washington.edu/adobra.
+H´el`ene Massam is Professor, Department of Mathematics and Statistics and Social Science, York University, Toronto, ON M3J 1P3.
+E-mail:
+massamh@yorku.ca; Web:
+www.math.yorku.ca/∼massamh.
+
+The mode oriented stochastic search (MOSS) algorithm
+for log-linear models with conjugate priors
+Adrian Dobra
+University of Washington, Seattle, USA
+
+´ ene
+`
+and Hel
+Massam
+York University, Toronto, Canada.
+
+Summary. We describe a novel stochastic search algorithm for rapidly identifying regions of
+high posterior probability in the space of decomposable, graphical and hierarchical log-linear
+models. Our approach is based on the conjugate priors for log-linear parameters introduced in
+Massam et al. (2008). We discuss the computation of Bayes factors through Laplace approximations and the Bayesian iterate proportional fitting algorithm for sampling model parameters.
+We also present a clustering algorithm for discrete data and develop regressions derived from
+log-linear models. We compare our model determination approach with similar results based
+on multivariate normal priors for log-linear parameters. The examples concern six-way, eightway and sixteen-way contingency tables.
+Keywords: Bayesian analysis; Contingency table; Graphical model; Hierarchical log-linear
+model; Model selection; Stochastic search.
+
+1. Introduction
+Many datasets arising from social studies, clinical trials or, more recently, genome-wide
+association studies can be represented as multi-way contingency tables. Log-linear models
+(Bishop et al., 1975) are the most suitable way to summarize the most relevant interactions
+that exist among the variables involved. Determining those log-linear models that are best
+supported by the data is a problem that has been studied in the literature (Edwards and
+Havranek, 1985; Agresti, 1990; Whittaker, 1990). When the number of observed samples is
+considerable with respect to the number of cells in the table, asymptotic approximations to
+the null distribution of the generalized likelihood ratio test statistic lead to appropriate results. However, in the case of sparse contingency tables that contain mostly counts of zero,
+the large sample assumptions no longer hold, hence using the same types of tests might lead
+to unsuitable results. Also, for model selection issues based on frequentist techniques, the
+number of degrees of freedom associated with a log-linear model has to be properly adjusted
+as a function of the zero counts, while some log-linear parameters become non-identifiable
+due to the non-existence of the maximum likelihood estimates – see Fienberg and Rinaldo
+(2007) for an excellent discussion.
+The Bayesian paradigm to model selection avoids these issues through the specification
+of prior distributions for model parameters (Clyde and George, 2004). Markov chain Monte
+Address for correspondence: Adrian Dobra, Department of Statistics, University of Washington,
+Seattle, WA 98155-4322, USA.
+E-mail: adobra@u.washington.edu
+
+2
+
+A. Dobra and H. Massam
+
+Carlo (MCMC) algorithms of various kinds are typically developed to identify models with
+high posterior probability. Dellaportas and Forster (1999) is a key reference that describes
+a reversible jump MCMC method applied to decomposable, graphical and hierarchical loglinear models. Other papers that develop various MCMC schemes for discrete data include
+Madigan and Raftery (1994); Madigan and York (1995, 1997); Tarantola (2004); Dellaportas and Tarantola (2005).
+While MCMC methods seem to work well for problems involving a relatively small
+number of candidates models, they tend to be less efficient as the dimensionality of the
+parameter space grows exponentially. Jones et al. (2005) and Hans et al. (2007) highlight
+this question in the context of Gaussian graphical models and regression variable selection.
+They introduce the shotgun stochastic search (SSS) method that is similar to MCMC but
+it focuses on aggresively moving towards regions of high posterior probability in the models
+space instead of attempting to sample from the posterior distribution over the models space.
+The aim of this paper is to present a novel stochastic search method for decomposable,
+graphical and hierarchical log-linear models which we call the mode oriented stochastic
+search (MOSS). The essence of MOSS is the identification of models such that the ratio of
+their posterior probability and the posterior probability of the best model is above a certain
+threshold. MOSS requires an efficient computation of the marginal likelihood of models in
+the search space. Such a computation is made possible through the use of the conjugate
+prior for log-linear parameters of Massam et al. (2008). Using this conjugate prior is indeed
+crucial because it allows us to produce the mode of the high-dimensional joint posterior
+distribution of log-linear parameters using the iterate proportional fitting (IPF) algorithm.
+This in turn allows us to compute the Laplace approximation to the marginal likelihood of
+hierarchial log-linear models. Another advantage of the conjugate prior of Massam et al.
+(2008) is that it is the conjugate prior to an exponential family, hence sampling from the
+posterior distribution of the log-linear parameters can be done using the Bayesian iterate
+proportional fitting algorithm originally proposed by Asci and Piccioni (2007).
+The structure of the paper is as follows. In Section 2 we introduce the examples used
+throughout the paper. In Section 3 we recall the main features of the conjugate prior distribution of Massam et al. (2008), while in Section 4 we show how to compute the marginal
+likelihood of decomposable, graphical and hierarchical models based on these priors. In
+Section 5 we present our new stochastic search method, discuss its properties and apply it
+two examples. In Section 6 we give the details of the Bayesian iterate proportional fitting algorithm for polychotomous variables. Section 7 explains the underlying connection between
+regressions involving discrete variables and log-linear models in our Bayesian framework. In
+Section 8 we adapt MOSS to a clustering technique for categorical data. The relationship
+between MCMC and MOSS is further studied in Section 9. In Section 10 we give some
+concluding comments.
+
+2. Motivating examples
+We consider three examples where the data are presented under the form of a contingency
+table. Later we use the stochastic search algorithms developed in this paper to identify
+log-linear models that represent the most relevant interactions among the given variables.
+
+MOSS for Log-linear Models
+
+3
+
+Table 1. Prognostic factors for coronary heart disease
+(Edwards and Havranek, 1985).
+b
+no
+yes
+f
+e
+d
+c a no yes no yes
+Negative < 3 < 140 no
+44 40 112 67
+yes
+129 145 12 23
+≥ 140 no
+35 12 80 33
+yes
+109 67 7
+9
+≥ 3 < 140 no
+23 32 70 66
+yes
+50 80 7 13
+≥ 140 no
+24 25 73 57
+yes
+51 63 7 16
+Positive < 3 < 140 no
+5
+7 21 9
+yes
+9 17 1
+4
+≥ 140 no
+4
+3 11 8
+yes
+14 17 5
+2
+≥ 3 < 140 no
+7
+3 14 14
+yes
+9 16 2
+3
+≥ 140 no
+4
+0 13 11
+yes
+5 14 4
+4
+
+2.1. First example: the Czech autoworkers data
+Table 1 contains a 26 table, originally analyzed by Edwards and Havranek (1985) that
+cross-classifies binary risk factors denoted by a, b, c, d, e, f for coronary thrombosis from a
+prospective epidemiological study of 1841 workers in a Czechoslovakian car factory. Here a
+indicates whether or not the worker “smokes”, b corresponds to “strenuous mental work”,
+c corresponds to “strenuous physical work”, d corresponds to “systolic blood pressure”,
+e corresponds to “ratio of β and α lipoproteins” and f represents “family anamnesis of
+coronary heart disease”. This table has been extensively analyzed in the literature – see,
+among others, Madigan and Raftery (1994) or Dellaportas and Forster (1999).
+
+2.2. Second example: household study in Rochdale
+Our second example focuses on a cross-classification of eight binary variables relating
+women’s economic activity and husband’s unemployment from a survey of households in
+Rochdale – see Table 2. This study was conducted to elicit information about factors affecting the pattern of economic life and their time dynamics– see Whittaker (1990) page
+279. The variables are as follows: a, wife economically active (no,yes); b, age of wife > 38
+(no,yes); c, husband unemployed (no,yes); d, child ≤ 4 (no,yes); e, wife’s education, highschool+ (no,yes); f , husband’s education, high-school+ (no,yes); g, Asian origin (no,yes); h,
+other household member working (no,yes). There are 665 individuals cross-classified in 256
+cells, which means that the resulting table is sparse having 165 counts of zero, 217 counts
+with at most three observations, but also a few large counts with 30 or more observations.
+
+4
+
+A. Dobra and H. Massam
+Table 2. Women’s economic activity data from Whittaker (1990). The cells counts are written in lexicographical order with h varying fastest and a varying slowest.
+5 0 2 1 5 1 0 0 4 1 0 0 6 0 2 0
+8 0 11 0 13 0 1 0 3 0 1 0 26 0 1 0
+5 0 2 0 0 0 0 0 0 0 0 0 0 0 1 0
+4 0 8 2 6 0 1 0 1 0 1 0 0 0 1 0
+17 10 1 1 16 7 0 0 0 2 0 0 10 6 0 0
+1 0 2 0 0 0 0 0 1 0 0 0 0 0 0 0
+4 7 3 1 1 1 2 0 1 0 0 0 1 0 0 0
+0 0 3 0 0 0 0 0 0 0 0 0 0 0 0 0
+18 3 2 0 23 4 0 0 22 2 0 0 57 3 0 0
+5 1 0 0 11 0 1 0 11 0 0 0 29 2 1 1
+3 0 0 0 4 0 0 0 1 0 0 0 0 0 0 0
+1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+41 25 0 1 37 26 0 0 15 10 0 0 43 22 0 0
+0 0 0 0 2 0 0 0 0 0 0 0 3 0 0 0
+2 4 0 0 2 1 0 0 0 1 0 0 2 1 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+
+2.3. Third example: the NLTCS data
+Our last example consists of a 216 contingency table extracted from the “analytic” data file
+for National Long-Term Care Survey created by the Center of Demographic Studies at Duke
+University. Each dimension corresponds to a measure of disability defined by an activity
+of daily living, and the table contains information cross-classifying individuals aged 65 and
+above. The 16 dimensions of this contingency table correspond to six activities of daily living
+(ADLs) and ten instrumental activities of daily living (IADLs). Specifically, the ADLs are
+(1) eating, (2) getting in/out of bed, (3) getting around inside, (4) dressing, (5) bathing
+and (6) getting to the bathroom or using a toilet. The IADLs are (7) doing heavy house
+work, (8) doing light house work, (9) doing laundry, (10) cooking, (11) grocery shopping,
+(12) getting about outside, (13) travelling, (14) managing money, (15) taking medicine and
+(16) telephoning. For each ADL/IADL measure, subjects were classified as being either
+disabled (level 1) or healthy (level 0) on that measure. For a detailed description of this
+extract see Erosheva et al. (2008).
+Dobra et al. (2003) analyze these data from a disclosure limitation perspective, while
+Fienberg et al. (2008) develop latent class models that are very similar to the individuallevel latent mixture models from Erosheva et al. (2008). The need to consider alternatives
+to log-linear models for the NLTCS data comes from the severe imbalance that exists among
+the cell counts in this table. The largest cell count is 3853, but most of the cells (62384 or
+95.19%) contain counts of zero, while 1729 (2.64%) contain counts of 1 and 1499 (0.76%)
+contain counts of 2. The grand total of this table is 21574, which gives a mean number of
+observations per cell of 0.33. This is indicative of an extremely high degree of sparsity that
+is characteristic of high-dimensional categorical data. For comparison, the mean number of
+observations per cell for the Czech Autoworkers data is 28.77, while for the Rochdale data
+is 2.6.
+
+MOSS for Log-linear Models
+
+5
+
+3. Conjugate priors for hierarchical log-linear models
+In the Bayesian model selection framework, the choice of a prior distribution is made on
+the basis of, first, availability and ability to reflect prior knowledge and, next, mathematical
+convenience whenever possible. If the search is restricted to the class of discrete models
+Markov with respect to an undirected decomposable graph G, it is convenient to use the
+hyper Dirichlet as defined by Dawid and Lauritzen (1993). The hyper Dirichlet is a conjugate prior for the clique and separator marginal cell counts of the multinomial distribution
+Markov with respect to G. Its hyper-parameters can be thought of as representing the
+clique and separator marginal cell counts of a fictive prior table of counts and they give
+enough flexibility for the representation of prior beliefs – for example, see Madigan and
+Raftery (1994) or Madigan and York (1995).
+When the class of possible models considered is the more general class of graphical
+models Markov with respect to any undirected graph or the even wider class of hierarchical models, the only priors available in the literature so far were normal priors for the
+log-linear parameters. Knuiman and Speed (1988) use a multivariate normal prior for the
+log-linear parameters. Dellaportas and Forster (1999) use a variant of this prior. King
+and Brooks (2001) propose another multivariate normal prior for the log-linear parameters
+which has the advantage that the corresponding prior distribution on the cell counts can
+also be derived explicitly. Recently Massam et al. (2008) have expressed the multinomial
+distribution taking all possible marginal counts as the random variables rather than the cell
+counts and they then developped and studied the corresponding conjugate prior as defined
+by Diaconis and Ylvisaker (1979) (henceforth abbreviated the DY conjugate prior) for the
+log-linear parameters for the general class of hierarchical log-linear models. In this paper
+the authors derive the prior induced from the DY conjugate by the transformation from
+the log-linear parameterization to the cell parameterization, and show how the expected
+values and various other moments of the cell probabilities can be expressed in terms of the
+hyper-parameters.
+We now outline some of the main results from Massam et al. (2008) concerning the
+choice of the log-linear parameters, the prior in terms of these parameters and also in terms
+of the cell probabilities.
+
+3.1. Model parameterization
+Let V be the set of criteria defining the contingency table. Denote the power set of V by
+E and take E⊖ = E \ {∅}. Let X = (Xγ , | γ ∈ V ) such that Xγ takes its values (or levels)
+in the finite set Iγ of dimension |Iγ |. When a fixed number of individuals are classified
+according to the |V | criteria, the data is collected in a contingency table with cells indexed
+by combination of levels for the |V | variables. We adopt the notation of Lauritzen (1996)
+and denote a cell by i = (iγ , γ ∈ V ) ∈ I = ×γ∈V Iγ . The count in cell i is denoted n(i)
+and the probability of an individual falling in cell i is denoted p(i).
+For E ⊂ V , cells in the E-marginalPtable are denoted iE ∈ IE = ×γ∈E Iγ . The marginal
+counts are denoted n(iE ). For N = i∈I n(i), (n) = (n(i), i ∈ I) follows a multinomial
+M(N, p(i), i ∈ I) distribution with probability density function
+Y
+  
+N
+P (n) =
+p(i)n(i) .
+(n)
+i∈I
+
+(1)
+
+6
+
+A. Dobra and H. Massam
+
+Let i∗ be a fixed but arbitrary cell that we take to be the cell indexed by the ”lowest levels”
+of each factor. We denote these lowest levels by 0. Therefore i∗ can be thought to be the
+cell i∗ = (0, 0, . . . , 0). We define the log-linear parameters to be
+X
+θE (iE ) =
+(−1)|E\F | log p(iF , i∗F c ),
+(2)
+F ⊆E
+
+which, by the Moebius inversion formula, is equivalent to
+X
+p(iE , i∗E c ) = exp
+θF (iF ) .
+
+(3)
+
+F ⊆E
+
+Remark that θ∅ (i) = log p(i∗ ), i ∈ I. We denote θ∅ (i∗ ) = θ∅ and p(i∗ ) = p∅ = exp θ∅ . It is
+easy to see that the following lemma holds.
+Lemma 3.1. If for γ ∈ E, E ⊆ V we have iγ = i∗γ = 0, then θE (iE ) = 0.
+This result shows that our parameterization is the ”baseline” or ”corner” constraint parameterization that sets to zero the values of the E-interaction log-linear parameters when at least
+one index
+E ⊆ V , there are only
+Q in E is at level 0 – see Agresti (1990). Therefore, for each
+∗
+= {iE | iγ 6= i∗γ , ∀γ ∈ E}.
+dD = γ∈E (|Iγ |−1) parameters and for any E ⊆ V , we define IE
+We use F ⊆⊖ E to express that F is included in E but is not equal to the empty set and,
+∗
+for iE ∈ IE
+, E ∈ E, we use the notation i(E) = (iE , i∗E c ). The notation i(E) that denotes
+the joint cell where the component iγ , γ ∈ E are not equal to 0 and where the component
+iγ , γ ∈ E c are equal to 0, should not be confused with iE which is the E-marginal cell.
+We also write θ(iE ) for θE (iE ). Then (3) yields the following expression of the cell
+probabilities in terms of the log-linear parameters
+p∅ =
+
+1
+1+
+
+and
+p(i(E)) =
+1+
+
+P
+
+P
+
+E∈E⊖
+
+E∈E⊖
+
+P
+
+exp
+P
+
+∗
+iE ∈IE
+
+P
+
+exp
+
+F ⊆⊖ E
+
+∗
+iE ∈IE
+
+exp
+
+P
+
+F ⊆⊖ E
+
+,
+θ(iF )
+
+θ(iF )
+P
+
+ ,
+θ(i
+)
+F
+F ⊆⊖ E
+
+(4)
+
+E ∈ E⊖ .
+
+(5)
+
+3.2. The multinomial for hierarchical log-linear models
+Consider the hierarchical log-linear model m generated by the class A = {A1 , . . . , Ak } of
+subsets of V which, without loss of generality, can be assumed to be maximal with respect
+to inclusion. We write D = {E ⊆⊖ Ai , i = 1, . . . , k} for the indexing set of all possible
+interactions in the model, including the main effects. It follows from the theory of log-linear
+models (for example, see Darroch and Speed (1983)) and from Lemma 3.1 that the following
+constraints hold:
+θ(iE ) = 0, E 6∈ D.
+(6)
+∗
+Therefore, for iE ∈ IE
+, (3) becomes
+
+log p(iE , i∗E c ) = log p(i(E)) = θ∅ +
+
+X
+
+∗
+F ⊆E,F ∈D,iF ∈IF
+
+θ(iF ) .
+
+(7)
+
+MOSS for Log-linear Models
+
+7
+
+and after the change of variable (n) = (n(i), i ∈ I ∗ ) 7→ (n(iE ), E ∈ E⊖ ), the multinomial
+distribution for the hierarchical log-linear model becomes the distribution for the random
+∗
+variable Y = (n(iD ), D ∈ D, iD ∈ ID
+) with density with respect to a measure µD (y) (of no
+interest to us here) equal to
+
+
+X X
+
+
+X
+X
+fD (y; θD ) = exp
+θ(iD )n(iD ) − N log 1 +
+exp
+θ(iF )
+(8)
+
+
+∗
+∗
+D∈D iD ∈ID
+
+E∈E⊖ ,iE ∈IE
+
+F ⊆D E
+
+It is important to note that
+
+∗
+θD = (θ(iD ), D ∈ D, iD ∈ ID
+),
+
+(9)
+
+is the canonical parameter and
+∗
+pD = (p(i(D)), D ∈ D, iD ∈ ID
+),
+
+(10)
+
+is the cell probability parameter of the multinomial distribution of m. The other cell
+probabilities p(i(E)), E 6∈ D are not free and are a function of pD . For graphical log-linear
+models, D is the set of all non-empty complete subsets of the corresponding independence
+graph.
+3.3. The Diaconis-Ylvisaker Conjugate Prior
+The natural exponential family form of the distribution of the marginal counts Y = (n(iE ), E ∈
+∗
+D, iE ∈ IE
+) of a contingency table with cell counts n(i), i ∈ I is given in (8). The conjugate
+prior for θ as introduced by Diaconis and Ylvisaker (1979) is
+πD (θD |s, α) = ID (s, α)−1 h(θD ),
+
+(11)
+R
+where ID (s, α) = IRdD h(θD )dθ
+PD is the
+Q normalizing constant of πD (θD |s, α), the dimension
+of the parameter space dD is D∈D γ∈D (|Iγ | − 1) and
+
+
+X X
+
+
+X X
+X
+h(θD ) = exp
+θ(iD )s(iD ) − α log 1 +
+exp
+θ(iF )
+. (12)
+
+
+∗
+∗
+D∈D iD ∈ID
+
+E∈E⊖ iE ∈IE
+
+F ⊆D E
+
+The corresponding hyper-parameters are:
+
+∗
+(s, α) = (s(iD ), D ∈ D, iD ∈ ID
+, α), s ∈ IRdD , α ∈ IR.
+
+(13)
+
+Massam et al. (2008) give a necessary and sufficient condition for the distribution (11) to be
+proper as well as two methods to choose hyper-parameters (s, α) such that ID (s, α) < +∞.
+From the similarity between the form (8) of the distribution of the marginal cell counts
+Y and the form (11) of the prior on θ, one can think of the hyper-parameters s as the
+marginal cell entries of a fictive contingency table whose cells contain positive real numbers.
+Consequently, α can be taken to be the grand total of this fictive table. The lack of prior
+information can be expressed through a non-informative prior specified by taking all the
+α
+so that
+fictive cell entries to be equal to |I|
+s(iD ) =
+
+X
+
+j∈I,jD =iD
+
+α
+.
+|I|
+
+(14)
+
+8
+
+A. Dobra and H. Massam
+
+For the class of decomposable graphical models, this approach to constructing a conjugate
+prior is equivalent to eliciting hyper-Dirichlet priors – see, for example, Dawid and Lauritzen
+(1993) and Madigan and York (1997). While the hyper-Dirichlet priors are restricted to
+decomposable log-linear models, the properties of the Diaconis-Ylvisaker conjugate priors
+extend naturally to graphical and hierarchical log-linear models.
+If prior information about cell probabilities or log-odds ratios is available, we can make
+use of the expression of the moments of the cell probabilities given in the next proposition
+to determine suitable choices of hyper-parameters (s, α) – see Massam et al. (2008).
+Proposition 3.1. Consider the distribution πD (θ|s, α) as defined in (11). Let r be a
+positive integer. Then, for all E ∈ E, the r-th moment of the cell probabilities p(i(E)) is
+EπD (θD |s,α) (p(i(E)r )) =
+
+ID (˜
+sE,r , α + r)
+,
+ID (s, α)
+
+(15)
+
+where the components of s˜E,r are equal to those of s except for F ⊆D E when
+s˜E,r (i(F )) = s(i(F )) + r .
+The induced prior for pD is derived in Massam et al. (2008).
+Given the prior πD (θD |s, α), from the form (8) of the distribution of the marginal cell
+∗
+counts Y , the posterior distribution of θ given Y = y = (n(iD ), D ∈ D, iD ∈ ID
+) is
+πD (θD |y, s, α)
+
+=
+
+
+X
+
+1
+exp
+
+ID (s + y, α + N )
+
+
+X
+
+θ(iD )(s(iD ) + n(iD ))
+
+D∈D iD ∈ID∗
+
+−(α + N ) log 1 +
+
+X
+
+∗
+E∈E⊖ ,iE ∈IE
+
+exp
+
+X
+
+F ⊆D E
+
+
+
+θ(iF )
+.
+
+
+(16)
+
+If we look at the posterior πD (θD |y, s, α) as a function of (s, α), s(iD ) + n(iD ) represent
+the (iD )-counts in the D-marginal entries of a table having the same structure as (n) and
+whose entries are obtained by augmenting the actual cell counts in (n) with the fictive cell
+counts from the prior. The grand total of this augmented table is α + N .
+A key feature of working with the conjugate prior πD (θD |s, α) of the multinomial distribution is that (s, α) can be chosen so that the augmented table associated with πD (θD |y, s, α)
+has strictly positive real cell entries even if (n) is high-dimensional and likely to contain a
+considerable number of sampling zeros. A direct consequence of the positivity of all cell
+entries is that both the prior πD (θD |s, α) and the posterior πD (θD |y, s, α) are unimodal,
+and their modes lie in the interior of the parameter space. Since the prior and posterior
+modes are away from the boundary of the parameters space, they can be efficiently calculated using the Iterate Proportional Fitting algorithm (IPF) – see Bishop et al. (1975)
+and Lauritzen (1996). In fact, after each iteration of the IPF procedure, one can transform
+the cell probability parameters (4) and (5) into the canonical parameters (9), impose the
+constraints (6) associated with D, then transform the resulting canonical parameters back
+into cell probability parameters. This modified version of IPF is guaranteed to remain in
+the correct space of constrained cell probabilities at all times.
+
+MOSS for Log-linear Models
+
+9
+
+4. Computing marginal likelihoods
+Let (n) be a contingency table and let (s, α) be hyper-parameters for the conjugate prior
+πD (θ|s, α) associated with a hierarchical log-linear model m specified by the interactions D.
+The marginal likelihood of m is the ratio of normalizing constants of the posterior and the
+prior for θ:
+Pr((n)|m) = ID (y + s, N + α)/ID (s, α).
+Knowing how to efficiently evaluate the marginal likelihood of a certain model is key for
+the stochastic search methods discussed in this paper. We show how to calculate the
+normalizing constant ID (s, α) of the distribution πD (θ|s, α) in (11) for hierarchical, graphical
+and decomposable log-linear models. The posterior normalizing constant ID (y + s, N + α)
+is computed in a similar manner.
+4.1. Hierarchical log-linear models
+In the most general case when m is a hierarchical log-linear model, we make
+use of the
+R
+Laplace approximation (Tierney and Kadane, 1986) to estimate ID (s, α) = IRdD h(θD )dθD ,
+where h(θD ) was introduced in (12).
+Let θˆ be the value of θD that maximizes h(θD ) and let H(θD ) be the Hessian of h. The
+mode θˆ can be efficiently calculated using IPF as explained in Section 3.3. It follows that
+the Laplace approximation to ID (s, α) is
+
+
+Z
+ˆ + 1 (θD − θ)
+ˆ t H(θ)(θ
+ˆ D − θ)
+ˆ dθD ,
+exp
+log
+h(
+θ)
+ID\
+(s, α) =
+2
+IRdD
+
+
+Z
+1
+ˆ t H(θ)(θ
+ˆ D − θ)
+ˆ dθD ,
+ˆ
+(θ
+−
+θ)
+≈ h(θ)
+exp
+D
+2
+IRdD
+ˆ
+h(θ)(2π)
+
+≈
+
+dD
+2
+
+ˆ −1/2 ,
+det(H(θ))
+
+ˆ is a dD -dimensional column vector and
+where (θD − θ)
+
+
+2 X X
+X
+ˆ = d
+H(θ)
+θ(iD )s(iD ) − α log 1 +
+2
+dθD 
+∗
+
+X
+
+exp
+
+∗
+E∈E⊖ iE ∈IE
+
+D∈D iD ∈ID
+
+F ⊆D E
+
+Let us compute the first derivative
+dh(θD )
+dθ(iD )
+
+= s(iD ) − α
+= s(iD ) − α
+
+P
+
+G∈E⊖
+G⊇D
+
+P
+
+1+
+X
+
+P
+
+jG ∈I ∗
+G
+(jG )D =iD
+
+E∈E⊖
+
+X
+
+P
+
+∗
+iE ∈IE
+
+exp
+
+P
+
+exp
+
+p(jG ).
+
+F ⊆D E
+
+P
+
+X
+
+F ⊆D E
+
+
+ 
+
+θ(iF )
+ .
+ θˆ
+
+θ(iF )
+θ(iF )
+
+,
+
+G∈E⊖
+jG ∈I ∗
+G
+G⊇D (j ) =i
+G D
+D
+
+Using the expression for
+d2 h(θD )
+dθ(iD )dθ(lH )
+
+=
+
+dp(j(G))
+dθ(lH )
+
+−α
+
+X
+
+derived in Massam et al. (2008), we obtain
+X
+
+G∈E⊖
+jG ∈I ∗
+G
+G⊇D (j ) =i
+G D
+D
+
+dp(j(G))
+,
+dθ(lH )
+
+10
+
+A. Dobra and H. Massam
+
+=
+
+−α
+
+X
+
+
+
+X
+
+
+p(j(G)) 
+δ(jG )H (lH ) −
+
+G∈E⊖
+jG ∈I ∗
+G
+G⊇D (j ) =i
+G D
+D
+
+where
+δ(jG )H (lH ) =
+For binary data, this yields
+d2 h(θD )
+dθ(D)dθ(H)
+
+=
+
+−α
+
+
+
+G⊇D
+
+δ⊇H (G) =
+
+(jC )H =lH
+C∈E⊖ ,jC ∈I ∗
+C
+
+
+p(j(C))
+.
+
+1, if (jG )H = lH ,
+0, otherwise.
+
+X
+
+where
+
+X
+
+
+
+
+
+
+
+p(G) δ⊇H (G) −
+
+X
+
+C⊇H
+
+
+
+p(C) ,
+
+1, if G ⊇ H,
+0, otherwise.
+
+ˆ is therefore the dD ×dD matrix with (iD , lH ) entries , D ∈ D, iD ∈
+The Hessian matrix H(θ)
+∗
+∗
+ID
+, H ∈ D, lH ∈ IH
+given by
+
+
+−α
+
+X
+
+X
+
+G∈E⊖
+jG ∈I ∗
+G
+G⊇D (j ) =i
+G D
+D
+
+
+p(j(G)) 
+δ(jG )H (lH ) −
+
+X
+
+(jC )H =lH
+C∈E⊖ ,jC ∈I ∗
+C
+
+
+p(j(C))
+.
+
+4.2. Graphical log-linear models
+Let us assume that the log-linear model m is Markov with respect to an arbitrary undirected
+graph G. We develop a more efficient way of approximating ID (s, α) based on the strong
+hyper-Markov property (Dawid and Lauritzen, 1993) of the generalized hyper-Dirichlet
+πD (θ|s, α).
+Let P1 , . . . , Pk a perfect sequence ofthe primecomponents of G and let S2 , . . . , Sk be the
+l−1
+corresponding separators, where Sl = ∪j=1
+Pj ∩ Pl , l = 2, . . . , k. Dobra and Fienberg
+(2000) outlined fast algorithms for producing such a perfect sequence of prime components
+together with their separators.
+We use the notation DPl (l = 1, . . . , k) and DSl (l = 2, . . . , k) for the collection of
+complete subsets of the induced sub-graphs GPl and GSl , respectively. More precisely,
+DA for some A ⊂ V defines the graphical log-linear model for the A-marginal of (n) with
+independence graph GA , the subgraph of G induced by the vertices in A. The parameters
+of the Pl -marginal and the Sl -marginal multinomials are θ(DPl ) and θ(DSl ), respectively.
+Massam et al. (2008) prove that πD (θD |s, α) is strong hyper-Markov with respect to G and
+can be written as a hyper-Markov combination of the marginal distribution of θ(DPl ) and
+θ(DSl ) as follows:
+Theorem 4.1. If θD follows the generalized hyper Dirichlet πD (θD |s, α) , then the joint
+distribution of the parameters θ(DPl ) and θ(DSl ) has density
+Qk
+Qk
+Sl
+exp{hθ(DPl ), s(DPl )i − α k(θ(DPl ))}
+l=2 ID Sl (s , α)
+· Ql=1
+,
+πD (θD |s, α) = Qk
+k
+Pl
+Sl
+Sl
+Sl
+l=1 ID Pl (s , α)
+l=2 exp{hθ(D ), s(D )i − α k(θ(D ))}
+
+MOSS for Log-linear Models
+
+11
+
+∗
+where, for A = Sl , Rl , sA = (s(iD ), D ∈ DA , iD ∈ ID
+),
+X
+X
+hθ(DA ), s(DA )i =
+θA (iD )s(iD ),
+∗
+D⊆DA A iD ∈ID
+
+k(θ(DA ))
+
+= log 1 +
+
+X
+
+X
+
+exp
+
+∗
+D⊆⊖ A iD ∈ID
+
+X
+
+F ⊆D A D
+
+
+θA (iF )
+
+and θA (iF ) is defined as in (2) with p(iH , i∗H c ) replaced by pA (iH , i∗A\H ).
+Theorem 4.1 implies that the normalizing constant of πD (θD |s, α), namely
+Qk
+IDPl (sPl , α)
+ID (s, α) = Ql=1
+,
+k
+Sl
+l=2 ID Sl (s , α)
+
+(17)
+
+can be computed by decomposing G in its sequence of prime components and separators
+and estimating the normalizing constants of the conjugate distributions associated with the
+smaller dimensional models DPl , l = 1, . . . , k and DSl , l = 2, . . . , k.
+If A is a prime component of G, GA is might not be complete and we need to employ the
+Laplace approximation from Section 4.1 to calculate the normalizing constant IDA (sA , α).
+On the other hand, if GA is complete, no approximation is needed because there is a formula
+for computing this normalizing constant (Massam et al., 2008):
+IDA (sA , α) =
+
+Γ(αA
+∅)
+Γ(α)
+
+Y
+
+Γ(αA (iD , i∗A\D )),
+
+(18)
+
+∗
+D∈D A ,iD ∈ID
+
+where
+αA (iD , i∗A\D ) =
+
+X
+
+A⊇F ⊇D
+
+αA
+∅
+
+=
+
+α+
+
+X
+
+(−1)|F \D| s(jF ),
+
+jF ∈I ∗
+F
+(jF )D =iD
+
+X
+
+(−1)|D|
+
+D⊆A
+
+X
+
+s(iD ).
+
+∗
+i∈ID
+
+If A is a separator of G the subgraph GA is always complete, hence (18) can be employed.
+Although the IPF algorithm can efficiently determine the mode of πD (θD |s, α), it can still
+be slow for large, sparse contingency tables since it has to take into consideration every single
+cell. The divide-and-conquer method for estimating ID (s, α) based on the sequence of prime
+components and separators of the independence graph is likely to be faster than the Laplace
+approximation from Section 4.1 since it breaks the original table into smaller dimensional
+marginals whose corresponding normalizing constants can be calculated in parallel.
+4.3. Decomposable log-linear models
+We further assume that the log-linear model m is Markov with respect to a decomposable
+undirected graph G. A graph is decomposable if and only if each of its prime components
+is complete (Dobra and Fienberg, 2000). Assume that G is decomposed in the complete
+prime components P1 , . . . , Pk and the sequence of separators S2 , . . . , Sk . Then ID (s, α) is
+calculated using formula (17) with each IDA (sA , α) for A ∈ {P1 , . . . , Pk , S2 , . . . , Sk } given
+by (18). Therefore the normalizing constant for a decomposable log-linear model can be
+calculated exactly since πD (θD |s, α) is hyper Dirichlet (Massam et al., 2008).
+
+12
+
+A. Dobra and H. Massam
+
+5. The mode oriented stochastic search (MOSS) algorithm
+The Bayesian paradigm to model determination involves choosing models with high posterior probability selected from a set M of competing models. Efficiently exploring M can be
+extremely difficult not only because of the sheer size of this space, but also because the normalizing constant of the conjugate prior πD (θD |s, α) from (11) is not readily available. This
+renders the applicability of any MCMC model determination method in which the model
+parameters are still present practically infeasible due to the computational burden involved
+in approximating the prior normalizing constant of each model visited. Godsill (2001) provides an excellent review that include the reversible jump sampler of Green (1995) and the
+product space scheme of Carlin and Chib (1995). The relative inefficiency of the MCMC
+methods lies in the fact that the models need to be revisited many times to determine their
+posterior probability. The number of iterations required to achieve convergence can increase
+rapidly if the chain is run over the product space of M and the corresponding model parameters. For this reason there has been a recent development of stochastic search methods
+in which the model parameters are integrated out. Examples of such methods are the MC3
+algorithm proposed by Madigan and York (1995) and the shotgun stochastic search (SSS)
+algorithm of Jones et al. (2005) and Hans et al. (2007).
+In this section we further exploit the principles behind SSS and propose a novel stochastic search method which we call the mode oriented stochastic search (MOSS, henceforth).
+MOSS focuses on determining the set of models
+
+
+′
+M(c) = m ∈ M : Pr(m|(n)) ≥ c · max
+Pr(m
+|(n))
+,
+(19)
+′
+m ∈M
+
+where c ∈ (0, 1) and (n) is the data. As proposed in Madigan and Raftery (1994), we
+discard models with a low posterior probability compared to the highest probability model.
+For suitable choices of c, the target set of models M(c) is small enough to be enumerated,
+while this is not practically possible for M.
+In order to implement MOSS and identify (19), we need to compute the posterior probability Pr(m|(n)) ∝ Pr((n)|m)Pr(m) of any given model m ∈ M. In Section 4 we showed
+how to evaluate the marginal likelihood Pr((n)|m) for decomposable, graphical and arbitrary log-linear models. We also need a way to traverse the space M. To this end, we
+associate with each candidate model m ∈ M a neighborhood nbd(m) ⊂ M. Any two models in m, m′ ∈ M are connected through at least a path m = m1 , m2 , . . . , mk = m′ such
+that mj ∈ nbd(mj−1 ) for j = 2, . . . , k. The neighborhoods are defined with respect to the
+class of models considered:
+(a)Hierarchical log-linear models. The neighborhood of a hierarchical model m consists of those hierarchical models obtained from m by adding one of its dual generators
+(i.e., minimal interaction terms not present in the model) or deleting one of its generators
+(i.e., maximal interaction terms terms present in the model). For details see Edwards and
+Havranek (1985) and Dellaportas and Forster (1999).
+(b)Graphical log-linear models. The neighborhood of a graphical model m with independence graph G is defined by the graphs obtained by adding or removing one edge from
+G. The size of the neighborhoods is therefore constant across graphical models that involve
+the same number of covariates.
+(c)Decomposable log-linear models. Here the neighborhood of a model is obtained by
+adding or deleting edges such that resulting graph is still decomposable – see Dawid and
+
+MOSS for Log-linear Models
+
+13
+
+Lauritzen (1993) or Tarantola (2004) for details. The size of the neighborhoods of two
+decomposable graphs are not necessarily the same even if they differ by exactly one edge.
+To implement MOSS, we need a current list S of models that is updated during the
+search. We define the subset S(c) of S in the same way we defined M(c) based on M. In
+order to allow our search to escape local optima by occasionally moving to models with lower
+posterior probability and exploring their neighborhoods, we define S(c′ ) with 0 < c′ < c
+so that S(c) ⊂ S(c′ ). We also need to choose the probability q of pruning the models in
+S \ S(c). A model m is called explored if all its neighbors m′ ∈ nbd(m) have been visited.
+A model in S can be explored or unexplored. MOSS proceeds as follows:
+PROCEDURE MOSS(c,c′,q)
+(a) Initialize the starting list of models S. For each model m ∈ S, we calculate and
+record its posterior probability Pr(m|(n)). We also mark m as unexplored.
+(b) Let L be the set of unexplored models in S. Sample a model m ∈ L according to
+probabilities proportional with Pr(m|(n)) normalized within L. Mark m as explored.
+(c) For each m′ ∈ nbd(m), check if m′ is currently in S. If it is not, evaluate and
+record its posterior probability Pr(m′ |(n)). If m′ ∈ S(c′ ), include m′ in S and mark
+m′ as unexplored. If m′ is the model with the highest posterior probability in S,
+eliminate from S the models in S \ S(c′ ).
+(d) With probability q, eliminate from S the models in S \ S(c).
+(e) If all the models in S are explored, eliminate from S the models in S \ S(c) and
+STOP. Otherwise go back to step (b).
+END.
+If c′ is set to be too high, MOSS might end before reaching the model with the highest
+posterior probability in M due to its inability to escape local modes. On the other hand,
+setting c′ to an extremely low value could mean that MOSS might take a long time to end
+since the neighborhoods of too many models would have to be explored. We recommend
+running the algorithm several times to make sure that the same final set of models has been
+reached.
+As opposed to M C 3 or SSS, MOSS ends by itself without having to specify a maximum
+number of iterations to run. In a MOSS search, the model explored at each iteration is
+selected from the most promising models identified so far. In M C 3 or SSS, this model is
+selected from the neighbors of the model evaluated at the previous iteration. This feature
+allows MOSS to move faster towards regions of high posterior probability in the models
+space.
+5.1. Czech autoworkers data: revisited
+We illustrate the MOSS algorithm by analyzing the Czech Autoworkers data from Table 1.
+MOSS was started five times from randomly generated models with c = 0.1, c′ = 0.001 and
+a pruning probability q = 0.1. We use a flat conjugate prior with equal fictive cell entries as
+in (14). In order to assess the sensitivity of the models selected to our choice of priors, we
+
+14
+
+A. Dobra and H. Massam
+
+run instances of MOSS with α ∈ {1, 2, 3, 32, 64, 128}. This is equivalent to augmenting the
+actual cell counts with 1/64, 1/32, 3/64, 0.5, 1 and 2, respectively. For each value of α, we
+perform four separate searches as follows: (i) a search over decomposable log-linear models,
+(ii) a search over graphical log-linear models with marginal likelihoods estimated by decomposing the independence graph in its prime components as described in Section 4.2, (iii) a
+search over graphical log-linear models with marginal likelihoods estimated through a single
+Laplace approximation, and (iv) a search over hierarchical log-linear models. The results
+are shown in Tables 3 and 4. The four types of searches are labeled “Dec.”, “Graph./PM”,
+“Graph./Lapl” and “Hierar.”, respectively.
+We compare our results with the log-linear models selected by Dellaportas and Forster
+(1999) who proposed a reversible jump Markov chain Monte Carlo with normal priors for
+log-linear parameters and with the decomposable models selected by Madigan and Raftery
+(1994) who employed a hyper-Dirichlet prior for cell probabilities. For smaller values of
+α = 1, 2 or 3, our most probable decomposable model bc|ace|ade|f is also the best decomposable model identified by both Dellaportas and Forster (1999) and Madigan and
+Raftery (1994). Our most probable graphical model ac|bc|be|ade|f for α = 1, 2 or 3 in
+the “Graph./Lapl” search is precisely the most probable model of Dellaportas and Forster
+(1999) and is the second best model selected by Edwards and Havranek (1985). We remark
+that both estimation methods for the marginal likelihood of graphical models yield consistent results. Our most probable hierarchical model ac|bc|ad|ae|ce|de|f for α = 1, 2 or 3
+coincides with the model with the largest posterior probability identified by Dellaportas
+and Forster (1999). The highest probable models selected by us and by Dellaportas and
+Forster (1999) are extremely consistent for small choices of α.
+Increasing α leads to the inclusion of higher order interaction terms in the corresponding
+log-linear models. This implies that α effectively penalizes for an increased model complexity. Smaller values of α push the posterior mode towards a uniform table in which there
+are no relationships among the variables involved. Sparser log-linear models are identified
+by decreasing α and these are precisely the models we are looking for in higher-dimensional
+contingency tables having most counts equal to zero. Such tables cannot support more
+complex interactions due to the small number of observed samples. For a fixed value of
+α, the highest probable log-linear models also become sparser as we sequentially relax the
+structural constraints from decomposable to graphical and hierarchical. Tables 3 and 4
+show that the most probable graphical (hierarchical) models can be obtained by dropping
+some of the second order interaction terms in the most probable decomposable (graphical)
+models.
+Massam et al. (2008) present the highest probable log-linear models identified by employing M C 3 instead of MOSS. For each value of α and each class of log-linear models, they
+run four separate Markov chains from random starting models for 25, 000 iterations with a
+burn-in of 5, 000 iterations. The top models identified by M C 3 are precisely the top models identified by MOSS. The posterior probabilities of each model determined in the M C 3
+search are slightly smaller than the posterior model probabilities as reported by MOSS since
+lower posterior probability models that fall outside M(0.1) are discarded. Eliminating these
+models has no consequence on the top models identified. However, the highest posterior
+probability models are more likely to coincide with the median log-linear model with respect
+to M(c). A median log-linear model contains those interaction terms having a posterior
+inclusion probability greater than 0.5. Such models are hierarchical irrespective of the class
+of log-linear models considered. The median log-linear models associated with the entire set
+of candidate models M might contain spurious interaction terms that do not appear in the
+
+MOSS for Log-linear Models
+
+15
+
+Table 3. The models with the highest posterior probabilities identified by MOSS for the Czech
+autoworkers data when α ∈ {1, 2, 3}. We give the models whose normalized posterior probabilities
+are greater than 0.05. The median log-linear models are labeled ”med.”
+Search
+α=1
+α=2
+α=3
+Dec.
+bc|ace|ade|f
+0.370
+bc|ace|ade|f
+0.342
+bc|ace|ade|f
+0.425
+bc|ace|de|f
+0.155
+bc|ace|de|f
+0.231
+bc|ace|ade|bf
+0.211
+bc|ad|ace|f
+0.151
+bc|ace|de|bf
+0.125
+bc|ace|de|f
+0.145
+ac|bc|be|de|f
+0.089
+bc|ad|ace|f
+0.094
+bc|ace|ade|ef
+0.089
+bc|ace|de|bf
+0.076
+bc|ace|de|bf
+0.085
+bc|ace|de|bf
+0.072
+ac|bc|ae|de|f
+0.068
+bc|ace|ade|ef
+0.053
+bc|ad|ace|f
+0.059
+bc|ace|de|f
+med.
+bc|ace|ade|f
+med.
+bc|ace|ade|f
+med.
+Graph./PM
+ac|bc|ae|be|de|f
+0.577
+ac|bc|ae|be|de|f
+0.482
+ac|bc|ae|be|de|f
+0.432
+ac|bc|ad|ae|be|f
+0.235
+ac|bc|ad|ae|be|f
+0.196
+ac|bc|ae|be|de|bf
+0.215
+ac|bc|ae|be|de|bf
+0.119
+ac|bc|ae|be|de|bf
+0.176
+ac|bc|ad|ae|be|f
+0.176
+ac|bc|d|ae|be|f
+0.070
+ac|bc|ae|be|de|ef
+0.074
+ac|bc|ae|be|de|ef
+0.090
+ac|bc|ad|ae|be|bf
+0.072
+ac|bc|ad|ae|be|bf
+0.087
+ac|bc|ae|be|de|f
+med.
+ac|bc|ae|be|de|f
+med.
+ac|bc|ae|be|de|f
+med.
+Graph./Lapl
+ac|bc|be|ade|f
+0.391
+ac|bc|be|ade|f
+0.454
+ac|bc|be|ade|f
+0.485
+ac|bc|ae|be|de|f
+0.264
+ac|bc|be|ade|bf
+0.187
+ac|bc|be|ade|bf
+0.245
+ac|bc|be|ade|bf
+0.114
+ac|bc|ae|be|de|f
+0.154
+ac|bc|ae|be|de|f
+0.111
+ac|bc|ad|ae|be|f
+0.108
+ac|bc|be|ade|ef
+0.079
+ac|bc|be|ade|ef
+0.103
+ac|bc|ae|be|de|bf
+0.077
+ac|bc|ae|be|de|bf
+0.064
+ac|bc|ae|be|de|bf
+0.056
+ac|bc|ad|ae|be|f
+0.063
+ac|bc|be|ade|f
+med.
+ac|bc|be|ade|f
+med.
+ac|bc|be|ade|f
+med.
+Hierar.
+ac|bc|ad|ae|ce|de|f 0.392 ac|bc|ad|ae|ce|de|f
+0.298 ac|bc|ad|ae|ce|de|f
+0.256
+ac|bc|ad|ae|be|de|f 0.246 ac|bc|ad|ae|be|de|f
+0.187 ac|bc|ad|ae|be|de|f
+0.161
+ac|bc|ad|ae|be|ce|de|f 0.124 ac|bc|ad|ae|be|ce|de|f 0.133 ac|bc|ad|ae|be|ce|de|f 0.140
+ac|bc|ad|ae|ce|de|bf 0.114 ac|bc|ad|ae|ce|de|bf 0.123 ac|bc|ad|ae|ce|de|bf 0.129
+ac|bc|ad|ae|be|de|bf 0.071 ac|bc|ad|ae|be|de|bf 0.077 ac|bc|ad|ae|be|de|bf 0.081
+ac|bc|ad|ae|be|ce|de|bf 0.055 ac|bc|ad|ae|be|ce|de|bf 0.071
+ac|bc|ad|ae|ce|de|ef 0.052 ac|bc|ad|ae|ce|de|ef 0.055
+ac|bc|ad|ae|ce|de|f med. ac|bc|ad|ae|be|ce|de|f med. ac|bc|ad|ae|be|ce|de|f med.
+
+highest probable models. This remark is even more important in the case of hierarchical
+log-linear models whose individual posterior probability tend to be small because only one
+or at most two interactions terms differentiate models having close posterior probabilities.
+Table 5 gives the number of models visited by MOSS before its completion. In most
+cases only a couple of hundred models need to be evaluated to identify the highest probable
+models. The number of models visited by M C 3 in each search was 30, 000. While it is extremely likely that a much smaller number of MCMC iterations were needed to get to the top
+models, actually determining when convergence has been reached is traditionally a tedious
+process. MOSS provides a simple way to avoid the need to evaluate convergence because
+it has an implicit stopping rule. This is another reason why MOSS is more efficient than
+M C 3 and this efficiency becomes even more important in the analysis of higher-dimensional
+datasets. Table 5 also shows that the number of models evaluated increases as α increases
+since the highest posterior probability models contain more complex interaction terms.
+A very interesting question is whether there exists evidence between the family history
+of coronary heart disease (variable f ) and the five risk factors a, b, c, d and e. Whittaker
+(1990) page 263 chooses the graphical model abce|ade|bf that links f with b – strenuous
+
+16
+
+A. Dobra and H. Massam
+
+Table 4. The models with the highest posterior probabilities identified by MOSS for the Czech Autoworkers data when α ∈ {32, 64, 128}. We give the models whose normalized posterior probabilities are
+greater than 0.05.
+Search
+α = 32
+α = 64
+α = 128
+Dec.
+bc|ace|ade|bf
+0.169
+ace|bce|ade|bcf
+0.134
+ace|bce|ade|bcf
+0.359
+ace|bce|ade|bf
+0.123
+ace|bce|ade|bf
+0.118
+ace|ade|bcf |cef
+0.133
+bc|ace|ade|f
+0.077
+ace|ade|bcf
+0.081
+abc|ace|ade|bcf
+0.105
+abc|ace|ade|bf
+0.075
+bc|ace|ade|bf
+0.071
+abc|abe|ade|bcf
+0.104
+bc|ace|ade|ef
+0.071
+abc|ace|ade|acf
+0.062
+ace|ade|acf
+0.089
+abc|abe|ade|bf
+0.057
+abc|ace|ade|bf
+0.055
+abce|ade|acf
+0.060
+ace|bce|ade|f
+0.056
+abc|abe|ade|acf
+0.052
+ace|ade|bcef
+0.051
+ace|bce|ade|ef
+0.051
+ace|ade|abcf
+0.050
+bc|ace|ade|bf
+med.
+bc|be|ace|ade|bf
+med.
+be|ace|ade|bcf
+med.
+Graph./PM
+bc|ace|ade|bf
+0.093
+ace|bce|ade|bcf
+0.091
+ace|bce|ade|bcf
+0.280
+ac|bc|ade|bde|bf
+0.069
+ace|bce|ade|bf
+0.080
+ace|bce|ade|bde|bcf
+0.138
+ace|bce|ade|bf
+0.068
+ace|ade|acf
+0.055
+ace|ade|bcf |cef
+0.104
+bc|acd|be|ade|bf
+0.058
+abc|ace|ade|bcf
+0.082
+bc|bd|ace|ade|bf
+0.053
+abc|abe|ade|bcf
+0.081
+ace|ade|bcf
+0.070
+bc|be|ace|ade|bf
+med.
+bc|be|ace|ade|bf
+med.
+be|ace|ade|bcf
+med.
+Graph./Lapl
+ac|bc|be|ade|bf
+0.303
+ac|bc|be|ade|bf
+0.162
+ac|be|ade|bcf
+0.161
+ac|bc|be|ade|f
+0.167
+ac|be|ade|bcf
+0.128
+ace|bce|ade|bcf
+0.114
+ac|bc|be|ade|ef
+0.127
+ac|bc|be|ade|af |bf
+0.068
+ac|be|ade|bcf |df
+0.109
+ac|bc|be|ade|af |bf
+0.091
+ac|bc|be|ade|bf |df
+0.068
+ace|bce|ade|bcf |df
+0.077
+ac|bc|be|ade|bf |df
+0.084
+ac|bc|be|ade|ef
+0.068
+ac|ade|bcf |bef
+0.069
+ac|be|ade|acf
+0.059
+ac|bc|be|ade|f
+0.057
+ac|ade|bcf |bef |def
+0.064
+ac|be|ade|bcf |df
+0.054
+ac|bc|be|ade|bf
+med.
+ac|bc|be|ade|bf
+med.
+ac|be|ade|bcf
+med.
+Hierar.
+ac|bc|ad|ae|be|ce|de|bf 0.071 ac|bc|ad|ae|be|ce|de|bf 0.023 ac|ad|ae|be|ce|de|bcf |ef 0.012
+ac|bc|ad|ae|be|ce|de|bf med. ac|bc|ad|ae|be|ce|de|bf med. ac|ad|ae|be|ce|de|bcf |df |ef med.
+
+Table 5. The minimum, median and maximum number of models evaluated by MOSS for the Czech
+Autoworkers data for non-informative priors induced by α ∈ {1, 2, 3, 32, 64, 128} across five search
+replicates.
+α
+Search
+1
+2
+3
+32
+64
+128
+Dec.
+85|177|397 179|216|454 117|236|340 256|349|416
+374|381|415
+201|255|294
+Graph./PM 95|167|223 267|343|442 191|201|394 718|1029|1266 621|1048|1139
+259|452|721
+Graph./Lapl 217|311|637 209|237|478 220|315|439 195|365|788
+652|743|806
+420|621|859
+Hierar.
+636|752|834 701|744|1045 548|811|877 1446|1544|1767 3417|3954|4072 6296|6372|6808
+
+MOSS for Log-linear Models
+
+17
+
+Table 6. Posterior inclusion probabilities for the edge bf
+for various choice of priors and classes of log-linear models as determined by MOSS for the Czech autoworkers
+data.
+α
+Search
+1
+2
+3
+32
+64 128
+Dec.
+0.076 0.244 0.283 0.522 0.715 1
+Graph./PM 0.119 0.248 0.302 0.533 0.697 1
+Graph./Lapl 0.190 0.251 0.301 0.616 0.785 1
+Hierar.
+0.186 0.263 0.290 0.749 0.912 1
+
+mental work. The most probable models identified by Dellaportas and Forster (1999),
+Madigan and Raftery (1994) or Edwards and Havranek (1985) indicate the independence
+of f from the other risk factors. Their findings are consistent with the models we identify
+for smaller values of α. However, as we increase the grand total α in the prior fictive table
+we employ, a direct link between b and f appears in our highest probable models. Table 6
+shows the posterior inclusion probability of the first order interaction between b and f for
+various choices of α and structural model constraints. Table 6 seems to confirm Whittaker’s
+findings as the posterior probability of the edge bf increases from 0.076 to almost 1. This
+edge does not appear in sparser models corresponding with smaller values of α because
+there are stronger associations among the five risk factors than between a particular risk
+factor and the family history of coronary heart disease. The first-order interaction bf enters
+the top models only if the penalty for model complexity is decreased.
+5.2. Household study in Rochdale: revisited
+Next we use MOSS to analyze the Rochdale data presented in Table 2. Whittaker (1990)
+pointed out that the severe imbalance in the cell counts of this sparse eight-way table is
+often found in social survey analysis. Whittaker’s analysis was based on the assumption
+that models with higher-order interactions cannot be fit to this data due to the zero counts
+in the marginals that in turn translate into the non-existence of MLEs and into difficulties
+in correctly calculating the number of degrees of freedom. Whittaker starts with the all
+two-way interaction model and sequentially eliminates edges based on their deviances. All
+the higher-order interactions were discarded up front. Whittaker chooses the model
+f g|ef |dh|dg|cg|cf |ce|bh|be|bd|ag|ae|ad|ac.
+
+(20)
+
+To the extent of the authors’ knowledge, there was no other analysis of this dataset following Whittaker’s work. We present a new analysis of this data that confirms Whittaker’s
+intuition but also reveals that there actually exists a three-way interaction bdh that is supported by the data. This interaction indicates a strong connection between wife’s age, her
+child’s age and the presence of another working member in the family.
+We penalize for model complexity by choosing α = 1 in the specification of the conjugate
+prior. This means that we augment the actual data with small fictive counts of 2−8 . We
+run five replicates of MOSS within the space of decomposable, graphical and hierarchical
+log-linear models. The search over decomposable models was done with c = 0.1, c′ = 10−5
+and q = 0.001. We increased the pruning probability to 0.1 for the graphical and hierarchical searches due to the larger number of models that had to be kept in the list S. The
+search over decomposable models was started from random starting models. The graphical
+
+18
+
+A. Dobra and H. Massam
+
+models search was started from the top decomposable models identified by MOSS, while the
+hierarchical models search was started from the top graphical models identified. Replacing the random starting models with a set of models that are known to give a fairly good
+representation of the data leads to a more efficient stochastic search that visits a smaller
+number of models. We have already seen for the Czech autoworkers data that there is a
+strong relationship among the highest posterior probability models associated with nested
+classes of log-linear models.
+Table 7 shows the top decomposable, graphical and hierarchical log-linear models identified by MOSS. Remark the similarity of the models obtained by estimating the marginal
+likelihoods of graphical models by a single Laplace approximation or by decomposing the
+independence graph in its prime components. The hierarchical log-linear model with the
+highest posterior probability differs by only one interaction term bdh from the model proposed by Whittaker.
+Table 7 also gives the number of models evaluated by MOSS before its completion.
+About 5600 models had to be examined in the decomposable case. Evaluating the marginal
+likelihood of a decomposable model is extremely efficient since explicit formulas exist in
+this case, hence this relatively modest number of visited models gives a good indication of
+the performance of MOSS. Since numerical approximations to marginal likelihoods have to
+be used in the graphical and hierarchical case, it is imperative to attempt to reduce the
+number of models that are visited due to the increased computing time needed to evaluate
+each model. Fewer graphical and hierarchical models were evaluated by MOSS because the
+search was started from models that were not far from the highest probable models in each
+class. MOSS determined the top graphical models out of 228 possible graphs by visiting
+less then one thousand models. MOSS seems to work very well for hierarchical log-linear
+models by identifying the top models out of 5.6×1022 possible hierarchical log-linear models
+(Dellaportas and Forster, 1999) by visiting less than 2, 000 models.
+
+6. The Bayesian iterate proportional fitting algorithm
+Consider a hierarchical log-linear model with an irreducible generating class A = {Ai , i =
+1, . . . , k} and with constraints D defined as the set of subsets of Ai , i = 1, . . . , k. Finding
+the mode of the posterior distribution πD (θD |y, s, α) or the prior mode of πD (θD |s, α) can
+be done in a computational efficient manner using the IPF algorithm – see Section 3.3.
+Although this solves the problem of fitting log-linear models, it is important to know how
+to sample parameters θ from these constrained distributions in order to quantify estimation
+uncertainty and to produce Bayesian estimates of other quantities of interest that are nonlinear transformations of θD .
+To this end, Gelman et al. (2004) and Schafer (1997) proposed the Bayesian iterate
+proportional fitting algorithm for simulating random draws from the constrained Dirichlet
+posterior for a given log-linear model. The Bayesian IPF is extremely similar to the classical
+IPF algorithm, except that sequentially updating the parameters θ based on each fixed
+marginal is replaced with an adjustment based on a marginal table with the same structure
+whose entries have been drawn from Gamma distributions with certain shape parameters.
+Piccioni (2000) exploits the theory of regular exponential families with cuts to formally
+construct a Gibbs sampler algorithm for sampling from their natural conjugate densities.
+Asci and Piccioni (2007) give an extension to improper target distributions. The Bayesian
+IPF is a particular case of the Gibbs sampler for blocks of natural parameters of multivariate
+
+MOSS for Log-linear Models
+
+Table 7. The models with the highest posterior probabilities identified by MOSS
+for the Rochdale data. We report the models whose normalized posterior probabilities are greater than 0.05. We also give the minimum, median and maximum
+number of models visited by MOSS before completion across the five search
+replicates.
+Search
+Top models
+Models evaluated
+Dec.
+ef g|beg|bdh|bdg|adg|acg
+0.436 1123|5608|6240
+ef g|ceg|bdh|adg|acg
+0.369
+ef g|ceg|beg|bdh|bdg|acg
+0.069
+ef g|bh|beg|bdg|adg|acg
+0.068
+ef g|ceg|bh|bd|adg|acg
+0.058
+ef g|beg|bdh|bdg|adg|acg
+med.
+Graph./PM
+f g|ef |be|bdh|bdg|adg|acg|ace
+0.462
+240|369|608
+f g|ef |bh|be|bd|adg|acg|ace
+0.337
+f g|ef |bh|be|bdg|adg|acg|ace
+0.072
+f g|ef |ce|be|bdh|bdg|adg|acg
+0.067
+f g|ef |ce|bh|be|bd|adg|acg
+0.061
+f g|ef |be|bdh|bdg|adg|acg|ace
+med.
+Graph./Lapl
+f g|ef |be|bdh|adg|acg|ace
+0.507
+29|515|926
+f g|ef |ce|be|bdh|adg|acg
+0.184
+ef g|ceg|be|bdh|adg|acg
+0.112
+f h|f g|ef |be|bdh|adg|acg|ace
+0.087
+f g|ef |bg|be|bdh|ad|acg|ace
+0.056
+f g|ef |be|bdh|bdg|adg|acg|ace
+0.055
+f g|ef |be|bdh|adg|acg|ace
+med.
+Hierar.
+f g|ef |dg|cg|cf |ce|be|bdh|ag|ae|ad|ac 0.076 1391|1417|1617
+f g|ef |dg|cg|ce|be|bdh|ag|ae|ad|ac 0.069
+f g|ef |dg|cf |ce|be|bdh|ae|ad|acg
+0.057
+f g|ef |dg|ce|be|bdh|ae|ad|acg
+0.052
+f g|ef |dg|cg|cf |ce|be|bdh|ag|ae|ad|ac med.
+
+19
+
+20
+
+A. Dobra and H. Massam
+
+Gamma distributions.
+In this section we generalize to arbitrary contingency tables the version of Bayesian IPF
+for binary data described in Asci and Piccioni (2007). The algorithm starts with a random
+∗
+set of θ(iD )(0) , D ∈ D, iD ∈ ID
+that can be generated, for example, from independent
+standard normal distributions. The remaining θ parameters are set to zero. A cycle of
+Bayesian IPF sequentially goes through each sufficient configuration Al , l = 1, . . . , k and
+updates the current sampled values θ(old) to a new set of sampled values θ(new) in the
+following way:
+(a) Generate independent gamma variables for the marginal expected cell counts
+∗
+τ Al (iD , i∗Al \D ), D ⊆ Al , iD ∈ ID
+∪ (i∗ )Al according to the law
+gAl (τ Al (iD , i∗Al \D ))
+
+Al
+(iD ,i∗
+Al \D )−1
+
+∝ τAl (iD , i∗Al \D )α
+
+exp(−ατ Al (iD , i∗Al \D )),
+
+where for D 6= ∅,
+αAl (iD , i∗Al \D ) =
+
+X
+
+Al ⊇F ⊇D
+
+X
+
+(−1)|F \D| s(jF )
+
+jF ∈I ∗
+F
+(jF )D =iD
+
+and
+X
+
+l
+αAl (i∗Al ) = αA
+∅ = α+
+
+(−1)|D|
+
+D⊆Al
+
+X
+
+s(iD )
+
+∗
+iD ∈ID
+
+In other words, generate independent gamma variables with shape parameter αAl (iD , i∗Al \D )
+and scale parameter 1/α.
+(b) Normalize the table obtained in (a) to obtain the table of Al -marginal probabilities
+with entries
+p
+
+Al
+
+(iD , i∗Al \D )
+
+= P
+
+τ Al (iD , i∗Al \D )
+
+∗ ∪(i∗ )
+F ⊆Al ,iF ∈IF
+Al
+
+τ Al (iF , i∗Al \F )
+
+∗
+, D ⊆ Al , iD ∈ ID
+∪ (i∗ )Al .
+
+∗
+(c) Compute the ”marginal” θAl (iE ), E ⊆ Al , iE ∈ IE
+using the formula
+
+θAl (iE ) = log
+
+Y
+
+pAl (iF , i∗Al \F )(−1)
+
+|E\F |
+
+.
+
+F ⊆E
+∗
+(d) • For E ∈ D, E ⊆ Al , iE ∈ IE
+, set θ(new) (iE ) to be equal to
+
+θAl (iE ) +
+
+X
+
+F ⊆E
+
+
+X
+(−1)|E\F |−1 log 1 +
+exp
+L⊆⊖ Acl
+
+• For E ∈ D, E 6⊆ Al , set θ(new) (iE ) = θ(old) (iE ).
+∗
+• For E 6∈ D or E ∈ D, iE 6∈ IE
+, set θ(new) (iE ) = 0.
+
+X
+
+H⊆F,G⊆⊖ L
+jG ∈I ∗
+G
+
+
+θ(old) (iH , jG ) .
+
+(21)
+
+MOSS for Log-linear Models
+
+21
+
+Fig. 1. Posterior and prior density estimates (solid blue lines) for the twelve free parameters of the
+log-linear model ac|bc|ad|ae|ce|de|f for the Czech Autoworkers data. The dotted black lines give
+the sample normal approximation, while the red lines represent the mode of these distributions as
+estimated using IPF.
+
+22
+
+A. Dobra and H. Massam
+
+Example. We illustrate the use of Bayesian IPF to generate 5, 000 random draws from
+the conjugate posterior and the conjugate prior distribution associated with the log-linear
+model ac|bc|ad|ae|ce|de|f – see Figure 1. From Table 3 we learned that this was the top
+hierarchical log-linear model for the Czech autoworkers data for α = 1. There are twelve
+independent parameters: θ(a), θ(b), θ(c), θ(ac), θ(bc), θ(d), θ(ad), θ(e), θ(ae), θ(ce), θ(de)
+and θ(f ). This order was used to number the θ’s from 1 to 12 in Figure 1. Estimates
+of the posterior and prior density of each parameter are plotted in blue, while the dotted
+black lines represent the corresponding sample normal approximations. The IPF algorithm
+was employed to identify the mode of the joint posterior and its conjugate prior. The
+mode estimate of each parameter is represented with a red line. Remark that the posterior
+densities of the θs are very close to their normal approximations and that IPF correctly
+identifies the posterior modes. The priors are always centered at zero with a high variance,
+hence they are proper and non-informative as we would expect. They also tend to have
+slightly heavier tails than their normal approximations.
+7. Regressions induced by log-linear models
+We consider the problem of studying how a subset of response variables XA , A ⊂ V are
+influenced by the remaining covariates XAc where Ac = V \ A. In particular, we are
+interested in transforming a log-linear model in the regression of XA on XAc . Since a loglinear model gives a parsimonious representation of the joint distribution of all variables in
+a contingency table, the dependencies that might exist among the explanatory variables are
+taken into account in the implied conditional [XA |XAc ]. Moreover, it is likely that the loglinear interaction terms involving one or more response variables Xv , v ∈ A, might contain
+only a subset of the explanatory variables XE , E ⊂ Ac . This means that a variable selection
+step is performed and the full regression [XA |XAc ] reduces to [XA |XE ]. Similar ideas have
+been previously discussed by Agresti (1990) who describes the relationship between loglinear and logit models.
+We want to compute
+X
+log p(iA |iAc ) = log p(iA , iAc ) − log
+(22)
+p(jA , iAc ) .
+jA ∈IA
+
+We assume that (iA , iAc ) 6= i∗ . There exists B ⊂ V such that (iA , iAc ) = (iB , i∗B c ) such
+∗
+that iB ∈ IB
+. With the usual notation (iB , i∗B c ) = i(B), we have
+P
+exp F ⊆D B θ(iF )
+P
+P
+P
+.
+(23)
+p(iA , iAc ) = p(i(B)) =
+1 + E∈E⊖ iE ∈I ∗ exp F ⊆D E θ(iF )
+E
+
+Similarly, each (jA , iAc ) = i(HjA ) for some HjA ⊆ V such that HjA ∩ Ac = B ∩ Ac and
+P
+exp F ⊆D Hj θ((jA , iAc )F )
+A
+P
+P
+P
+.
+(24)
+p(jA , iAc ) = p(i(HjA )) =
+1 + E∈E⊖ iE ∈I ∗ exp F ⊆D E θ(iF )
+E
+
+From (22), (23) and (24), we obtain
+X
+X
+log p(iA |iAc ) =
+θ(iF ) − log
+exp
+F ⊆D B
+
+jA ∈IA
+
+X
+
+F ⊆D HjA
+
+θ((jA , iAc )F ),
+
+(25)
+
+MOSS for Log-linear Models
+
+23
+
+that is the desired formula for the regression of XA on XAc . In the case of binary data,
+(25) becomes
+X
+X
+X
+θ(F ).
+(26)
+log p(iA |iAc ) =
+θ(F ) − log
+exp
+F ⊆D B
+
+G⊆A
+
+F ⊆D G∪(Ac ∩B)
+
+In the case where there is only one response variable Xγ , i.e., A = {γ} for some γ ∈ V ,
+instead of considering (26), we may consider the odds ratio which will then be equal to
+P
+
+
+X
+p(iγ |iB\γ , i∗B c )
+D⊆D B θ(D)
+θγ∪D ; .
+(27)
+= θγ +
+log
+=P
+∗
+∗
+p((i )γ |iB\γ , iB c )
+D⊆D B\{γ} θ(D)
+(γ∪D)⊆D B
+
+Example. We exemplify these results with the problem of predicting wife’s economic
+activity a in the Rochdale data. Whittaker (1990) page 285 considers the log-linear model
+ac|ad|ae|ag induced by the generators of (20) that involve a. Using maximum likelihood
+estimation of log-linear parameters in this model, he obtains the following estimates of the
+logistic regression of a on c, d, e and g:
+log
+
+p(a = 1|c, d, e, g)
+p(a = 0|c, d, e, g)
+
+= const. − 1.33c − 1.32d + 0.69e − 2.17g.
+
+(28)
+
+The corresponding standard errors of the regression coefficients are 0.3, 0.21, 0.2, 0.47. The
+generators involving a in the top hierarchical model identified by MOSS (see Table 7)
+f g|ef |dg|cg|cf |ce|be|bdh|ag|ae|ad|ac
+
+(29)
+
+are again ac, ad, ae and ag which, according to (27), yield the regression equation
+log
+
+p(a = 1|c, d, e, g)
+= θ(a) + θ(ac) + θ(ad) + θ(ae) + θ(ag).
+p(a = 0|c, d, e, g)
+
+(30)
+
+Using Bayesian IPF to produce 10, 000 draws from the posterior probability associated with
+the log-linear model (29), we estimate the regression equation (30) to be:
+log
+
+p(a = 1|c, d, e, g)
+p(a = 0|c, d, e, g)
+
+= const. − 1.30c − 1.26d + 0.70e − 2.31g,
+
+with standard errors 0.29, 0.2, 0.19 and 0.47, respectively. While these coefficient estimates
+are very close to the Whittaker’s estimates in (28), there is a major difference between how
+these estimates were obtained. We used the information in the full eight-way table to fit
+the log-linear model (29), while Whittaker used the five-way marginal associated with a, c,
+d, e and g to fit the log-linear model ac|ad|ae|ag.
+8. Clustering discrete data with MOSS
+MOSS seems to scale well and facilitate an efficient determination of hierarchical log-linear
+models for dichotomous eight-way tables. Unfortunately the number of candidate models
+increases way too fast with the inclusion of only a few additional categorical variables to
+allow MOSS to perform equally well for higher-dimensional tables such as the NLTCS data
+presented in Section 2.3. Model selection is further compounded by the extremely small
+
+24
+
+A. Dobra and H. Massam
+
+Table 8. The cluster log-linear models with the highest posterior probabilities identified by MOSS for the
+Czech autoworkers data. The non-informative conjugate priors are induced by α ∈ {1, 2, 3, 32, 64, 128}.
+We report the models whose normalized posterior probabilities are greater than 0.05.
+α=1
+α=2
+α=3
+α = 32
+α = 64
+α = 128
+abc|de|f 0.458 abc|de|f 0.519 abc|de|f 0.530 abce|d|f 0.738 abce|d|f 0.654 abce|d|f 0.378
+bc|ade|f 0.368 bc|ade|f 0.419 bc|ade|f 0.429 abce|df 0.256 abce|df 0.345 abce|df 0.320
+bc|d|ae|f 0.107
+abcef |d 0.254
+abc|d|e|f 0.055
+abc|de|f med. abc|de|f med. abc|de|f med. abce|d|f med. abce|d|f med. abce|d|f med.
+
+number of observed samples that makes most of the cells to contain zero counts. Recall
+that 95.19% of the counts in the NLTCS data were zero. To address these issues we develop
+a clustering algorithm that breaks the full table into marginals involving non-overlapping
+subsets of variables. These smaller dimensional tables are less sparse and can be analyzed
+separately. Hu and Johnson (2007) present an MCMC approach to identify log-linear models
+having non-overlapping minimal sufficient statistics.
+We are interested in log-linear models m whose generators {P1 , P2 , . . . , Pk }, k ≥ 1,
+represent a clustering of the variables in V, i.e. P1 ∪ . . . ∪ Pk = V and Pi ∩ Pk = ∅ for i 6= j.
+Such a log-linear model is clearly decomposable. Its cliques are precisely P1 , P2 , . . . , Pk ,
+while its separators are k − 1 empty sets. The marginal likelihood of m is easily calculated
+with the formulas from Section 4.3. We call m a cluster log-linear model. MOSS can be
+used to perform a stochastic search over the class of cluster log-linear models. We follow
+the ideas in Hu and Johnson (2007) and define the neighborhood of the model m to be
+generated through two types of moves:
+(1)
+
+(a) Split move: Replace a cluster Pj with two sub-clusters Pj
+(2)
+Pj
+
+(1)
+Pj
+
+(2)
+
+and Pj
+
+(1)
+
+such that Pj
+
+∪
+
+(2)
+Pj
+
+= ∅.
+∩
+= Pj and
+(b) Merge move: Replace two clusters Pi and Pj , i 6= j, with the cluster Pi ∪ Pj .
+To avoid clusters with too many variables, we allow a merge move only if the size of the
+resulting cluster is below a certain cutoff q ′ . Visiting a cluster model m involves producing
+all the neighbors of m, that is, splitting each cluster in every possible way and attempting
+to merge any two clusters.
+Examples. We use MOSS to cluster the variables in the three datasets from Section 2.
+We run five instances of MOSS starting from random clusters with c = 0.333, c′ = 0.001
+and a pruning probability of q = 0.1.
+Table 8 gives the top cluster models for the Czech Autoworkers data. We allowed the
+clusters to have a maximum size q ′ = 6. Most of these clusters also appear as interaction
+terms in the highest probable decomposable, graphical or log-linear models from Tables 3
+and 4. For the Rochdale data we took q ′ = 8 and determined the cluster model acg|bdh|ef
+with a posterior probability of almost 1. All the terms in this model also appear in the top
+models from Table 7.
+Next we proceed to the sixteen-dimensional NLTCS data. A choice of q ′ = 16 leads to
+a model with only one cluster containing all sixteen variables. For computational reasons,
+we set q ′ = 8 and identify the cluster model
+1, 5, 11, 12, 13, 14, 15, 16|2, 3, 4, 6, 7, 8, 9, 10
+
+MOSS for Log-linear Models
+
+25
+
+with a normalized posterior probability equal to one. This clustering seems to make sense
+since the first group contains activities that relate a person to the outside world, while
+the second group contains activities that take place exclusively around the house. The
+“outdoor” cluster contains two ADLs and six IADLs, while the “indoor” cluster is more
+balanced having four ADLs and four IADLs. The two marginal tables associated with
+these clusters are less sparse since their mean number of observations per cell is 84.3. The
+“outdoor” marginal has 213 non-zero counts with a largest count of 6860 in the (0, 0, . . . , 0)
+cell. The “indoor” marginal has 182 non-zero counts with a largest count of 5268 in the
+(0, 0, . . . , 0) cell. This means that log-linear models are likely to be suitable for representing
+associations in these two eight-way tables.
+We run MOSS from five starting points with c = 0.333, c′ = 0.001 and a pruning
+probability of 0.01. The top hierarchical model for the “outdoor” marginal has a normalized
+posterior probability of 0.754:
+13, 15, 16|13, 14|12, 16|12, 13|11, 15, 16|11, 13, 15|11, 12, 14, 15|
+5, 14, 16|5, 14, 15|5, 12, 14|5, 11, 15|1, 16|1, 13|1, 12|1, 5.
+
+(31)
+
+The top hierarchical model for the “indoor” marginal has a normalized posterior probability
+of 0.358 and coincides with the median hierarchical model in M(0.333):
+8, 9, 10|7, 8, 10|7, 8, 9|6, 9|6, 7, 10|4, 7|4, 6, 8, 9|
+3, 7|3, 4, 8|3, 4, 6|2, 9|2, 8|2, 7|2, 4, 10|2, 3.
+
+(32)
+
+Many of the interactions present in these two log-linear models seem to be reasonable. For
+example, the two nested IADLs 7 and 8 (doing heavy and light housework) belong to the
+same cluster and appear together in two second-order terms in (32). The term “nested”
+refers to the fact that an individual who is incapable of doing light housework is also incapable of doing heavy houwsework.
+We assess the fit of these models by drawing 10000 samples from the posterior distributions of their parameters using Bayesian IPF. The p-value for model (31) is 0 based on a
+χ2 value of 587.57 on 212 degrees of freedom, while the p-value for model (32) is 0 based
+on a χ2 value of 414.62 on 212 degrees of freedom.
+By joining the interactions in (31) and (32) we obtain a log-linear model for the complete
+216 table. However, this log-linear model does not have a good fit. The posterior mean of
+the cell probability (0, 0, . . . , 0) in the “outdoor” marginal is 0.242. The corresponding value
+in the “indoor” marginal is 0.313. This leads to a fitted value for the (0, 0, . . . , 0) cell of the
+NLTCS data of 1631.76 that is not close to the observed count of 3853.
+Breaking the initial table in several non-overlapping marginals might offer some insight
+about the underlying associations that exist, but some other relevant associations could be
+lost when the clusters are created. This is precisely why the unrestricted cluster search
+returned the complete 216 table.
+9. MCMC vs. MOSS
+We would like to gain further insight about the relative efficiency of MOSS with respect to
+MCMC stochastic search algorithms by studying how much of the total posterior probability
+is actually covered by the subset M(c), c ∈ (0, 1) of models with the highest posterior
+
+26
+
+A. Dobra and H. Massam
+
+probability. That is, we want to determine the ratio:
+ "
+
+#
+X
+X
+′
+
+
+Pr(m|(n)) /
+Pr(m |(n)) .
+m∈M(c)
+
+(33)
+
+m′ ∈M
+
+In order to evaluate this ratio we use the M C 3 algorithm of Madigan and York (1995) which
+can be briefly described as follows. This algorithm constructs an irreducible Markov chain
+mt , t = 1, 2, . . . with state space M and equilibrium distribution {Pr(m|(n)) : m ∈ M}. If
+the chain is in state mt at time t, a candidate model m′ is drawn from a uniform distribution
+on nbd(mt ). The chain moves in state m′ at time t + 1, i.e. mt+1 = m′ with probability
+
+
+Pr((n)|mt+1 )/#nbd(mt+1 )
+,
+(34)
+min 1,
+Pr((n)|mt )/#nbd(mt )
+where #nbd(m) denotes the number of neighbors of m. Otherwise the chain does not move,
+i.e. we set mt+1 = mt . In (34) it was assumed that all models are apriori equally likely. The
+number of times the chain hits a model in M(c) divided by the total number of iterations
+represents an estimate of (33).
+We used MOSS to determine the top hierarchical log-linear models in M(c) with c = 0.1
+for 219 marginal tables derived from the Rochdale data: 56 three-way tables, 70 four-way
+tables, 56 five-way tables, 28 six-way tables, 8 seven-way tables and one eight-way table.
+For each of these marginal tables, we run M C 3 from four different starting points for 10, 000
+iterations with a burn-in of 2, 500 iterations. Figure 2 shows the resulting estimates of (33)
+grouped by the dimension of the tables analyzed. For three-way tables the coverage of
+probability space seems to be around 0.5, but it decreases to about 0.4 for six-way tables,
+0.3 for seven-way tables and to approximately 0.2 for the full eight-way table. It seems
+appropriate to infer that the ratio (33) goes to zero as the dimension of the contingency
+tables increases while the sample size remains fixed.
+MCMC algorithms identify models
+with high posterior probability by sampling from the posterior distribution over the space
+of candidate models. If there are many models with low posterior probability with respect
+to the model with the highest posterior probability, and their total posterior probability
+dominates the space then most of the MCMC iterations are spent visiting such models. This
+makes any Markov chain likely to be extremely inefficient for high-dimensional datasets.
+10. Conclusions
+In this paper we showed that the combination of MOSS and the conjugate prior for loglinear parameters of Massam et al. (2008) is a powerful technique to analyze multi-way
+contingency tables. Since we are able to integrate out the model parameters and compute
+marginal likelihoods, we avoid using MCMC techniques. We attempted to use M C 3 to find
+hierarchical log-linear models for the Rochdale data, but we did not manage to obtain results
+worth mentioning. MOSS is able to reach relevant log-linear models fast by evaluating a
+reduced set of models. Since models in each neighborhood can be evaluated in parallel,
+MOSS can be made considerably faster in a parallel implementation that takes advantage
+of cluster computing.
+Penalizing for increased model complexity is immediate in this framework and is key in
+the analysis of sparse categorical data. The Bayesian IPF plays a crucial role in fitting loglinear models as well as the corresponding regressions based on these priors. The clustering
+
+MOSS for Log-linear Models
+
+27
+
+Fig. 2. Ratios between the posterior probability of the models in M(0.1) and the total probability
+mass over the hierarchical models of 219 marginal tables derived from the Rochdale data. The ratios
+(y-axis) are grouped by the dimension of the marginals (x-axis).
+
+technique we proposed is able to quickly identify the most relevant groups of variables and
+scales to sparse datasets involving a larger number of discrete variables.
+C++ code implementing various versions of MOSS for discrete data has been developed
+by the authors and can be downloaded from
+http://www.stat.washington.edu/adobra/software/mosstables/
+The current implementation of MOSS is written only for dichotomous contingency tables.
+The methods presented in this paper hold for arbitrary multi-way cross-classifications and
+our code can therefore be extended to polychotomous data in a straighforward albeit time
+consumming manner.
+References
+Agresti, A. (1990). Categorical Data Analysis. Wiley.
+Asci, C. and M. Piccioni (2007). Functionally compatible local characteristics for the local
+specification of priors in graphical models. Scand. J. Statist. 34, 829–840.
+Bishop, Y. M. M., S. E. Fienberg, and P. W. Holland (1975). Discrete Multivariate Analysis:
+Theory and Practice. M.I.T. Press. Cambridge, MA.
+Carlin, B. P. and S. Chib (1995). Bayesian model choice via Markov chain Monte Carlo. J.
+R. Stat. Soc. Ser. B 57, 473–484.
+Clyde, M. and E. I. George (2004). Model uncertainty. Statist. Sci. 19, 81–94.
+
+28
+
+A. Dobra and H. Massam
+
+Darroch, J. and T. Speed (1983). Additive and multiplicative models and interaction. Ann.
+Statist. 11, 724–738.
+Dawid, A. P. and S. L. Lauritzen (1993). Hyper Markov laws in the statistical analysis of
+decomposable graphical models. Ann. Statist. 21, 1272–1317.
+Dellaportas, P. and J. J. Forster (1999). Markov chain Monte Carlo model determination
+for hierarchical and graphical log-linear models. Biometrika 86, 615–633.
+Dellaportas, P. and C. Tarantola (2005). Model determination for categorical data with
+factor level merging. J. R. Stat. Soc. Ser. B 67, 269–283.
+Diaconis, P. and D. Ylvisaker (1979). Conjugate priors for exponential families. Ann.
+Statist. 7, 269–281.
+Dobra, A., E. A. Erosheva, and S. E. Fienberg (2003). Disclosure limitation methods
+based on bounds for large contingency tables with application to disability data. In
+e. H. Bozdogan (Ed.), Proceedings of Conference on the New Frontiers of Statistical Data
+Mining, pp. 93–116. CRC Press.
+Dobra, A. and S. E. Fienberg (2000). Bounds for cell entries in contingency tables given
+marginal totals and decomposable graphs. Proc. Natl. Acad. Sci. 97, 11185–11192.
+Edwards, D. E. and T. Havranek (1985). A fast procedure for model search in multidimensional contingency tables. Biometrika 72, 339–351.
+Erosheva, E. A., S. E. Fienberg, and C. Joutard (2008). Describing disability through
+individual-level mixture models for multivariate binary data. Ann. Appl. Stat. 1, 502–
+537.
+Fienberg, S. E., P. Hersh, A. Rinaldo, and Y. Zhou (2008). Maximum likelihood estimation
+in latent class models for contingency table data. In P. Gibilisco, E. Riccomagno, M. P.
+Rogantin, and e. Wynn, H. P. (Eds.), Algebraic and Geometric Methods in Statistics.
+Cambridge University Press. forthcoming.
+Fienberg, S. E. and A. Rinaldo (2007). Three centuries of categorical data analysis: loglinear models and maximum likelihood estimation. J. Statist. Plann. Inference 137,
+3430–3445.
+Gelman, A., J. B. Carlin, H. S. Stern, and D. Rubin (2004). Bayesian Data Analysis (Second
+ed.). Texts in Statistical Science Series. Chapman & Hall.
+Godsill, S. J. (2001). On the relationship between Markov chain Monte Carlo methods for
+model uncertainty. J. Comput. Graph. Statist. 10, 1–19.
+Green, P. J. (1995). Reversible jump Markov chain Monte Carlo computation and Bayesian
+model determination. Biometrika 82, 711–732.
+Hans, C., A. Dobra, and M. West (2007). Shotgun stochastic search for ”large p” regression.
+J. Amer. Statist. Assoc. 102, 507–516.
+Hu, J. and V. E. Johnson (2007, October). Log-linear models for gene association. Technical
+Report 38, UT MD Anderson Cancer Center Department of Biostatistics Working Paper
+Series. URL: http://www.bepress.com/mdandersonbiostat/paper38.
+
+MOSS for Log-linear Models
+
+29
+
+Jones, B., C. Carvalho, A. Dobra, C. Hans, C. Carter, and M. West (2005). Experiments in
+stochastic computation for high-dimensional graphical models. Statist. Sci. 20, 388–400.
+King, R. and S. P. Brooks (2001). Prior induction for log-linear models for general contingency table analysis. Ann. Statist. 29, 715–747.
+Knuiman, M. and T. Speed (1988). Incorporating prior information into the analysis of
+contingency tables. Biometrics 44, 1061–1071.
+Lauritzen, S. L. (1996). Graphical Models. Clarendon Press, Oxford.
+Madigan, D. and A. Raftery (1994). Model selection and accounting for model uncertainty
+in graphical models using Occam’s window. J. Amer. Statist. Assoc. 89, 1535–1546.
+Madigan, D. and J. York (1995). Bayesian graphical models for discrete data. International
+Statistical Review 63, 215–232.
+Madigan, D. and J. York (1997). Bayesian methods for estimation of the size of a closed
+population. Biometrika 84, 19–31.
+Massam, H., J. Liu, and A. Dobra (2008). A conjugate prior for discrete hierarchical loglinear models. Available from http://arxiv.org/abs/0711.1609.
+Piccioni, M. (2000). Independence structure of natural conjugate densities to exponential
+families and the Gibbs sampler. Scand. J. Statist. 27, 111–127.
+Schafer, J. L. (1997). Analysis of Incomplete Multivariate Data. Chapman & Hall, London.
+Tarantola, C. (2004). MCMC model determination for discrete graphical models. Statistical
+Modelling 4, 39–61.
+Tierney, L. and J. Kadane (1986). Accurate approximations for posterior moments and
+marginal densities. J. Amer. Statist. Assoc. 81, 82–86.
+Whittaker, J. (1990). Graphical Models in Applied Multivariate Statistics. John Wiley &
+Sons.
+
+
