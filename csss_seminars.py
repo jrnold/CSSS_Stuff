@@ -51,6 +51,11 @@ def clean_talk(x):
     x = re.sub(r"\b(Novermber|Nov)\b", "November", x)
     x = re.sub(r"\b(Dec)\b", "December", x)
     x = re.sub(r"(\d)(th|rd|st)", r"\1", x)
+    x = re.sub(r"[“”]", '"', x)
+    x = re.sub("(Assessment of model fit based on incomplete data)",
+               '"\1"', x)
+    x = re.sub("(Models of Social and Biological Contagion: are Puma shoes some kind of virus\?)",
+               '"\1"', x)
     return x
 
 def get_abstract(url):
@@ -62,28 +67,28 @@ def get_abstract(url):
                              re.I + re.S + re.M)
         if m:
             soup = BeautifulSoup(m.group(1))
-            abstract = '\n\n'.join(x.get_text() for x in soup.find_all('p') if is_abstract(x))
-            return abstract
         else:
             soup = BeautifulSoup(html)
-            abstract = '\n\n'.join(x.get_text() for x in soup.find_all('p') if is_abstract(x))
-            return abstract
-        
+        abstract = '\n\n'.join(x.get_text().strip() for x in soup.find_all('p') if is_abstract(x))
+        return abstract        
 
 def parse_talks(x):
     REGEX = re.compile(''.join((r"(?P<dow>%s)" % '|'.join(WEEKDAYS),
                                 r"\s*,?\s*(?P<month>%s)" % '|'.join(MONTHS),
                                 r"\s*(?P<dom>[0-9]+)",
                                 r"\s*,?\s*(?P<year>[0-9]{4})",
-                                r"\s*(?P<authors>.*?)\s*\"(?P<title>.*?)\""
+                                r"\s*(?P<speakers>.*?)\s*\"(?P<title>.*?)\""
                                 )))
-
     m = REGEX.match(x)
-    if m:
-        return {'weekday': m.group('dow'),
-                'month': m.group('month'),
-                'day': m.group('dom'),
-                'authors': m.group('authors'),
+    if m:    
+        month = m.group('month')
+        day = m.group('dom')
+        year = m.group('year')
+        date = datetime.datetime.strptime('%s %s %s' % (month, day, year), "%B %d %Y").\
+               strftime("%Y-%m-%d")
+        return {
+                'date': date,
+                'speakers': m.group('speakers'),
                 'title': m.group('title')
                 }
 
@@ -106,6 +111,7 @@ def parse_seminar_page(year, term):
                if i > 0:
                    if is_a_seminar(talk):
                        talk = clean_talk(talk)
+                       print(talk)
                        d = parse_talks(talk)
                        if not d: d = {}
                        d.update({'year': year, 'term': term, 
@@ -137,6 +143,37 @@ def parse_seminar_page(year, term):
            d['abstract'] = get_abstract(talk_url)       
        alltalks += [d]
     return alltalks
+    
+def winter2001_links():
+    url = "http://www.csss.washington.edu/Seminars/archive/2001/winter/"
+    print("getting %s" % url)
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text)
+    return [urljoin(url, x.a['href']) for x in soup.ul.find_all("li")]
+        
+        
+def parse_winter2001_page(url):
+    print(url)
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text)
+    datestr = soup.h1.string
+    m = re.match("Seminar (%s) ([0-9]+)(?:th|rd|st|nd)?\s+([0-9]{4})" % '|'.join(MONTHS),
+                 datestr, re.I)
+    month = m.group(1)
+    day = m.group(2)
+    #year = m.groups(3)
+    h3 = soup('h3')
+    date = datetime.datetime.strptime("%s %s 2001" % (month, day), "%B %d %Y").\
+        strftime("%Y-%m-%d")
+    speakers = h3[0].get_text()
+    title = h3[1].get_text()
+    abstract = get_abstract(url)
+    return {'date': date, 'year': 2001, 'term': 'winter', 
+            'url': url, 'speakers': speakers, 'title': title,
+            'abstract': abstract}
+            
+def get_all_winter2001_talks():
+    return [parse_winter2001_page(url) for url in winter2001_links()]
 
 def get_all_talks():
     alltalks = []
@@ -149,6 +186,7 @@ def get_all_talks():
                      ):
             talks = parse_seminar_page(*i)
             alltalks += talks
+    alltalks += get_all_winter2001_talks()
     return alltalks
 
 def main():
@@ -156,7 +194,7 @@ def main():
     dst = "seminars.csv"
     print("Writing to file '%s'" % dst)
     with open(dst, 'w') as f:
-        writer = csv.DictWriter(f, ('year', 'term', 'url', 'month', 'day', 'weekday', 'authors', 'title', 'talk', 'abstract'))
+        writer = csv.DictWriter(f, ('year', 'term', 'url', 'date', 'speakers', 'title', 'talk', 'abstract'))
         writer.writeheader()
         writer.writerows(data)
     
