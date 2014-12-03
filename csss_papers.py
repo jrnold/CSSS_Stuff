@@ -1,7 +1,6 @@
 """
 Extract metadata for all CSSS and download all files
 
-Yes, the code is ugly, deal with it.
 """
 
 from bs4 import BeautifulSoup
