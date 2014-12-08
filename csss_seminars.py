@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Download list of all CSSS Seminars
 
@@ -91,20 +92,25 @@ def parse_talks(x):
                 'speakers': m.group('speakers'),
                 'title': m.group('title')
                 }
+                
 
 # The html is so inconsistent on these pages, its easier just to rip out the text chunks and regex it
 # Do the same thing as with the csss papers
-def parse_seminar_page(year, term):
-    url = seminar_archive_url(year, term)
+def parse_seminar_page(url, year, term):
     print("Geting '%s'" % url)
     r = requests.get(url)
     html = r.text
     html = html.replace('<DT><STRONG><DT><STRONG>', '<DT><STRONG>')
+    html = re.sub('<DL CLASS="indent">[\n\r]+<STRONG>Wednesday, April 16, 2014</STRONG>', 
+               '<DT><STRONG>Wednesday, April 16, 2014</STRONG></DT>',
+                html,
+                flags = re.M + re.I + re.DOTALL)
     soup = BeautifulSoup(html, 'html5lib')
     alltalks = []
     talk = ''
     talk_url = ''
     i = 0
+    #print(soup.find('dl', class_='indent'))
     for el in soup.find("dl", class_="indent").children:
         if isinstance(el, Tag):
            if el.name == "dt":
@@ -179,14 +185,19 @@ def get_all_talks():
     alltalks = []
     for i in itertools.product((i for i in range(1999, 2015)),
                                ("fall", "winter", "spring")):
-        if i not in ((2014, 'fall'),
-                     (1999, 'winter'),
+        if i not in ((1999, 'winter'),          
                      (1999, 'spring'),
-                     (2001, 'winter') #
+                     (2001, 'winter'),
+                     (2014, 'fall')
                      ):
-            talks = parse_seminar_page(*i)
+            year = i[0]
+            term = i[1]
+            url = seminar_archive_url(year, term)
+            talks = parse_seminar_page(url, year, term)
             alltalks += talks
+    alltalks += parse_seminar_page('http://www.csss.washington.edu/Seminars/', 2014, 'fall')
     alltalks += get_all_winter2001_talks()
+    alltalks += parse_seminar_page('http://www.csss.washington.edu/Seminars/archive/2014/spring', 2014, 'fall')
     return alltalks
 
 def main():
